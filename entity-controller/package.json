@@ -10,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hytopia": "latest",
-    "@hytopia.com/assets": "latest"
+    "@hytopia.com/assets": "^0.2.18",
+    "hytopia": "^0.5.15"
   },
   "trustedDependencies": [
     "mediasoup",
