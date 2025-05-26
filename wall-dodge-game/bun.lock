@@ -1,0 +1,17 @@
+{
+  "lockfileVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "payload-game",
+      "dependencies": {
+        "@hytopia.com/assets": "^0.2.8",
+        "hytopia": "latest",
+      },
+    },
+  },
+  "packages": {
+    "@hytopia.com/assets": ["@hytopia.com/assets@0.2.8", "", {}, "sha512-cE0aSmTYd00GZAG92cLoCoNMN8F2iQnacREl5J3hmWpPwr5GEhq0MROIEFkLI+gSuUOzTaIi5Ck9hqnRkeoNNw=="],
+
+    "hytopia": ["hytopia@0.1.81", "", { "bin": "bin/scripts.js" }, "sha512-F7oKIt/3iPwWdrbgycyZ/t7+SrgOOmS4CvmDFiQYDsk+6cILIadBkq/H4M/YpxL3iqqvZVHFDv13tybM+zolZw=="],
+  }
+}
