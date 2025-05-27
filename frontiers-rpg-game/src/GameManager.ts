@@ -2,7 +2,7 @@ import { WorldManager } from 'hytopia';
 import type GameRegion from './GameRegion';
 
 // Regions
-import Stalkhaven from './regions/Stalkhaven';
+import StalkhavenRegion from './regions/StalkhavenRegion';
 
 export default class GameManager {
   public static readonly instance = new GameManager();
@@ -18,13 +18,13 @@ export default class GameManager {
 
   public loadRegions(): void {
     // Stalkhaven, Main City (Start)
-    const stalkhaven = new Stalkhaven();
-    this._regions.set(stalkhaven.tag!, stalkhaven);
-    this._startRegion = stalkhaven;
+    const stalkhavenRegion = new StalkhavenRegion();
+    this._regions.set(stalkhavenRegion.tag!, stalkhavenRegion);
+    this._startRegion = stalkhavenRegion;
 
     // Other regions...
 
     // Set Stalkhaven as the region/world players automatically join when they connect to the game.
-    WorldManager.instance.setDefaultWorld(stalkhaven.world);
+    WorldManager.instance.setDefaultWorld(stalkhavenRegion.world);
   }
 }

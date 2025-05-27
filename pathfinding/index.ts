@@ -19,13 +19,16 @@ startServer(world => {
     controller: new PathfindingEntityController(),
     name: 'Zombie',
     modelUri: 'models/npcs/zombie.gltf',
-    modelLoopedAnimations: [ 'walk' ],
     modelScale: 0.5,
     rigidBodyOptions: {
       enabledRotations: { x: false, y: true, z: false },
       ccdEnabled: true,
     },
   });
+
+  const pathfindingController = zombie.controller as PathfindingEntityController;
+  pathfindingController.idleLoopedAnimations = [ 'walk' ];
+  pathfindingController.moveLoopedAnimations = [ 'run' ];
 
   // Spawn somewhere in front of the player
   zombie.spawn(world, { x: 4, y: 3, z: -6 }, Quaternion.fromEuler(0, 180, 0)); // rotate 180 degrees around Y, facing the player spawn point.

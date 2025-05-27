@@ -1,5 +1,6 @@
 import {
   DefaultPlayerEntity,
+  ErrorHandler,
   Player,
   PlayerEvent,
   World,
@@ -13,7 +14,8 @@ export type GameRegionOptions = {
 } & Omit<WorldOptions, 'id'>;
 
 export default class GameRegion {
-  private readonly _spawnPoint: Vector3Like;
+  private _isSetup: boolean = false;
+  private _spawnPoint: Vector3Like;
   private readonly _world: World;
 
   public constructor(options: GameRegionOptions) {
@@ -22,19 +24,28 @@ export default class GameRegion {
     this._world = WorldManager.instance.createWorld(options);
     this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this._onPlayerJoin(player));
     this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this._onPlayerLeave(player));
+
+    this._setup();
   }
 
+  public get name(): string { return this._world.name; }
+  public get spawnPoint(): Vector3Like { return this._spawnPoint; }
+  public get tag(): string | undefined { return this._world.tag; }
   public get world(): World { return this._world; }
 
-  public get name(): string { return this._world.name; }
+  protected _setup(): void { // intended to be overridden by subclasses
+    if (this._isSetup) {
+      return ErrorHandler.warning(`GameRegion.setup(): ${this.name} already setup.`);
+    }
 
-  public get tag(): string | undefined { return this._world.tag; }
+    this._isSetup = true;
+  }
 
-  private _onPlayerJoin(player: Player) {
+  protected _onPlayerJoin(player: Player) {
     (new DefaultPlayerEntity({ player })).spawn(this._world, this._spawnPoint);
   }
 
-  private _onPlayerLeave(player: Player) {
+  protected _onPlayerLeave(player: Player) {
     this._world.entityManager.getPlayerEntitiesByPlayer(player).forEach(entity => {
       entity.despawn()
   });

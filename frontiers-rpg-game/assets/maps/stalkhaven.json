@@ -109,6 +109,7 @@
       "id": 78,
       "name": "water-still",
       "textureUri": "blocks/water-still.png",
+      "isLiquid": true,
       "isCustom": false,
       "isMultiTexture": false
     },
