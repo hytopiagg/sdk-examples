@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@hytopia.com/assets": "^0.2.21",
-    "hytopia": "^0.5.15",
+    "hytopia": "^0.5.20",
     "openai": "^4.77.3"
   },
   "trustedDependencies": [
