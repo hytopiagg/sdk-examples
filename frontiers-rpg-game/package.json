@@ -1,0 +1,19 @@
+{
+  "name": "frontiers-rpg-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hytopia.com/assets": "^0.2.21",
+    "hytopia": "^0.5.20"
+  },
+  "trustedDependencies": [
+    "mediasoup",
+    "sharp"
+  ]
+}
