@@ -93,7 +93,7 @@ function onPlayerJoin(world: World, player: Player) {
   const playerEntity = new DefaultPlayerEntity({
     player,
     name: 'Player',
-    modelUri: 'models/players/soldier-player.gltf',
+    modelUri: 'models/players/player.gltf',
   });
 
   playerEntity.spawn(world, GAME_CONFIG.POSITIONS.PLAYER_SPAWN);
