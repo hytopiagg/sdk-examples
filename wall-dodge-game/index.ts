@@ -15,6 +15,7 @@ import {
   SimpleEntityController,
   World,
   Collider,
+  DefaultPlayerEntityController,
 } from 'hytopia';
 
 import worldMap from './assets/map.json';
@@ -276,6 +277,7 @@ function onPlayerJoin(world: World, player: Player) {
 
   // Spawn with a random X coordinate to spread players out a bit.
   playerEntity.spawn(world, getRandomSpawnCoordinate());
+  (playerEntity.controller as DefaultPlayerEntityController).canSwim = () => false;
 }
 
 /**
