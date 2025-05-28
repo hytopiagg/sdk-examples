@@ -84,6 +84,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       player,
       name: 'Player',
       modelUri: 'models/players/soldier-player.gltf',
+      modelScale: 0.5,
     });
     
     this._setupPlayerController();
@@ -370,6 +371,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   }
 
   private _setupPlayerController(): void {
+    this.playerController.applyDirectionalMovementRotations = false;
     this.playerController.autoCancelMouseLeftClick = false;
 
     this.resetAnimations();
