@@ -15,6 +15,7 @@ import {
   World,
   CollisionGroup,
   PlayerEntity,
+  DefaultPlayerEntityController,
 } from 'hytopia';
 
 import GAME_WALL_SHAPES from './wall-shapes';
@@ -113,6 +114,8 @@ function onPlayerJoin(world: World, player: Player) {
       killPlayer(playerEntity);
     }
   });
+
+  (playerEntity.controller as DefaultPlayerEntityController).canSwim = () => false;
 }
 
 function onPlayerLeave(world: World, player: Player) {
