@@ -109,6 +109,7 @@ startServer(world => { // Perform our game setup logic in the startServer init c
       player,
       name: 'Player',
       modelUri: 'models/soldier-player.gltf',
+      modelScale: 0.5,
     });
 
     
@@ -126,6 +127,7 @@ startServer(world => { // Perform our game setup logic in the startServer init c
 
     // Override default model animations
     const playerController = playerEntity.controller as DefaultPlayerEntityController;
+    playerController.applyDirectionalMovementRotations = false;
     playerController.idleLoopedAnimations = [ 'idle_lower', 'idle_gun_right' ];
     playerController.interactOneshotAnimations = [];
     playerController.walkLoopedAnimations = ['walk_lower', 'idle_gun_right' ];

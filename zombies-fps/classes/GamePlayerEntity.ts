@@ -53,10 +53,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       player,
       name: 'Player',
       modelUri: 'models/players/soldier-player.gltf',
+      modelScale: 0.5,
     });
     
     // Prevent mouse left click from being cancelled, required
     // for auto-fire and semi-auto fire mechanics, etc.
+    this.playerController.applyDirectionalMovementRotations = false;
     this.playerController.autoCancelMouseLeftClick = false;
     
     // Setup player animations
