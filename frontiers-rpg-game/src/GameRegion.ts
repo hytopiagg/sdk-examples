@@ -9,6 +9,8 @@ import {
   Vector3Like,
 } from 'hytopia';
 
+import GamePlayerEntity from './GamePlayerEntity';
+
 export type GameRegionOptions = {
   spawnPoint?: Vector3Like,
 } & Omit<WorldOptions, 'id'>;
@@ -42,7 +44,7 @@ export default class GameRegion {
   }
 
   protected _onPlayerJoin(player: Player) {
-    (new DefaultPlayerEntity({ player })).spawn(this._world, this._spawnPoint);
+    (new GamePlayerEntity(player)).spawn(this._world, this._spawnPoint);
   }
 
   protected _onPlayerLeave(player: Player) {

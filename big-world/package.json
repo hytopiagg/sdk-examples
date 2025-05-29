@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hytopia.com/assets": "latest",
-    "hytopia": "latest"
+    "@hytopia.com/assets": "^0.3.2",
+    "hytopia": "^0.6.4"
   },
   "trustedDependencies": [
     "mediasoup",
