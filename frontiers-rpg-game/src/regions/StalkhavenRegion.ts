@@ -65,9 +65,10 @@ export default class StalkhavenRegion extends GameRegion {
       { x: 17, y: 1.5, z: -15 },  // market 5
     ];
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 20; i++) {
+      const spawnPoint = wonderDestinations[Math.floor(Math.random() * wonderDestinations.length)];
       const villager = new CapfolkVillagerEntity();
-      villager.spawn(this.world, { x: -30 + Math.random() * 60, y: 20, z: -30 + Math.random() * 60 });
+      villager.spawn(this.world, spawnPoint);
       setTimeout(() => {
         villager.wander(wonderDestinations, 1 + Math.random() * 3);
       }, 5000);
