@@ -4,13 +4,15 @@ import {
   DefaultPlayerEntityController,
   EventPayloads,
   Player,
-  Quaternion,
 } from 'hytopia';
 
-const DODGE_IMPULSE_STRENGTH = 10;
+import ItemInventory from './systems/ItemInventory';
 
 export default class GamePlayerEntity extends DefaultPlayerEntity {
-
+  public readonly carriedInventory: ItemInventory = new ItemInventory(21, 7);
+  public readonly hotbarInventory: ItemInventory = new ItemInventory(7, 7);
+  public readonly storageInventory: ItemInventory = new ItemInventory(70, 7);
+ 
   public get playerController(): DefaultPlayerEntityController { return this.controller as DefaultPlayerEntityController; }
 
   public constructor(player: Player) {
@@ -22,24 +24,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this._setupPlayerController();
   }
 
-  public dodge(): void {
-    this.startModelOneshotAnimations([ 'dodge-roll' ]);
-
-    const facingDirection = this.directionFromRotation;
-console.log(facingDirection);
-    this.applyImpulse({
-      x: facingDirection.x * this.mass * DODGE_IMPULSE_STRENGTH,
-      y: facingDirection.y * this.mass * DODGE_IMPULSE_STRENGTH,
-      z: facingDirection.z * this.mass * DODGE_IMPULSE_STRENGTH,
-    })
-  }
 
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
-
-    if (input.q) {
-      this.dodge();
-    }
   }
 
   private _setupPlayerController(): void {
