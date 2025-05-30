@@ -27,6 +27,9 @@ export default class GameRegion {
     this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this._onPlayerJoin(player));
     this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this._onPlayerLeave(player));
 
+    // temp
+    this._world.simulation.enableDebugRendering(true);
+
     this._setup();
   }
 
