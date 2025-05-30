@@ -24,7 +24,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this._setupPlayerController();
   }
 
-
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
   }

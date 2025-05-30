@@ -15,6 +15,7 @@ export type BaseItemOptions = {
   modelScale?: number;
   name: string;
   quantity?: number;
+  sellValue?: number;
   stackable?: boolean;
 };
 
@@ -26,6 +27,7 @@ export default class BaseItem {
   public readonly modelUri: string;
   public readonly modelScale: number;
   public readonly name: string;
+  public readonly sellValue: number;
   public readonly stackable: boolean;
 
   private _entity: Entity | undefined;
@@ -39,6 +41,7 @@ export default class BaseItem {
     this.modelUri = options.modelUri;
     this.modelScale = options.modelScale ?? 1;
     this.name = options.name;
+    this.sellValue = options.sellValue ?? 0;
     this.stackable = options.stackable ?? false;
 
     if (this.stackable && options.quantity) {
