@@ -25,6 +25,21 @@ export default class ItemInventory {
       return false;
     }
 
+    // Check if item is stackable and an item of the same type already exists
+    if (item.stackable) {
+      for (const existingItem of this._itemPositions.keys()) {
+        if (
+          existingItem.constructor === item.constructor && 
+          existingItem.name === item.name && 
+          existingItem.stackable
+        ) {
+          existingItem.adjustQuantity(item.quantity);
+          return true;
+        }
+      }
+    }
+
+    // If not stackable, attempt to find an empty position
     const targetPosition = position ?? this.findEmptyPosition();
     
     if (targetPosition < 0 || targetPosition >= this._size) {
@@ -37,7 +52,7 @@ export default class ItemInventory {
 
     this._itemPositions.set(item, targetPosition);
     this._positionItems.set(targetPosition, item);
-
+    
     return true;
   }
 
