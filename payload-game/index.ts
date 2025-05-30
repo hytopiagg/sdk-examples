@@ -273,9 +273,9 @@ function spawnBullet(world: World, coordinate: Vector3Like, direction: Vector3Li
     const knockback = 14 * mass;
 
     otherEntity.applyImpulse({
-      x: -bulletDirection.x * knockback,
+      x: bulletDirection.x * knockback,
       y: 0,
-      z: -bulletDirection.z * knockback,
+      z: bulletDirection.z * knockback,
     });
 
     if (enemyHealth[otherEntity.id!] <= 0) {
@@ -400,9 +400,9 @@ function spawnSpider(world: World, coordinate: Vector3Like) {
       const knockback = 4 * randomScaleMultiplier;
 
       otherEntity.applyImpulse({
-        x: -spiderDirection.x * knockback,
+        x: spiderDirection.x * knockback,
         y: 4,
-        z: -spiderDirection.z * knockback,
+        z: spiderDirection.z * knockback,
       });
 
       (new Audio({
@@ -506,8 +506,8 @@ function onTickWithPlayerInput(payload: EventPayloads[BaseEntityControllerEvent.
 
     // Adjust horizontal components based on pitch
     const cosP = Math.cos(cameraOrientation.pitch);
-    direction.x = -direction.x * cosP;
-    direction.z = -direction.z * cosP;
+    direction.x = direction.x * cosP;
+    direction.z = direction.z * cosP;
 
     // Normalize the direction vector to unit length
     direction.normalize();
