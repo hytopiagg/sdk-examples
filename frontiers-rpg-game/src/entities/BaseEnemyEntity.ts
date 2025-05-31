@@ -159,8 +159,13 @@ export default class BaseEnemyEntity extends BaseEntity {
     if (this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
       this._aggroPathfindAccumulatorMs = 0;
       
-      const lastPos = this._aggroPathfindLastPosition || this.position;
-      const distanceMovedSquared = this._distanceSquaredBetweenPositions(lastPos, this.position);
+      // Skip first check to establish baseline position
+      if (!this._aggroPathfindLastPosition) {
+        this._aggroPathfindLastPosition = this.position;
+        return;
+      }
+      
+      const distanceMovedSquared = this._distanceSquaredBetweenPositions(this._aggroPathfindLastPosition, this.position);
       const targetDistanceSquared = this._distanceSquaredToTarget(this._aggroActiveTarget);
       
       // Pathfind if stuck and not at destination
@@ -174,7 +179,7 @@ export default class BaseEnemyEntity extends BaseEntity {
         }
       }
       
-      this._aggroPathfindLastPosition = { ...this.position };
+      this._aggroPathfindLastPosition = this.position;
     }
 
     // Apply simple movement when not pathfinding
