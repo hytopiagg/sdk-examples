@@ -27,7 +27,7 @@ export default class StalkhavenRegion extends GameRegion {
   protected override _setup(): void {
     super._setup();
     
-    for (let i = 0; i < 10; i++) {
+    // for (let i = 0; i < 10; i++) {
       const x = Math.random() * 40 - 20; // Random between -20 and 20
       const z = Math.random() * 40 - 20; // Random between -20 and 20
       const facingAngle = Math.random() * 360; // Random facing angle
@@ -35,7 +35,7 @@ export default class StalkhavenRegion extends GameRegion {
       const ratkin = new RatkinWarriorEntity({ facingAngle });
       ratkin.setCcdEnabled(true);
       ratkin.spawn(this.world, { x, y: 10, z });
-    }
+    // }
     
 
 
