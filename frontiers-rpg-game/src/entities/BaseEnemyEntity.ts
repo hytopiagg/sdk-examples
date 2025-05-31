@@ -36,7 +36,7 @@ export default class BaseEnemyEntity extends BaseEntity {
   private _aggroPotentialTargets: Set<BaseEntity | GamePlayerEntity> = new Set();
   private _aggroPotentialTargetTypes: (typeof BaseEntity | typeof GamePlayerEntity)[];
   private _aggroRadius: number;
-  private _aggroRetargetAccumulatorMs: number = 0;
+  private _aggroRetargetAccumulatorMs: number;
   private _aggroRetargetIntervalMs: number;
   private _aggroSensorForwardOffset: number;
   private _attackAnimations: string[];
@@ -57,6 +57,9 @@ export default class BaseEnemyEntity extends BaseEntity {
     this._attackCooldownMs = options.attackCooldownMs ?? 1000;
     this._attackDamage = options.attackDamage ?? 10;
     this._attackRangeSquared = options.attackRange ? options.attackRange ** 2 : 3 * 2;
+    
+    // Set accumulator to interval to trigger immediate target check on first tick
+    this._aggroRetargetAccumulatorMs = this._aggroRetargetIntervalMs;
 
     this.on(EntityEvent.TICK, this._onTick);
   }
@@ -126,7 +129,10 @@ export default class BaseEnemyEntity extends BaseEntity {
 
     // Periodic target evaluation
     if (this._aggroRetargetAccumulatorMs >= this._aggroRetargetIntervalMs) {
-      this._aggroRetargetAccumulatorMs = 0;
+      // Only reset accumulator if we have targets to evaluate
+      if (this._aggroPotentialTargets.size > 0) {
+        this._aggroRetargetAccumulatorMs = 0;
+      }
       
       // Clean up invalid target
       if (this._aggroActiveTarget && !this._aggroPotentialTargets.has(this._aggroActiveTarget)) {

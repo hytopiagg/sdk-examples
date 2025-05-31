@@ -12,6 +12,7 @@ export default class RatkinWarriorEntity extends BaseEnemyEntity {
       modelUri: 'models/enemies/ratkin-warrior.gltf',
       modelScale: 0.65,
       moveAnimations: [ 'walk' ],
+      moveSpeed: 6,
       ...options,
     });
   }
