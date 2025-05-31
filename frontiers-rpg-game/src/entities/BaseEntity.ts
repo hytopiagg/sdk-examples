@@ -81,8 +81,8 @@ export default class BaseEntity extends Entity {
   }
 
   public stopMoving() {
-    // reset & cancels all movements.
-    this.pathfindingController.pathfind(this.position, 1);
+    this.pathfindingController.stopFace();
+    this.pathfindingController.stopMove();
   }
 
   public wander(targets: Vector3Like[], speed: number = this._moveSpeed, options?: WanderOptions) {
