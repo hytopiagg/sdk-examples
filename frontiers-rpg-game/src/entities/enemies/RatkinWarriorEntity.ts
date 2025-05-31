@@ -8,11 +8,24 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
   constructor(options?: RatkinWarriorEntityOptions) {
     super({
       aggroRadius: 7.5,
-      attackAnimations: [ 'atk1' ],
-      attackCooldownMs: 2000,
-      attackDamage: 10,
-      attackRange: 2,
-      attackReach: 3,
+      attacks: [
+        {
+          animations: [ 'atk1' ],
+          cooldownMs: 4000,
+          damage: 10,
+          range: 2,
+          reach: 3,
+          weight: 1,
+        },
+        {
+          animations: [ 'atk2' ],
+          cooldownMs: 2000,
+          damage: 20,
+          range: 2,
+          reach: 3,
+          weight: 2,
+        },
+      ],
       name: 'Ratkin Warrior',
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/ratkin-warrior.gltf',

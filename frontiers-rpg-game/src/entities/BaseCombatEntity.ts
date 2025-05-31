@@ -16,17 +16,22 @@ const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 2.5;
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import GamePlayerEntity from '../GamePlayerEntity';
 
+export type BaseCombatEntityAttack = {
+  animations: string[];
+  cooldownMs: number;
+  damage: number;
+  range: number;
+  reach: number;
+  weight: number;
+}
+
 export type BaseCombatEntityOptions = {
   aggroRadius: number; 
   aggroRetargetIntervalMs?: number;
   aggroReturnToStart?: boolean;
   aggroSensorForwardOffset?: number;
   aggroTargetTypes?: (typeof BaseEntity | typeof GamePlayerEntity)[];
-  attackAnimations: string[];
-  attackCooldownMs: number;
-  attackDamage: number;
-  attackRange: number;
-  attackReach: number;
+  attacks?: BaseCombatEntityAttack[];
 } & BaseEntityOptions;
 
 export default class BaseCombatEntity extends BaseEntity {
@@ -43,12 +48,11 @@ export default class BaseCombatEntity extends BaseEntity {
   private _aggroReturnToStart: boolean;
   private _aggroSensorForwardOffset: number;
   private _aggroStartPosition: Vector3Like | null = null;
+  private _attacks: BaseCombatEntityAttack[];
   private _attackAccumulatorMs: number = 0;
-  private _attackAnimations: string[];
-  private _attackCooldownMs: number;
-  private _attackDamage: number;
-  private _attackRangeSquared: number;
-  private _attackReachSquared: number;
+  private _attackCooldownMs: number = 0;
+  private _attackTotalWeight: number = 0;
+  private _nextAttack: BaseCombatEntityAttack | null = null;
 
   constructor(options: BaseCombatEntityOptions) {
     super(options);
@@ -58,24 +62,38 @@ export default class BaseCombatEntity extends BaseEntity {
     this._aggroReturnToStart = options.aggroReturnToStart ?? false;
     this._aggroPotentialTargetTypes = options.aggroTargetTypes || [ GamePlayerEntity ];
     this._aggroSensorForwardOffset = options.aggroSensorForwardOffset ?? 6;
-    this._attackAnimations = options.attackAnimations;
-    this._attackCooldownMs = options.attackCooldownMs;
-    this._attackDamage = options.attackDamage;
-    this._attackRangeSquared = options.attackRange ** 2;
-    this._attackReachSquared = options.attackReach ** 2;
+    this._attacks = options.attacks ?? [];
+    this._attackTotalWeight = this._attacks.reduce((sum, attack) => sum + attack.weight, 0);
+    this._nextAttack = this._pickRandomAttack();
     
     // Set accumulator to interval to trigger immediate target check on first tick
     this._aggroRetargetAccumulatorMs = this._aggroRetargetIntervalMs;
 
-    if (this._attackReachSquared < this._attackRangeSquared) {
-      ErrorHandler.error('BaseCombatEntity.constructor(): Attack reach must be greater than attack range!');
+    // Validate attacks
+    for (let i = 0; i < this._attacks.length; i++) {
+      const attack = this._attacks[i];
+
+      if (attack.weight < 0) {
+        ErrorHandler.error(`BaseCombatEntity.constructor(): Attack at index ${i} has a negative weight!`);
+      }
+
+      if (attack.reach < attack.range) {
+        ErrorHandler.error(`BaseCombatEntity.constructor(): Attack at index ${i} has a reach that is less than it's range!`);
+      }
     }
 
     this.on(EntityEvent.TICK, this._onTick);
   }
 
   public attack() {
-    this.startModelOneshotAnimations(this._attackAnimations);
+    if (!this._nextAttack) return;
+    
+    // Execute the current attack
+    this._attackCooldownMs = this._nextAttack.cooldownMs;
+    this.startModelOneshotAnimations(this._nextAttack.animations);
+    
+    // Pick the next attack
+    this._nextAttack = this._pickRandomAttack();
   }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
@@ -161,24 +179,62 @@ export default class BaseCombatEntity extends BaseEntity {
 
     const targetDistanceSquared = this._distanceSquaredToTarget(this._aggroActiveTarget);
 
-    if (targetDistanceSquared <= this._attackRangeSquared && this._attackAccumulatorMs >= this._attackCooldownMs) {
-      this._attackAccumulatorMs = 0;
-      this.attack();
+    // Handle attacks if available
+    if (this._nextAttack) {
+      const attackRangeSquared = this._nextAttack.range ** 2;
+
+      if (targetDistanceSquared <= attackRangeSquared && this._attackAccumulatorMs >= this._attackCooldownMs) {
+        this._attackAccumulatorMs = 0;
+        this.attack();
+      }
+
+      // Update movement strategy
+      if (this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
+        this._updateMovementStrategy(targetDistanceSquared);
+      }
+
+      if (!this._aggroPathfinding) {
+        // Only move if not within attack range, but always face the target
+        if (targetDistanceSquared > attackRangeSquared) {
+          this.moveTo(this._aggroActiveTarget.position);
+        } else {
+          this.stopMoving();
+        }
+        this.faceTowards(this._aggroActiveTarget.position, this.moveSpeed * 2);
+      }
+    } else {
+      // No attacks - just follow the target
+      if (this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
+        this._updateMovementStrategy(targetDistanceSquared);
+      }
+
+      if (!this._aggroPathfinding) {
+        this.moveTo(this._aggroActiveTarget.position);
+        this.faceTowards(this._aggroActiveTarget.position, this.moveSpeed * 2);
+      }
     }
-    
-    if (this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
-      this._updateMovementStrategy(targetDistanceSquared);
+  }
+
+  private _pickRandomAttack(): BaseCombatEntityAttack | null {
+    if (this._attacks.length === 0) return null;
+
+    // If all weights are 0, use uniform random selection
+    if (this._attackTotalWeight === 0) {
+      return this._attacks[Math.floor(Math.random() * this._attacks.length)];
     }
 
-    if (!this._aggroPathfinding) {
-      // Only move if not within attack range, but always face the target
-      if (targetDistanceSquared > this._attackRangeSquared) {
-        this.moveTo(this._aggroActiveTarget.position);
-      } else {
-        this.stopMoving();
+    const randomValue = Math.random() * this._attackTotalWeight;
+    let cumulativeWeight = 0;
+
+    for (const attack of this._attacks) {
+      cumulativeWeight += attack.weight;
+      if (randomValue <= cumulativeWeight) {
+        return attack;
       }
-      this.faceTowards(this._aggroActiveTarget.position, this.moveSpeed * 2);
     }
+
+    // Fallback to last attack (should never reach here)
+    return this._attacks[this._attacks.length - 1];
   }
 
   private _shouldSwitchTarget(newTarget: BaseEntity | GamePlayerEntity): boolean {
@@ -199,7 +255,7 @@ export default class BaseCombatEntity extends BaseEntity {
     
     const distanceMovedSquared = this._distanceSquaredBetweenPositions(this._aggroPathfindLastPosition, this.position);
     const isStuck = distanceMovedSquared < MOVEMENT_NOT_STUCK_DISTANCE_SQUARED;
-    const notAtDestination = targetDistanceSquared > this._attackRangeSquared;
+    const notAtDestination = this._nextAttack ? targetDistanceSquared > this._nextAttack.range ** 2 : false;
     
     const shouldPathfind = isStuck && notAtDestination;
     
