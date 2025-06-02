@@ -9,7 +9,7 @@ const CYCLE_NIGHT_MIN_SKYBOX_INTENSITY = 0.005;
 export default class GameClock {
   public static readonly instance = new GameClock();
 
-  private _timeMs: number = 0; // 8:00 AM start
+  private _timeMs: number = 7 * 60 * 1000; // 5 + Offset time start (hours) 12pm
   private _worlds: Set<World> = new Set();
 
   private constructor() {
@@ -59,8 +59,9 @@ export default class GameClock {
     
     // Calculate lighting intensity based on sun height (simple and elegant)
     const sunHeightNormalized = (sunHeight - (-50)) / (250 - (-50)); // Normalize to 0-1
-    const lightIntensity = Math.max(0.2, sunHeightNormalized * 1.5);
-    const ambientIntensity = Math.max(0.35, sunHeightNormalized * 0.9);
+
+    const lightIntensity = Math.max(0.3, sunHeightNormalized * 3.25);
+    const ambientIntensity = Math.max(0.4, sunHeightNormalized * 1.5);
     
     // Calculate skybox intensity with ease-in transition
     const skyboxT = Math.max(0, Math.min(1, sunHeightNormalized));
@@ -85,7 +86,7 @@ export default class GameClock {
     const r = Math.floor(colorIntensity * (nightR + dayProgress * (dayR - nightR)));
     const g = Math.floor(colorIntensity * (nightG + dayProgress * (dayG - nightG)));
     const b = Math.floor(colorIntensity * (nightB + dayProgress * (dayB - nightB)));
-    
+
     // Apply lighting
     world.setDirectionalLightColor({ r, g, b });
     world.setDirectionalLightIntensity(lightIntensity);
