@@ -25,6 +25,9 @@ function includeContent(filePath) {
 
 // Include content for the output - Add our modules here!
 includeContent('./root.html');
+
+includeContent('./menus/inventory.html');
+
 includeContent('./scene-ui-templates/entity-nameplate.html');
 
 // Build a single index.html file
