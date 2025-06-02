@@ -25,7 +25,7 @@ function includeContent(filePath) {
 
 // Include content for the output - Add our modules here!
 includeContent('./root.html');
-includeContent('./scene/entity-nameplate.html');
+includeContent('./scene-ui-templates/entity-nameplate.html');
 
 // Build a single index.html file
 const html = outputContent.join('\n\n');

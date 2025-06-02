@@ -6,7 +6,7 @@
 
 
 
-<!-- Included from: ./scene/entity-nameplate.html -->
+<!-- Included from: ./scene-ui-templates/entity-nameplate.html -->
 <!-- Scene UI Templates -->
 <template id="entity-nameplate-template">
   <div class="entity-nameplate">
@@ -19,7 +19,6 @@
 
 <!-- Scene UI Scripts -->
 <script>
-  alert('loaded!');
   hytopia.registerSceneUITemplate('entity-nameplate', (id, onState) => {
     const template = document.getElementById('entity-nameplate-template');
     const clone = template.content.cloneNode(true);
