@@ -21,7 +21,7 @@
   <div class="inventory-container">
     <div class="inventory-header">
       <h2 class="inventory-title">Inventory</h2>
-      <button class="inventory-close" onclick="closeInventory()">×</button>
+      <button class="inventory-close">×</button>
     </div>
     
     <div class="inventory-content">
@@ -90,6 +90,13 @@
     hotbarSlots: 8
   };
 
+  // Setup hytopia data handlers
+  hytopia.onData(data => {
+    if (data.type === 'toggleInventory') {
+      toggleInventory();
+    }
+  });
+
   // Initialize inventory system
   function initializeInventory() {
     createInventorySlots();
@@ -124,6 +131,11 @@
   }
 
   function setupEventListeners() {
+    // Close button
+    const closeButton = document.querySelector('.inventory-close');
+    closeButton.addEventListener('click', closeInventory);
+
+    // Slots
     const slots = document.querySelectorAll('.inventory-slot, .inventory-equipment-slot, .inventory-hotbar-slot');
     
     slots.forEach(slot => {
@@ -146,10 +158,21 @@
 
   function closeInventory() {
     document.querySelector('.inventory-overlay').style.display = 'none';
+    hytopia.lockPointer(true);
   }
 
   function openInventory() {
     document.querySelector('.inventory-overlay').style.display = 'flex';
+    hytopia.lockPointer(false, true); // true decouples input from pointer lock, in this case allowing key inputs still while pointer is unlocked.
+  }
+
+  function toggleInventory() {
+    const overlay = document.querySelector('.inventory-overlay');
+    if (overlay.style.display === 'flex') {
+      closeInventory();
+    } else {
+      openInventory();
+    }
   }
 
   // Initialize
@@ -173,7 +196,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;

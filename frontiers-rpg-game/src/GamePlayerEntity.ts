@@ -56,6 +56,15 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
+
+    if (input.e) {
+      this._toggleInventory();
+      input.e = false;
+    }
+  }
+
+  private _toggleInventory = (): void => {
+    this.player.ui.sendData({ type: 'toggleInventory' });
   }
 
   private _setupPlayerController(): void {

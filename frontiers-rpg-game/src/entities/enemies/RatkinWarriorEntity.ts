@@ -8,6 +8,7 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
   constructor(options?: RatkinWarriorEntityOptions) {
     super({
       aggroRadius: 7.5,
+      aggroSensorForwardOffset: 3,
       attacks: [
         { // Heavy attack
           animations: [ 'atk1' ],

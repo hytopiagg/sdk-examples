@@ -65,7 +65,7 @@ export default class BaseCombatEntity extends BaseEntity {
     this._aggroRetargetIntervalMs = options.aggroRetargetIntervalMs ?? 1000;
     this._aggroReturnToStart = options.aggroReturnToStart ?? false;
     this._aggroPotentialTargetTypes = options.aggroTargetTypes || [ GamePlayerEntity ];
-    this._aggroSensorForwardOffset = options.aggroSensorForwardOffset ?? 6;
+    this._aggroSensorForwardOffset = options.aggroSensorForwardOffset ?? 0;
     this._attacks = options.attacks ?? [];
     this._attackTotalWeight = this._attacks.reduce((sum, attack) => sum + attack.weight, 0);
     
@@ -127,9 +127,8 @@ export default class BaseCombatEntity extends BaseEntity {
 
     // Create the aggro sensor collider
     this.createAndAddChildCollider({
-      shape: ColliderShape.CYLINDER,
+      shape: ColliderShape.BALL,
       radius: this._aggroRadius,
-      halfHeight: this.height,
       collisionGroups: {
         belongsTo: [ CollisionGroup.ENTITY_SENSOR ],
         collidesWith: [ CollisionGroup.ENTITY ],
