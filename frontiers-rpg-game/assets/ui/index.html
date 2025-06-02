@@ -73,27 +73,22 @@
 </div>
 
 <script>
+  // Clock functionality
   const clockTime = document.querySelector('.hud-clock-time');
   let gameTime = { hour: 0, minute: 0 };
 
-  function formatTime(hour, minute) {
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
-  }
-
   function updateClock() {
-    clockTime.textContent = formatTime(gameTime.hour, gameTime.minute);
+    const period = gameTime.hour >= 12 ? 'PM' : 'AM';
+    const displayHour = gameTime.hour === 0 ? 12 : gameTime.hour > 12 ? gameTime.hour - 12 : gameTime.hour;
+    clockTime.textContent = `${displayHour}:${gameTime.minute.toString().padStart(2, '0')} ${period}`;
   }
 
   setInterval(() => {
     gameTime.minute++;
-
     if (gameTime.minute >= 60) {
       gameTime.minute = 0;
       gameTime.hour = (gameTime.hour + 1) % 24;
     }
-
     updateClock();
   }, 1000);
 
@@ -103,6 +98,27 @@
       updateClock();
     }
   });
+
+  // Hotbar functionality
+  const hotbarSlots = document.querySelectorAll('.hud-hotbar-slot');
+
+  function setActiveSlot(index) {
+    hotbarSlots.forEach((slot, i) => 
+      slot.classList.toggle('hud-hotbar-slot-active', i === index)
+    );
+  }
+
+  // Setup hotbar events and initialize
+  hotbarSlots.forEach((slot, index) => {
+    slot.addEventListener('click', () => setActiveSlot(index));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const key = parseInt(e.key);
+    if (key >= 1 && key <= 8) setActiveSlot(key - 1);
+  });
+
+  setActiveSlot(0);
 </script>
 
 <style>
@@ -245,6 +261,16 @@
     background: rgba(0, 0, 0, 0.8);
     transform: translateY(-2px);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.6);
+  }
+
+  .hud-hotbar-slot-active {
+    border-color: #cccccc !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 3px rgba(255, 255, 255, 0.2) !important;
+  }
+
+  .hud-hotbar-slot-active .hud-hotbar-slot-content {
+    color: #cccccc;
   }
 
   .hud-hotbar-slot-content {
