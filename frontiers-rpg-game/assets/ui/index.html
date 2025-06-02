@@ -18,6 +18,13 @@
 <!-- Included from: ./hud.html -->
 <!-- Game HUD Overlay -->
 <div class="hud-overlay">
+  <!-- Game Clock (top right) -->
+  <div class="hud-clock-container">
+    <div class="hud-clock">
+      <div class="hud-clock-time">2:45 PM</div>
+    </div>
+  </div>
+
   <!-- Player Status Bars (positioned above hotbar) -->
   <div class="hud-status-container">
     <!-- Health Bar -->
@@ -64,6 +71,39 @@
     </div>
   </div>
 </div>
+
+<script>
+  const clockTime = document.querySelector('.hud-clock-time');
+  let gameTime = { hour: 0, minute: 0 };
+
+  function formatTime(hour, minute) {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+  }
+
+  function updateClock() {
+    clockTime.textContent = formatTime(gameTime.hour, gameTime.minute);
+  }
+
+  setInterval(() => {
+    gameTime.minute++;
+
+    if (gameTime.minute >= 60) {
+      gameTime.minute = 0;
+      gameTime.hour = (gameTime.hour + 1) % 24;
+    }
+
+    updateClock();
+  }, 1000);
+
+  hytopia.onData(data => {
+    if (data.type === 'syncClock') {
+      gameTime = { hour: data.hour, minute: data.minute };
+      updateClock();
+    }
+  });
+</script>
 
 <style>
   :root {
@@ -216,6 +256,31 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   }
 
+  /* Clock Styles */
+  .hud-clock-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    pointer-events: auto;
+  }
+
+  .hud-clock {
+    background: linear-gradient(145deg, var(--hud-primary), var(--hud-secondary));
+    border: 2px solid var(--hud-border);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .hud-clock-time {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--hud-text);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
   /* Mobile Responsive */
   @media (max-width: 768px) {
     :root {
@@ -237,6 +302,19 @@
     .hud-status-container {
       bottom: 70px;
       gap: 3px;
+    }
+
+    .hud-clock-container {
+      top: 16px;
+      right: 16px;
+    }
+
+    .hud-clock {
+      padding: 8px;
+    }
+
+    .hud-clock-time {
+      font-size: 12px;
     }
 
     .hud-hotbar-slot-content {

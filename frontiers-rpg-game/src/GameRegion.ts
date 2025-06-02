@@ -1,5 +1,4 @@
 import {
-  DefaultPlayerEntity,
   ErrorHandler,
   Player,
   PlayerEvent,

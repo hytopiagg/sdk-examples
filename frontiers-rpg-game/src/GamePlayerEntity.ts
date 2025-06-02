@@ -10,6 +10,7 @@ import {
   World,
 } from 'hytopia';
 
+import GameClock from './GameClock';
 import ItemInventory from './systems/ItemInventory';
 
 export default class GamePlayerEntity extends DefaultPlayerEntity {
@@ -91,5 +92,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
     // Offset the default player nametag for chat to be above our nameplate
     this.nametagSceneUI.setOffset({ x: 0, y: nameplateYOffset + 0.25, z: 0 });
+
+    // Sync HUD Clock
+    this.player.ui.sendData({
+      type: 'syncClock',
+      hour: GameClock.instance.hour,
+      minute: GameClock.instance.minute,
+    });
   }
 }

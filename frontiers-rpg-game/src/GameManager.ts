@@ -1,4 +1,5 @@
 import { WorldManager } from 'hytopia';
+import GameClock from './GameClock';
 import type GameRegion from './GameRegion';
 
 // Regions
@@ -20,6 +21,7 @@ export default class GameManager {
     // Stalkhaven, Main City (Start)
     const stalkhavenRegion = new StalkhavenRegion();
     this._regions.set(stalkhavenRegion.tag!, stalkhavenRegion);
+    GameClock.instance.addWorldClockCycle(stalkhavenRegion.world);
     this._startRegion = stalkhavenRegion;
 
     // Other regions...
