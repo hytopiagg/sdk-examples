@@ -3,8 +3,11 @@ import {
   Entity,
   QuaternionLike,
   Vector3Like,
-  World
+  World,
+  CollisionGroup
 } from 'hytopia';
+
+import CustomCollisionGroup from '../physics/CustomCollisionGroup';
 
 export type BaseItemOptions = {
   defaultRelativePositionAsChild?: Vector3Like;
@@ -84,6 +87,14 @@ export default class BaseItem {
     this._entity = undefined;
   }
 
+  public setQuantity(quantity: number): void {
+    if (!this.stackable && quantity > 1) {
+      return ErrorHandler.warning(`BaseItem.setQuantity(): Item ${this.name} is not stackable and cannot have a quantity.`);
+    }
+
+    this._quantity = quantity;
+  }
+
   // Spawn the entity equivalent of the item in the world, such as a drop.
   public spawnEntity(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     if (!this._requireNotSpawned()) return;
@@ -95,6 +106,8 @@ export default class BaseItem {
     });
 
     this._entity.spawn(world, position, rotation);
+
+    this._afterSpawn();
   }
 
   // Spawn the entity equivalent of the item as a child of another entity, such as held by a player.
@@ -114,6 +127,8 @@ export default class BaseItem {
       relativePosition ?? this.defaultRelativePositionAsChild,
       relativeRotation ?? this.defaultRelativeRotationAsChild,
     );
+
+    this._afterSpawn();
   }
   
   // Split stackable item into a new item have a specified quantity which is deducted from the current item.
@@ -134,6 +149,15 @@ export default class BaseItem {
   }
 
   // Helpers
+  private _afterSpawn(): void {
+    if (!this._entity) return;
+
+    this._entity.setCollisionGroupsForSolidColliders({
+      belongsTo: [ CustomCollisionGroup.ITEM ],
+      collidesWith: [ CollisionGroup.BLOCK, CollisionGroup.ENVIRONMENT_ENTITY ],
+    });
+  }
+
   private _requireNotSpawned(): boolean {
     if (this._entity) {
       ErrorHandler.warning('BaseItem._requireNotSpawned(): Item is already spawned and must be despawned first.');

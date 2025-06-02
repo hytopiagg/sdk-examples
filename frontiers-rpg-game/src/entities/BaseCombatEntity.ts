@@ -18,11 +18,14 @@ import GamePlayerEntity from '../GamePlayerEntity';
 
 export type BaseCombatEntityAttack = {
   animations: string[];
-  cooldownMs: number;
   damage: number;
+  damageVariance?: number; // Percentage variance (0-1), e.g., 0.2 = ±20% damage
+  damageDelayMs?: number; // When during animation to deal damage
+  cooldownMs: number;
   range: number;
   reach: number;
   weight: number;
+  onHit?: (target: BaseEntity | GamePlayerEntity, attacker: BaseCombatEntity) => void;
 }
 
 export type BaseCombatEntityOptions = {
@@ -32,6 +35,7 @@ export type BaseCombatEntityOptions = {
   aggroSensorForwardOffset?: number;
   aggroTargetTypes?: (typeof BaseEntity | typeof GamePlayerEntity)[];
   attacks?: BaseCombatEntityAttack[];
+  health: number;
 } & BaseEntityOptions;
 
 export default class BaseCombatEntity extends BaseEntity {
@@ -52,6 +56,8 @@ export default class BaseCombatEntity extends BaseEntity {
   private _attackAccumulatorMs: number = 0;
   private _attackCooldownMs: number = 0;
   private _attackTotalWeight: number = 0;
+  private _health: number;
+  private _maxHealth: number;  
   private _nextAttack: BaseCombatEntityAttack | null = null;
 
   constructor(options: BaseCombatEntityOptions) {
@@ -64,6 +70,9 @@ export default class BaseCombatEntity extends BaseEntity {
     this._aggroSensorForwardOffset = options.aggroSensorForwardOffset ?? 6;
     this._attacks = options.attacks ?? [];
     this._attackTotalWeight = this._attacks.reduce((sum, attack) => sum + attack.weight, 0);
+    this._health = options.health;
+    this._maxHealth = options.health;
+    
     this._nextAttack = this._pickRandomAttack();
     
     // Set accumulator to interval to trigger immediate target check on first tick
@@ -85,14 +94,38 @@ export default class BaseCombatEntity extends BaseEntity {
     this.on(EntityEvent.TICK, this._onTick);
   }
 
+  public get health(): number { return this._health; }
+  public get maxHealth(): number { return this._maxHealth; }
+
   public attack() {
-    if (!this._nextAttack) return;
+    if (!this._nextAttack || !this._aggroActiveTarget) return;
     
-    // Execute the current attack
+    const attack = this._nextAttack;
+    const target = this._aggroActiveTarget;
+    
+    this.startModelOneshotAnimations(attack.animations);
+    
+    const damageDelay = attack.damageDelayMs ?? 0;
+    
+    setTimeout(() => {
+      if (!target || !this._aggroPotentialTargets.has(target)) return;
+      
+      const distanceSquared = this._distanceSquaredToTarget(target);
+      const reachSquared = attack.reach ** 2;
+      
+      if (distanceSquared <= reachSquared) { // make sure target is in reach still
+        if ('takeDamage' in target && typeof target.takeDamage === 'function') {
+          const damage = this._calculateDamageWithVariance(attack.damage, attack.damageVariance);
+          target.takeDamage(damage);
+        }
+        
+        if (attack.onHit) {
+          attack.onHit(target, this);
+        }
+      }
+    }, damageDelay);
+
     this._attackCooldownMs = this._nextAttack.cooldownMs;
-    this.startModelOneshotAnimations(this._nextAttack.animations);
-    
-    // Pick the next attack
     this._nextAttack = this._pickRandomAttack();
   }
 
@@ -119,6 +152,24 @@ export default class BaseCombatEntity extends BaseEntity {
         }
       }
     });
+  }
+
+  public takeDamage(damage: number): void {
+    this._health -= damage;
+
+    if (this._health <= 0) {
+      this.die();
+    }
+  }
+  
+  private _calculateDamageWithVariance(baseDamage: number, variance?: number): number {
+    if (!variance) return baseDamage;
+    
+    // variance of 0.2 means damage can be 80% to 120% of base damage
+    const min = baseDamage * (1 - variance);
+    const max = baseDamage * (1 + variance);
+    
+    return min + Math.random() * (max - min);
   }
   
   private _distanceSquaredBetweenPositions(currentPosition: Vector3Like, targetPosition: Vector3Like): number {

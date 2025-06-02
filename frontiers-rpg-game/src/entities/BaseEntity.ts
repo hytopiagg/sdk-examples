@@ -9,8 +9,21 @@ import {
   Vector3Like,
 } from 'hytopia';
 
+import BaseItem from '../items/BaseItem';
+
+export type BaseEntityItemDrop = {
+  item: BaseItem;
+  maxQuantity?: number; // Alternative range vs quantity
+  minQuantity?: number; // Alternative range vs quantity
+  probability: number; // 0 - 1
+  quantity?: number;
+}
+
 export type BaseEntityOptions = {
   controller?: PathfindingEntityController;
+  deathAnimations?: string[];
+  deathDespawnMs?: number;
+  deathItemDrops?: BaseEntityItemDrop[];
   facingAngle?: number;
   facingPosition?: Vector3Like;
   idleAnimations?: string[];
@@ -29,6 +42,10 @@ export type WanderOptions = {
 }
 
 export default class BaseEntity extends Entity {
+  private _deathAnimations: string[];
+  private _deathDespawnMs: number;
+  private _deathItemDrops: BaseEntityItemDrop[];
+  private _dying: boolean = false;
   private _moveSpeed: number;
   private _wanderAccumulatorMs: number = 0;
   
@@ -45,6 +62,9 @@ export default class BaseEntity extends Entity {
       }
     });
 
+    this._deathAnimations = options.deathAnimations ?? [];
+    this._deathDespawnMs = options.deathDespawnMs ?? 0;
+    this._deathItemDrops = options.deathItemDrops ?? [];
     this._moveSpeed = options.moveSpeed ?? 2;
 
     this.pathfindingController.idleLoopedAnimations = options.idleAnimations ?? [];
@@ -63,6 +83,41 @@ export default class BaseEntity extends Entity {
   public get moveAnimationsSpeed(): number | undefined { return this.pathfindingController.moveLoopedAnimationsSpeed; }
   public get moveSpeed(): number { return this._moveSpeed; }
   public get pathfindingController(): PathfindingEntityController { return this.controller as PathfindingEntityController; }
+
+  public die(): void {
+    if (this._dying) return;
+
+    this._dying = true;
+
+    this.startModelOneshotAnimations(this._deathAnimations);
+    this.dropItems();
+    setTimeout(() => this.despawn(), this._deathDespawnMs);
+  }
+
+  public dropItems(): void {
+    if (!this._deathItemDrops || !this.world) return;
+
+    for (const drop of this._deathItemDrops) {
+      if (Math.random() > drop.probability) continue;
+      
+      // Set quantity
+      const quantity = drop.quantity ?? Math.floor(Math.random() * (drop.maxQuantity ?? 1) + (drop.minQuantity ?? 1));
+      drop.item.setQuantity(quantity);
+      
+      // Spawn item for pickup
+      drop.item.spawnEntity(this.world, this.position);
+
+      // Apply impulse to item to simulate being dropped
+      if (drop.item.entity) {
+        const mass = drop.item.entity.mass;
+        drop.item.entity.applyImpulse({
+          x: mass * (2 + Math.random() * 3),
+          y: mass * 5,
+          z: mass * (2 + Math.random() * 3),
+        });
+      }
+    }
+  }
 
   public faceTowards(target: Vector3Like, faceSpeed: number) {
     this.pathfindingController.face(target, faceSpeed);
