@@ -3,3 +3,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
 
+<!-- Style Overrides -->
+<style>
+  /* 
+    Hide the default player nametag name, but we still
+     want to use it for when in-game chat messages are visible.
+  */
+  .hytopia-nametag:not(.has-chat) {
+    opacity: 0 !important;
+  }
+</style>

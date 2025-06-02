@@ -86,10 +86,6 @@ export default class BaseEntity extends Entity {
     }
 
     this._setupNameplateUI();
-
-    setInterval(() => {
-      this.takeDamage(10);
-    }, 2000);
   }
 
   public get idleAnimations(): string[] { return this.pathfindingController.idleLoopedAnimations; }
@@ -194,7 +190,7 @@ export default class BaseEntity extends Entity {
   protected _setupNameplateUI(): void {
     this._nameplateSceneUI = new SceneUI({
       attachedToEntity: this,
-      offset: { x: 0, y: this.height - (this.height * 0.1), z: 0 },
+      offset: { x: 0, y: this.height / 2 + 0.25, z: 0 },
       templateId: 'entity-nameplate',
       state: {
         name: this.name,

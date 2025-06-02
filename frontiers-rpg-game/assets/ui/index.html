@@ -4,7 +4,16 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
 
-
+<!-- Style Overrides -->
+<style>
+  /* 
+    Hide the default player nametag name, but we still
+     want to use it for when in-game chat messages are visible.
+  */
+  .hytopia-nametag:not(.has-chat) {
+    opacity: 0 !important;
+  }
+</style>
 
 <!-- Included from: ./scene-ui-templates/entity-nameplate.html -->
 <!-- Scene UI Templates -->
@@ -28,7 +37,7 @@
     const healthBarFill = clone.querySelector('.entity-nameplate-health-bar-fill');
     
     let damageCount = 0;
-    
+
     onState(state => {
       if (state.name) {
         name.style.display = 'block';
@@ -86,7 +95,7 @@
     color: #ffffff;
     text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
     letter-spacing: 0.3px;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
   }
 
   .entity-nameplate-damage {
