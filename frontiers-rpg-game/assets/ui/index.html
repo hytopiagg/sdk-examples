@@ -1,0 +1,151 @@
+<!-- Included from: ./root.html -->
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+
+
+
+<!-- Included from: ./scene/entity-nameplate.html -->
+<!-- Scene UI Templates -->
+<template id="entity-nameplate-template">
+  <div class="entity-nameplate">
+    <div class="entity-nameplate-name">A Test Mob</div>
+    <div class="entity-nameplate-health-bar">
+      <div class="entity-nameplate-health-bar-fill"></div>
+    </div>
+  </div>
+</template>
+
+<!-- Scene UI Scripts -->
+<script>
+  alert('loaded!');
+  hytopia.registerSceneUITemplate('entity-nameplate', (id, onState) => {
+    const template = document.getElementById('entity-nameplate-template');
+    const clone = template.content.cloneNode(true);
+    const nameplate = clone.querySelector('.entity-nameplate');
+    const name = clone.querySelector('.entity-nameplate-name');
+    const healthBar = clone.querySelector('.entity-nameplate-health-bar');
+    const healthBarFill = clone.querySelector('.entity-nameplate-health-bar-fill');
+    
+    let damageCount = 0;
+
+    onState(state => {
+      if (state.name) {
+        name.style.display = 'block';
+        name.textContent = state.name;
+      }
+
+      if (state.health && state.maxHealth) {
+        healthBar.style.display = 'block';
+        const healthPercent = state.health / state.maxHealth;
+        
+        healthBarFill.style.transform = `scaleX(${healthPercent})`;
+        
+        healthBarFill.className = 'entity-nameplate-health-bar-fill';
+        if (healthPercent > 0.66) healthBarFill.classList.add('health-high');
+        else if (healthPercent > 0.33) healthBarFill.classList.add('health-medium');
+        else healthBarFill.classList.add('health-low');
+      }
+
+      if (state.damage) {
+        const damageEl = document.createElement('div');
+        damageEl.className = 'entity-nameplate-damage';
+        damageEl.textContent = `-${state.damage}`;
+        
+        const delay = damageCount++ * 50;
+        
+        nameplate.appendChild(damageEl);
+        
+        setTimeout(() => damageEl.classList.add('show'), delay);
+        setTimeout(() => {
+          damageEl.remove();
+          damageCount--;
+        }, 800 + delay);
+      }
+    });
+
+    return clone;
+  });
+</script>
+
+<style>
+  .entity-nameplate {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .entity-nameplate-name {
+    display: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
+    letter-spacing: 0.3px;
+    margin-bottom: 2px;
+  }
+
+  .entity-nameplate-damage {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff0000;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
+    opacity: 0;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .entity-nameplate-damage.show {
+    animation: damageFloat 0.8s ease-out;
+  }
+
+  @keyframes damageFloat {
+    0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.5); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(-8px) scale(1.2); }
+    30% { transform: translateX(-50%) translateY(-12px) scale(1); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(0.8); }
+  }
+
+  .entity-nameplate-health-bar {
+    display: none;
+    width: 80px;
+    height: 5px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(0,0,0,0.9);
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  }
+
+  .entity-nameplate-health-bar-fill {
+    height: 100%;
+    width: 100%;
+    background-color: #4CAF50;
+    transition: transform 0.3s ease-out, background-color 0.3s ease-out;
+    transform-origin: left center;
+    transform: scaleX(1);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+
+  .entity-nameplate-health-bar-fill.health-high { background-color: #4CAF50; }
+  .entity-nameplate-health-bar-fill.health-medium { background-color: #FFC107; }
+  .entity-nameplate-health-bar-fill.health-low { background-color: #f44336; }
+
+  .entity-nameplate.elite .entity-nameplate-name {
+    font-size: 12px;
+    font-weight: 700;
+    background: linear-gradient(45deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)) drop-shadow(0 1px 3px rgba(0,0,0,0.9));
+  }
+</style>

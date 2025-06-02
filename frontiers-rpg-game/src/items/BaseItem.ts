@@ -9,6 +9,8 @@ import {
 
 import CustomCollisionGroup from '../physics/CustomCollisionGroup';
 
+export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+
 export type BaseItemOptions = {
   defaultRelativePositionAsChild?: Vector3Like;
   defaultRelativeRotationAsChild?: QuaternionLike;
@@ -18,6 +20,7 @@ export type BaseItemOptions = {
   modelScale?: number;
   name: string;
   quantity?: number;
+  rarity?: ItemRarity;
   sellValue?: number;
   stackable?: boolean;
 };
@@ -30,6 +33,7 @@ export default class BaseItem {
   public readonly modelUri: string;
   public readonly modelScale: number;
   public readonly name: string;
+  public readonly rarity: ItemRarity;
   public readonly sellValue: number;
   public readonly stackable: boolean;
 
@@ -44,6 +48,7 @@ export default class BaseItem {
     this.modelUri = options.modelUri;
     this.modelScale = options.modelScale ?? 1;
     this.name = options.name;
+    this.rarity = options.rarity ?? 'common';
     this.sellValue = options.sellValue ?? 0;
     this.stackable = options.stackable ?? false;
 

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-ui": "nodemon --watch assets/ui --ext html --ignore index.html --exec \"bun run ./assets/ui/build.js\""
   },
   "author": "",
   "license": "ISC",
@@ -15,5 +16,8 @@
   "trustedDependencies": [
     "mediasoup",
     "sharp"
-  ]
+  ],
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
 }

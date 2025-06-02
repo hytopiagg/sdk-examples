@@ -13,7 +13,7 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
           animations: [ 'atk1' ],
           damage: 20,
           damageVariance: 0.3, // ±20% damage (8-12)
-          damageDelayMs: 1500, // Deal damage 1500ms into animation
+          damageDelayMs: 750, // Deal damage 1500ms into animation
           cooldownMs: 4000,
           range: 2,
           reach: 3,
@@ -23,7 +23,7 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
           animations: [ 'atk2' ],
           damage: 10,
           damageVariance: 0.3, // ±30% damage (14-26) 
-          damageDelayMs: 600, // Deal damage 600ms into animation
+          damageDelayMs: 300, // Deal damage 600ms into animation
           cooldownMs: 2000,
           range: 2,
           reach: 3,

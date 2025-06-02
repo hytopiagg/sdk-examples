@@ -56,8 +56,6 @@ export default class BaseCombatEntity extends BaseEntity {
   private _attackAccumulatorMs: number = 0;
   private _attackCooldownMs: number = 0;
   private _attackTotalWeight: number = 0;
-  private _health: number;
-  private _maxHealth: number;  
   private _nextAttack: BaseCombatEntityAttack | null = null;
 
   constructor(options: BaseCombatEntityOptions) {
@@ -70,8 +68,6 @@ export default class BaseCombatEntity extends BaseEntity {
     this._aggroSensorForwardOffset = options.aggroSensorForwardOffset ?? 6;
     this._attacks = options.attacks ?? [];
     this._attackTotalWeight = this._attacks.reduce((sum, attack) => sum + attack.weight, 0);
-    this._health = options.health;
-    this._maxHealth = options.health;
     
     this._nextAttack = this._pickRandomAttack();
     
@@ -93,9 +89,6 @@ export default class BaseCombatEntity extends BaseEntity {
 
     this.on(EntityEvent.TICK, this._onTick);
   }
-
-  public get health(): number { return this._health; }
-  public get maxHealth(): number { return this._maxHealth; }
 
   public attack() {
     if (!this._nextAttack || !this._aggroActiveTarget) return;
@@ -152,14 +145,6 @@ export default class BaseCombatEntity extends BaseEntity {
         }
       }
     });
-  }
-
-  public takeDamage(damage: number): void {
-    this._health -= damage;
-
-    if (this._health <= 0) {
-      this.die();
-    }
   }
   
   private _calculateDamageWithVariance(baseDamage: number, variance?: number): number {
