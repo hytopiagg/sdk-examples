@@ -82,6 +82,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       templateId: 'entity-nameplate',
       state: {
         name: this.player.username,
+        level: 12,
         health: this._health,
         maxHealth: this._maxHealth,
       },

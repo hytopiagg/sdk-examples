@@ -2,6 +2,7 @@
 <template id="entity-nameplate-template">
   <div class="entity-nameplate">
     <div class="entity-nameplate-name">A Test Mob</div>
+    <div class="entity-nameplate-level">Lvl 12</div>
     <div class="entity-nameplate-health-bar">
       <div class="entity-nameplate-health-bar-fill"></div>
     </div>
@@ -15,6 +16,7 @@
     const clone = template.content.cloneNode(true);
     const nameplate = clone.querySelector('.entity-nameplate');
     const name = clone.querySelector('.entity-nameplate-name');
+    const level = clone.querySelector('.entity-nameplate-level');
     const healthBar = clone.querySelector('.entity-nameplate-health-bar');
     const healthBarFill = clone.querySelector('.entity-nameplate-health-bar-fill');
     
@@ -24,6 +26,11 @@
       if (state.name) {
         name.style.display = 'block';
         name.textContent = state.name;
+      }
+
+      if (state.level) {
+        level.style.display = 'block';
+        level.textContent = `Lvl ${state.level}`;
       }
 
       if (state.health && state.maxHealth) {
@@ -78,6 +85,16 @@
     text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
     letter-spacing: 0.3px;
     margin-bottom: 3px;
+  }
+
+  .entity-nameplate-level {
+    display: none;
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffd700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000, 0 0 0 #000;
+    letter-spacing: 0.2px;
+    margin-bottom: 2px;
   }
 
   .entity-nameplate-damage {
