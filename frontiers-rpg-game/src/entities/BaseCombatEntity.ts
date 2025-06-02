@@ -11,7 +11,7 @@ import {
   World,
 } from 'hytopia';
 
-const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 2.5;
+const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 3;
 
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import GamePlayerEntity from '../GamePlayerEntity';
@@ -108,7 +108,7 @@ export default class BaseCombatEntity extends BaseEntity {
       
       if (distanceSquared <= reachSquared) { // make sure target is in reach still
         if ('takeDamage' in target && typeof target.takeDamage === 'function') {
-          const damage = this._calculateDamageWithVariance(attack.damage, attack.damageVariance);
+          const damage = Math.floor(this._calculateDamageWithVariance(attack.damage, attack.damageVariance));
           target.takeDamage(damage);
         }
         

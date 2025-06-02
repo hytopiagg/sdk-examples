@@ -72,7 +72,7 @@ export default class BaseEntity extends Entity {
     this._deathAnimations = options.deathAnimations ?? [];
     this._deathDespawnDelayMs = options.deathDespawnDelayMs ?? 0;
     this._deathItemDrops = options.deathItemDrops ?? [];
-    this._health = options.health ?? 100;
+    this._health = options.health ?? 0; // 0 is infinite health, will not show health bar
     this._maxHealth = this._health;
     this._moveSpeed = options.moveSpeed ?? 2;
 
@@ -159,6 +159,9 @@ export default class BaseEntity extends Entity {
   }
 
   public takeDamage(damage: number): void {
+    // Infinite health, doesn't take damage if max health is 0
+    if (this._maxHealth === 0) return; 
+
     this._health -= damage;
 
     this._nameplateSceneUI.setState({

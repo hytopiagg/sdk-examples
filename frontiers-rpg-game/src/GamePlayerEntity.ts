@@ -40,11 +40,17 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   }
 
   public takeDamage(damage: number): void {
-    this._health = Math.max(0, this._health - damage);
-    console.log(`Player took ${damage} damage, health is now ${this._health}`);
-    // TODO: Handle player death, UI updates, etc.
+    if (this._health <= 0) return; // dead, don't take more damage
+
+    this._health -= damage;
+
+    this._nameplateSceneUI.setState({
+      damage,
+      health: this._health,
+    });
+
     if (this._health <= 0) {
-      // Handle player death
+      console.log('Player died');
     }
   }
 
@@ -59,6 +65,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   private _setupPlayerUI(): void {
     this.player.ui.load('ui/index.html');
 
+    const nameplateYOffset = this.height / 2 + 0.2;
+
     // Setup Health UI
     this._nameplateSceneUI = new SceneUI({
       attachedToEntity: this,
@@ -68,10 +76,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
         health: this._health,
         maxHealth: this._maxHealth,
       },
-      offset: { x: 0, y: this.height / 2 + 0.2, z: 0 },
+      offset: { x: 0, y: nameplateYOffset, z: 0 },
     });
 
-    // Offset the default player nametag for chat to be above ours
-    this.nametagSceneUI.setOffset({ x: 0, y: this.height / 2 + 0.45, z: 0 });
+    // Offset the default player nametag for chat to be above our nameplate
+    this.nametagSceneUI.setOffset({ x: 0, y: nameplateYOffset + 0.25, z: 0 });
   }
 }
