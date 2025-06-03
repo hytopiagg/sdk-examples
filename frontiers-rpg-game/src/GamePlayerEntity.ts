@@ -10,6 +10,7 @@ import {
   World,
 } from 'hytopia';
 
+import { skills } from './config';
 import GameClock from './GameClock';
 import ItemInventory from './systems/ItemInventory';
 
@@ -98,6 +99,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       type: 'syncClock',
       hour: GameClock.instance.hour,
       minute: GameClock.instance.minute,
+    });
+
+    // Sync Skills
+    this.player.ui.sendData({
+      type: 'syncSkills',
+      skills,
     });
   }
 }
