@@ -59,10 +59,10 @@ export default class BaseWeaponItem extends BaseItem {
 
     this.entity.parent.startModelOneshotAnimations(this.attackAnimations);
 
-    this._processAttack();
+    this.processAttack();
   }
 
-  protected _applyAttackDamage(hitEntity: Entity): void {
+  protected applyAttackDamage(hitEntity: Entity): void {
     if (!('takeDamage' in hitEntity) || typeof hitEntity.takeDamage !== 'function') {
       return;
     }
@@ -94,7 +94,7 @@ export default class BaseWeaponItem extends BaseItem {
     return Math.floor(min + Math.random() * (max - min));
   }
 
-  protected _processAttack(): void {
+  protected processAttack(): void {
     setTimeout(() => {
       if (!this.entity?.parent || !this.entity.parent.world) {
         return;
@@ -108,7 +108,7 @@ export default class BaseWeaponItem extends BaseItem {
       });
 
       if (raycastResult?.hitEntity) {
-        this._applyAttackDamage(raycastResult.hitEntity);
+        this.applyAttackDamage(raycastResult.hitEntity);
       }
     }, this.attackDamageDelayMs);
   }

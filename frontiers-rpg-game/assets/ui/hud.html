@@ -102,10 +102,15 @@
     updateClock();
   }, 1000);
 
+  // Handle data state
   hytopia.onData(data => {
     if (data.type === 'syncClock') {
       gameTime = { hour: data.hour, minute: data.minute };
       updateClock();
+    }
+
+    if (data.type === 'hotbarUpdate') {
+      updateHotbarSlot(data.position, data);
     }
   });
 
@@ -144,6 +149,37 @@
   });
 
   setActiveSlot(0);
+
+  // Hotbar update function
+  function updateHotbarSlot(position, itemData) {
+    if (position < 0 || position >= 8) return; // Safety check
+    
+    const slot = hotbarSlots[position];
+    const content = slot.querySelector('.hud-hotbar-slot-content');
+    
+    // Clear existing content
+    content.innerHTML = '';
+    
+    if (itemData.removed) {
+      // Show slot number for empty slots
+      content.textContent = position + 1;
+    } else {
+      // Create item icon
+      const icon = document.createElement('img');
+      icon.src = `{{CDN_ASSETS_URL}}/${itemData.iconImageUri}`;
+      icon.alt = 'Item';
+      icon.className = 'hud-hotbar-slot-icon';
+      content.appendChild(icon);
+      
+      // Add quantity if greater than 1
+      if (itemData.quantity && itemData.quantity > 1) {
+        const quantity = document.createElement('div');
+        quantity.className = 'hud-hotbar-slot-quantity';
+        quantity.textContent = itemData.quantity;
+        content.appendChild(quantity);
+      }
+    }
+  }
 </script>
 
 <style>
@@ -306,6 +342,36 @@
     font-weight: 600;
     color: #888;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hud-hotbar-slot-icon {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  }
+
+  .hud-hotbar-slot-quantity {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 3px;
+    line-height: 1;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 12px;
+    text-align: center;
   }
 
   /* Clock Styles */
@@ -371,6 +437,18 @@
 
     .hud-hotbar-slot-content {
       font-size: 12px;
+    }
+
+    .hud-hotbar-slot-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .hud-hotbar-slot-quantity {
+      font-size: 8px;
+      padding: 1px 3px;
+      bottom: 1px;
+      right: 1px;
     }
 
     .hud-health-text,

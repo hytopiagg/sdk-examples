@@ -12,10 +12,11 @@ import {
 } from 'hytopia';
 
 import { skills } from './config';
+import Backpack from './systems/Backpack';
+import BaseItem from './items/BaseItem';
 import GameClock from './GameClock';
 import Hotbar from './systems/Hotbar';
-import ItemInventory from './systems/ItemInventory';
-import BaseItem from './items/BaseItem';
+import Storage from './systems/Storage';
 import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 
 const DODGE_COOLDOWN_MS = 900;
@@ -25,9 +26,9 @@ const DODGE_HORIZONTAL_FORCE = 3;
 const DODGE_VERTICAL_FORCE = 6;
 
 export default class GamePlayerEntity extends DefaultPlayerEntity {
-  public readonly carriedInventory: ItemInventory = new ItemInventory(21, 7);
-  public readonly hotbar: Hotbar = new Hotbar();
-  public readonly storageInventory: ItemInventory = new ItemInventory(70, 7);
+  public readonly backpack: Backpack;
+  public readonly hotbar: Hotbar;
+  public readonly storage: Storage;
   private _lastDodgeTimeMs: number = 0;
   private _health: number = 100;
   private _maxHealth: number = 100;
@@ -38,6 +39,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       player,
       name: 'Player',
     });
+
+    this.backpack = new Backpack(/*this.player*/);
+    this.hotbar = new Hotbar(this.player);
+    this.storage = new Storage(/*this.player*/);
     
     this._setupPlayerController();
     this._setupPlayerInventories();
@@ -59,7 +64,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
     const woodenSword = new WoodenSwordItem();
     this.hotbar.addItem(woodenSword);
-
   }
 
   public takeDamage(damage: number): void {
@@ -112,6 +116,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
 
+    // Left click item usage
     if (input.ml) {
       const selectedItem = this.hotbar.selectedItem;
       
@@ -124,6 +129,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       input.ml = false;
     }
 
+    // Right click item usage
     if (input.mr) {
       const selectedItem = this.hotbar.selectedItem;
 
@@ -134,21 +140,30 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       input.mr = false;
     }
 
+    // NPC & Environment Interact
+    if (input.e) {
+      input.e = false;
+    }
+
+    // Dodge
     if (input.q) {
       this._dodge();
       input.q = false;
     }
 
+    // Inventory
     if (input.i) {
       this._toggleInventory();
       input.i = false;
     }
 
+    // Progress Log
     if (input.j) {
       this._toggleLog();
       input.j = false;
     }
 
+    // Stats
     if (input.m) {
       this._toggleStats();
       input.m = false;

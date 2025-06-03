@@ -85,7 +85,7 @@ export default class BaseEntity extends Entity {
       this.pathfindingController.face(options.facingPosition, this._moveSpeed);
     }
 
-    this._setupNameplateUI();
+    this.setupNameplateUI();
   }
 
   public get idleAnimations(): string[] { return this.pathfindingController.idleLoopedAnimations; }
@@ -191,7 +191,7 @@ export default class BaseEntity extends Entity {
     console.log('wandering to', target);
   }
 
-  protected _setupNameplateUI(): void {
+  protected setupNameplateUI(): void {
     this._nameplateSceneUI = new SceneUI({
       attachedToEntity: this,
       offset: { x: 0, y: this.height / 2 + 0.25, z: 0 },

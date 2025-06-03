@@ -24,18 +24,18 @@ export default class StalkhavenRegion extends GameRegion {
     });
   }
 
-  protected override _setup(): void {
-    super._setup();
+  protected override setup(): void {
+    super.setup();
     
-    // for (let i = 0; i < 10; i++) {
-    //   const x = Math.random() * 40 - 20; // Random between -20 and 20
-    //   const z = Math.random() * 40 - 20; // Random between -20 and 20
-    //   const facingAngle = Math.random() * 360; // Random facing angle
+    for (let i = 0; i < 10; i++) {
+      const x = Math.random() * 40 - 20; // Random between -20 and 20
+      const z = Math.random() * 40 - 20; // Random between -20 and 20
+      const facingAngle = Math.random() * 360; // Random facing angle
       
-    //   const ratkin = new RatkinWarriorEntity();
-    //   ratkin.setCcdEnabled(true);
-    //   ratkin.spawn(this.world, { x, y: 10, z });
-    // }
+      const ratkin = new RatkinWarriorEntity();
+      ratkin.setCcdEnabled(true);
+      ratkin.spawn(this.world, { x, y: 10, z });
+    }
 
     // (new AdventurerEntity({ facingAngle: 90 })).spawn(this.world, { x: 30, y: 2, z: 22 });
     // (new BankerEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });

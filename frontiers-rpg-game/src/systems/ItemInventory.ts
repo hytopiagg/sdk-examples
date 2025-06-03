@@ -20,7 +20,6 @@ export default class ItemInventory {
   public get size(): number { return this._size; }
 
   public addItem(item: BaseItem, position?: number): boolean {
-
     if (this._itemPositions.has(item)) {
       return false;
     }
@@ -34,13 +33,14 @@ export default class ItemInventory {
           existingItem.stackable
         ) {
           existingItem.adjustQuantity(item.quantity);
+          this.onSlotChanged(this._itemPositions.get(existingItem)!, existingItem);
           return true;
         }
       }
     }
 
     // If not stackable, attempt to find an empty position
-    const targetPosition = position ?? this.findEmptyPosition();
+    const targetPosition = position ?? this._findEmptyPosition();
     
     if (targetPosition < 0 || targetPosition >= this._size) {
       return false;
@@ -52,6 +52,7 @@ export default class ItemInventory {
 
     this._itemPositions.set(item, targetPosition);
     this._positionItems.set(targetPosition, item);
+    this.onSlotChanged(targetPosition, item);
     
     return true;
   }
@@ -107,15 +108,18 @@ export default class ItemInventory {
       this._itemPositions.set(itemAtNewPosition, currentPosition);
       this._positionItems.set(newPosition, item);
       this._positionItems.set(currentPosition, itemAtNewPosition);
+      this.onSlotChanged(currentPosition, itemAtNewPosition);
+      this.onSlotChanged(newPosition, item);
     } else {
       this._itemPositions.set(item, newPosition);
       this._positionItems.delete(currentPosition);
       this._positionItems.set(newPosition, item);
+      this.onSlotChanged(currentPosition, null);
+      this.onSlotChanged(newPosition, item);
     }
 
     return true;
   }
-
 
   public removeItem(item: BaseItem): boolean {
     const position = this._itemPositions.get(item);
@@ -125,10 +129,15 @@ export default class ItemInventory {
 
     this._itemPositions.delete(item);
     this._positionItems.delete(position);
+    this.onSlotChanged(position, null);
     return true;
   }
 
-  private findEmptyPosition(): number {
+  protected onSlotChanged(position: number, item: BaseItem | null): void {
+    // Default implementation does nothing - subclasses can override
+  }
+
+  private _findEmptyPosition(): number {
     for (let i = 0; i < this._size; i++) {
       if (!this._positionItems.has(i)) {
         return i;

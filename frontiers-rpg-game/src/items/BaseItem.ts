@@ -137,20 +137,20 @@ export default class BaseItem {
   }
   
   // Split stackable item into a new item have a specified quantity which is deducted from the current item.
-  public splitStack(quantity: number): BaseItem | undefined {
+  public splitStack(newStackQuantity: number): BaseItem | undefined {
     if (!this.stackable) {
       ErrorHandler.warning(`BaseItem.splitStack(): Item ${this.name} is not stackable and cannot be split.`);
       return undefined;
     }
 
-    if (quantity <= 0 || quantity >= this._quantity) {
+    if (newStackQuantity <= 0 || newStackQuantity >= this._quantity) {
       ErrorHandler.warning(`BaseItem.splitStack(): Quantity must be greater than 0 and less than the current stack size (${this._quantity}).`);
       return undefined;
     }
 
-    this._quantity -= quantity;
+    this._quantity -= newStackQuantity;
 
-    return this.clone({ quantity });
+    return this.clone({ quantity: newStackQuantity });
   }
 
   public useMouseLeft(): void {

@@ -23,14 +23,14 @@ export default class GameRegion {
     this._spawnPoint = options.spawnPoint ?? { x: 0, y: 10, z: 0 };
 
     this._world = WorldManager.instance.createWorld(options);
-    this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this._onPlayerJoin(player));
-    this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this._onPlayerLeave(player));
+    this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this.onPlayerJoin(player));
+    this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this.onPlayerLeave(player));
 
     // temp
-    this._world.simulation.enableDebugRendering(true);
-    this._world.simulation.enableDebugRaycasting(true);
+    // this._world.simulation.enableDebugRendering(true);
+    // this._world.simulation.enableDebugRaycasting(true);
 
-    this._setup();
+    this.setup();
   }
 
   public get name(): string { return this._world.name; }
@@ -38,7 +38,7 @@ export default class GameRegion {
   public get tag(): string | undefined { return this._world.tag; }
   public get world(): World { return this._world; }
 
-  protected _setup(): void { // intended to be overridden by subclasses
+  protected setup(): void { // intended to be overridden by subclasses
     if (this._isSetup) {
       return ErrorHandler.warning(`GameRegion.setup(): ${this.name} already setup.`);
     }
@@ -46,11 +46,11 @@ export default class GameRegion {
     this._isSetup = true;
   }
 
-  protected _onPlayerJoin(player: Player) {
+  protected onPlayerJoin(player: Player) {
     (new GamePlayerEntity(player)).spawn(this._world, this._spawnPoint);
   }
 
-  protected _onPlayerLeave(player: Player) {
+  protected onPlayerLeave(player: Player) {
     this._world.entityManager.getPlayerEntitiesByPlayer(player).forEach(entity => {
       entity.despawn()
   });

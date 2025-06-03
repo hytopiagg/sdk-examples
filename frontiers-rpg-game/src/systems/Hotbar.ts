@@ -1,3 +1,4 @@
+import { Player } from 'hytopia';
 import BaseItem from '../items/BaseItem';
 import ItemInventory from './ItemInventory';
 
@@ -5,10 +6,12 @@ const HOTBAR_SIZE = 8;
 
 export default class Hotbar extends ItemInventory {
   public onSelectedItemChanged: (selectedItem: BaseItem | null, lastItem: BaseItem | null) => void = () => {};
+  private _owner: Player;
   private _selectedIndex: number = 0;
 
-  public constructor() {
+  public constructor(owner: Player) {
     super(HOTBAR_SIZE, HOTBAR_SIZE);
+    this._owner = owner;
   }
 
   public get selectedIndex(): number { return this._selectedIndex; }
@@ -74,5 +77,18 @@ export default class Hotbar extends ItemInventory {
     }
     
     return result;
+  }
+
+  protected override onSlotChanged(position: number, item: BaseItem | null): void {
+    this._owner.ui.sendData({
+      type: 'hotbarUpdate',
+      position,
+      ...(item ? {
+        name: item.name,
+        iconImageUri: item.iconImageUri,
+        description: item.description,
+        quantity: item.quantity,
+      } : { removed: true })
+    })
   }
 }
