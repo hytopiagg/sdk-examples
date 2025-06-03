@@ -370,7 +370,7 @@
 <div class="inventory-overlay">
   <div class="inventory-container">
     <div class="inventory-header">
-      <h2 class="inventory-title">Inventory</h2>
+      <h2 class="inventory-title">Inventory (e)</h2>
       <button class="inventory-close">×</button>
     </div>
     
@@ -864,6 +864,571 @@
     font-size: 10px;
   }
 </style>
+
+<!-- Included from: ./menus/stats.html -->
+<!-- Stats UI -->
+<div class="stats-overlay">
+  <div class="stats-container">
+    <div class="stats-header">
+      <h2 class="stats-title">Character Stats (c)</h2>
+      <button class="stats-close">×</button>
+    </div>
+    
+    <div class="stats-content">
+      <!-- Player Level Section -->
+      <div class="stats-player-section">
+        <div class="stats-player-level">
+          <div class="stats-level-display">
+            <span class="stats-level-number">Level 12</span>
+          </div>
+          <div class="stats-exp-bar">
+            <div class="stats-exp-fill" style="width: 60%;"></div>
+            <div class="stats-exp-text">1,200 / 2,000 XP</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upgradable Stats Section -->
+      <div class="stats-upgradable-section">
+        <div class="stats-section-header">
+          <h3 class="stats-section-title">Attributes</h3>
+          <div class="stats-points-available">Points Available: 3</div>
+        </div>
+        <div class="stats-upgradable-grid">
+          <div class="stats-upgradable-item">
+            <div class="stats-upgradable-info">
+              <span class="stats-upgradable-name">Strength</span>
+              <span class="stats-upgradable-value">15</span>
+            </div>
+            <button class="stats-upgrade-btn">+</button>
+          </div>
+          <div class="stats-upgradable-item">
+            <div class="stats-upgradable-info">
+              <span class="stats-upgradable-name">Dexterity</span>
+              <span class="stats-upgradable-value">12</span>
+            </div>
+            <button class="stats-upgrade-btn">+</button>
+          </div>
+          <div class="stats-upgradable-item">
+            <div class="stats-upgradable-info">
+              <span class="stats-upgradable-name">Vitality</span>
+              <span class="stats-upgradable-value">18</span>
+            </div>
+            <button class="stats-upgrade-btn">+</button>
+          </div>
+          <div class="stats-upgradable-item">
+            <div class="stats-upgradable-info">
+              <span class="stats-upgradable-name">Luck</span>
+              <span class="stats-upgradable-value">8</span>
+            </div>
+            <button class="stats-upgrade-btn">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skills Section -->
+      <div class="stats-skills-section">
+        <div class="stats-section-header">
+          <h3 class="stats-section-title">Skills</h3>
+        </div>
+        <div class="stats-skills-grid">
+          <div class="stats-skill-item">
+            <div class="stats-skill-header">
+              <span class="stats-skill-name">Melee Combat</span>
+              <span class="stats-skill-level">Level 8</span>
+            </div>
+            <div class="stats-skill-exp-bar">
+              <div class="stats-skill-exp-fill" style="width: 45%;"></div>
+              <div class="stats-skill-exp-text">450 / 1,000 XP</div>
+            </div>
+          </div>
+          <div class="stats-skill-item">
+            <div class="stats-skill-header">
+              <span class="stats-skill-name">Farming</span>
+              <span class="stats-skill-level">Level 5</span>
+            </div>
+            <div class="stats-skill-exp-bar">
+              <div class="stats-skill-exp-fill" style="width: 75%;"></div>
+              <div class="stats-skill-exp-text">375 / 500 XP</div>
+            </div>
+          </div>
+          <div class="stats-skill-item">
+            <div class="stats-skill-header">
+              <span class="stats-skill-name">Mining</span>
+              <span class="stats-skill-level">Level 6</span>
+            </div>
+            <div class="stats-skill-exp-bar">
+              <div class="stats-skill-exp-fill" style="width: 20%;"></div>
+              <div class="stats-skill-exp-text">120 / 600 XP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Setup hytopia data handlers
+  hytopia.onData(data => {
+    if (data.type === 'toggleStats') {
+      toggleStats();
+    }
+  });
+
+  function closeStats() {
+    document.querySelector('.stats-overlay').style.display = 'none';
+    hytopia.lockPointer(true);
+  }
+
+  function openStats() {
+    document.querySelector('.stats-overlay').style.display = 'flex';
+    hytopia.lockPointer(false, true);
+  }
+
+  function toggleStats() {
+    const overlay = document.querySelector('.stats-overlay');
+    if (overlay.style.display === 'flex') {
+      closeStats();
+    } else {
+      openStats();
+    }
+  }
+
+  // Setup event listeners
+  function setupStatsEventListeners() {
+    // Close button
+    const closeButton = document.querySelector('.stats-close');
+    closeButton.addEventListener('click', closeStats);
+
+    // Upgrade buttons
+    const upgradeButtons = document.querySelectorAll('.stats-upgrade-btn');
+    upgradeButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        console.log('Upgrade stat clicked:', index);
+        // Handle stat upgrade logic
+      });
+    });
+  }
+
+  // Initialize
+  setupStatsEventListeners();
+</script>
+
+<style>
+  :root {
+    --stats-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .stats-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--stats-font);
+    user-select: none;
+  }
+
+  /* Container Styles */
+  .stats-container {
+    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+    border: 2px solid #444;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    width: 700px;
+    overflow: hidden;
+  }
+
+  /* Header Styles */
+  .stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #3a3a3a, #2d2d2d);
+    border-bottom: 1px solid #444;
+  }
+
+  .stats-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    letter-spacing: 0.3px;
+  }
+
+  .stats-close {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    border-radius: 6px;
+    color: #ff6b6b;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .stats-close:hover {
+    background: rgba(255, 0, 0, 0.3);
+    transform: scale(1.05);
+  }
+
+  /* Content Styles */
+  .stats-content {
+    padding: 20px;
+  }
+
+  .stats-section-title {
+    margin: 0 0 3px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Player Level Section */
+  .stats-player-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #444;
+    border-radius: 8px;
+  }
+
+  .stats-level-display {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .stats-level-number {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffd700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .stats-exp-bar {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #444;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .stats-exp-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #f59e0b);
+    transition: width 0.5s ease;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  }
+
+  .stats-exp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  /* Upgradable Stats Section */
+  .stats-upgradable-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #444;
+    border-radius: 8px;
+  }
+
+  .stats-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .stats-points-available {
+    font-size: 12px;
+    font-weight: 600;
+    color: #22c55e;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .stats-upgradable-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stats-upgradable-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .stats-upgradable-item:hover {
+    border-color: #555;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .stats-upgradable-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-right: 12px;
+  }
+
+  .stats-upgradable-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #cccccc;
+  }
+
+  .stats-upgradable-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+
+  .stats-upgrade-btn {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(145deg, #22c55e, #16a34a);
+    border: 1px solid #15803d;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stats-upgrade-btn:hover {
+    background: linear-gradient(145deg, #16a34a, #15803d);
+    transform: scale(1.05);
+  }
+
+  /* Skills Section */
+  .stats-skills-section {
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #444;
+    border-radius: 8px;
+  }
+
+  .stats-skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stats-skill-item {
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .stats-skill-item:hover {
+    border-color: #555;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  .stats-skill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .stats-skill-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #cccccc;
+  }
+
+  .stats-skill-level {
+    font-size: 12px;
+    font-weight: 600;
+    color: #3b82f6;
+  }
+
+  .stats-skill-exp-bar {
+    position: relative;
+    width: 100%;
+    height: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #444;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+  }
+
+  .stats-skill-exp-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    transition: width 0.5s ease;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  }
+
+  .stats-skill-exp-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  /* Mobile Styles */
+  body.mobile .stats-container {
+    width: auto;
+    max-width: 98vw;
+    min-width: 300px;
+  }
+
+  body.mobile .stats-header {
+    padding: 6px 10px;
+  }
+
+  body.mobile .stats-title {
+    font-size: 11px;
+  }
+
+  body.mobile .stats-close {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+  }
+
+  body.mobile .stats-content {
+    padding: 8px;
+  }
+
+  body.mobile .stats-player-section,
+  body.mobile .stats-upgradable-section,
+  body.mobile .stats-skills-section {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+
+  body.mobile .stats-section-title {
+    font-size: 10px;
+    margin-bottom: 6px;
+  }
+
+  body.mobile .stats-level-display {
+    margin-bottom: 6px;
+  }
+
+  body.mobile .stats-level-number {
+    font-size: 12px;
+  }
+
+  body.mobile .stats-exp-bar {
+    height: 14px;
+  }
+
+  body.mobile .stats-exp-text {
+    font-size: 8px;
+  }
+
+  body.mobile .stats-section-header {
+    margin-bottom: 4px;
+  }
+
+  body.mobile .stats-points-available {
+    font-size: 8px;
+  }
+
+  body.mobile .stats-upgradable-grid {
+    gap: 3px;
+  }
+
+  body.mobile .stats-upgradable-item {
+    padding: 3px 4px;
+  }
+
+  body.mobile .stats-upgradable-name,
+  body.mobile .stats-upgradable-value {
+    font-size: 9px;
+  }
+
+  body.mobile .stats-upgrade-btn {
+    width: 16px;
+    height: 16px;
+    font-size: 8px;
+  }
+
+  body.mobile .stats-skills-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  body.mobile .stats-skill-item {
+    padding: 4px;
+  }
+
+  body.mobile .stats-skill-header {
+    margin-bottom: 3px;
+  }
+
+  body.mobile .stats-skill-name {
+    font-size: 9px;
+  }
+
+  body.mobile .stats-skill-level {
+    font-size: 8px;
+  }
+
+  body.mobile .stats-skill-exp-bar {
+    height: 10px;
+  }
+
+  body.mobile .stats-skill-exp-text {
+    font-size: 6px;
+  }
+</style>
+
 
 <!-- Included from: ./scene-ui-templates/entity-nameplate.html -->
 <!-- Scene UI Templates -->

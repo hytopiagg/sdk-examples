@@ -27,6 +27,7 @@ function includeContent(filePath) {
 includeContent('./root.html');
 includeContent('./hud.html');
 includeContent('./menus/inventory.html');
+includeContent('./menus/stats.html');
 includeContent('./scene-ui-templates/entity-nameplate.html');
 
 // Build a single index.html file
