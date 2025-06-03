@@ -7,6 +7,7 @@ export type BaseWeaponItemOptions = {
   attackDamage: number;
   attackDamageDelayMs: number;
   attackDamageVariance?: number;
+  attackKnockbackForce?: number;
   attackReach: number;
 } & Omit<BaseItemOptions, 'stackable' | 'quantity'>
   
@@ -16,6 +17,7 @@ export default class BaseWeaponItem extends BaseItem {
   public readonly attackDamage: number;
   public readonly attackDamageDelayMs: number;
   public readonly attackDamageVariance: number;
+  public readonly attackKnockbackForce: number;
   public readonly attackReach: number;
   private _lastAttackCooldownMs: number = 0;
   private _lastAttackTimeMs: number = 0;
@@ -28,11 +30,16 @@ export default class BaseWeaponItem extends BaseItem {
     this.attackDamage = options.attackDamage;
     this.attackDamageDelayMs = options.attackDamageDelayMs ?? 0;
     this.attackDamageVariance = options.attackDamageVariance ?? 0;
+    this.attackKnockbackForce = options.attackKnockbackForce ?? 0;
     this.attackReach = options.attackReach;
   }
 
-  public override use(): void {
+  public override useMouseLeft(): void {
     this.attack();
+  }
+
+  public override useMouseRight(): void {
+    this.entity?.parent?.startModelOneshotAnimations([ 'sword-attack2-upper' ]);
   }
 
   public attack(): void {
@@ -60,8 +67,21 @@ export default class BaseWeaponItem extends BaseItem {
       return;
     }
 
+    if (!this.entity?.parent || !this.entity.parent.world) {
+      return;
+    }
+
     const damage = this._calculateDamageWithVariance(this.attackDamage, this.attackDamageVariance);
     hitEntity.takeDamage(damage);
+
+    if (this.attackKnockbackForce) {
+      const direction = this.entity.parent.directionFromRotation;
+      hitEntity.applyImpulse({
+        x: direction.x * this.attackKnockbackForce * hitEntity.mass,
+        y: 0,
+        z: direction.z * this.attackKnockbackForce * hitEntity.mass,
+      })
+    }
   }
 
   private _calculateDamageWithVariance(baseDamage: number, variance?: number): number {

@@ -14,7 +14,7 @@ export default class BaseConsumableItem extends BaseItem {
     this.consumeCooldownMs = options.consumeCooldownMs;
   }
 
-  public override use(): void {
+  public override useMouseLeft(): void {
     this.consume();
   }
 

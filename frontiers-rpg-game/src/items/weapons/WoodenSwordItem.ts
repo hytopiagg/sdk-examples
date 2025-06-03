@@ -5,9 +5,10 @@ export default class WoodenSwordItem extends BaseWeaponItem {
   public constructor(options?: BaseWeaponItemOptions) {
     super({
       attackAnimations: [ 'sword-attack-upper' ],
-      attackCooldownMs: 1000,
-      attackDamage: 15,
+      attackCooldownMs: 500,
+      attackDamage: 10,
       attackDamageDelayMs: 200,
+      attackKnockbackForce: 5,
       attackDamageVariance: 0.1,
       attackReach: 2,
       defaultRelativeRotationAsChild: Quaternion.fromEuler(-90, 0, 90),

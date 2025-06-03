@@ -153,9 +153,14 @@ export default class BaseItem {
     return this.clone({ quantity });
   }
 
-  public use(): void {
+  public useMouseLeft(): void {
     // Default behavior: do nothing (for non-usable items), intended to be overridden by subclasses.
     // use() is called when item is selected in the hotbar and mouse left is clicked.
+  }
+
+  public useMouseRight(): void {
+    // Default behavior: do nothing (for non-usable items), intended to be overridden by subclasses.
+    // use() is called when item is selected in the hotbar and mouse right is clicked.
   }
 
   // Helpers

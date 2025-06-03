@@ -15,17 +15,19 @@ import { skills } from './config';
 import GameClock from './GameClock';
 import Hotbar from './systems/Hotbar';
 import ItemInventory from './systems/ItemInventory';
-
 import BaseItem from './items/BaseItem';
 import WoodenSwordItem from './items/weapons/WoodenSwordItem';
+
+const DODGE_COOLDOWN_MS = 900;
+const DODGE_DELAY_MS = 150;
+const DODGE_DURATION_MS = 700;
+const DODGE_HORIZONTAL_FORCE = 3;
+const DODGE_VERTICAL_FORCE = 6;
 
 export default class GamePlayerEntity extends DefaultPlayerEntity {
   public readonly carriedInventory: ItemInventory = new ItemInventory(21, 7);
   public readonly hotbar: Hotbar = new Hotbar();
   public readonly storageInventory: ItemInventory = new ItemInventory(70, 7);
-  private _dodgeCooldownMs: number = 1500;
-  private _dodgeDelayMs: number = 150;
-  private _dodgeDurationMs: number = 700;
   private _lastDodgeTimeMs: number = 0;
   private _health: number = 100;
   private _maxHealth: number = 100;
@@ -42,11 +44,11 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this._setupPlayerUI();
   }
 
-  public get canDodge(): boolean { return performance.now() - this._lastDodgeTimeMs >= this._dodgeCooldownMs; }
+  public get canDodge(): boolean { return performance.now() - this._lastDodgeTimeMs >= DODGE_COOLDOWN_MS; }
   public get health(): number { return this._health; }
   public get isDodging(): boolean {
     const timeSinceDodge = performance.now() - this._lastDodgeTimeMs;
-    return timeSinceDodge >= this._dodgeDelayMs && timeSinceDodge < (this._dodgeDelayMs + this._dodgeDurationMs);
+    return timeSinceDodge >= DODGE_DELAY_MS && timeSinceDodge < (DODGE_DELAY_MS + DODGE_DURATION_MS);
   }
   public get maxHealth(): number { return this._maxHealth; } 
   public get playerController(): DefaultPlayerEntityController { return this.controller as DefaultPlayerEntityController; }
@@ -89,6 +91,17 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
     this.startModelOneshotAnimations([ 'dodge-roll' ]);
     this._lastDodgeTimeMs = performance.now();
+
+    // Apply dodge impulse
+    const direction = this.directionFromRotation;
+    const horizontalForce = DODGE_HORIZONTAL_FORCE * this.mass;
+    const verticalForce = this.playerController.isGrounded ? DODGE_VERTICAL_FORCE * this.mass : 0;
+    
+    this.applyImpulse({
+      x: direction.x * horizontalForce,
+      y: verticalForce,
+      z: direction.z * horizontalForce,
+    });
   }
 
   private _onHotbarSelectedItemChanged = (selectedItem: BaseItem | null, lastItem: BaseItem | null): void => {
@@ -103,10 +116,22 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       const selectedItem = this.hotbar.selectedItem;
       
       if (selectedItem) {
-        selectedItem.use();
+        selectedItem.useMouseLeft();
       } else {
         this.startModelOneshotAnimations([ 'simple-interact' ]);
       }
+
+      input.ml = false;
+    }
+
+    if (input.mr) {
+      const selectedItem = this.hotbar.selectedItem;
+
+      if (selectedItem) {
+        selectedItem.useMouseRight();
+      }
+
+      input.mr = false;
     }
 
     if (input.q) {
