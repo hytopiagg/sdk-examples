@@ -12,9 +12,9 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
       attacks: [
         { // Heavy attack
           animations: [ 'atk1' ],
-          damage: 20,
-          damageVariance: 0.3, // ±20% damage (8-12)
-          damageDelayMs: 750, // Deal damage 1500ms into animation
+          damage: 25,
+          damageVariance: 0.4, // ±40% damage (15-35)
+          damageDelayMs: 1000, // Deal damage 1000ms into animation
           cooldownMs: 4000,
           range: 2,
           reach: 3,
@@ -23,14 +23,16 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
         { // Light attack
           animations: [ 'atk2' ],
           damage: 10,
-          damageVariance: 0.3, // ±30% damage (14-26) 
-          damageDelayMs: 300, // Deal damage 600ms into animation
+          damageVariance: 0.1, // ±10% damage (9-11) 
+          damageDelayMs: 400, // Deal damage 400ms into animation
           cooldownMs: 2000,
           range: 2,
           reach: 3,
           weight: 2,
         },
       ],
+      deathAnimations: [ 'death' ],
+      deathDespawnDelayMs: 1000,
       health: 100,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/ratkin-warrior.gltf',

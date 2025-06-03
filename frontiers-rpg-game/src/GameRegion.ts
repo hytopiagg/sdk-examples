@@ -28,6 +28,7 @@ export default class GameRegion {
 
     // temp
     this._world.simulation.enableDebugRendering(true);
+    this._world.simulation.enableDebugRaycasting(true);
 
     this._setup();
   }

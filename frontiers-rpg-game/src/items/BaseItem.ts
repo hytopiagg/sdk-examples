@@ -153,6 +153,11 @@ export default class BaseItem {
     return this.clone({ quantity });
   }
 
+  public use(): void {
+    // Default behavior: do nothing (for non-usable items), intended to be overridden by subclasses.
+    // use() is called when item is selected in the hotbar and mouse left is clicked.
+  }
+
   // Helpers
   private _afterSpawn(): void {
     if (!this._entity) return;

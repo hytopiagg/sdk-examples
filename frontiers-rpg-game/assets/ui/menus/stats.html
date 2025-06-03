@@ -2,7 +2,7 @@
 <div class="stats-overlay">
   <div class="stats-container">
     <div class="stats-header">
-      <h2 class="stats-title">Character Stats (c)</h2>
+      <h2 class="stats-title">Stats</h2>
       <button class="stats-close">×</button>
     </div>
     
@@ -113,6 +113,9 @@
 
   // Initialize
   setupStatsEventListeners();
+
+  // Setup global functions
+  window.frontiersRPG.openStats = openStats;
 </script>
 
 <style>
@@ -127,7 +130,7 @@
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8);
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;

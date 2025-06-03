@@ -108,7 +108,7 @@ export default class BaseCombatEntity extends BaseEntity {
       
       if (distanceSquared <= reachSquared) { // make sure target is in reach still
         if ('takeDamage' in target && typeof target.takeDamage === 'function') {
-          const damage = Math.floor(this._calculateDamageWithVariance(attack.damage, attack.damageVariance));
+          const damage = this._calculateDamageWithVariance(attack.damage, attack.damageVariance);
           target.takeDamage(damage);
         }
         
@@ -153,7 +153,7 @@ export default class BaseCombatEntity extends BaseEntity {
     const min = baseDamage * (1 - variance);
     const max = baseDamage * (1 + variance);
     
-    return min + Math.random() * (max - min);
+    return Math.floor(min + Math.random() * (max - min));
   }
   
   private _distanceSquaredBetweenPositions(currentPosition: Vector3Like, targetPosition: Vector3Like): number {

@@ -103,6 +103,7 @@ export default class BaseEntity extends Entity {
     this._dying = true;
 
     this.startModelOneshotAnimations(this._deathAnimations);
+    this.stopMoving();
     this.dropItems();
     setTimeout(() => this.despawn(), this._deathDespawnDelayMs);
   }

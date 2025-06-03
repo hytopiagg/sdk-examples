@@ -25,10 +25,10 @@ function includeContent(filePath) {
 
 // Include content for the output - Add our modules here!
 includeContent('./root.html');
-includeContent('./hud.html');
 includeContent('./menus/inventory.html');
 includeContent('./menus/stats.html');
 includeContent('./scene-ui-templates/entity-nameplate.html');
+includeContent('./hud.html');
 
 // Build a single index.html file
 const html = outputContent.join('\n\n');

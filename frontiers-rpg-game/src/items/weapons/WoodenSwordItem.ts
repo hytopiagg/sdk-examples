@@ -4,9 +4,15 @@ import BaseWeaponItem, { BaseWeaponItemOptions } from '../BaseWeaponItem';
 export default class WoodenSwordItem extends BaseWeaponItem {
   public constructor(options?: BaseWeaponItemOptions) {
     super({
+      attackAnimations: [ 'sword-attack-upper' ],
+      attackCooldownMs: 1000,
+      attackDamage: 15,
+      attackDamageDelayMs: 200,
+      attackDamageVariance: 0.1,
+      attackReach: 2,
       defaultRelativeRotationAsChild: Quaternion.fromEuler(-90, 0, 90),
       defaultRelativePositionAsChild: { x: 0, y: 0.1, z: 0.15 },
-      iconImageUri: 'images/items/wooden_sword.png',
+      iconImageUri: 'icons/items/wooden-sword.png',
       modelUri: 'models/items/sword-wooden.gltf',
       modelScale: 0.5,
       name: 'Wooden Sword',

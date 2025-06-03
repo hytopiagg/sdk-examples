@@ -60,6 +60,22 @@
           damageCount--;
         }, 800 + delay);
       }
+
+      if (state.dodged) {
+        const dodgedEl = document.createElement('div');
+        dodgedEl.className = 'entity-nameplate-dodged';
+        dodgedEl.textContent = 'Dodged!';
+        
+        const delay = damageCount++ * 50;
+        
+        nameplate.appendChild(dodgedEl);
+        
+        setTimeout(() => dodgedEl.classList.add('show'), delay);
+        setTimeout(() => {
+          dodgedEl.remove();
+          damageCount--;
+        }, 800 + delay);
+      }
     });
 
     return clone;
@@ -110,8 +126,25 @@
     pointer-events: none;
   }
 
+  .entity-nameplate-dodged {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffd700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
+    opacity: 0;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
   .entity-nameplate-damage.show {
     animation: damageFloat 0.8s ease-out;
+  }
+
+  .entity-nameplate-dodged.show {
+    animation: dodgedFloat 0.8s ease-out;
   }
 
   @keyframes damageFloat {
@@ -119,6 +152,14 @@
     15% { opacity: 1; transform: translateX(-50%) translateY(-8px) scale(1.2); }
     30% { transform: translateX(-50%) translateY(-12px) scale(1); }
     100% { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(0.8); }
+  }
+
+  @keyframes dodgedFloat {
+    0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.5); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.3); }
+    30% { transform: translateX(-50%) translateY(-14px) scale(1); }
+    60% { transform: translateX(-50%) translateY(-18px) scale(1.05); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-35px) scale(0.8); }
   }
 
   .entity-nameplate-health-bar {
