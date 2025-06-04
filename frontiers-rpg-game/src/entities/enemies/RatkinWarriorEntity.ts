@@ -1,4 +1,5 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
+import WoodenSwordItem from "../../items/weapons/WoodenSwordItem";
 
 export type RatkinWarriorEntityOptions = {
 
@@ -33,6 +34,12 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
       ],
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
+      deathItemDrops: [
+        {
+          item: new WoodenSwordItem(),
+          probability: 1,
+        },
+      ],
       health: 100,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/ratkin-warrior.gltf',

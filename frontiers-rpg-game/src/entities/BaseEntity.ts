@@ -119,17 +119,7 @@ export default class BaseEntity extends Entity {
       drop.item.setQuantity(quantity);
       
       // Spawn item for pickup
-      drop.item.spawnEntity(this.world, this.position);
-
-      // Apply impulse to item to simulate being dropped
-      if (drop.item.entity) {
-        const mass = drop.item.entity.mass;
-        drop.item.entity.applyImpulse({
-          x: mass * (2 + Math.random() * 3),
-          y: mass * 5,
-          z: mass * (2 + Math.random() * 3),
-        });
-      }
+      drop.item.spawnEntityAsDrop(this.world, this.position);
     }
   }
 

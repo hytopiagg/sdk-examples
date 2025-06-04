@@ -245,6 +245,25 @@
         cancelHeldItem();
       }
     });
+
+    // Setup click outside containers handler for item dropping
+    document.addEventListener('click', e => {
+      // Only handle if we have a held item
+      if (!heldItem) return;
+      
+      // Check if click is outside both containers using closest()
+      const isInsideContainers = e.target.closest('.backpack-container, .backpack-hotbar-container');
+      
+      // If click is outside both containers, log for drop logic
+      if (!isInsideContainers) {
+        hytopia.sendData({
+          type: 'dropItem',
+          fromType: heldItem.sourceType,
+          fromIndex: heldItem.sourceIndex,
+        });
+        cancelHeldItem();
+      }
+    });
   }
 
   function closeBackpack() {

@@ -97,6 +97,9 @@ export default class BaseItem implements IInteractable {
     if (!this._entity) return;
     this._entity.despawn();
     this._entity = undefined;
+ 
+    this._nameplateSceneUI?.unload();
+    this._nameplateSceneUI = undefined;
   }
 
   public interact(playerEntity: GamePlayerEntity): void {
@@ -155,6 +158,23 @@ export default class BaseItem implements IInteractable {
     );
 
     this._afterSpawn();
+  }
+
+  public spawnEntityAsDrop(world: World, position: Vector3Like, facingDirection?: Vector3Like): void {
+    this.spawnEntity(world, position);
+    
+    if (this.entity) {
+      const mass = this.entity.mass;
+      const angle = facingDirection 
+        ? Math.atan2(facingDirection.z, facingDirection.x) + (Math.random() * Math.PI/2 - Math.PI/4)
+        : Math.random() * Math.PI * 2;
+      
+      this.entity.applyImpulse({
+        x: mass * Math.cos(angle) * 6,
+        y: mass * 3.5,
+        z: mass * Math.sin(angle) * 6,
+      });
+    }
   }
   
   // Split stackable item into a new item have a specified quantity which is deducted from the current item.

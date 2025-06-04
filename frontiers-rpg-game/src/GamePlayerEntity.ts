@@ -213,8 +213,20 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   private _onPlayerUIData = (payload: EventPayloads[PlayerUIEvent.DATA]): void => {
     const { data } = payload;
 
-    if (data.type === 'setSelectedHotbarIndex') {
-      this.hotbar.setSelectedIndex(data.index);
+    if (data.type === 'dropItem') {
+      const fromType = data.fromType;
+      const fromIndex = parseInt(data.fromIndex);
+      const container =
+        fromType === 'backpack' ? this.backpack : 
+        fromType === 'hotbar' ? this.hotbar :
+        fromType === 'storage' ? this.storage :
+        null;
+      
+      const droppedItem = container?.removeItem(fromIndex);
+
+      if (droppedItem && this.world) {
+        droppedItem.spawnEntityAsDrop(this.world, this.position, this.directionFromRotation);
+      }
     }
 
     if (data.type === 'moveItem') {
@@ -243,6 +255,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
           this.backpack.addItem(item, toIndex);
         }
       }
+    }
+
+    if (data.type === 'setSelectedHotbarIndex') {
+      this.hotbar.setSelectedIndex(data.index);
     }
   }
 
