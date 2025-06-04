@@ -17,6 +17,7 @@ export default class WoodenSwordItem extends BaseWeaponItem {
       modelUri: 'models/items/sword-wooden.gltf',
       modelScale: 0.5,
       name: 'Wooden Sword',
+      description: 'A basic wooden sword.',
       ...options,
     });
   }

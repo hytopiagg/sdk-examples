@@ -51,9 +51,9 @@ export default class Hotbar extends ItemInventory {
     return result;
   }
 
-  public override removeItem(item: BaseItem): boolean {
+  public override moveItem(fromPosition: number, toPosition: number): boolean {
     const lastSelectedItem = this.selectedItem;
-    const result = super.removeItem(item);
+    const result = super.moveItem(fromPosition, toPosition);
     
     if (result) {
       const newSelectedItem = this.selectedItem;
@@ -65,9 +65,9 @@ export default class Hotbar extends ItemInventory {
     return result;
   }
 
-  public override moveItem(item: BaseItem, newPosition: number): boolean {
+  public override removeItem(position: number): BaseItem | null {
     const lastSelectedItem = this.selectedItem;
-    const result = super.moveItem(item, newPosition);
+    const result = super.removeItem(position);
     
     if (result) {
       const newSelectedItem = this.selectedItem;
@@ -88,6 +88,7 @@ export default class Hotbar extends ItemInventory {
         iconImageUri: item.iconImageUri,
         description: item.description,
         quantity: item.quantity,
+        sellValue: item.sellValue,
       } : { removed: true })
     })
   }

@@ -40,9 +40,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       name: 'Player',
     });
 
-    this.backpack = new Backpack(/*this.player*/);
+    this.backpack = new Backpack(this.player);
     this.hotbar = new Hotbar(this.player);
-    this.storage = new Storage(/*this.player*/);
+    this.storage = new Storage(this.player);
     
     this._setupPlayerController();
     this._setupPlayerInventories();
@@ -151,9 +151,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       input.q = false;
     }
 
-    // Inventory
+    // Backpack
     if (input.i) {
-      this._toggleInventory();
+      this._toggleBackpack();
       input.i = false;
     }
 
@@ -175,6 +175,34 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
     if (data.type === 'setSelectedHotbarIndex') {
       this.hotbar.setSelectedIndex(data.index);
+    }
+
+    if (data.type === 'moveItem') {
+      const { fromType, toType } = data;
+      const fromIndex = parseInt(data.fromIndex);
+      const toIndex = parseInt(data.toIndex);
+
+      if (fromType === 'hotbar' && toType === 'hotbar') {
+        this.hotbar.moveItem(fromIndex, toIndex);
+      }
+
+      if (fromType === 'backpack' && toType === 'backpack') {
+        this.backpack.moveItem(fromIndex, toIndex);
+      }
+
+      if (fromType === 'backpack' && toType === 'hotbar') {
+        const item = this.backpack.removeItem(fromIndex);
+        if (item) {
+          this.hotbar.addItem(item, toIndex);
+        }
+      }
+
+      if (fromType === 'hotbar' && toType === 'backpack') {
+        const item = this.hotbar.removeItem(fromIndex);
+        if (item) {
+          this.backpack.addItem(item, toIndex);
+        }
+      }
     }
   }
 
@@ -225,8 +253,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this.player.ui.on(PlayerUIEvent.DATA, this._onPlayerUIData);
   }
 
-  private _toggleInventory = (): void => {
-    this.player.ui.sendData({ type: 'toggleInventory' });
+  private _toggleBackpack = (): void => {
+    this.player.ui.sendData({ type: 'toggleBackpack' });
   }
 
   private _toggleLog = (): void => {

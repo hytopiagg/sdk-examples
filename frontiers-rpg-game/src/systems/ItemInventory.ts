@@ -10,6 +10,7 @@ export default class ItemInventory {
     if (size <= 0 || gridWidth <= 0) {
       throw new Error('Size and gridWidth must be positive numbers');
     }
+    
     this._size = size;
     this._gridWidth = gridWidth;
   }
@@ -86,51 +87,72 @@ export default class ItemInventory {
     return !this._positionItems.has(position);
   }
 
-  public moveItem(item: BaseItem, newPosition: number): boolean {
-    if (newPosition < 0 || newPosition >= this._size) {
+  public moveItem(fromPosition: number, toPosition: number): boolean {
+    if (fromPosition < 0 || fromPosition >= this._size || toPosition < 0 || toPosition >= this._size) {
       return false;
     }
 
-    const currentPosition = this._itemPositions.get(item);
-
-    if (currentPosition === undefined) {
-      return false;
-    }
-
-    if (currentPosition === newPosition) {
+    if (fromPosition === toPosition) {
       return true;
     }
 
-    const itemAtNewPosition = this._positionItems.get(newPosition);
+    const itemToMove = this._positionItems.get(fromPosition);
+    if (!itemToMove) {
+      return false;
+    }
 
-    if (itemAtNewPosition) { // Swap
-      this._itemPositions.set(item, newPosition);
-      this._itemPositions.set(itemAtNewPosition, currentPosition);
-      this._positionItems.set(newPosition, item);
-      this._positionItems.set(currentPosition, itemAtNewPosition);
-      this.onSlotChanged(currentPosition, itemAtNewPosition);
-      this.onSlotChanged(newPosition, item);
+    const itemAtDestination = this._positionItems.get(toPosition);
+
+    if (itemAtDestination) {
+      // Swap items
+      this._itemPositions.set(itemToMove, toPosition);
+      this._itemPositions.set(itemAtDestination, fromPosition);
+      this._positionItems.set(toPosition, itemToMove);
+      this._positionItems.set(fromPosition, itemAtDestination);
+      this.onSlotChanged(fromPosition, itemAtDestination);
+      this.onSlotChanged(toPosition, itemToMove);
     } else {
-      this._itemPositions.set(item, newPosition);
-      this._positionItems.delete(currentPosition);
-      this._positionItems.set(newPosition, item);
-      this.onSlotChanged(currentPosition, null);
-      this.onSlotChanged(newPosition, item);
+      // Move to empty slot
+      this._itemPositions.set(itemToMove, toPosition);
+      this._positionItems.delete(fromPosition);
+      this._positionItems.set(toPosition, itemToMove);
+      this.onSlotChanged(fromPosition, null);
+      this.onSlotChanged(toPosition, itemToMove);
     }
 
     return true;
   }
 
-  public removeItem(item: BaseItem): boolean {
-    const position = this._itemPositions.get(item);
-    if (position === undefined) {
+  public moveItemByReference(item: BaseItem, newPosition: number): boolean {
+    const currentPosition = this._itemPositions.get(item);
+    if (currentPosition === undefined) {
       return false;
+    }
+    return this.moveItem(currentPosition, newPosition);
+  }
+
+  public removeItem(position: number): BaseItem | null {
+    if (position < 0 || position >= this._size) {
+      return null;
+    }
+
+    const item = this._positionItems.get(position);
+    if (!item) {
+      return null;
     }
 
     this._itemPositions.delete(item);
     this._positionItems.delete(position);
     this.onSlotChanged(position, null);
-    return true;
+    return item;
+  }
+
+  public removeItemByReference(item: BaseItem): boolean {
+    const position = this._itemPositions.get(item);
+    if (position === undefined) {
+      return false;
+    }
+    return this.removeItem(position) !== null;
   }
 
   protected onSlotChanged(position: number, item: BaseItem | null): void {
