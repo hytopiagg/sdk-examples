@@ -95,11 +95,12 @@ export default class BaseItem implements IInteractable {
   // Despawn the entity equivalent of the item from the world or parent entity.
   public despawnEntity(): void {
     if (!this._entity) return;
-    this._entity.despawn();
-    this._entity = undefined;
- 
+
     this._nameplateSceneUI?.unload();
     this._nameplateSceneUI = undefined;
+
+    this._entity.despawn();
+    this._entity = undefined; 
   }
 
   public interact(playerEntity: GamePlayerEntity): void {

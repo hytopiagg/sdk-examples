@@ -102,7 +102,7 @@ export default class BaseWeaponItem extends BaseItem {
       }
 
       const raycastResult = this.entity.parent.world.simulation.raycast(
-        this.entity.parent.position,
+        (this.entity.parent as GamePlayerEntity)?.adjustedRaycastPosition ?? this.entity.parent.position,
         (this.entity.parent as GamePlayerEntity)?.adjustedFacingDirection ?? this.entity.directionFromRotation, 
         this.attackReach, 
         {

@@ -22,6 +22,8 @@ import Hotbar from './systems/Hotbar';
 import Storage from './systems/Storage';
 import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 
+const CAMERA_OFFSET_Y = 0.8;
+const CAMERA_SHOULDER_ANGLE = 11;
 const DODGE_COOLDOWN_MS = 900;
 const DODGE_DELAY_MS = 150;
 const DODGE_DURATION_MS = 700;
@@ -54,7 +56,15 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this._setupPlayerUI();
   }
 
-  public get adjustedFacingDirection(): Vector3Like {
+  public get adjustedRaycastPosition(): Vector3Like { // I think this is still slightly off..
+    return {
+      x: this.position.x,
+      y: this.position.y + CAMERA_OFFSET_Y / 2,
+      z: this.position.z,
+    }
+  }
+
+  public get adjustedFacingDirection(): Vector3Like { // May still be slightly off, revisit later.
     const shoulderAngleRad = -this.player.camera.shoulderAngle * Math.PI / 180; // We should maybe make the SDK account for this in the future?
     const facingDirection = this.player.camera.facingDirection;
     const cos = Math.cos(shoulderAngleRad);
@@ -127,7 +137,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
   private _interact(): void {
     const raycastResult = this.world?.simulation.raycast(
-      this.position,
+      this.adjustedRaycastPosition,
       this.adjustedFacingDirection,
       INTERACT_REACH,
       {
@@ -263,10 +273,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   }
 
   private _setupPlayerCamera(): void {
-    this.player.camera.setOffset({ x: 0, y: 0.8, z: 0 });
+    this.player.camera.setOffset({ x: 0, y: CAMERA_OFFSET_Y, z: 0 });
     this.player.camera.setFilmOffset(6.8);
     this.player.camera.setZoom(0.9);
-    this.player.camera.setShoulderAngle(11);
+    this.player.camera.setShoulderAngle(CAMERA_SHOULDER_ANGLE);
   }
 
   private _setupPlayerController(): void {
