@@ -28,7 +28,7 @@ export default class GameRegion {
 
     // temp
     // this._world.simulation.enableDebugRendering(true);
-    // this._world.simulation.enableDebugRaycasting(true);
+    this._world.simulation.enableDebugRaycasting(true);
 
     this.setup();
   }
@@ -47,7 +47,12 @@ export default class GameRegion {
   }
 
   protected onPlayerJoin(player: Player) {
-    (new GamePlayerEntity(player)).spawn(this._world, this._spawnPoint);
+    const randomOffset = {
+      x: this._spawnPoint.x + (Math.random() * 6) - 3, // Random between spawnPoint.x ± 3
+      y: this._spawnPoint.y,
+      z: this._spawnPoint.z + (Math.random() * 6) - 3  // Random between spawnPoint.z ± 3
+    };
+    (new GamePlayerEntity(player)).spawn(this._world, randomOffset);
   }
 
   protected onPlayerLeave(player: Player) {

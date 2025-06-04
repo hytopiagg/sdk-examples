@@ -1395,7 +1395,6 @@
   </div>
 </template>
 
-<!-- Scene UI Scripts -->
 <script>
   hytopia.registerSceneUITemplate('entity-nameplate', (id, onState) => {
     const template = document.getElementById('entity-nameplate-template');
@@ -1584,6 +1583,107 @@
   }
 </style>
 
+<!-- Included from: ./scene-ui-templates/item-nameplate.html -->
+<template id="item-nameplate-template">
+  <div class="item-nameplate">
+    <div class="item-nameplate-name"></div>
+    <div class="item-nameplate-quantity"></div>
+  </div>
+</template>
+
+<script>
+  hytopia.registerSceneUITemplate('item-nameplate', (id, onState) => {
+    const template = document.getElementById('item-nameplate-template');
+    const clone = template.content.cloneNode(true);
+    const nameplate = clone.querySelector('.item-nameplate');
+    const name = clone.querySelector('.item-nameplate-name');
+    const quantity = clone.querySelector('.item-nameplate-quantity');
+
+    onState(state => {
+      if (state.name) {
+        name.textContent = state.name;
+      }
+
+      if (state.quantity > 1) {
+        quantity.style.display = 'block';
+        quantity.textContent = state.quantity;
+      }
+    });
+    
+    return clone;
+  });
+</script>
+
+<style>
+  .item-nameplate {
+    position: relative;
+    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    max-width: 250px;
+  }
+
+  /* Caret pointing down */
+  .item-nameplate::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #444;
+  }
+
+  .item-nameplate::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: -2px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #2a2a2a;
+    z-index: 1;
+  }
+
+  .item-nameplate-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-nameplate-quantity {
+    font-size: 10px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    padding: 2px 6px;
+    line-height: 1;
+    display: none;
+    flex-shrink: 0;
+  }
+</style>
+
 <!-- Included from: ./hud.html -->
 <!-- Game HUD Overlay -->
 <div class="hud-overlay">
@@ -1604,11 +1704,11 @@
         </div>
       </div>
     </button>
-    <button class="hud-action-button" id="hud-inventory-btn">
-      <img src="{{CDN_ASSETS_URL}}/icons/buttons/inventory.png" alt="Inventory" class="hud-action-button-icon">
+    <button class="hud-action-button" id="hud-backpack-btn">
+      <img src="{{CDN_ASSETS_URL}}/icons/buttons/backpack.png" alt="Backpack" class="hud-action-button-icon">
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
-          Inventory - View and update your inventory and equipment.
+          Backpack - View and manage your backpack and equipment.
         </div>
       </div>
     </button>
@@ -1635,6 +1735,12 @@
       <div class="hud-exp-fill" style="width: 60%;"></div>
       <div class="hud-exp-text">Level 12 - 1,200 / 2,000 XP</div>
     </div>
+  </div>
+
+  <!-- Crosshair -->
+  <div class="hud-crosshair">
+    <div class="hud-crosshair-horizontal"></div>
+    <div class="hud-crosshair-vertical"></div>
   </div>
 
   <!-- Hotbar -->
@@ -1727,8 +1833,8 @@
     alert('TODO!');
   });
 
-  document.getElementById('hud-inventory-btn').addEventListener('click', () => {
-    window.frontiersRPG.openInventory();
+  document.getElementById('hud-backpack-btn').addEventListener('click', () => {
+    window.frontiersRPG.openBackpack();
   });
 
   document.getElementById('hud-stats-btn').addEventListener('click', () => {
@@ -1986,6 +2092,37 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Crosshair Styles */
+  .hud-crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  .hud-crosshair-horizontal,
+  .hud-crosshair-vertical {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .hud-crosshair-horizontal {
+    width: 12px;
+    height: 2px;
+    top: -1px;
+    left: -6px;
+  }
+
+  .hud-crosshair-vertical {
+    width: 2px;
+    height: 12px;
+    top: -6px;
+    left: -1px;
+  }
+
   /* Mobile Responsive */
   @media (max-width: 768px) {
     :root {
@@ -2055,6 +2192,16 @@
 
     .hud-action-tooltip {
       display: none;
+    }
+
+    .hud-crosshair-horizontal {
+      width: 8px;
+      left: -4px;
+    }
+
+    .hud-crosshair-vertical {
+      height: 8px;
+      top: -4px;
     }
   }
 

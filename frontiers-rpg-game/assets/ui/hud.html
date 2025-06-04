@@ -17,11 +17,11 @@
         </div>
       </div>
     </button>
-    <button class="hud-action-button" id="hud-inventory-btn">
-      <img src="{{CDN_ASSETS_URL}}/icons/buttons/inventory.png" alt="Inventory" class="hud-action-button-icon">
+    <button class="hud-action-button" id="hud-backpack-btn">
+      <img src="{{CDN_ASSETS_URL}}/icons/buttons/backpack.png" alt="Backpack" class="hud-action-button-icon">
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
-          Inventory - View and update your inventory and equipment.
+          Backpack - View and manage your backpack and equipment.
         </div>
       </div>
     </button>
@@ -48,6 +48,12 @@
       <div class="hud-exp-fill" style="width: 60%;"></div>
       <div class="hud-exp-text">Level 12 - 1,200 / 2,000 XP</div>
     </div>
+  </div>
+
+  <!-- Crosshair -->
+  <div class="hud-crosshair">
+    <div class="hud-crosshair-horizontal"></div>
+    <div class="hud-crosshair-vertical"></div>
   </div>
 
   <!-- Hotbar -->
@@ -140,8 +146,8 @@
     alert('TODO!');
   });
 
-  document.getElementById('hud-inventory-btn').addEventListener('click', () => {
-    window.frontiersRPG.openInventory();
+  document.getElementById('hud-backpack-btn').addEventListener('click', () => {
+    window.frontiersRPG.openBackpack();
   });
 
   document.getElementById('hud-stats-btn').addEventListener('click', () => {
@@ -399,6 +405,37 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Crosshair Styles */
+  .hud-crosshair {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  .hud-crosshair-horizontal,
+  .hud-crosshair-vertical {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .hud-crosshair-horizontal {
+    width: 12px;
+    height: 2px;
+    top: -1px;
+    left: -6px;
+  }
+
+  .hud-crosshair-vertical {
+    width: 2px;
+    height: 12px;
+    top: -6px;
+    left: -1px;
+  }
+
   /* Mobile Responsive */
   @media (max-width: 768px) {
     :root {
@@ -468,6 +505,16 @@
 
     .hud-action-tooltip {
       display: none;
+    }
+
+    .hud-crosshair-horizontal {
+      width: 8px;
+      left: -4px;
+    }
+
+    .hud-crosshair-vertical {
+      height: 8px;
+      top: -4px;
     }
   }
 

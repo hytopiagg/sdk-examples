@@ -1,10 +1,11 @@
 import {
+  CollisionGroup,
   ErrorHandler,
   Entity,
   QuaternionLike,
+  SceneUI,
   Vector3Like,
-  World,
-  CollisionGroup
+  World
 } from 'hytopia';
 
 import CustomCollisionGroup from '../physics/CustomCollisionGroup';
@@ -38,6 +39,7 @@ export default class BaseItem {
   public readonly stackable: boolean;
 
   private _entity: Entity | undefined;
+  private _nameplateSceneUI: SceneUI | undefined;
   private _quantity: number = 1;
 
   public constructor(options: BaseItemOptions) {
@@ -111,7 +113,7 @@ export default class BaseItem {
     });
 
     this._entity.spawn(world, position, rotation);
-
+    this._loadNameplateSceneUI();
     this._afterSpawn();
   }
 
@@ -171,6 +173,23 @@ export default class BaseItem {
       belongsTo: [ CustomCollisionGroup.ITEM ],
       collidesWith: [ CollisionGroup.BLOCK, CollisionGroup.ENVIRONMENT_ENTITY ],
     });
+  }
+
+  private _loadNameplateSceneUI(): void {
+    if (this._nameplateSceneUI || !this._entity || !this._entity.world) return;
+
+    this._nameplateSceneUI = new SceneUI({
+      attachedToEntity: this._entity,
+      offset: { x: 0, y: this._entity.height / 2 + 0.3, z: 0 },
+      templateId: 'item-nameplate',
+      viewDistance: 8,
+      state: {
+        name: this.name,
+        quantity: this.quantity,
+      },
+    });
+
+    this._nameplateSceneUI.load(this._entity.world);
   }
 
   private _requireNotSpawned(): boolean {

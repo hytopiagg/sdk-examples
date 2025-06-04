@@ -13,6 +13,7 @@ import CapfolkElderEntity from '../entities/npcs/CapfolkElderEntity';
 import CapfolkKnightEntity from '../entities/npcs/CapfolkKnightEntity';
 
 import RatkinWarriorEntity from '../entities/enemies/RatkinWarriorEntity';
+import WoodenSwordItem from '../items/weapons/WoodenSwordItem';
 
 export default class StalkhavenRegion extends GameRegion {
   public constructor() {
@@ -36,6 +37,10 @@ export default class StalkhavenRegion extends GameRegion {
       ratkin.setCcdEnabled(true);
       ratkin.spawn(this.world, { x, y: 10, z });
     }
+
+    const sword = new WoodenSwordItem();
+
+    sword.spawnEntity(this.world, { x: 1, y: 5, z: 35 });
 
     // (new AdventurerEntity({ facingAngle: 90 })).spawn(this.world, { x: 30, y: 2, z: 22 });
     // (new BankerEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });

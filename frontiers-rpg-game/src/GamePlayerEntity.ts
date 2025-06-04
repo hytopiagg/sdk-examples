@@ -24,6 +24,7 @@ const DODGE_DELAY_MS = 150;
 const DODGE_DURATION_MS = 700;
 const DODGE_HORIZONTAL_FORCE = 3;
 const DODGE_VERTICAL_FORCE = 6;
+const INTERACT_REACH = 3;
 
 export default class GamePlayerEntity extends DefaultPlayerEntity {
   public readonly backpack: Backpack;
@@ -44,6 +45,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this.hotbar = new Hotbar(this.player);
     this.storage = new Storage(this.player);
     
+    this._setupPlayerCamera();
     this._setupPlayerController();
     this._setupPlayerInventories();
     this._setupPlayerUI();
@@ -90,7 +92,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     }
   }
 
-  private _dodge = (): void => {
+  private _dodge(): void {
     if (!this.canDodge) return;
 
     this.startModelOneshotAnimations([ 'dodge-roll' ]);
@@ -106,6 +108,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       y: verticalForce,
       z: direction.z * horizontalForce,
     });
+  }
+
+  private _interact(): void {
+  //  const raycastResult = this.world?.simulation.raycast(this.position, ) 
   }
 
   private _onHotbarSelectedItemChanged = (selectedItem: BaseItem | null, lastItem: BaseItem | null): void => {
@@ -142,6 +148,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
     // NPC & Environment Interact
     if (input.e) {
+      this._interact();
       input.e = false;
     }
 
@@ -204,6 +211,13 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
         }
       }
     }
+  }
+
+  private _setupPlayerCamera(): void {
+    this.player.camera.setOffset({ x: 0, y: 0.8, z: 0 });
+    this.player.camera.setFilmOffset(6.8);
+    this.player.camera.setZoom(0.9);
+    this.player.camera.setShoulderAngle(11);
   }
 
   private _setupPlayerController(): void {
