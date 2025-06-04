@@ -1,5 +1,7 @@
 import {
   BaseEntityControllerEvent,
+  CollisionGroup,
+  CollisionGroupsBuilder,
   DefaultPlayerEntity,
   DefaultPlayerEntityController,
   EventPayloads,
@@ -14,6 +16,7 @@ import {
 import { skills } from './config';
 import Backpack from './systems/Backpack';
 import BaseItem from './items/BaseItem';
+import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
 import Hotbar from './systems/Hotbar';
 import Storage from './systems/Storage';
@@ -123,7 +126,25 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   }
 
   private _interact(): void {
-  //  const raycastResult = this.world?.simulation.raycast(this.position, ) 
+    const raycastResult = this.world?.simulation.raycast(
+      this.position,
+      this.adjustedFacingDirection,
+      INTERACT_REACH,
+      {
+        filterGroups: CollisionGroupsBuilder.buildRawCollisionGroups({ // The collision group the raycast belongs to
+          belongsTo: [ CollisionGroup.ALL ],
+          collidesWith: [ CollisionGroup.ENTITY, CustomCollisionGroup.ITEM ],
+        }),
+        filterExcludeRigidBody: this.rawRigidBody, // ignore self
+        filterFlags: 8, // Rapier exclude sensors,
+      },
+    );
+
+    if (raycastResult?.hitEntity) {
+      if ('interact' in raycastResult.hitEntity && typeof raycastResult.hitEntity.interact === 'function') {
+        raycastResult.hitEntity.interact(this);
+      }
+    }
   }
 
   private _onHotbarSelectedItemChanged = (selectedItem: BaseItem | null, lastItem: BaseItem | null): void => {

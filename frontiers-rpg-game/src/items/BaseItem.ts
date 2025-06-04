@@ -1,14 +1,19 @@
 import {
+  Collider,
+  ColliderShape,
   CollisionGroup,
   ErrorHandler,
   Entity,
   QuaternionLike,
   SceneUI,
   Vector3Like,
-  World
+  World,
 } from 'hytopia';
 
+import BaseItemEntity from '../entities/BaseItemEntity';
 import CustomCollisionGroup from '../physics/CustomCollisionGroup';
+import GamePlayerEntity from '../GamePlayerEntity';
+import IInteractable from '../interfaces/IInteractable';
 
 export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
@@ -26,7 +31,7 @@ export type BaseItemOptions = {
   stackable?: boolean;
 };
 
-export default class BaseItem {
+export default class BaseItem implements IInteractable {
   public readonly defaultRelativePositionAsChild: Vector3Like;
   public readonly defaultRelativeRotationAsChild: QuaternionLike;
   public readonly description: string;
@@ -38,7 +43,7 @@ export default class BaseItem {
   public readonly sellValue: number;
   public readonly stackable: boolean;
 
-  private _entity: Entity | undefined;
+  private _entity: BaseItemEntity | undefined;
   private _nameplateSceneUI: SceneUI | undefined;
   private _quantity: number = 1;
 
@@ -94,6 +99,13 @@ export default class BaseItem {
     this._entity = undefined;
   }
 
+  public interact(playerEntity: GamePlayerEntity): void {
+    // pick up item.
+    if (playerEntity.hotbar.addItem(this) || playerEntity.backpack.addItem(this)) {
+      this.despawnEntity();
+    }
+  }
+
   public setQuantity(quantity: number): void {
     if (!this.stackable && quantity > 1) {
       return ErrorHandler.warning(`BaseItem.setQuantity(): Item ${this.name} is not stackable and cannot have a quantity.`);
@@ -106,10 +118,16 @@ export default class BaseItem {
   public spawnEntity(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     if (!this._requireNotSpawned()) return;
 
-    this._entity = new Entity({
+    this._entity = new BaseItemEntity({
+      item: this,
       name: this.name,
       modelUri: this.modelUri,
       modelScale: this.modelScale,
+      rigidBodyOptions: {
+        colliders: [ // 2x the collider scale for easier interacts
+          Collider.optionsFromModelUri(this.modelUri, this.modelScale * 2, ColliderShape.BLOCK)
+        ],
+      },
     });
 
     this._entity.spawn(world, position, rotation);
@@ -121,7 +139,8 @@ export default class BaseItem {
   public spawnEntityAsChild(parent: Entity, parentNodeName?: string, relativePosition?: Vector3Like, relativeRotation?: QuaternionLike): void {
     if (!this._requireNotSpawned()) return;
 
-    this._entity = new Entity({
+    this._entity = new BaseItemEntity({
+      item: this,
       name: this.name,
       modelUri: this.modelUri,
       modelScale: this.modelScale,

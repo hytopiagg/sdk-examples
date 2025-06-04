@@ -27,7 +27,7 @@ export default class GameRegion {
     this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this.onPlayerLeave(player));
 
     // temp
-    // this._world.simulation.enableDebugRendering(true);
+    this._world.simulation.enableDebugRendering(true);
     this._world.simulation.enableDebugRaycasting(true);
 
     this.setup();
