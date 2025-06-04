@@ -51,6 +51,18 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this._setupPlayerUI();
   }
 
+  public get adjustedFacingDirection(): Vector3Like {
+    const shoulderAngleRad = -this.player.camera.shoulderAngle * Math.PI / 180; // We should maybe make the SDK account for this in the future?
+    const facingDirection = this.player.camera.facingDirection;
+    const cos = Math.cos(shoulderAngleRad);
+    const sin = Math.sin(shoulderAngleRad);
+    
+    return {
+      x: facingDirection.x * cos + facingDirection.z * sin,
+      y: facingDirection.y,
+      z: -facingDirection.x * sin + facingDirection.z * cos
+    } 
+  }
   public get canDodge(): boolean { return performance.now() - this._lastDodgeTimeMs >= DODGE_COOLDOWN_MS; }
   public get health(): number { return this._health; }
   public get isDodging(): boolean {

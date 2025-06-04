@@ -1,5 +1,6 @@
 import { Entity } from 'hytopia';
 import BaseItem, { BaseItemOptions } from './BaseItem';
+import GamePlayerEntity from '../GamePlayerEntity';
 
 export type BaseWeaponItemOptions = {
   attackAnimations: string[];
@@ -100,12 +101,15 @@ export default class BaseWeaponItem extends BaseItem {
         return;
       }
 
-      const direction = this.entity.parent.directionFromRotation;
-      const position = this.entity.parent.position;
-      const raycastResult = this.entity.parent.world.simulation.raycast(position, direction, this.attackReach, {
-        filterExcludeRigidBody: this.entity.parent.rawRigidBody,
-        filterFlags: 8, // Rapier exclude sensors,
-      });
+      const raycastResult = this.entity.parent.world.simulation.raycast(
+        this.entity.parent.position,
+        (this.entity.parent as GamePlayerEntity)?.adjustedFacingDirection ?? this.entity.directionFromRotation, 
+        this.attackReach, 
+        {
+          filterExcludeRigidBody: this.entity.parent.rawRigidBody, // ignore self
+          filterFlags: 8, // Rapier exclude sensors,
+        },
+      );
 
       if (raycastResult?.hitEntity) {
         this.applyAttackDamage(raycastResult.hitEntity);
