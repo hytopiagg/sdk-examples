@@ -15,6 +15,7 @@ const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 3;
 
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import GamePlayerEntity from '../GamePlayerEntity';
+import { isDamageable } from '../interfaces/IDamageable';
 
 export type BaseCombatEntityAttack = {
   animations: string[];
@@ -107,9 +108,9 @@ export default class BaseCombatEntity extends BaseEntity {
       const reachSquared = attack.reach ** 2;
       
       if (distanceSquared <= reachSquared) { // make sure target is in reach still
-        if ('takeDamage' in target && typeof target.takeDamage === 'function') {
+        if (isDamageable(target)) {
           const damage = this._calculateDamageWithVariance(attack.damage, attack.damageVariance);
-          target.takeDamage(damage);
+          target.takeDamage(damage, this);
         }
         
         if (attack.onHit) {

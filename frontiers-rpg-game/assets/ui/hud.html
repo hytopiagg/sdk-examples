@@ -115,6 +115,10 @@
       updateClock();
     }
 
+    if (data.type === 'syncExperience') {
+      updateExperienceBar(data.level, data.exp, data.currentLevelExp, data.nextLevelExp);
+    }
+
     if (data.type === 'syncHealth') {
       updateHealthBar(data.health, data.maxHealth);
     }
@@ -183,6 +187,34 @@
     
     // Update text
     healthText.textContent = `${Math.max(0, health)} / ${maxHealth}`;
+  }
+
+  // Experience bar update function
+  function updateExperienceBar(level, exp, currentLevelExp, nextLevelExp) {
+    const expBar = document.querySelector('.hud-exp-fill');
+    const expText = document.querySelector('.hud-exp-text');
+    
+    // Calculate progress within current level
+    const currentProgress = exp - currentLevelExp;
+    const maxProgress = nextLevelExp - currentLevelExp;
+    const expPercent = Math.max(0, Math.min(100, (currentProgress / maxProgress) * 100));
+    
+    // Update width
+    expBar.style.width = `${expPercent}%`;
+    
+    // Format numbers with abbreviations for large values
+    const formatExpNumber = (num) => {
+      if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+      if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+      return num.toString();
+    };
+    
+    // Update text with scalable MMORPG-style formatting
+    const currentFormatted = formatExpNumber(currentProgress);
+    const maxFormatted = formatExpNumber(maxProgress);
+    const percentText = `${Math.round(expPercent)}%`;
+    
+    expText.textContent = `Level ${level} • ${currentFormatted}/${maxFormatted} XP (${percentText})`;
   }
 
   // Hotbar update function

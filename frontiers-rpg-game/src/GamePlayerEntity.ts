@@ -19,8 +19,10 @@ import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
 import Hotbar from './systems/Hotbar';
 import Storage from './systems/Storage';
+import type BaseCombatEntity from './entities/BaseCombatEntity';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseItem from './items/BaseItem';
+import type IDamageable from './interfaces/IDamageable';
 import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 
 const CAMERA_OFFSET_Y = 0.8;
@@ -32,7 +34,7 @@ const DODGE_HORIZONTAL_FORCE = 3;
 const DODGE_VERTICAL_FORCE = 6;
 const INTERACT_REACH = 3;
 
-export default class GamePlayerEntity extends DefaultPlayerEntity {
+export default class GamePlayerEntity extends DefaultPlayerEntity implements IDamageable {
   public readonly backpack: Backpack;
   public readonly hotbar: Hotbar;
   public readonly storage: Storage;
@@ -106,17 +108,15 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     return this.controller as DefaultPlayerEntityController;
   }
 
-  public adjustGlobalExperience(amount: number): void {
-    this._globalExperience = Math.max(0, this._globalExperience + amount);
-  }
-
   public adjustHealth(amount: number): void {
     this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
     this._updateHudHealthUI();
   }
 
   public adjustSkillExperience(skillId: SkillId, amount: number): void {
+    this._globalExperience = Math.max(0, this._globalExperience + amount); // All skill XP adds to global XP
     this._skillExperience.set(skillId, Math.max(0, (this._skillExperience.get(skillId) ?? 0) + amount));
+    this._updateHudExperienceUI();
   }
 
   public getSkillExperience(skillId: SkillId): number {
@@ -179,6 +179,24 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
         z: direction.z * horizontalForce,
       });
     }
+  }
+
+  private _getLevelFromExperience(experience: number): number {
+    if (experience < 0) return 1;
+    
+    let level = 1;
+    while (experience >= this._getLevelRequiredExperience(level + 1)) {
+      level++;
+    }
+    return level;
+  }
+
+  private _getLevelRequiredExperience(level: number): number {
+    if (level <= 1) return 0;
+    
+    // Exponential scaling: 100 * (level ^ 1.5)
+    // Level 2: ~141 XP, Level 3: ~245 XP, Level 5: ~559 XP, Level 10: ~3162 XP
+    return Math.floor(100 * Math.pow(level, 1.5));
   }
 
   private _interact(): void {
@@ -353,7 +371,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       templateId: 'entity-nameplate',
       state: {
         name: this.player.username,
-        level: 12,
+        level: this._getLevelFromExperience(this._globalExperience),
         health: this._health,
         maxHealth: this._maxHealth,
       },
@@ -376,6 +394,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       skills,
     });
 
+    // Sync Experience UI
+    this._updateHudExperienceUI();
+
     // Sync Health UI
     this._updateHudHealthUI();
 
@@ -393,6 +414,20 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
   private _toggleStats = (): void => {
     this.player.ui.sendData({ type: 'toggleStats' });
+  }
+
+  private _updateHudExperienceUI = (): void => {
+    const level = this._getLevelFromExperience(this._globalExperience);
+    const currentLevelExp = this._getLevelRequiredExperience(level);
+    const nextLevelExp = this._getLevelRequiredExperience(level + 1);
+    
+    this.player.ui.sendData({
+      type: 'syncExperience',
+      level,
+      exp: this._globalExperience,
+      currentLevelExp,
+      nextLevelExp,
+    });
   }
 
   private _updateHudHealthUI = (): void => {

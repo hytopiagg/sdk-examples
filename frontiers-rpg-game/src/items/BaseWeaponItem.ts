@@ -1,6 +1,7 @@
 import { Entity } from 'hytopia';
 import BaseItem, { BaseItemOptions } from './BaseItem';
 import GamePlayerEntity from '../GamePlayerEntity';
+import { isDamageable } from '../interfaces/IDamageable';
 
 export type BaseWeaponItemOptions = {
   attackAnimations: string[];
@@ -64,7 +65,7 @@ export default class BaseWeaponItem extends BaseItem {
   }
 
   protected applyAttackDamage(hitEntity: Entity): void {
-    if (!('takeDamage' in hitEntity) || typeof hitEntity.takeDamage !== 'function') {
+    if (!isDamageable(hitEntity)) {
       return;
     }
 
@@ -73,7 +74,7 @@ export default class BaseWeaponItem extends BaseItem {
     }
 
     const damage = this._calculateDamageWithVariance(this.attackDamage, this.attackDamageVariance);
-    hitEntity.takeDamage(damage);
+    hitEntity.takeDamage(damage, this.entity.parent);
 
     if (this.attackKnockbackForce) {
       const direction = this.entity.parent.directionFromRotation;
