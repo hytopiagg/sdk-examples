@@ -2,6 +2,7 @@
 <template id="entity-nameplate-template">
   <div class="entity-nameplate">
     <div class="entity-nameplate-name">A Test Mob</div>
+    <div class="entity-nameplate-interact">Press "E" to interact</div>
     <div class="entity-nameplate-level">Lvl 12</div>
     <div class="entity-nameplate-health-bar">
       <div class="entity-nameplate-health-bar-fill"></div>
@@ -15,6 +16,7 @@
     const clone = template.content.cloneNode(true);
     const nameplate = clone.querySelector('.entity-nameplate');
     const name = clone.querySelector('.entity-nameplate-name');
+    const interact = clone.querySelector('.entity-nameplate-interact');
     const level = clone.querySelector('.entity-nameplate-level');
     const healthBar = clone.querySelector('.entity-nameplate-health-bar');
     const healthBarFill = clone.querySelector('.entity-nameplate-health-bar-fill');
@@ -22,28 +24,6 @@
     let damageCount = 0;
 
     onState(state => {
-      if (state.name) {
-        name.style.display = 'block';
-        name.textContent = state.name;
-      }
-
-      if (state.level) {
-        level.style.display = 'block';
-        level.textContent = `Lvl ${state.level}`;
-      }
-
-      if (state.health && state.maxHealth) {
-        healthBar.style.display = 'block';
-        const healthPercent = state.health / state.maxHealth;
-        
-        healthBarFill.style.transform = `scaleX(${healthPercent})`;
-        
-        healthBarFill.className = 'entity-nameplate-health-bar-fill';
-        if (healthPercent > 0.66) healthBarFill.classList.add('health-high');
-        else if (healthPercent > 0.33) healthBarFill.classList.add('health-medium');
-        else healthBarFill.classList.add('health-low');
-      }
-
       if (state.damage) {
         const damageEl = document.createElement('div');
         damageEl.className = 'entity-nameplate-damage';
@@ -75,6 +55,34 @@
           damageCount--;
         }, 800 + delay);
       }
+
+      if (state.interactable) {
+        interact.style.display = 'block';
+      } else {
+        interact.style.display = 'none';
+      }
+
+      if (state.name) {
+        name.style.display = 'block';
+        name.textContent = state.name;
+      }
+
+      if (state.level) {
+        level.style.display = 'block';
+        level.textContent = `Lvl ${state.level}`;
+      }
+
+      if (state.health && state.maxHealth) {
+        healthBar.style.display = 'block';
+        const healthPercent = state.health / state.maxHealth;
+        
+        healthBarFill.style.transform = `scaleX(${healthPercent})`;
+        
+        healthBarFill.className = 'entity-nameplate-health-bar-fill';
+        if (healthPercent > 0.66) healthBarFill.classList.add('health-high');
+        else if (healthPercent > 0.33) healthBarFill.classList.add('health-medium');
+        else healthBarFill.classList.add('health-low');
+      }
     });
 
     return clone;
@@ -100,6 +108,23 @@
     text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
     letter-spacing: 0.3px;
     margin-bottom: 3px;
+  }
+
+  .entity-nameplate-interact {
+    display: none;
+    font-size: 10px;
+    font-weight: 500;
+    color: #DDDDDD;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
+    letter-spacing: 0.1px;
+    margin-bottom: 2px;
+    opacity: 0.8;
+    animation: subtlePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes subtlePulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 0.9; }
   }
 
   .entity-nameplate-level {

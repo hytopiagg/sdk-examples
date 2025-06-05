@@ -1,13 +1,14 @@
 <!-- Dialogue UI -->
+<div class="dialogue-overlay"></div>
 <div class="dialogue-panel">
   <div class="dialogue-container">
     <!-- NPC Info Header -->
     <div class="dialogue-header">
       <div class="dialogue-npc-info">
-        <img src="{{CDN_ASSETS_URL}}/avatars/merchant.png" alt="NPC" class="dialogue-npc-avatar">
+        <img src="" alt="NPC" class="dialogue-npc-avatar">
         <div class="dialogue-npc-details">
-          <div class="dialogue-npc-name">Merchant Aldric</div>
-          <div class="dialogue-npc-title">Village Trader</div>
+          <div class="dialogue-npc-name"></div>
+          <div class="dialogue-npc-title"></div>
         </div>
       </div>
       <button class="dialogue-close">×</button>
@@ -16,51 +17,97 @@
     <!-- Content Area -->
     <div class="dialogue-content">
       <!-- Message -->
-      <div class="dialogue-message">
-        Welcome, traveler! I have many fine wares to offer. Perhaps you're interested in some rare gems or enchanted weapons?
-      </div>
+      <div class="dialogue-message"></div>
       
       <!-- Options -->
-      <div class="dialogue-options">
-        <div class="dialogue-option" data-option="1">Show me your weapons.</div>
-        <div class="dialogue-option" data-option="2">I'm interested in rare gems.</div>
-        <div class="dialogue-option" data-option="3">Tell me about Mystral.</div>
-        <div class="dialogue-option dialogue-option-exit" data-option="exit">Farewell.</div>
-      </div>
+      <div class="dialogue-options"></div>
     </div>
   </div>
 </div>
 
 <script>
-  // Basic setup - logic to be implemented later
+  hytopia.onData(data => {
+    if (data.type === 'dialogue') {
+      populateDialogue(data);
+      openDialogue();
+    }
+  });
+
+  function populateDialogue(data) {
+    // Update avatar
+    const avatar = document.querySelector('.dialogue-npc-avatar');
+    avatar.src = data.avatarImageUri ? `{{CDN_ASSETS_URL}}/${data.avatarImageUri}` : '';
+
+    // Update NPC info
+    document.querySelector('.dialogue-npc-name').textContent = data.name || 'Unknown';
+    document.querySelector('.dialogue-npc-title').textContent = data.title || '';
+
+    // Update message
+    document.querySelector('.dialogue-message').textContent = data.text || '';
+
+    // Update options
+    const optionsContainer = document.querySelector('.dialogue-options');
+    optionsContainer.innerHTML = '';
+
+    if (data.options?.length > 0) {
+      data.options.forEach(option => {
+        const optionEl = document.createElement('div');
+        optionEl.className = 'dialogue-option';
+        if (option.dismiss) {
+          optionEl.classList.add('dialogue-option-exit');
+        }
+        optionEl.textContent = option.text;
+        
+        optionEl.addEventListener('click', () => {
+          if (option.dismiss) {
+            closeDialogue();
+          }
+          
+          if (option.nextDialogueId !== undefined) {
+            hytopia.sendData({
+              type: 'progressDialogue',
+              nextDialogueId: option.nextDialogueId
+            });
+          }
+        });
+
+        optionsContainer.appendChild(optionEl);
+      });
+    }
+  }
+
   function closeDialogue() {
-    document.querySelector('.dialogue-panel').style.display = 'none';
+    const panel = document.querySelector('.dialogue-panel');
+    const overlay = document.querySelector('.dialogue-overlay');
+    panel.classList.add('dialogue-closing');
+    overlay.classList.add('dialogue-closing');
     hytopia.lockPointer(true);
   }
 
   function openDialogue() {
-    document.querySelector('.dialogue-panel').style.display = 'block';
-    hytopia.lockPointer(false, true);
+    const panel = document.querySelector('.dialogue-panel');
+    const overlay = document.querySelector('.dialogue-overlay');
+    
+    panel.style.display = 'block';
+    overlay.style.display = 'block';
+    panel.classList.remove('dialogue-closing');
+    overlay.classList.remove('dialogue-closing');
+    hytopia.lockPointer(false);
   }
 
-  // Setup event listeners
-  document.querySelector('.dialogue-close').addEventListener('click', closeDialogue);
-  
-  document.querySelectorAll('.dialogue-option').forEach(option => {
-    option.addEventListener('click', () => {
-      const optionId = option.dataset.option;
-      if (optionId === 'exit') {
-        closeDialogue();
-      } else {
-        // Option selection logic to be implemented
-        console.log(`Selected option: ${optionId}`);
-      }
-    });
+  // Handle animation completion
+  document.querySelector('.dialogue-panel').addEventListener('animationend', (e) => {
+    const panel = e.target;
+    if (panel.classList.contains('dialogue-closing')) {
+      panel.style.display = 'none';
+      document.querySelector('.dialogue-overlay').style.display = 'none';
+      panel.classList.remove('dialogue-closing');
+      document.querySelector('.dialogue-overlay').classList.remove('dialogue-closing');
+    }
   });
 
-  // Global function for external access
-  window.frontiersRPG = window.frontiersRPG || {};
-  window.frontiersRPG.openDialogue = openDialogue;
+  // Setup close button
+  document.querySelector('.dialogue-close').addEventListener('click', closeDialogue);
 </script>
 
 <style>
@@ -75,7 +122,34 @@
     --dialogue-exit: #dc2626;
   }
 
+  .dialogue-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 899;
+    animation: overlayFadeIn 0.3s ease-out;
+  }
+
+  .dialogue-overlay.dialogue-closing {
+    animation: overlayFadeOut 0.3s ease-out forwards;
+  }
+
+  @keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes overlayFadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
   .dialogue-panel {
+    display: none;
     position: fixed;
     bottom: 20px;
     right: 20px;
@@ -88,6 +162,10 @@
     animation: dialogueSlideIn 0.3s ease-out;
   }
 
+  .dialogue-panel.dialogue-closing {
+    animation: dialogueSlideOut 0.3s ease-out forwards;
+  }
+
   @keyframes dialogueSlideIn {
     from {
       transform: translateX(100%);
@@ -96,6 +174,17 @@
     to {
       transform: translateX(0);
       opacity: 1;
+    }
+  }
+
+  @keyframes dialogueSlideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
     }
   }
 

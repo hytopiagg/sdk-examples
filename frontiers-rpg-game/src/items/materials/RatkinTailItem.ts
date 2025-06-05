@@ -6,6 +6,7 @@ export default class RatkinTailItem extends BaseItem {
       name: 'Ratkin Tail',
       description: 'A tail from a ratkin.',
       iconImageUri: 'icons/items/ratkin-tail.png',
+      stackable: true,
       ...options,
     });
   }

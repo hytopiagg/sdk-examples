@@ -5,7 +5,7 @@
       <div class="item-nameplate-quantity"></div>
     </div>
     <div class="item-nameplate-icon">
-      <img src="{{CDN_ASSETS_URL}}/icons/items/wooden-sword.png" alt="Item" class="item-icon-image">
+      <img src="{{CDN_ASSETS_URL}}/icons/placeholder.png" alt="Item" class="item-icon-image">
     </div>
   </div>
 </template>
@@ -15,14 +15,22 @@
     const template = document.getElementById('item-nameplate-template');
     const clone = template.content.cloneNode(true);
     const name = clone.querySelector('.item-nameplate-name');
+    const iconImage = clone.querySelector('.item-icon-image');
     const quantity = clone.querySelector('.item-nameplate-quantity');
 
     onState(state => {
-      if (state.name) name.textContent = state.name;
+      if (state.name) {
+        name.textContent = state.name;
+        name.style.color = `rgb(${state.rarityColor.r}, ${state.rarityColor.g}, ${state.rarityColor.b})`;
+      }
       
       if (state.quantity > 1) {
         quantity.style.display = 'block';
         quantity.textContent = state.quantity;
+      }
+
+      if (state.iconImageUri) {        
+        iconImage.src = `{{CDN_ASSETS_URL}}/${state.iconImageUri}`;
       }
     });
     

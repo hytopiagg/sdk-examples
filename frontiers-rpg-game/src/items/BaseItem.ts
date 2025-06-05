@@ -21,14 +21,15 @@ const DEFAULT_MODEL_URI = 'models/items/snowball.gltf';
 const DEFAULT_MODEL_SCALE = 0.35;
 
 export const RARITY_RGB_COLORS: Record<ItemRarity, RgbColor> = {
-  common: { r: 255, g: 255, b: 255 },
-  uncommon: { r: 0, g: 255, b: 0 },
-  rare: { r: 0, g: 0, b: 255 },
-  epic: { r: 255, g: 0, b: 255 },
-  legendary: { r: 255, g: 255, b: 0 },
+  common: { r: 225, g: 225, b: 225 },      // Light gray - subtle but visible
+  unusual: { r: 115, g: 215, b: 115 },     // Soft green - not too bright
+  rare: { r: 140, g: 190, b: 255 },        // Sky blue - easier on eyes
+  epic: { r: 200, g: 120, b: 255 },        // Purple - classic epic color - 255, 100, 180
+  legendary: { r: 255, g: 180, b: 50 },    // Golden orange - warm and premium - 255, 180, 50
+  utopian: { r: 255, g: 70, b: 70 },     // Pink-red - unique and special
 };
 
-export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
+export type ItemRarity = 'common' | 'unusual' | 'rare' | 'epic' | 'legendary' | 'utopian';
 
 export type BaseItemOptions = {
   defaultRelativePositionAsChild?: Vector3Like;
@@ -81,7 +82,7 @@ export default class BaseItem implements IInteractable {
     this.heldModelTintColor = options.heldModelTintColor;
     this.name = options.name;
     this.rarity = options.rarity ?? 'common';
-    this.sellValue = options.sellValue ?? 0;
+    this.sellValue = options.sellValue ?? 1;
     this.stackable = options.stackable ?? false;
 
     if (this.stackable && options.quantity) {
@@ -253,11 +254,13 @@ export default class BaseItem implements IInteractable {
 
     this._nameplateSceneUI = new SceneUI({
       attachedToEntity: this._entity,
-      offset: { x: 0, y: 0.25, z: 0 },
+      offset: { x: 0, y: 0.45, z: 0 },
       templateId: 'item-nameplate',
       viewDistance: 8,
       state: {
         name: this.name,
+        iconImageUri: this.iconImageUri,
+        rarityColor: RARITY_RGB_COLORS[this.rarity],
         quantity: this.quantity,
       },
     });

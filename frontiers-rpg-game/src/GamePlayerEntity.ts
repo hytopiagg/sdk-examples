@@ -15,12 +15,12 @@ import {
 
 import { skills } from './config';
 import Backpack from './systems/Backpack';
-import BaseItem from './items/BaseItem';
 import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
 import Hotbar from './systems/Hotbar';
 import Storage from './systems/Storage';
-import WoodenSwordItem from './items/weapons/WoodenSwordItem';
+import type BaseEntity from './entities/BaseEntity';
+import type BaseItem from './items/BaseItem';
 
 const CAMERA_OFFSET_Y = 0.8;
 const CAMERA_SHOULDER_ANGLE = 11;
@@ -35,6 +35,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   public readonly backpack: Backpack;
   public readonly hotbar: Hotbar;
   public readonly storage: Storage;
+  private _currentDialogueEntity: BaseEntity | undefined;
   private _lastDodgeTimeMs: number = 0;
   private _health: number = 100;
   private _maxHealth: number = 100;
@@ -98,12 +99,13 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     return this.controller as DefaultPlayerEntityController;
   }
 
+  public setCurrentDialogueEntity(entity: BaseEntity): void {
+    this._currentDialogueEntity = entity;
+  }
+
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
     this._nameplateSceneUI.load(world);
-
-    const woodenSword = new WoodenSwordItem();
-    this.hotbar.addItem(woodenSword);
   }
 
   public takeDamage(damage: number): void {
@@ -277,6 +279,14 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
         if (item) {
           this.backpack.addItem(item, toIndex);
         }
+      }
+    }
+
+    if (data.type === 'progressDialogue') {
+      const { nextDialogueId } = data;
+
+      if (this._currentDialogueEntity) {
+        this._currentDialogueEntity.progressDialogue(this, nextDialogueId);
       }
     }
 
