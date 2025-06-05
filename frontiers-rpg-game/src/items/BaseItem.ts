@@ -5,6 +5,7 @@ import {
   ErrorHandler,
   Entity,
   QuaternionLike,
+  RgbColor,
   SceneUI,
   Vector3Like,
   World,
@@ -15,6 +16,18 @@ import CustomCollisionGroup from '../physics/CustomCollisionGroup';
 import GamePlayerEntity from '../GamePlayerEntity';
 import IInteractable from '../interfaces/IInteractable';
 
+const DEFAULT_MODEL_CHILD_RELATIVE_POSITION = { x: -0.025, y: 0, z: -0.15 };
+const DEFAULT_MODEL_URI = 'models/items/snowball.gltf';
+const DEFAULT_MODEL_SCALE = 0.35;
+
+export const RARITY_RGB_COLORS: Record<ItemRarity, RgbColor> = {
+  common: { r: 255, g: 255, b: 255 },
+  uncommon: { r: 0, g: 255, b: 0 },
+  rare: { r: 0, g: 0, b: 255 },
+  epic: { r: 255, g: 0, b: 255 },
+  legendary: { r: 255, g: 255, b: 0 },
+};
+
 export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
 export type BaseItemOptions = {
@@ -22,8 +35,12 @@ export type BaseItemOptions = {
   defaultRelativeRotationAsChild?: QuaternionLike;
   description?: string;
   iconImageUri: string;
-  modelUri: string;
-  modelScale?: number;
+  dropModelUri?: string;
+  dropModelScale?: number;
+  dropModelTintColor?: RgbColor;
+  heldModelUri?: string;
+  heldModelScale?: number;
+  heldModelTintColor?: RgbColor;
   name: string;
   quantity?: number;
   rarity?: ItemRarity;
@@ -33,11 +50,15 @@ export type BaseItemOptions = {
 
 export default class BaseItem implements IInteractable {
   public readonly defaultRelativePositionAsChild: Vector3Like;
-  public readonly defaultRelativeRotationAsChild: QuaternionLike;
+  public readonly defaultRelativeRotationAsChild: QuaternionLike | undefined;
   public readonly description: string;
   public readonly iconImageUri: string;
-  public readonly modelUri: string;
-  public readonly modelScale: number;
+  public readonly dropModelUri: string | undefined;
+  public readonly dropModelScale: number;
+  public readonly dropModelTintColor: RgbColor | undefined;
+  public readonly heldModelUri: string | undefined;
+  public readonly heldModelScale: number;
+  public readonly heldModelTintColor: RgbColor | undefined;
   public readonly name: string;
   public readonly rarity: ItemRarity;
   public readonly sellValue: number;
@@ -48,12 +69,16 @@ export default class BaseItem implements IInteractable {
   private _quantity: number = 1;
 
   public constructor(options: BaseItemOptions) {
-    this.defaultRelativePositionAsChild = options.defaultRelativePositionAsChild ?? { x: 0, y: 0, z: 0 };
-    this.defaultRelativeRotationAsChild = options.defaultRelativeRotationAsChild ?? { x: 0, y: 0, z: 0, w: 1 };
+    this.defaultRelativePositionAsChild = options.defaultRelativePositionAsChild ?? (!options.heldModelUri ? DEFAULT_MODEL_CHILD_RELATIVE_POSITION : { x: 0, y: 0, z: 0 });
+    this.defaultRelativeRotationAsChild = options.defaultRelativeRotationAsChild;
     this.description = options.description ?? '';
     this.iconImageUri = options.iconImageUri;
-    this.modelUri = options.modelUri;
-    this.modelScale = options.modelScale ?? 1;
+    this.dropModelUri = options.dropModelUri;
+    this.dropModelScale = options.dropModelScale ?? (!options.dropModelUri ? DEFAULT_MODEL_SCALE : 1);
+    this.dropModelTintColor = options.dropModelTintColor;
+    this.heldModelUri = options.heldModelUri;
+    this.heldModelScale = options.heldModelScale ?? (!options.heldModelUri ? DEFAULT_MODEL_SCALE : 1);
+    this.heldModelTintColor = options.heldModelTintColor;
     this.name = options.name;
     this.rarity = options.rarity ?? 'common';
     this.sellValue = options.sellValue ?? 0;
@@ -83,8 +108,12 @@ export default class BaseItem implements IInteractable {
       defaultRelativeRotationAsChild: this.defaultRelativeRotationAsChild,
       description: this.description,
       iconImageUri: this.iconImageUri,
-      modelUri: this.modelUri,
-      modelScale: this.modelScale,
+      dropModelUri: this.dropModelUri,
+      dropModelScale: this.dropModelScale,
+      dropModelTintColor: this.dropModelTintColor,
+      heldModelUri: this.heldModelUri,
+      heldModelScale: this.heldModelScale,
+      heldModelTintColor: this.heldModelTintColor,
       name: this.name,
       quantity: this._quantity,
       stackable: this.stackable,
@@ -119,17 +148,20 @@ export default class BaseItem implements IInteractable {
   }
 
   // Spawn the entity equivalent of the item in the world, such as a drop.
-  public spawnEntity(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
+  public spawnEntityAsDrop(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     if (!this._requireNotSpawned()) return;
+
+    const modelUri = this.dropModelUri ?? DEFAULT_MODEL_URI;
 
     this._entity = new BaseItemEntity({
       item: this,
       name: this.name,
-      modelUri: this.modelUri,
-      modelScale: this.modelScale,
+      modelUri,
+      modelScale: this.dropModelScale,
+      tintColor: this.dropModelTintColor ?? RARITY_RGB_COLORS[this.rarity],
       rigidBodyOptions: {
         colliders: [ // 2x the collider scale for easier interacts
-          Collider.optionsFromModelUri(this.modelUri, this.modelScale * 2, ColliderShape.BLOCK)
+          Collider.optionsFromModelUri(modelUri, this.dropModelScale * 4, ColliderShape.BLOCK)
         ],
       },
     });
@@ -139,15 +171,16 @@ export default class BaseItem implements IInteractable {
     this._afterSpawn();
   }
 
-  // Spawn the entity equivalent of the item as a child of another entity, such as held by a player.
-  public spawnEntityAsChild(parent: Entity, parentNodeName?: string, relativePosition?: Vector3Like, relativeRotation?: QuaternionLike): void {
+  // Spawn the entity equivalent of the item as a child held by another entity, such as held by a player.
+  public spawnEntityAsHeld(parent: Entity, parentNodeName?: string, relativePosition?: Vector3Like, relativeRotation?: QuaternionLike): void {
     if (!this._requireNotSpawned()) return;
 
     this._entity = new BaseItemEntity({
       item: this,
       name: this.name,
-      modelUri: this.modelUri,
-      modelScale: this.modelScale,
+      modelUri: this.heldModelUri ?? DEFAULT_MODEL_URI,
+      modelScale: this.heldModelScale,
+      tintColor: this.heldModelTintColor ?? RARITY_RGB_COLORS[this.rarity],
       parent: parent,
       parentNodeName: parentNodeName,
     });
@@ -161,8 +194,8 @@ export default class BaseItem implements IInteractable {
     this._afterSpawn();
   }
 
-  public spawnEntityAsDrop(world: World, position: Vector3Like, facingDirection?: Vector3Like): void {
-    this.spawnEntity(world, position);
+  public spawnEntityAsEjectedDrop(world: World, position: Vector3Like, facingDirection?: Vector3Like): void {
+    this.spawnEntityAsDrop(world, position);
     
     if (this.entity) {
       const mass = this.entity.mass;
@@ -220,7 +253,7 @@ export default class BaseItem implements IInteractable {
 
     this._nameplateSceneUI = new SceneUI({
       attachedToEntity: this._entity,
-      offset: { x: 0, y: this._entity.height / 2 + 0.3, z: 0 },
+      offset: { x: 0, y: 0.25, z: 0 },
       templateId: 'item-nameplate',
       viewDistance: 8,
       state: {

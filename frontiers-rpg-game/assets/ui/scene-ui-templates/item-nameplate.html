@@ -1,7 +1,12 @@
 <template id="item-nameplate-template">
-  <div class="item-nameplate">
-    <div class="item-nameplate-name"></div>
-    <div class="item-nameplate-quantity"></div>
+  <div class="item-nameplate-container">
+    <div class="item-nameplate">
+      <div class="item-nameplate-name"></div>
+      <div class="item-nameplate-quantity"></div>
+    </div>
+    <div class="item-nameplate-icon">
+      <img src="{{CDN_ASSETS_URL}}/icons/items/wooden-sword.png" alt="Item" class="item-icon-image">
+    </div>
   </div>
 </template>
 
@@ -9,15 +14,12 @@
   hytopia.registerSceneUITemplate('item-nameplate', (id, onState) => {
     const template = document.getElementById('item-nameplate-template');
     const clone = template.content.cloneNode(true);
-    const nameplate = clone.querySelector('.item-nameplate');
     const name = clone.querySelector('.item-nameplate-name');
     const quantity = clone.querySelector('.item-nameplate-quantity');
 
     onState(state => {
-      if (state.name) {
-        name.textContent = state.name;
-      }
-
+      if (state.name) name.textContent = state.name;
+      
       if (state.quantity > 1) {
         quantity.style.display = 'block';
         quantity.textContent = state.quantity;
@@ -29,55 +31,78 @@
 </script>
 
 <style>
+  :root {
+    --nameplate-bg: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+    --nameplate-border: #444;
+    --nameplate-text: #ffffff;
+    --nameplate-shadow: rgba(0, 0, 0, 0.8);
+  }
+
+  .item-nameplate-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    animation: itemFloat 3s ease-in-out infinite;
+  }
+
+  /* Ground shadow */
+  .item-nameplate-container::before {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 12px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.4), transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+  }
+
   .item-nameplate {
     position: relative;
-    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
-    border: 2px solid #444;
+    background: var(--nameplate-bg);
+    border: 2px solid var(--nameplate-border);
     border-radius: 8px;
     padding: 8px 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px var(--nameplate-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     display: flex;
     align-items: center;
     gap: 8px;
     white-space: nowrap;
     max-width: 250px;
+    margin-bottom: 12px;
   }
 
-  /* Caret pointing down */
+  /* Caret */
   .item-nameplate::after {
     content: '';
     position: absolute;
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid #444;
+    border: 8px solid transparent;
+    border-top-color: var(--nameplate-border);
   }
 
   .item-nameplate::before {
     content: '';
     position: absolute;
-    top: 100%;
+    top: calc(100% - 2px);
     left: 50%;
     transform: translateX(-50%);
-    margin-top: -2px;
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 8px solid #2a2a2a;
+    border: 6px solid transparent;
+    border-top-color: #2a2a2a;
     z-index: 1;
   }
 
   .item-nameplate-name {
     font-size: 12px;
     font-weight: 500;
-    color: #ffffff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    color: var(--nameplate-text);
+    text-shadow: 0 1px 2px var(--nameplate-shadow);
     flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -86,14 +111,37 @@
   .item-nameplate-quantity {
     font-size: 10px;
     font-weight: 600;
-    color: #ffffff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    color: var(--nameplate-text);
+    text-shadow: 0 1px 2px var(--nameplate-shadow);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
     padding: 2px 6px;
     line-height: 1;
     display: none;
-    flex-shrink: 0;
+  }
+
+  .item-nameplate-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+  }
+
+  .item-icon-image {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: 
+      drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.5))
+      drop-shadow(4px 4px 3px rgba(0, 0, 0, 0.3))
+      drop-shadow(0 8px 8px rgba(0, 0, 0, 0.4));
+  }
+
+  @keyframes itemFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
   }
 </style>

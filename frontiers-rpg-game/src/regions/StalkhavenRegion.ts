@@ -14,6 +14,7 @@ import CapfolkKnightEntity from '../entities/npcs/CapfolkKnightEntity';
 
 import RatkinWarriorEntity from '../entities/enemies/RatkinWarriorEntity';
 import WoodenSwordItem from '../items/weapons/WoodenSwordItem';
+import RatkinTailItem from '../items/materials/RatkinTailItem';
 
 export default class StalkhavenRegion extends GameRegion {
   public constructor() {
@@ -39,8 +40,14 @@ export default class StalkhavenRegion extends GameRegion {
     }
 
     const sword = new WoodenSwordItem();
+    // sword.spawnEntity(this.world, { x: 1, y: 5, z: 35 });
 
-    sword.spawnEntity(this.world, { x: 1, y: 5, z: 35 });
+    for (let i = 0; i < 20; i++) {
+      const ratkinTail = new RatkinTailItem();
+      const x = 1 + (Math.random() * 4 - 2); // Random between -1 and 3
+      const z = 35 + (Math.random() * 4 - 2); // Random between 33 and 37
+      ratkinTail.spawnEntityAsDrop(this.world, { x, y: 5, z });
+    }
 
     (new AdventurerEntity({ facingAngle: 90 })).spawn(this.world, { x: 30, y: 2, z: 22 });
     (new BankerEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });

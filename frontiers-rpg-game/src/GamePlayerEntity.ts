@@ -172,7 +172,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
   private _onHotbarSelectedItemChanged = (selectedItem: BaseItem | null, lastItem: BaseItem | null): void => {
     lastItem?.despawnEntity();
-    selectedItem?.spawnEntityAsChild(this, 'hand_right_anchor');
+    selectedItem?.spawnEntityAsHeld(this, 'hand_right_anchor');
   }
 
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
@@ -248,7 +248,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       const droppedItem = container?.removeItem(fromIndex);
 
       if (droppedItem && this.world) {
-        droppedItem.spawnEntityAsDrop(this.world, this.position, this.directionFromRotation);
+        droppedItem.spawnEntityAsEjectedDrop(this.world, this.position, this.directionFromRotation);
       }
     }
 
