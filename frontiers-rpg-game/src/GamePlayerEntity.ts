@@ -138,16 +138,18 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this.startModelOneshotAnimations([ 'dodge-roll' ]);
     this._lastDodgeTimeMs = performance.now();
 
-    // Apply dodge impulse
-    const direction = this.directionFromRotation;
-    const horizontalForce = DODGE_HORIZONTAL_FORCE * this.mass;
-    const verticalForce = this.playerController.isGrounded ? DODGE_VERTICAL_FORCE * this.mass : 0;
-    
-    this.applyImpulse({
-      x: direction.x * horizontalForce,
-      y: verticalForce,
-      z: direction.z * horizontalForce,
-    });
+    // Apply dodge impulse when not moving
+    if (!this.playerController.isActivelyMoving) {
+      const direction = this.directionFromRotation;
+      const horizontalForce = DODGE_HORIZONTAL_FORCE * this.mass;
+      const verticalForce = this.playerController.isGrounded ? DODGE_VERTICAL_FORCE * this.mass : 0;
+
+      this.applyImpulse({
+        x: direction.x * horizontalForce,
+        y: verticalForce,
+        z: direction.z * horizontalForce,
+      });
+    }
   }
 
   private _interact(): void {

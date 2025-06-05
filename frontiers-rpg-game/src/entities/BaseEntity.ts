@@ -246,7 +246,6 @@ export default class BaseEntity extends Entity implements IInteractable {
       attachedToEntity: this,
       offset: { x: 0, y: this.height / 2 + 0.25, z: 0 },
       templateId: 'entity-nameplate',
-      viewDistance: 12,
       state: {
         name: this.name,
         health: this.health,
