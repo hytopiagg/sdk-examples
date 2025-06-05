@@ -13,7 +13,7 @@ import {
   World,
 } from 'hytopia';
 
-import { skills } from './config';
+import { SkillId, skills } from './config';
 import Backpack from './systems/Backpack';
 import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
@@ -37,10 +37,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   public readonly hotbar: Hotbar;
   public readonly storage: Storage;
   private _currentDialogueEntity: BaseEntity | undefined;
+  private _globalExperience: number = 0;
   private _lastDodgeTimeMs: number = 0;
   private _health: number = 100;
   private _maxHealth: number = 100;
   private _nameplateSceneUI: SceneUI;
+  private _skillExperience: Map<SkillId, number> = new Map();
 
   public constructor(player: Player) {
     super({
@@ -82,6 +84,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   public get canDodge(): boolean {
     return performance.now() - this._lastDodgeTimeMs >= DODGE_COOLDOWN_MS;
   }
+
+  public get globalExperience(): number {
+    return this._globalExperience;
+  }
   
   public get health(): number {
     return this._health;
@@ -98,6 +104,23 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   
   public get playerController(): DefaultPlayerEntityController {
     return this.controller as DefaultPlayerEntityController;
+  }
+
+  public adjustGlobalExperience(amount: number): void {
+    this._globalExperience = Math.max(0, this._globalExperience + amount);
+  }
+
+  public adjustHealth(amount: number): void {
+    this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
+    this._updateHudHealthUI();
+  }
+
+  public adjustSkillExperience(skillId: SkillId, amount: number): void {
+    this._skillExperience.set(skillId, Math.max(0, (this._skillExperience.get(skillId) ?? 0) + amount));
+  }
+
+  public getSkillExperience(skillId: SkillId): number {
+    return this._skillExperience.get(skillId) ?? 0;
   }
 
   public setCurrentDialogueEntity(entity: BaseEntity): void {
