@@ -139,10 +139,13 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     if (this._health <= 0) return; // dead, don't take more damage
     
     if (this.isDodging) { // in dodge state, don't take damage
+      this.adjustSkillExperience(SkillId.AGILITY, damage);
+      
       this._nameplateSceneUI.setState({
         damage: 0,
         dodged: true
       });
+
       return;
     } 
 

@@ -228,7 +228,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
 
     if (this._health <= 0) {
       if (this._combatExperienceReward > 0 && attacker instanceof GamePlayerEntity) {
-        attacker.adjustSkillExperience(SkillId.Combat, this._combatExperienceReward);
+        attacker.adjustSkillExperience(SkillId.COMBAT, this._combatExperienceReward);
       }
 
       this.die();
