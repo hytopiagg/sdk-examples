@@ -12,7 +12,9 @@ import {
   World,
 } from 'hytopia';
 
-import BaseItem from '../items/BaseItem';
+import type BaseItem from '../items/BaseItem';
+import type GamePlayerEntity from '../GamePlayerEntity';
+import type IInteractable from '../interfaces/IInteractable';
 
 export type BaseEntityItemDrop = {
   item: BaseItem;
@@ -45,7 +47,7 @@ export type WanderOptions = {
   pathfindOptions?: PathfindingOptions;
 }
 
-export default class BaseEntity extends Entity {
+export default class BaseEntity extends Entity implements IInteractable {
   private _deathAnimations: string[];
   private _deathDespawnDelayMs: number;
   private _deathItemDrops: BaseEntityItemDrop[];
@@ -125,6 +127,10 @@ export default class BaseEntity extends Entity {
 
   public faceTowards(target: Vector3Like, faceSpeed: number) {
     this.pathfindingController.face(target, faceSpeed);
+  }
+
+  public interact(interactor: GamePlayerEntity): void {
+    // Default behavior: do nothing, intended to be overridden by subclasses.
   }
 
   public jump(height: number) {

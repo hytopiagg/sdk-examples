@@ -197,12 +197,12 @@ export default class BaseItem implements IInteractable {
 
   public useMouseLeft(): void {
     // Default behavior: do nothing (for non-usable items), intended to be overridden by subclasses.
-    // use() is called when item is selected in the hotbar and mouse left is clicked.
+    // useMouseLeft() is called when item is selected in the hotbar and mouse left is clicked.
   }
 
   public useMouseRight(): void {
     // Default behavior: do nothing (for non-usable items), intended to be overridden by subclasses.
-    // use() is called when item is selected in the hotbar and mouse right is clicked.
+    // useMouseRight() is called when item is selected in the hotbar and mouse right is clicked.
   }
 
   // Helpers

@@ -42,16 +42,16 @@ export default class StalkhavenRegion extends GameRegion {
 
     sword.spawnEntity(this.world, { x: 1, y: 5, z: 35 });
 
-    // (new AdventurerEntity({ facingAngle: 90 })).spawn(this.world, { x: 30, y: 2, z: 22 });
-    // (new BankerEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });
-    // (new BlacksmithEntity({ facingAngle: -120 })).spawn(this.world, { x: -25.5, y: 3, z: -12.5 });
-    // (new CapfolkElderEntity({ facingAngle: 180 })).spawn(this.world, { x: -13.5, y: 2, z: -30 });
-    // (new FarmerEntity({ facingAngle: -90 })).spawn(this.world, { x: -32, y: 3, z: 1 });
-    // (new MerchantEntity({ facingAngle: 90 })).spawn(this.world, { x: 13, y: 3, z: 26.5 });
+    (new AdventurerEntity({ facingAngle: 90 })).spawn(this.world, { x: 30, y: 2, z: 22 });
+    (new BankerEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });
+    (new BlacksmithEntity({ facingAngle: -120 })).spawn(this.world, { x: -25.5, y: 3, z: -12.5 });
+    (new CapfolkElderEntity({ facingAngle: 180 })).spawn(this.world, { x: -13.5, y: 2, z: -30 });
+    (new FarmerEntity({ facingAngle: -90 })).spawn(this.world, { x: -32, y: 3, z: 1 });
+    (new MerchantEntity({ facingAngle: 90 })).spawn(this.world, { x: 13, y: 3, z: 26.5 });
 
-    // (new CapfolkVillagerEntity({ facingAngle: -30 })).spawn(this.world, { x: -1.5, y: 2, z: 45.5 });
-    // (new CapfolkVillagerEntity({ facingAngle: 15 })).spawn(this.world, { x: 3, y: 2, z: 45.5 });
-    // (new CapfolkKnightEntity({ modelScale: 0.7 })).spawn(this.world, { x: 0.75, y: 2, z: 45 });
+    (new CapfolkVillagerEntity({ facingAngle: -30 })).spawn(this.world, { x: -1.5, y: 2, z: 45.5 });
+    (new CapfolkVillagerEntity({ facingAngle: 15 })).spawn(this.world, { x: 3, y: 2, z: 45.5 });
+    (new CapfolkKnightEntity({ modelScale: 0.7 })).spawn(this.world, { x: 0.75, y: 2, z: 45 });
 
 
     // const wonderDestinations = [

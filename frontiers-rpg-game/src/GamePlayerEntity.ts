@@ -76,14 +76,27 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       z: -facingDirection.x * sin + facingDirection.z * cos
     } 
   }
-  public get canDodge(): boolean { return performance.now() - this._lastDodgeTimeMs >= DODGE_COOLDOWN_MS; }
-  public get health(): number { return this._health; }
+
+  public get canDodge(): boolean {
+    return performance.now() - this._lastDodgeTimeMs >= DODGE_COOLDOWN_MS;
+  }
+  
+  public get health(): number {
+    return this._health;
+  }
+  
   public get isDodging(): boolean {
     const timeSinceDodge = performance.now() - this._lastDodgeTimeMs;
     return timeSinceDodge >= DODGE_DELAY_MS && timeSinceDodge < (DODGE_DELAY_MS + DODGE_DURATION_MS);
   }
-  public get maxHealth(): number { return this._maxHealth; } 
-  public get playerController(): DefaultPlayerEntityController { return this.controller as DefaultPlayerEntityController; }
+  
+  public get maxHealth(): number {
+    return this._maxHealth;
+  } 
+  
+  public get playerController(): DefaultPlayerEntityController {
+    return this.controller as DefaultPlayerEntityController;
+  }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
