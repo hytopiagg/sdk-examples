@@ -207,6 +207,7 @@ export default class BaseEntity extends Entity implements IInteractable {
   public stopMoving() {
     this.pathfindingController.stopFace();
     this.pathfindingController.stopMove();
+    // need to add stopPathfind()?
   }
 
   public takeDamage(damage: number): void {

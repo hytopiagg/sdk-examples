@@ -232,9 +232,8 @@ export default class BaseCombatEntity extends BaseEntity {
         // Only move if not within attack range, but always face the target
         if (targetDistanceSquared > attackRangeSquared) {
           this.moveTo(this._aggroActiveTarget.position);
-        } else {
-          this.stopMoving();
         }
+        
         this.faceTowards(this._aggroActiveTarget.position, this.moveSpeed * 2);
       }
     } else {

@@ -21,6 +21,7 @@ import Hotbar from './systems/Hotbar';
 import Storage from './systems/Storage';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseItem from './items/BaseItem';
+import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 
 const CAMERA_OFFSET_Y = 0.8;
 const CAMERA_SHOULDER_ANGLE = 11;
@@ -106,6 +107,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
     this._nameplateSceneUI.load(world);
+
+    const woodenSword = new WoodenSwordItem();
+    this.hotbar.addItem(woodenSword);
   }
 
   public takeDamage(damage: number): void {
@@ -126,6 +130,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       dodged: false,
       health: this._health,
     });
+
+    this._updateHudHealthUI();
 
     if (this._health <= 0) {
       console.log('Player died');
@@ -347,6 +353,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       skills,
     });
 
+    // Sync Health UI
+    this._updateHudHealthUI();
+
     // Listen for client->server UI data events
     this.player.ui.on(PlayerUIEvent.DATA, this._onPlayerUIData);
   }
@@ -361,5 +370,13 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
   private _toggleStats = (): void => {
     this.player.ui.sendData({ type: 'toggleStats' });
+  }
+
+  private _updateHudHealthUI = (): void => {
+    this.player.ui.sendData({
+      type: 'syncHealth',
+      health: this._health,
+      maxHealth: this._maxHealth,
+    });
   }
 }

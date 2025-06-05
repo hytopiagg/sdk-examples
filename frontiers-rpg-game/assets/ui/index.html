@@ -2327,6 +2327,10 @@
       updateClock();
     }
 
+    if (data.type === 'syncHealth') {
+      updateHealthBar(data.health, data.maxHealth);
+    }
+
     if (data.type === 'hotbarUpdate') {
       updateHotbarSlot(data.position, data);
     }
@@ -2367,6 +2371,31 @@
   });
 
   setActiveSlot(0);
+
+  // Health bar update function
+  function updateHealthBar(health, maxHealth) {
+    const healthBar = document.querySelector('.hud-health-fill');
+    const healthText = document.querySelector('.hud-health-text');
+    
+    // Calculate percentage
+    const healthPercent = Math.max(0, Math.min(100, (health / maxHealth) * 100));
+    
+    // Update width
+    healthBar.style.width = `${healthPercent}%`;
+    
+    // Update color class
+    healthBar.className = 'hud-health-fill';
+    if (healthPercent > 66) {
+      healthBar.classList.add('health-high');
+    } else if (healthPercent > 33) {
+      healthBar.classList.add('health-medium');
+    } else {
+      healthBar.classList.add('health-low');
+    }
+    
+    // Update text
+    healthText.textContent = `${Math.max(0, health)} / ${maxHealth}`;
+  }
 
   // Hotbar update function
   function updateHotbarSlot(position, itemData) {
