@@ -1,0 +1,334 @@
+<!-- Dialogue UI -->
+<div class="dialogue-panel">
+  <div class="dialogue-container">
+    <!-- NPC Info Header -->
+    <div class="dialogue-header">
+      <div class="dialogue-npc-info">
+        <img src="{{CDN_ASSETS_URL}}/avatars/merchant.png" alt="NPC" class="dialogue-npc-avatar">
+        <div class="dialogue-npc-details">
+          <div class="dialogue-npc-name">Merchant Aldric</div>
+          <div class="dialogue-npc-title">Village Trader</div>
+        </div>
+      </div>
+      <button class="dialogue-close">×</button>
+    </div>
+    
+    <!-- Content Area -->
+    <div class="dialogue-content">
+      <!-- Message -->
+      <div class="dialogue-message">
+        Welcome, traveler! I have many fine wares to offer. Perhaps you're interested in some rare gems or enchanted weapons?
+      </div>
+      
+      <!-- Options -->
+      <div class="dialogue-options">
+        <div class="dialogue-option" data-option="1">Show me your weapons.</div>
+        <div class="dialogue-option" data-option="2">I'm interested in rare gems.</div>
+        <div class="dialogue-option" data-option="3">Tell me about Mystral.</div>
+        <div class="dialogue-option dialogue-option-exit" data-option="exit">Farewell.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Basic setup - logic to be implemented later
+  function closeDialogue() {
+    document.querySelector('.dialogue-panel').style.display = 'none';
+    hytopia.lockPointer(true);
+  }
+
+  function openDialogue() {
+    document.querySelector('.dialogue-panel').style.display = 'block';
+    hytopia.lockPointer(false, true);
+  }
+
+  // Setup event listeners
+  document.querySelector('.dialogue-close').addEventListener('click', closeDialogue);
+  
+  document.querySelectorAll('.dialogue-option').forEach(option => {
+    option.addEventListener('click', () => {
+      const optionId = option.dataset.option;
+      if (optionId === 'exit') {
+        closeDialogue();
+      } else {
+        // Option selection logic to be implemented
+        console.log(`Selected option: ${optionId}`);
+      }
+    });
+  });
+
+  // Global function for external access
+  window.frontiersRPG = window.frontiersRPG || {};
+  window.frontiersRPG.openDialogue = openDialogue;
+</script>
+
+<style>
+  :root {
+    --dialogue-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --dialogue-primary: #2a2a2a;
+    --dialogue-secondary: #1e1e1e;
+    --dialogue-border: #444;
+    --dialogue-text: #ffffff;
+    --dialogue-text-secondary: #cccccc;
+    --dialogue-accent: #3b82f6;
+    --dialogue-exit: #dc2626;
+  }
+
+  .dialogue-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: min(400px, calc(100vw - 40px));
+    max-height: min(60vh, calc(100vh - 40px));
+    z-index: 900;
+    font-family: var(--dialogue-font);
+    user-select: none;
+    pointer-events: auto;
+    animation: dialogueSlideIn 0.3s ease-out;
+  }
+
+  @keyframes dialogueSlideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .dialogue-container {
+    background: linear-gradient(145deg, var(--dialogue-primary), var(--dialogue-secondary));
+    border: 2px solid var(--dialogue-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    backdrop-filter: blur(4px);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Header */
+  .dialogue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #3a3a3a, #2d2d2d);
+    border-bottom: 1px solid var(--dialogue-border);
+    box-sizing: border-box;
+  }
+
+  .dialogue-npc-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dialogue-npc-avatar {
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--dialogue-border);
+    border-radius: 6px;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    flex-shrink: 0;
+  }
+
+  .dialogue-npc-details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .dialogue-npc-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dialogue-text);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dialogue-npc-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--dialogue-text-secondary);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dialogue-close {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    border-radius: 4px;
+    color: #ff6b6b;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .dialogue-close:hover {
+    background: rgba(255, 0, 0, 0.3);
+    transform: scale(1.05);
+  }
+
+  /* Content */
+  .dialogue-content {
+    padding: 14px;
+    max-height: calc(min(50vh, calc(100vh - 120px)) - 60px);
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+
+  .dialogue-message {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--dialogue-text);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .dialogue-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .dialogue-option {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--dialogue-border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--dialogue-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .dialogue-option:hover {
+    border-color: var(--dialogue-accent);
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--dialogue-text);
+    transform: translateX(2px);
+  }
+
+  .dialogue-option-exit {
+    color: #fca5a5;
+    margin-top: 4px;
+  }
+
+  .dialogue-option-exit:hover {
+    border-color: var(--dialogue-exit);
+    background: rgba(220, 38, 38, 0.1);
+    color: #f87171;
+  }
+
+  /* Mobile and Small Screen Responsive */
+  @media (max-width: 768px) {
+    .dialogue-panel {
+      bottom: max(16px, env(safe-area-inset-bottom, 16px));
+      right: max(12px, env(safe-area-inset-right, 12px));
+      width: min(100vw - 24px, calc(100vw - 2 * max(12px, env(safe-area-inset-right, 12px))));
+      max-width: 340px;
+      max-height: min(70vh, calc(100vh - 32px));
+    }
+
+    .dialogue-header {
+      padding: 8px 12px;
+    }
+
+    .dialogue-npc-avatar {
+      width: 28px;
+      height: 28px;
+    }
+
+    .dialogue-npc-name {
+      font-size: 11px;
+    }
+
+    .dialogue-npc-title {
+      font-size: 9px;
+    }
+
+    .dialogue-close {
+      width: 18px;
+      height: 18px;
+      font-size: 10px;
+    }
+
+    .dialogue-content {
+      padding: 10px;
+      max-height: calc(min(60vh, calc(100vh - 80px)) - 50px);
+    }
+
+    .dialogue-message {
+      padding: 8px;
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .dialogue-option {
+      padding: 6px 8px;
+      font-size: 10px;
+    }
+  }
+
+  /* Very small screens (landscape phones, small devices) */
+  @media (max-width: 480px) {
+    .dialogue-panel {
+      max-height: min(60vh, calc(100vh - 20px));
+      max-width: 300px;
+    }
+
+    .dialogue-content {
+      max-height: calc(min(50vh, calc(100vh - 60px)) - 45px);
+      padding: 8px;
+    }
+
+    .dialogue-message {
+      padding: 6px;
+      font-size: 10px;
+    }
+
+    .dialogue-option {
+      padding: 5px 6px;
+      font-size: 9px;
+    }
+  }
+
+  /* Ultra-wide screens - prevent dialogue from being too far left */
+  @media (min-width: 1920px) {
+    .dialogue-panel {
+      right: max(20px, calc((100vw - 1200px) / 4));
+    }
+  }
+</style> 
