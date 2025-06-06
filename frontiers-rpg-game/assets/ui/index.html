@@ -386,7 +386,7 @@
     if (itemData.quantity && itemData.quantity > 1) {
       const quantity = document.createElement('div');
       quantity.className = config.quantityClass;
-      quantity.textContent = itemData.quantity;
+      quantity.textContent = itemData.quantity.toLocaleString();
       content.appendChild(quantity);
     }
   }
@@ -1001,17 +1001,17 @@
   .backpack-tooltip-name {
     font-weight: 600;
     color: #ffffff;
-    margin-bottom: 4px;
   }
 
   .backpack-tooltip-description {
     color: #cccccc;
-    margin-bottom: 4px;
+    margin-top: 4px;
     font-size: 10px;
   }
 
   .backpack-tooltip-value {
     color: #ffd700;
+    margin-top: 4px;
     font-weight: 600;
     font-size: 10px;
   }
@@ -2224,7 +2224,7 @@
       
       if (state.quantity > 1) {
         quantity.style.display = 'block';
-        quantity.textContent = state.quantity;
+        quantity.textContent = state.quantity.toLocaleString();
       }
 
       if (state.iconImageUri) {        
@@ -2615,7 +2615,7 @@
       if (itemData.quantity && itemData.quantity > 1) {
         const quantity = document.createElement('div');
         quantity.className = 'hud-hotbar-slot-quantity';
-        quantity.textContent = itemData.quantity;
+        quantity.textContent = itemData.quantity.toLocaleString();
         content.appendChild(quantity);
       }
     }

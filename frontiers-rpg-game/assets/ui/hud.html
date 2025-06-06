@@ -260,7 +260,7 @@
       if (itemData.quantity && itemData.quantity > 1) {
         const quantity = document.createElement('div');
         quantity.className = 'hud-hotbar-slot-quantity';
-        quantity.textContent = itemData.quantity;
+        quantity.textContent = itemData.quantity.toLocaleString();
         content.appendChild(quantity);
       }
     }

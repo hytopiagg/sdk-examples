@@ -2,7 +2,7 @@ import { Quaternion } from 'hytopia';
 import BaseWeaponItem, { BaseWeaponItemOptions } from '../BaseWeaponItem';
 
 export default class WoodenSwordItem extends BaseWeaponItem {
-  public constructor(options?: BaseWeaponItemOptions) {
+  public constructor(options?: Partial<BaseWeaponItemOptions>) {
     super({
       attackAnimations: [ 'sword-attack-upper' ],
       attackCooldownMs: 500,
