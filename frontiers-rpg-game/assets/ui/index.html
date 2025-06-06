@@ -191,6 +191,8 @@
       if (!hasContent(slot)) return false;
       
       const content = getSlotContent(slot);
+      const tooltip = slot.querySelector('.backpack-item-tooltip');
+      
       heldItem = {
         sourceSlot: slot,
         sourceType: slotInfo.type,
@@ -198,7 +200,21 @@
         content: content.innerHTML
       };
       
+      // Copy content to mouse follower
       mouseFollower.innerHTML = content.innerHTML;
+      
+      // Copy tooltip if it exists
+      if (tooltip) {
+        const tooltipClone = tooltip.cloneNode(true);
+        tooltipClone.style.opacity = '1';
+        tooltipClone.style.visibility = 'visible';
+        tooltipClone.style.transform = 'translateY(-110%)';
+        tooltipClone.style.position = 'absolute';
+        tooltipClone.style.bottom = 'auto';
+        tooltipClone.style.top = '-8px';
+        mouseFollower.appendChild(tooltipClone);
+      }
+      
       mouseFollower.style.left = mouseX + 'px';
       mouseFollower.style.top = mouseY + 'px';
       mouseFollower.classList.add('active');
@@ -335,7 +351,7 @@
   function updateSlot(slotType, position, itemData) {
     const config = SLOT_CONFIGS[slotType];
     if (!config || position < 0 || position >= config.maxSlots) return;
-    
+
     const slots = document.querySelectorAll(config.selector);
     const slot = slots[position];
     if (!slot) return;
@@ -343,8 +359,9 @@
     const content = slot.querySelector(config.contentSelector);
     if (!content) return;
     
-    // Clear existing content
+    // Clear existing content and tooltip
     content.innerHTML = '';
+    removeTooltip(slot);
     
     if (itemData.removed) {
       // Show slot number for empty slots (hotbar only)
@@ -352,21 +369,56 @@
         content.textContent = position + 1;
       }
     } else {
-      // Create item icon
-      const icon = document.createElement('img');
-      icon.src = `{{CDN_ASSETS_URL}}/${itemData.iconImageUri}`;
-      icon.alt = 'Item';
-      icon.className = config.iconClass;
-      content.appendChild(icon);
-      
-      // Add quantity if greater than 1
-      if (itemData.quantity && itemData.quantity > 1) {
-        const quantity = document.createElement('div');
-        quantity.className = config.quantityClass;
-        quantity.textContent = itemData.quantity;
-        content.appendChild(quantity);
-      }
+      createItemContent(content, itemData, config);
+      createTooltip(slot, itemData);
     }
+  }
+
+  function createItemContent(content, itemData, config) {
+    // Create item icon
+    const icon = document.createElement('img');
+    icon.src = `{{CDN_ASSETS_URL}}/${itemData.iconImageUri}`;
+    icon.alt = 'Item';
+    icon.className = config.iconClass;
+    content.appendChild(icon);
+    
+    // Add quantity if greater than 1
+    if (itemData.quantity && itemData.quantity > 1) {
+      const quantity = document.createElement('div');
+      quantity.className = config.quantityClass;
+      quantity.textContent = itemData.quantity;
+      content.appendChild(quantity);
+    }
+  }
+
+  function createTooltip(slot, itemData) {
+    if (!hasTooltipData(itemData)) return;
+
+    const tooltip = document.createElement('div');
+    tooltip.className = 'backpack-item-tooltip';
+    
+    const content = document.createElement('div');
+    content.className = 'backpack-item-tooltip-content';
+    
+    const sections = [];
+    if (itemData.name) sections.push(`<div class="backpack-tooltip-name">${itemData.name}</div>`);
+    if (itemData.description) sections.push(`<div class="backpack-tooltip-description">${itemData.description}</div>`);
+    
+    const sellValue = itemData.sellValue || 0;
+    if (sellValue > 0) sections.push(`<div class="backpack-tooltip-value">Sell Value: ${sellValue.toLocaleString()} gold</div>`);
+    
+    content.innerHTML = sections.join('');
+    tooltip.appendChild(content);
+    slot.appendChild(tooltip);
+  }
+
+  function removeTooltip(slot) {
+    const existingTooltip = slot.querySelector('.backpack-item-tooltip');
+    if (existingTooltip) existingTooltip.remove();
+  }
+
+  function hasTooltipData(itemData) {
+    return itemData.name || itemData.description || itemData.sellValue !== undefined;
   }
 
   // Specific update functions
@@ -417,7 +469,6 @@
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     width: 680px;
-    overflow: hidden;
   }
 
   /* Header Styles */
@@ -805,6 +856,10 @@
     right: 1px;
   }
 
+  body.mobile .backpack-item-tooltip {
+    display: none;
+  }
+
   .backpack-mouse-follower {
     position: fixed;
     width: 56px;
@@ -824,6 +879,7 @@
     transform: translate(-50%, -50%) scale(0.95);
     transition: transform 0.15s ease, opacity 0.15s ease;
     opacity: 0;
+    font-family: var(--backpack-font);
   }
 
   .backpack-mouse-follower.active {
@@ -859,6 +915,10 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
   }
 
+  .backpack-mouse-follower .backpack-item-tooltip {
+    z-index: 2001;
+  }
+
   @keyframes mouseFollowerPulse {
     0%, 100% { 
       box-shadow: 
@@ -874,6 +934,91 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.1),
         0 0 8px rgba(255, 255, 255, 0.2);
     }
+  }
+
+  /* Item Tooltip Styles */
+  .backpack-item-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    pointer-events: none;
+  }
+
+  .backpack-slot:hover .backpack-item-tooltip,
+  .backpack-hotbar-slot:hover .backpack-item-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-8px);
+  }
+
+  .backpack-item-tooltip-content {
+    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-size: 12px;
+    font-weight: 500;
+    color: #cccccc;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    white-space: normal;
+    min-width: 150px;
+    max-width: 300px;
+    line-height: 1.4;
+    position: relative;
+    text-align: left;
+    transform: translateX(-50%);
+  }
+
+  /* Tooltip Caret */
+  .backpack-item-tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: #444;
+  }
+
+  .backpack-item-tooltip-content::before {
+    content: '';
+    position: absolute;
+    top: calc(100% - 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #2a2a2a;
+    z-index: 1;
+  }
+
+  /* Tooltip Content Sections */
+  .backpack-tooltip-name {
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+  }
+
+  .backpack-tooltip-description {
+    color: #cccccc;
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+
+  .backpack-tooltip-value {
+    color: #ffd700;
+    font-weight: 600;
+    font-size: 10px;
+  }
+
+  /* Mouse Follower Tooltip */
+  .backpack-mouse-follower .backpack-item-tooltip {
+    z-index: 2001;
   }
 </style>
 
