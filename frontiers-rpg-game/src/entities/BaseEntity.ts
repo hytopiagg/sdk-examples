@@ -51,6 +51,7 @@ export type BaseEntityOptions = {
   deathAnimations?: string[];
   deathDespawnDelayMs?: number;
   deathItemDrops?: BaseEntityItemDrop[];
+  deathItemMaxDrops?: number;
   dialogue?: BaseEntityDialogueRoot;
   facingAngle?: number;
   facingPosition?: Vector3Like;
@@ -75,6 +76,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _deathAnimations: string[];
   private _deathDespawnDelayMs: number;
   private _deathItemDrops: BaseEntityItemDrop[];
+  private _deathItemMaxDrops: number;
   private _dialogueRoot: BaseEntityDialogueRoot | undefined;
   private _dying: boolean = false;
   private _health: number;
@@ -101,6 +103,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._deathAnimations = options.deathAnimations ?? [];
     this._deathDespawnDelayMs = options.deathDespawnDelayMs ?? 0;
     this._deathItemDrops = options.deathItemDrops ?? [];
+    this._deathItemMaxDrops = options.deathItemMaxDrops ?? 1;
     this._dialogueRoot = options.dialogue;
     this._health = options.health ?? 0; // 0 is infinite health, will not show health bar
     this._maxHealth = this._health;
@@ -146,15 +149,27 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public dropItems(): void {
     if (!this._deathItemDrops || !this.world) return;
 
-    for (const drop of this._deathItemDrops) {
-      if (Math.random() > drop.probability) continue;
-      
-      // Set quantity
-      const quantity = drop.quantity ?? Math.floor(Math.random() * (drop.maxQuantity ?? 1) + (drop.minQuantity ?? 1));
-      drop.item.setQuantity(quantity);
-      
-      // Spawn item for pickup
-      drop.item.spawnEntityAsDrop(this.world, this.position);
+    const maxDrops = Math.floor(Math.random() * (this._deathItemMaxDrops ?? 1) + 1);
+
+    for (let i = 0; i < maxDrops; i++) {
+      for (let j = 0; j < this._deathItemDrops.length; j++) {
+        const drop = this._deathItemDrops[j];
+
+        if (Math.random() > drop.probability) continue;
+        
+        // Set quantity
+        const quantity = drop.quantity ?? Math.floor(Math.random() * (drop.maxQuantity ?? 1) + (drop.minQuantity ?? 1));
+        drop.item.setQuantity(quantity);
+        
+        // Spawn item for pickup
+        drop.item.spawnEntityAsDrop(this.world, this.position);
+
+        // Remove the drop from the array since it has been used
+        this._deathItemDrops.splice(j, 1);
+
+        // Break out of the inner loop since we found a drop for this iteration
+        break;
+      }
     }
   }
 
