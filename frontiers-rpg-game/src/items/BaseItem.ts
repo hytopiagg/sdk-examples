@@ -212,9 +212,9 @@ export default class BaseItem implements IInteractable {
         : Math.random() * Math.PI * 2;
       
       this.entity.applyImpulse({
-        x: mass * Math.cos(angle) * 6,
+        x: mass * Math.cos(angle) * 5,
         y: mass * 3.5,
-        z: mass * Math.sin(angle) * 6,
+        z: mass * Math.sin(angle) * 5,
       });
     }
   }

@@ -162,7 +162,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
         drop.item.setQuantity(quantity);
         
         // Spawn item for pickup
-        drop.item.spawnEntityAsDrop(this.world, this.position);
+        drop.item.spawnEntityAsEjectedDrop(this.world, this.position);
 
         // Remove the drop from the array since it has been used
         this._deathItemDrops.splice(j, 1);
