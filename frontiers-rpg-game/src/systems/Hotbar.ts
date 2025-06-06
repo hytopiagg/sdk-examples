@@ -79,6 +79,16 @@ export default class Hotbar extends ItemInventory {
     return result;
   }
 
+  public wouldAddAtSelectedIndex(item: BaseItem): boolean {
+    for (let i = 0; i < HOTBAR_SIZE; i++) {
+      if (!this.getItemAt(i)) {
+        return i === this._selectedIndex;
+      }
+    }
+    
+    return false;
+  }
+
   protected override onSlotChanged(position: number, item: BaseItem | null): void {
     this._owner.ui.sendData({
       type: 'hotbarUpdate',

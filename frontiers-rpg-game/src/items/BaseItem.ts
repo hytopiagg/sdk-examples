@@ -134,9 +134,16 @@ export default class BaseItem implements IInteractable {
   }
 
   public interact(playerEntity: GamePlayerEntity): void {
-    // pick up item.
+    const wouldAddToSelectedIndex = playerEntity.hotbar.wouldAddAtSelectedIndex(this);
+    
+    if (wouldAddToSelectedIndex) {
+      this.despawnEntity(); // Must despawn first, since hotbar.addItem will trigger a held spawn when item added to selected index.
+    }
+
     if (playerEntity.hotbar.addItem(this) || playerEntity.backpack.addItem(this)) {
-      this.despawnEntity();
+      if (!wouldAddToSelectedIndex) {
+        this.despawnEntity();
+      }
     }
   }
 
