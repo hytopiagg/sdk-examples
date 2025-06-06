@@ -1468,12 +1468,10 @@
             closeDialogue();
           }
           
-          if (option.nextDialogueId !== undefined) {
-            hytopia.sendData({
-              type: 'progressDialogue',
-              nextDialogueId: option.nextDialogueId
-            });
-          }
+          hytopia.sendData({
+            type: 'progressDialogue',
+            optionId: option.id
+          });
         });
 
         optionsContainer.appendChild(optionEl);

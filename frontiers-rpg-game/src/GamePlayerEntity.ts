@@ -335,10 +335,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
 
     if (data.type === 'progressDialogue') {
-      const { nextDialogueId } = data;
+      const { optionId } = data;
 
-      if (this._currentDialogueEntity) {
-        this._currentDialogueEntity.progressDialogue(this, nextDialogueId);
+      if (this._currentDialogueEntity && optionId !== undefined) {
+        this._currentDialogueEntity.progressDialogue(this, optionId);
       }
     }
 
