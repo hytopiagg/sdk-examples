@@ -382,7 +382,7 @@
     if (itemData.description) sections.push(`<div class="backpack-tooltip-description">${itemData.description}</div>`);
     
     const sellValue = itemData.sellValue || 0;
-    if (sellValue > 0) sections.push(`<div class="backpack-tooltip-value">Sell Value: ${sellValue.toLocaleString()} gold</div>`);
+    if (sellValue > 0) sections.push(`<div class="backpack-tooltip-value">Sells For: ${sellValue.toLocaleString()} gold</div>`);
     
     content.innerHTML = sections.join('');
     tooltip.appendChild(content);

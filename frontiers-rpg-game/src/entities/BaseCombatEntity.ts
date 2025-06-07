@@ -102,7 +102,7 @@ export default class BaseCombatEntity extends BaseEntity {
     const damageDelay = attack.damageDelayMs ?? 0;
     
     setTimeout(() => {
-      if (!target || !this._aggroPotentialTargets.has(target)) return;
+      if (!target || !this._aggroPotentialTargets.has(target) || this.isDying) return;
       
       const distanceSquared = this._distanceSquaredToTarget(target);
       const reachSquared = attack.reach ** 2;

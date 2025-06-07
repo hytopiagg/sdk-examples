@@ -1,5 +1,13 @@
 <!-- Game HUD Overlay -->
 <div class="hud-overlay">
+  <!-- Area Banner -->
+  <div class="hud-area-banner" id="hud-area-banner">
+    <div class="hud-area-banner-content">
+      <div class="hud-area-banner-text"></div>
+      <div class="hud-area-banner-underline"></div>
+    </div>
+  </div>
+
   <!-- Game Clock (top right) -->
   <div class="hud-clock-container">
     <div class="hud-clock">
@@ -117,6 +125,9 @@
         break;
       case 'hotbarUpdate':
         updateHotbarSlot(data.position, data);
+        break;
+      case 'showAreaBanner':
+        showAreaBanner(data.areaName);
         break;
     }
   });
@@ -282,6 +293,25 @@
     }, HUD_CONFIG.expGainDuration + delay);
   }
 
+  function showAreaBanner(areaName) {
+    const banner = document.getElementById('hud-area-banner');
+    const bannerText = banner.querySelector('.hud-area-banner-text');
+    
+    // Update text
+    bannerText.textContent = areaName;
+    
+    // Wait 1.5 seconds before showing banner
+    setTimeout(() => {
+      // Show banner
+      banner.classList.add('show');
+      
+      // Hide banner after 4 seconds
+      setTimeout(() => {
+        banner.classList.remove('show');
+      }, 4000);
+    }, 1500);
+  }
+
   // Initialize HUD
   initializeHUD();
 </script>
@@ -328,6 +358,90 @@
     z-index: 100;
     font-family: var(--hud-font);
     user-select: none;
+  }
+
+  /* ============================================
+     AREA BANNER
+     ============================================ */
+
+  .hud-area-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease-out;
+  }
+
+  .hud-area-banner.show {
+    opacity: 1;
+    animation: areaBannerFade 4s ease-out;
+  }
+
+  .hud-area-banner-content {
+    text-align: center;
+  }
+
+  .hud-area-banner-text {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 600;
+    color: #f4f1e8;
+    text-shadow: 
+      0 0 30px rgba(244, 241, 232, 0.4),
+      0 4px 12px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 5px 0;
+    white-space: nowrap;
+    transform: translateY(15px);
+    opacity: 0;
+  }
+
+  .hud-area-banner.show .hud-area-banner-text {
+    animation: textShow 1s ease-out 0.3s forwards;
+  }
+
+  .hud-area-banner-underline {
+    width: 0;
+    height: 4px;
+    margin: 0 auto;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 215, 0, 0.6) 25%, 
+      #ffd700 50%, 
+      rgba(255, 215, 0, 0.6) 75%, 
+      transparent);
+    box-shadow: 
+      0 0 20px rgba(255, 215, 0, 0.5),
+      0 2px 6px rgba(0, 0, 0, 0.6);
+    border-radius: 2px;
+  }
+
+  .hud-area-banner.show .hud-area-banner-underline {
+    animation: underlineExpand 1.2s ease-out 0.8s forwards;
+  }
+
+  /* Animations */
+  @keyframes areaBannerFade {
+    0%, 85% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes textShow {
+    to { 
+      opacity: 0.8; 
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes underlineExpand {
+    to { 
+      width: min(500px, 70vw); 
+      opacity: 1; 
+    }
   }
 
   /* ============================================
@@ -792,6 +906,20 @@
     .hud-crosshair-vertical {
       height: 8px;
       top: -4px;
+    }
+
+    /* Area Banner Mobile */
+    .hud-area-banner-text {
+      font-size: clamp(1.8rem, 10vw, 3rem);
+      letter-spacing: 0.05em;
+      margin: 0 0 4px 0;
+    }
+
+    @keyframes underlineExpand {
+      to { 
+        width: min(300px, 85vw); 
+        opacity: 1; 
+      }
     }
   }
 

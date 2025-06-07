@@ -127,6 +127,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
 
   public get idleAnimations(): string[] { return this.pathfindingController.idleLoopedAnimations; }
   public get idleAnimationsSpeed(): number | undefined { return this.pathfindingController.idleLoopedAnimationsSpeed; }
+  public get isDying(): boolean { return this._dying; }
   public get isInteractable(): boolean { return !!this._dialogueRoot; }
   public get health(): number { return this._health; }
   public get maxHealth(): number { return this._maxHealth; }

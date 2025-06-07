@@ -28,6 +28,7 @@ includeContent('./root.html');
 includeContent('./menus/backpack.html');
 includeContent('./menus/stats.html');
 includeContent('./menus/dialogue.html');
+includeContent('./menus/merchant.html');
 includeContent('./scene-ui-templates/entity-nameplate.html');
 includeContent('./scene-ui-templates/item-nameplate.html');
 includeContent('./hud.html');

@@ -22,6 +22,7 @@ import Storage from './systems/Storage';
 import type BaseCombatEntity from './entities/BaseCombatEntity';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseItem from './items/BaseItem';
+import type GameRegion from './GameRegion';
 import type IDamageable from './interfaces/IDamageable';
 import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 
@@ -44,9 +45,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   private _health: number = 100;
   private _maxHealth: number = 100;
   private _nameplateSceneUI: SceneUI;
+  private _region: GameRegion;
   private _skillExperience: Map<SkillId, number> = new Map();
 
-  public constructor(player: Player) {
+  public constructor(player: Player, region: GameRegion) {
     super({
       player,
       name: 'Player',
@@ -56,6 +58,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this.hotbar = new Hotbar(this.player);
     this.storage = new Storage(this.player);
     
+    this._region = region;
+
     this._setupPlayerCamera();
     this._setupPlayerController();
     this._setupPlayerInventories();
@@ -405,6 +409,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
     // Listen for client->server UI data events
     this.player.ui.on(PlayerUIEvent.DATA, this._onPlayerUIData);
+
+    // Show Area Banner
+    this.player.ui.sendData({
+      type: 'showAreaBanner',
+      areaName: this._region.name,
+    });
   }
 
   private _toggleBackpack = (): void => {

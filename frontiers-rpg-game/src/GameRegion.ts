@@ -47,12 +47,7 @@ export default class GameRegion {
   }
 
   protected onPlayerJoin(player: Player) {
-    const randomOffset = {
-      x: this._spawnPoint.x + (Math.random() * 6) - 3, // Random between spawnPoint.x ± 3
-      y: this._spawnPoint.y,
-      z: this._spawnPoint.z + (Math.random() * 6) - 3  // Random between spawnPoint.z ± 3
-    };
-    (new GamePlayerEntity(player)).spawn(this._world, randomOffset);
+    (new GamePlayerEntity(player, this)).spawn(this._world, this._spawnPoint);
   }
 
   protected onPlayerLeave(player: Player) {
