@@ -1603,14 +1603,14 @@
       data.options.forEach(option => {
         const optionEl = document.createElement('div');
         optionEl.className = 'dialogue-option';
-        if (option.dismiss) {
+        if (option.pureExit) {
           optionEl.classList.add('dialogue-option-exit');
         }
         optionEl.textContent = option.text;
         
         optionEl.addEventListener('click', () => {
           if (option.dismiss) {
-            closeDialogue();
+            closeDialogue(option.pureExit);
           }
           
           hytopia.sendData({
@@ -1624,12 +1624,15 @@
     }
   }
 
-  function closeDialogue() {
+  function closeDialogue(relockPointer = true) {
     const panel = document.querySelector('.dialogue-panel');
     const overlay = document.querySelector('.dialogue-overlay');
     panel.classList.add('dialogue-closing');
     overlay.classList.add('dialogue-closing');
-    hytopia.lockPointer(true);
+
+    if (relockPointer) {
+      hytopia.lockPointer(true);
+    }
   }
 
   function openDialogue() {
@@ -2385,6 +2388,7 @@
       setMerchantVisibility(false);
       merchantState.currentMode = null;
       clearSelection();
+      hytopia.lockPointer(true);
       return;
     }
 
@@ -2403,13 +2407,14 @@
       const requiredRows = calculateRequiredRows(buyItems);
       updateMerchantGrid(requiredRows);
       populateBuyItems(buyItems);
-      
+      hytopia.lockPointer(false);
     } else if (mode === 'sell') {
       setHotbarVisibility(true);
       
       updateMerchantGrid(2); // 2 rows for sell mode
       populateSlots(merchantState.backpackItems, MERCHANT_CONFIG.slots, updateMerchantSlot);
       populateSlots(merchantState.hotbarItems, MERCHANT_CONFIG.hotbarSlots, updateHotbarSlot);
+      hytopia.lockPointer(false);
     }
   }
 

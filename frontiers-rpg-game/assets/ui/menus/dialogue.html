@@ -53,14 +53,14 @@
       data.options.forEach(option => {
         const optionEl = document.createElement('div');
         optionEl.className = 'dialogue-option';
-        if (option.dismiss) {
+        if (option.pureExit) {
           optionEl.classList.add('dialogue-option-exit');
         }
         optionEl.textContent = option.text;
         
         optionEl.addEventListener('click', () => {
           if (option.dismiss) {
-            closeDialogue();
+            closeDialogue(option.pureExit);
           }
           
           hytopia.sendData({
@@ -74,12 +74,15 @@
     }
   }
 
-  function closeDialogue() {
+  function closeDialogue(relockPointer = true) {
     const panel = document.querySelector('.dialogue-panel');
     const overlay = document.querySelector('.dialogue-overlay');
     panel.classList.add('dialogue-closing');
     overlay.classList.add('dialogue-closing');
-    hytopia.lockPointer(true);
+
+    if (relockPointer) {
+      hytopia.lockPointer(true);
+    }
   }
 
   function openDialogue() {

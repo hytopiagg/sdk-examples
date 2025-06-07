@@ -29,6 +29,7 @@ export type BaseEntityDialogueOption = {
   dismiss?: boolean;
   nextDialogue?: BaseEntityDialogue;
   onSelect?: (interactor: GamePlayerEntity) => void;
+  pureExit?: boolean;
 }
 
 export type BaseEntityDialogueRoot = {
@@ -125,6 +126,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this.setupNameplateUI();
   }
 
+  public get dialogueRoot(): BaseEntityDialogueRoot | undefined { return this._dialogueRoot; }
   public get idleAnimations(): string[] { return this.pathfindingController.idleLoopedAnimations; }
   public get idleAnimationsSpeed(): number | undefined { return this.pathfindingController.idleLoopedAnimationsSpeed; }
   public get isDying(): boolean { return this._dying; }
@@ -230,6 +232,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
         id: option._id,
         text: option.text,
         dismiss: option.dismiss,
+        pureExit: option.pureExit ?? false,
       })),
     });
   }

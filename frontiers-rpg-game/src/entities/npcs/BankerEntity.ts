@@ -21,6 +21,7 @@ export default class BankerEntity extends BaseEntity {
                   {
                     text: 'That\'s good to hear.',
                     dismiss: true,
+                    pureExit: true,
                   },
                 ]
               }
@@ -28,6 +29,7 @@ export default class BankerEntity extends BaseEntity {
             {
               text: 'Ok, I will check back later.',
               dismiss: true,
+              pureExit: true,
             },
           ],
         }
