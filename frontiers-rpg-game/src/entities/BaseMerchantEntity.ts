@@ -1,5 +1,5 @@
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
-import GoldItem from '../items/general/GoldItem';
+import { SkillId } from '../config';
 import type BaseItem from '../items/BaseItem';
 import type { BaseEntityDialogueOption } from './BaseEntity';
 import type GamePlayerEntity from '../GamePlayerEntity';
@@ -78,6 +78,7 @@ export default class BaseMerchantEntity extends BaseEntity {
       }
     }
 
+    this._awardBarteringSkillExperience(interactor, totalGoldCost, true);
     interactor.showNotification(`Bought ${quantity} ${item.name} for ${totalGoldCost.toLocaleString()} gold.`, 'success');
   }
 
@@ -136,6 +137,12 @@ export default class BaseMerchantEntity extends BaseEntity {
       itemInventory.adjustItemQuantity(itemIndex, -quantity);
     }
 
+    this._awardBarteringSkillExperience(interactor, totalGoldEarned, false);
     interactor.showNotification(`Sold ${quantity} ${item.name} for ${totalGoldEarned.toLocaleString()} gold.`, 'success');
+  }
+
+  private _awardBarteringSkillExperience(interactor: GamePlayerEntity, transactionGoldAmount: number, isBuying: boolean): void {
+    const baseExperience = Math.max(5, Math.sqrt(transactionGoldAmount) * 2);
+    interactor.adjustSkillExperience(SkillId.BARTERING, Math.floor(isBuying ? baseExperience : baseExperience * 0.7));
   }
 }

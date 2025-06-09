@@ -271,9 +271,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   private _getLevelRequiredExperience(level: number): number {
     if (level <= 1) return 0;
     
-    // Exponential scaling: 100 * (level ^ 1.5)
-    // Level 2: ~141 XP, Level 3: ~245 XP, Level 5: ~559 XP, Level 10: ~3162 XP
-    return Math.floor(100 * Math.pow(level, 1.5));
+    // Adjusted formula: slightly higher exponent, lower base
+    // Level 2: ~160 XP, Level 3: ~340 XP, Level 5: ~1,050 XP, Level 10: ~3,200 XP  
+    return Math.floor(85 * Math.pow(level, 1.6));
   }
 
   private _interact(): void {
