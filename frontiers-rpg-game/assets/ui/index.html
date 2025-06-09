@@ -2445,7 +2445,7 @@
     } else if (mode === 'sell') {
       setHotbarVisibility(true);
       
-      updateMerchantGrid(2); // 2 rows for sell mode
+      updateMerchantGrid(3); // 3 rows for sell mode (18 slots total)
       populateSlots(merchantState.backpackItems, MERCHANT_CONFIG.slots, updateMerchantSlot);
       populateSlots(merchantState.hotbarItems, MERCHANT_CONFIG.hotbarSlots, updateHotbarSlot);
       hytopia.lockPointer(false);

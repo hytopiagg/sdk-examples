@@ -20,6 +20,7 @@ export default class ItemInventory {
   public get isFull(): boolean { return this._itemPositions.size >= this._size; }
   public get rows(): number { return Math.ceil(this._size / this._gridWidth); }
   public get size(): number { return this._size; }
+  public get totalEmptySlots(): number { return this._size - this._itemPositions.size; }
 
   public addItem(item: BaseItem, position?: number): boolean {
     if (this._itemPositions.has(item)) {

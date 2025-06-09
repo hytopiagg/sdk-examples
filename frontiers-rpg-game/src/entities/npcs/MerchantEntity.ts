@@ -6,8 +6,8 @@ export default class MerchantEntity extends BaseMerchantEntity {
   public constructor(options?: Partial<BaseMerchantEntityOptions>) {
     super({
       buyableItems: [
-        new WoodenSwordItem(),
-        new RatkinTailItem(),
+        new WoodenSwordItem({ buyPrice: 10 }),
+        new RatkinTailItem({ buyPrice: 5 }),
       ],
       dialogueAvatarImageUri: 'avatars/merchant.png',
       dialogueTitle: 'Goods Vendor',

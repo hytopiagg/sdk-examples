@@ -49,7 +49,34 @@ export default class BaseMerchantEntity extends BaseEntity {
   }
 
   public buyItem(interactor: GamePlayerEntity, buyableItemIndex: number, quantity: number): void {
-    console.log(`${interactor.name} is buying ${quantity} of ${this.buyableItems[buyableItemIndex].name} from ${this.name}`);
+    const item = this.buyableItems[buyableItemIndex];
+
+    if (!item?.buyPrice || quantity <= 0) {
+      return; // TODO: Show error message - invalid item or quantity
+    }
+
+    const totalGoldCost = item.buyPrice * quantity;
+    const totalEmptySlots = interactor.hotbar.totalEmptySlots + interactor.backpack.totalEmptySlots;
+    const slotsNeeded = item.stackable ? 1 : quantity;
+
+    if (totalEmptySlots < slotsNeeded) {
+      return; // TODO: Show error message - inventory full
+    }
+
+    if (!interactor.adjustGold(-totalGoldCost)) {
+      return; // TODO: Show error message - not enough gold
+    }
+
+    // Create and add items based on stackability
+    if (item.stackable) {
+      const boughtItem = item.clone({ quantity });
+      interactor.hotbar.addItem(boughtItem) || interactor.backpack.addItem(boughtItem);
+    } else {
+      for (let i = 0; i < quantity; i++) {
+        const boughtItem = item.clone();
+        interactor.hotbar.addItem(boughtItem) || interactor.backpack.addItem(boughtItem);
+      }
+    }
   }
 
   public openBuyMenu(interactor: GamePlayerEntity): void {
