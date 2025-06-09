@@ -17,10 +17,11 @@ import { SkillId, skills } from './config';
 import Backpack from './systems/Backpack';
 import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
+import GoldItem from './items/general/GoldItem';
 import Hotbar from './systems/Hotbar';
 import Storage from './systems/Storage';
-import type BaseCombatEntity from './entities/BaseCombatEntity';
 import type BaseEntity from './entities/BaseEntity';
+import type BaseMerchantEntity from './entities/BaseMerchantEntity';
 import type BaseItem from './items/BaseItem';
 import type GameRegion from './GameRegion';
 import type IDamageable from './interfaces/IDamageable';
@@ -40,6 +41,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   public readonly hotbar: Hotbar;
   public readonly storage: Storage;
   private _currentDialogueEntity: BaseEntity | undefined;
+  private _currentMerchantEntity: BaseMerchantEntity | undefined;
   private _globalExperience: number = 0;
   private _lastDodgeTimeMs: number = 0;
   private _health: number = 100;
@@ -112,6 +114,62 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     return this.controller as DefaultPlayerEntityController;
   }
 
+  public adjustGold(amount: number, allowNegative: boolean = false): boolean {
+    if (amount === 0) return true;
+
+    if (amount > 0) {
+      // Adding gold - stack with existing or create new
+      const existingGold = this.hotbar.getItemByClass(GoldItem) ?? this.backpack.getItemByClass(GoldItem);
+      if (existingGold) {
+        // Use inventory method to trigger UI update
+        const inventory = this.hotbar.getItemByClass(GoldItem) === existingGold ? this.hotbar : this.backpack;
+        inventory.adjustItemQuantityByReference(existingGold, amount);
+        return true;
+      } else {
+        const goldItem = new GoldItem({ quantity: amount });
+        return this.hotbar.addItem(goldItem) || this.backpack.addItem(goldItem);
+      }
+    } else {
+      // Subtracting gold - handle multiple stacks across inventories
+      const hotbarGolds = this.hotbar.getItemsByClass(GoldItem);
+      const backpackGolds = this.backpack.getItemsByClass(GoldItem);
+      const totalGold = [...hotbarGolds, ...backpackGolds].reduce((sum, gold) => sum + gold.quantity, 0);
+      let remainingToRemove = Math.abs(amount);
+      
+      if (totalGold < remainingToRemove && !allowNegative) {
+        return false;
+      }
+            
+      // Process hotbar golds first
+      for (const gold of hotbarGolds) {
+        if (remainingToRemove <= 0) break;
+        
+        if (gold.quantity <= remainingToRemove) {
+          remainingToRemove -= gold.quantity;
+          this.hotbar.removeItemByReference(gold);
+        } else {
+          this.hotbar.adjustItemQuantityByReference(gold, -remainingToRemove);
+          remainingToRemove = 0;
+        }
+      }
+      
+      // Process backpack golds if needed
+      for (const gold of backpackGolds) {
+        if (remainingToRemove <= 0) break;
+        
+        if (gold.quantity <= remainingToRemove) {
+          remainingToRemove -= gold.quantity;
+          this.backpack.removeItemByReference(gold);
+        } else {
+          this.backpack.adjustItemQuantityByReference(gold, -remainingToRemove);
+          remainingToRemove = 0;
+        }
+      }
+      
+      return true;
+    }
+  }
+
   public adjustHealth(amount: number): void {
     this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
     this._updateHudHealthUI();
@@ -129,6 +187,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   public setCurrentDialogueEntity(entity: BaseEntity): void {
     this._currentDialogueEntity = entity;
+  }
+
+  public setCurrentMerchantEntity(entity: BaseMerchantEntity): void {
+    this._currentMerchantEntity = entity;
   }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
@@ -294,6 +356,14 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   private _onPlayerUIData = (payload: EventPayloads[PlayerUIEvent.DATA]): void => {
     const { data } = payload;
 
+    if (data.type === 'buyItem') {
+      const { sourceIndex, quantity } = data;
+
+      if (this._currentMerchantEntity) {
+        this._currentMerchantEntity.buyItem(this, sourceIndex, quantity);
+      }
+    }
+
     if (data.type === 'dropItem') {
       const fromType = data.fromType;
       const fromIndex = parseInt(data.fromIndex);
@@ -343,6 +413,19 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
       if (this._currentDialogueEntity && optionId !== undefined) {
         this._currentDialogueEntity.progressDialogue(this, optionId);
+      }
+    }
+
+    if (data.type === 'sellItem') {
+      const { sourceType, sourceIndex, quantity } = data;
+      const fromItemInventory = 
+        sourceType === 'backpack' ? this.backpack :
+        sourceType === 'hotbar' ? this.hotbar :
+        sourceType === 'storage' ? this.storage :
+        null;
+
+      if (fromItemInventory && this._currentMerchantEntity) {
+        this._currentMerchantEntity.sellItem(this, fromItemInventory, sourceIndex, quantity);
       }
     }
 

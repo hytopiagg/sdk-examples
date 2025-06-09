@@ -64,10 +64,16 @@
     
     if (data.type === 'hotbarUpdate') {
       merchantState.hotbarItems[data.position] = data;
+      if (merchantState.currentMode === 'sell') {
+        updateHotbarSlot(data.position, data);
+      }
     }
     
     if (data.type === 'backpackUpdate') {
       merchantState.backpackItems[data.position] = data;
+      if (merchantState.currentMode === 'sell') {
+        updateMerchantSlot(data.position, data);
+      }
     }
   });
 
@@ -123,8 +129,14 @@
     if (itemData.name) sections.push(`<div class="merchant-tooltip-name">${itemData.name}</div>`);
     if (itemData.description) sections.push(`<div class="merchant-tooltip-description">${itemData.description}</div>`);
     
-    const sellValue = itemData.sellValue || 0;
-    if (sellValue > 0) sections.push(`<div class="merchant-tooltip-value">${merchantState.currentMode === 'buy' ? 'Price: ' : 'Sells For: '}${sellValue.toLocaleString()} gold</div>`);
+    const sellPrice = itemData.sellPrice || 0;
+    if (sellPrice > 0) {
+      const label = merchantState.currentMode === 'buy' ? 'Price: ' : 'Sells For: ';
+      sections.push(`<div class="merchant-tooltip-value">${label}${sellPrice.toLocaleString()} gold</div>`);
+    } else {
+      const notTradeableLabel = merchantState.currentMode === 'buy' ? 'Not Buyable' : 'Not Sellable';
+      sections.push(`<div class="merchant-tooltip-value">${notTradeableLabel}</div>`);
+    }
     
     content.innerHTML = sections.join('');
     tooltip.appendChild(content);
@@ -137,7 +149,7 @@
   }
 
   function hasTooltipData(itemData) {
-    return itemData.name || itemData.description || itemData.sellValue !== undefined;
+    return itemData.name || itemData.description || itemData.sellPrice !== undefined;
   }
 
   function createItemContent(content, itemData, config) {
@@ -206,8 +218,11 @@
       createItemContent(content, itemData, config);
       createTooltip(slot, itemData);
       
+      // Determine correct sourceType - in sell mode, merchant grid shows backpack items
+      const sourceType = (slotType === 'merchant' && merchantState.currentMode === 'sell') ? 'backpack' : slotType;
+      
       // Add click handler for item selection
-      slot.onclick = () => selectItem(itemData, slotType, position);
+      slot.onclick = () => selectItem(itemData, sourceType, position);
     }
   }
 
@@ -270,10 +285,10 @@
     }
   }
 
-  function calculateRequiredRows(buyItems) {
-    if (!buyItems || buyItems.length === 0) return MERCHANT_CONFIG.minRows;
+  function calculateRequiredRows(buyableItems) {
+    if (!buyableItems || buyableItems.length === 0) return MERCHANT_CONFIG.minRows;
     
-    const positions = buyItems
+    const positions = buyableItems
       .map(item => item.position)
       .filter(pos => typeof pos === 'number');
     
@@ -283,17 +298,17 @@
     return Math.ceil((maxPosition + 1) / MERCHANT_CONFIG.rowWidth);
   }
 
-  function populateBuyItems(buyItems) {
-    if (!buyItems || buyItems.length === 0) return;
+  function populateBuyableItems(buyableItems) {
+    if (!buyableItems || buyableItems.length === 0) return;
     
-    buyItems.forEach(item => {
+    buyableItems.forEach(item => {
       if (typeof item.position === 'number' && 
           item.position >= 0 && 
           item.position < MERCHANT_CONFIG.slots) {
         
         const itemData = {
           ...item,
-          sellValue: item.price // Use price as sell value for tooltip
+          sellPrice: item.buyPrice // Use price as sell value for tooltip
         };
         updateMerchantSlot(item.position, itemData);
       }
@@ -359,9 +374,12 @@
     const maxQuantity = merchantState.currentMode === 'sell' 
       ? (merchantState.selectedItem.quantity || 1) 
       : MERCHANT_CONFIG.maxBuyQuantity;
-    const price = merchantState.selectedItem.price || merchantState.selectedItem.sellValue || 0;
-    const totalCost = price * merchantState.selectedQuantity;
+    const price = merchantState.selectedItem.buyPrice || merchantState.selectedItem.sellPrice || 0;
     const actionLabel = merchantState.currentMode === 'buy' ? 'Buy' : 'Sell';
+    
+    const totalDisplay = price > 0 
+      ? `${(price * merchantState.selectedQuantity).toLocaleString()} gold`
+      : (merchantState.currentMode === 'buy' ? 'Not Buyable' : 'Not Sellable');
 
     placeholder.innerHTML = `
       <div class="merchant-item-details">
@@ -369,19 +387,36 @@
           <img src="{{CDN_ASSETS_URL}}/${merchantState.selectedItem.iconImageUri}" alt="${merchantState.selectedItem.name}" class="merchant-item-icon">
           <div class="merchant-item-info">
             <div class="merchant-item-name">${merchantState.selectedItem.name}</div>
-            <div class="merchant-item-total">${totalCost.toLocaleString()} gold</div>
+            <div class="merchant-item-total">${totalDisplay}</div>
           </div>
         </div>
         <div class="merchant-item-actions">
           <div class="merchant-quantity-controls">
-            <button class="merchant-qty-btn" onclick="changeQuantity(-1)">-</button>
+            <button class="merchant-qty-btn merchant-qty-decrease">-</button>
             <span class="merchant-qty-display">${merchantState.selectedQuantity}</span>
-            <button class="merchant-qty-btn" onclick="changeQuantity(1)">+</button>
+            <button class="merchant-qty-btn merchant-qty-increase">+</button>
           </div>
-          <button class="merchant-action-btn" onclick="confirmAction()">${actionLabel}</button>
+          <button class="merchant-action-btn merchant-confirm-action" ${price === 0 ? 'disabled' : ''}>${actionLabel}</button>
         </div>
       </div>
     `;
+
+    // Add event listeners
+    const decreaseBtn = placeholder.querySelector('.merchant-qty-decrease');
+    const increaseBtn = placeholder.querySelector('.merchant-qty-increase');
+    const confirmBtn = placeholder.querySelector('.merchant-confirm-action');
+
+    if (decreaseBtn) {
+      decreaseBtn.addEventListener('click', () => changeQuantity(-1));
+    }
+    
+    if (increaseBtn) {
+      increaseBtn.addEventListener('click', () => changeQuantity(1));
+    }
+
+    if (confirmBtn && price > 0) {
+      confirmBtn.addEventListener('click', confirmAction);
+    }
   }
 
   function changeQuantity(delta) {
@@ -397,12 +432,11 @@
     
     const actionData = {
       type: merchantState.currentMode === 'buy' ? 'buyItem' : 'sellItem',
-      itemData: merchantState.selectedItem,
       quantity: merchantState.selectedQuantity,
       sourceType: merchantState.selectedItem.sourceType,
       sourceIndex: merchantState.selectedItem.sourceIndex
     };
-    
+    console.log(actionData);
     hytopia.sendData(actionData);
     clearSelection();
   }
@@ -416,7 +450,7 @@
       return;
     }
 
-    const { mode, buyItems, merchantName, merchantTitle, merchantAvatarUri } = data;
+    const { mode, buyableItems, merchantName, merchantTitle, merchantAvatarUri } = data;
     merchantState.currentMode = mode;
     clearSelection(); // Clear selection when switching modes
     
@@ -427,10 +461,10 @@
 
     if (mode === 'buy') {
       setHotbarVisibility(false);
-      
-      const requiredRows = calculateRequiredRows(buyItems);
+
+      const requiredRows = calculateRequiredRows(buyableItems);
       updateMerchantGrid(requiredRows);
-      populateBuyItems(buyItems);
+      populateBuyableItems(buyableItems);
       hytopia.lockPointer(false);
     } else if (mode === 'sell') {
       setHotbarVisibility(true);
@@ -710,6 +744,14 @@
   .merchant-action-btn:hover {
     background: rgba(76, 175, 80, 0.3);
     color: #66BB6A;
+  }
+
+  /* Disabled button styles */
+  .merchant-qty-btn:disabled,
+  .merchant-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   /* Selected slot styling */

@@ -32,6 +32,7 @@ export const RARITY_RGB_COLORS: Record<ItemRarity, RgbColor> = {
 export type ItemRarity = 'common' | 'unusual' | 'rare' | 'epic' | 'legendary' | 'utopian';
 
 export type BaseItemOptions = {
+  buyPrice?: number;
   defaultRelativePositionAsChild?: Vector3Like;
   defaultRelativeRotationAsChild?: QuaternionLike;
   description?: string;
@@ -45,11 +46,12 @@ export type BaseItemOptions = {
   name: string;
   quantity?: number;
   rarity?: ItemRarity;
-  sellValue?: number;
+  sellPrice?: number;
   stackable?: boolean;
 };
 
 export default class BaseItem implements IInteractable {
+  public readonly buyPrice: number | undefined;
   public readonly defaultRelativePositionAsChild: Vector3Like;
   public readonly defaultRelativeRotationAsChild: QuaternionLike | undefined;
   public readonly description: string;
@@ -62,7 +64,7 @@ export default class BaseItem implements IInteractable {
   public readonly heldModelTintColor: RgbColor | undefined;
   public readonly name: string;
   public readonly rarity: ItemRarity;
-  public readonly sellValue: number;
+  public readonly sellPrice: number;
   public readonly stackable: boolean;
 
   private _entity: BaseItemEntity | undefined;
@@ -70,6 +72,7 @@ export default class BaseItem implements IInteractable {
   private _quantity: number = 1;
 
   public constructor(options: BaseItemOptions) {
+    this.buyPrice = options.buyPrice;
     this.defaultRelativePositionAsChild = options.defaultRelativePositionAsChild ?? (!options.heldModelUri ? DEFAULT_MODEL_CHILD_RELATIVE_POSITION : { x: 0, y: 0, z: 0 });
     this.defaultRelativeRotationAsChild = options.defaultRelativeRotationAsChild;
     this.description = options.description ?? '';
@@ -82,7 +85,7 @@ export default class BaseItem implements IInteractable {
     this.heldModelTintColor = options.heldModelTintColor;
     this.name = options.name;
     this.rarity = options.rarity ?? 'common';
-    this.sellValue = options.sellValue ?? 1;
+    this.sellPrice = options.sellPrice ?? 1;
     this.stackable = options.stackable ?? false;
 
     if (this.stackable && options.quantity) {
@@ -94,12 +97,15 @@ export default class BaseItem implements IInteractable {
   public get quantity(): number { return this._quantity; }
 
   // If stackable (can have more than 1), adjust the quantity of the item.
+  // Use this for spawned items (ground drops, held items) - updates nameplate only.
+  // For inventory items, use inventory.adjustItemQuantity() to trigger UI updates.
   public adjustQuantity(quantity: number): void {
     if (!this.stackable) {
       return ErrorHandler.warning(`BaseItem.adjustQuantity(): Item ${this.name} is not stackable and cannot have a quantity.`);
     }
     
     this._quantity += quantity;
+    this._updateNameplateSceneUI();
   }
 
   // Clone the item with optional overrides.
@@ -153,6 +159,7 @@ export default class BaseItem implements IInteractable {
     }
 
     this._quantity = quantity;
+    this._updateNameplateSceneUI();
   }
 
   // Spawn the entity equivalent of the item in the world, such as a drop.
@@ -231,7 +238,7 @@ export default class BaseItem implements IInteractable {
       return undefined;
     }
 
-    this._quantity -= newStackQuantity;
+    this.adjustQuantity(-newStackQuantity);
 
     return this.clone({ quantity: newStackQuantity });
   }
@@ -282,5 +289,13 @@ export default class BaseItem implements IInteractable {
     }
 
     return true;
+  }
+
+  private _updateNameplateSceneUI(): void {
+    if (!this._nameplateSceneUI) return;
+
+    this._nameplateSceneUI.setState({
+      quantity: this.quantity,
+    })
   }
 }

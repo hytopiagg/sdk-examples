@@ -22,7 +22,7 @@ export default class Storage extends ItemInventory {
         iconImageUri: item.iconImageUri,
         description: item.description,
         quantity: item.quantity,
-        sellValue: item.sellValue,
+        sellPrice: item.sellPrice,
       } : { removed: true })
     })
   }

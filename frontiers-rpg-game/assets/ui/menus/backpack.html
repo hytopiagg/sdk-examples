@@ -381,8 +381,8 @@
     if (itemData.name) sections.push(`<div class="backpack-tooltip-name">${itemData.name}</div>`);
     if (itemData.description) sections.push(`<div class="backpack-tooltip-description">${itemData.description}</div>`);
     
-    const sellValue = itemData.sellValue || 0;
-    if (sellValue > 0) sections.push(`<div class="backpack-tooltip-value">Sells For: ${sellValue.toLocaleString()} gold</div>`);
+    const sellPrice = itemData.sellPrice || 0;
+    if (sellPrice > 0) sections.push(`<div class="backpack-tooltip-value">Sells For: ${sellPrice.toLocaleString()} gold</div>`);
     
     content.innerHTML = sections.join('');
     tooltip.appendChild(content);
@@ -395,7 +395,7 @@
   }
 
   function hasTooltipData(itemData) {
-    return itemData.name || itemData.description || itemData.sellValue !== undefined;
+    return itemData.name || itemData.description || itemData.sellPrice !== undefined;
   }
 
   // Specific update functions

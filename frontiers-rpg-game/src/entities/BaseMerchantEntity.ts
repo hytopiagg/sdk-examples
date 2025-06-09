@@ -1,0 +1,110 @@
+import BaseEntity, { BaseEntityOptions } from './BaseEntity';
+import GoldItem from '../items/general/GoldItem';
+import type BaseItem from '../items/BaseItem';
+import type { BaseEntityDialogueOption } from './BaseEntity';
+import type GamePlayerEntity from '../GamePlayerEntity';
+import type ItemInventory from '../systems/ItemInventory';
+
+export type BaseMerchantEntityOptions = {
+  additionalDialogueOptions?: BaseEntityDialogueOption[];
+  buyableItems: BaseItem[];
+  dialogueAvatarImageUri: string;
+  dialogueTitle: string;
+} & BaseEntityOptions;
+
+export default class BaseMerchantEntity extends BaseEntity {
+  public readonly buyableItems: BaseItem[];
+
+  public constructor(options: BaseMerchantEntityOptions) {
+    super({
+      ...options,
+      dialogue: {
+        avatarImageUri: options.dialogueAvatarImageUri,
+        title: options.dialogueTitle,
+        dialogue: {
+          text: 'Welcome! How can I help you today?',
+          options: [
+            {
+              text: `Buy items.`,
+              onSelect: (interactor: GamePlayerEntity) => this.openBuyMenu(interactor),
+              dismiss: true,
+            },
+            {
+              text: `Sell items.`,
+              onSelect: (interactor: GamePlayerEntity) => this.openSellMenu(interactor),
+              dismiss: true,
+            },
+            ...(options.additionalDialogueOptions ?? []),
+            {
+              text: `I don't need anything.`,
+              dismiss: true,
+              pureExit: true,
+            },
+          ],
+        }
+      }
+    });
+
+    this.buyableItems = options.buyableItems;
+  }
+
+  public buyItem(interactor: GamePlayerEntity, buyableItemIndex: number, quantity: number): void {
+    console.log(`${interactor.name} is buying ${quantity} of ${this.buyableItems[buyableItemIndex].name} from ${this.name}`);
+  }
+
+  public openBuyMenu(interactor: GamePlayerEntity): void {
+    interactor.setCurrentMerchantEntity(this);
+    interactor.player.ui.sendData({
+      type: 'toggleMerchant',
+      mode: 'buy',
+      merchantName: this.name,
+      merchantTitle: this.dialogueRoot?.title,
+      merchantAvatarUri: this.dialogueRoot?.avatarImageUri,
+      buyableItems: this.buyableItems.map((item, index) => ({
+        name: item.name,
+        description: item.description,
+        iconImageUri: item.iconImageUri,
+        position: index,
+        buyPrice: item.buyPrice,
+      })),
+    })
+  }
+
+  public openSellMenu(interactor: GamePlayerEntity): void {
+    interactor.setCurrentMerchantEntity(this);
+    interactor.player.ui.sendData({
+      type: 'toggleMerchant',
+      mode: 'sell',
+      merchantName: this.name,
+      merchantTitle: this.dialogueRoot?.title,
+      merchantAvatarUri: this.dialogueRoot?.avatarImageUri,
+    })
+  }
+
+  public sellItem(interactor: GamePlayerEntity, itemInventory: ItemInventory, itemIndex: number, quantity: number): void {
+    const item = itemInventory.getItemAt(itemIndex);
+   
+    if (!item || quantity <= 0 || quantity > item.quantity) {
+      return; // TODO: Show error message to player
+    }
+
+    if (item.sellPrice === 0) {
+      return; // TODO: Show error message to player. item is not sellable
+    }
+
+    const totalGoldEarned = item.sellPrice * quantity;
+    const isSellingAll = quantity === item.quantity;
+
+    if (isSellingAll) {
+      // Remove item first to free slot, then add gold (guaranteed to work)
+      itemInventory.removeItem(itemIndex);
+      interactor.adjustGold(totalGoldEarned);
+    } else {
+      // For partial sales, try gold first (must stack with existing), then adjust quantity
+      if (!interactor.adjustGold(totalGoldEarned)) {
+        return; // TODO: Show error message - could not add gold
+      }
+      itemInventory.adjustItemQuantity(itemIndex, -quantity);
+    }
+  }
+}
