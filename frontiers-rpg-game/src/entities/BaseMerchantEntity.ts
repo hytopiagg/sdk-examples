@@ -60,11 +60,11 @@ export default class BaseMerchantEntity extends BaseEntity {
     const slotsNeeded = item.stackable ? 1 : quantity;
 
     if (totalEmptySlots < slotsNeeded) {
-      return; // TODO: Show error message - inventory full
+      return interactor.showNotification('Not enough inventory space.', 'error');
     }
 
     if (!interactor.adjustGold(-totalGoldCost)) {
-      return; // TODO: Show error message - not enough gold
+      return interactor.showNotification('Not enough gold.', 'error');
     }
 
     // Create and add items based on stackability
@@ -77,6 +77,8 @@ export default class BaseMerchantEntity extends BaseEntity {
         interactor.hotbar.addItem(boughtItem) || interactor.backpack.addItem(boughtItem);
       }
     }
+
+    interactor.showNotification(`Bought ${quantity} ${item.name} for ${totalGoldCost.toLocaleString()} gold.`, 'success');
   }
 
   public openBuyMenu(interactor: GamePlayerEntity): void {
@@ -112,11 +114,11 @@ export default class BaseMerchantEntity extends BaseEntity {
     const item = itemInventory.getItemAt(itemIndex);
    
     if (!item || quantity <= 0 || quantity > item.quantity) {
-      return; // TODO: Show error message to player
+      return interactor.showNotification('Invalid item or quantity.', 'error');
     }
 
     if (item.sellPrice === 0) {
-      return; // TODO: Show error message to player. item is not sellable
+      return interactor.showNotification('Item is not sellable.', 'error');
     }
 
     const totalGoldEarned = item.sellPrice * quantity;
@@ -129,9 +131,11 @@ export default class BaseMerchantEntity extends BaseEntity {
     } else {
       // For partial sales, try gold first (must stack with existing), then adjust quantity
       if (!interactor.adjustGold(totalGoldEarned)) {
-        return; // TODO: Show error message - could not add gold
+        return interactor.showNotification('Your inventory seems full. You cannot receive any gold.', 'error');
       }
       itemInventory.adjustItemQuantity(itemIndex, -quantity);
     }
+
+    interactor.showNotification(`Sold ${quantity} ${item.name} for ${totalGoldEarned.toLocaleString()} gold.`, 'success');
   }
 }

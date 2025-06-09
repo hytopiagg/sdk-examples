@@ -193,6 +193,14 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this._currentMerchantEntity = entity;
   }
 
+  public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
+    this.player.ui.sendData({
+      type: 'showNotification',
+      message,
+      notificationType,
+    });
+  }
+
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
     this._nameplateSceneUI.load(world);
