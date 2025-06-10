@@ -1,3 +1,7 @@
+/**
+ * Skills System
+ */
+
 export type Skill = {
   id: SkillId;
   name: string;

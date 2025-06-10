@@ -19,6 +19,7 @@ import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
 import GoldItem from './items/general/GoldItem';
 import Hotbar from './systems/Hotbar';
+import Levels from './systems/Levels';
 import Storage from './systems/Storage';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseMerchantEntity from './entities/BaseMerchantEntity';
@@ -176,8 +177,27 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   }
 
   public adjustSkillExperience(skillId: SkillId, amount: number): void {
-    this._globalExperience = Math.max(0, this._globalExperience + amount); // All skill XP adds to global XP
-    this._skillExperience.set(skillId, Math.max(0, (this._skillExperience.get(skillId) ?? 0) + amount));
+    // Capture current levels
+    const oldMainLevel = Levels.getLevelFromExperience(this._globalExperience);
+    const oldSkillLevel = Levels.getLevelFromExperience(this.getSkillExperience(skillId));
+    
+    // Update experience
+    this._globalExperience += amount;
+    this._skillExperience.set(skillId, (this._skillExperience.get(skillId) ?? 0) + amount);
+    
+    // Check for level ups and notify
+    const newMainLevel = Levels.getLevelFromExperience(this._globalExperience);
+    const newSkillLevel = Levels.getLevelFromExperience(this.getSkillExperience(skillId));
+    
+    if (newMainLevel > oldMainLevel) {
+      this.showNotification(`Level up! You are now level ${newMainLevel}!`, 'success');
+    }
+    
+    if (newSkillLevel > oldSkillLevel) {
+      const skillName = skills.find(s => s.id === skillId)?.name ?? skillId;
+      this.showNotification(`${skillName} leveled up to ${newSkillLevel}!`, 'success');
+    }
+    
     this._updateExperienceUI();
   }
 
@@ -256,21 +276,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
         z: direction.z * horizontalForce,
       });
     }
-  }
-
-  private _getLevelFromExperience(experience: number): number {
-    if (experience <= 0) return 1;
-    
-    // Formula with lower starting values: xp = 35 * level^2.2
-    // Inverse: level = (xp / 35)^(1/2.2)
-    const calculatedLevel = Math.pow(experience / 35, 1 / 2.2);
-    return Math.max(1, Math.floor(calculatedLevel));
-  }
-
-  private _getLevelRequiredExperience(level: number): number {
-    if (level <= 1) return 0;
-    // Formula with accessible early levels: xp = 35 * level^2.2
-    return Math.floor(35 * Math.pow(level, 2.2));
   }
 
   private _interact(): void {
@@ -466,7 +471,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       templateId: 'entity-nameplate',
       state: {
         name: this.player.username,
-        level: this._getLevelFromExperience(this._globalExperience),
+        level: Levels.getLevelFromExperience(this._globalExperience),
         health: this._health,
         maxHealth: this._maxHealth,
       },
@@ -516,9 +521,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   }
 
   private _updateExperienceUI = (): void => {
-    const level = this._getLevelFromExperience(this._globalExperience);
-    const currentLevelExp = this._getLevelRequiredExperience(level);
-    const nextLevelExp = this._getLevelRequiredExperience(level + 1);
+    const level = Levels.getLevelFromExperience(this._globalExperience);
+    const currentLevelExp = Levels.getLevelRequiredExperience(level);
+    const nextLevelExp = Levels.getLevelRequiredExperience(level + 1);
     
     this.player.ui.sendData({
       type: 'syncExp',
@@ -548,14 +553,14 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this.player.ui.sendData({
       type: 'syncSkillsExp',
       skills: skills.map(skill => {
-        const level = this._getLevelFromExperience(this.getSkillExperience(skill.id));
+        const level = Levels.getLevelFromExperience(this.getSkillExperience(skill.id));
 
         return {
           skillId: skill.id,
           level,
           exp: this.getSkillExperience(skill.id),
-          currentLevelExp: this._getLevelRequiredExperience(level),
-          nextLevelExp: this._getLevelRequiredExperience(level + 1),
+          currentLevelExp: Levels.getLevelRequiredExperience(level),
+          nextLevelExp: Levels.getLevelRequiredExperience(level + 1),
         }
       }),
     });
