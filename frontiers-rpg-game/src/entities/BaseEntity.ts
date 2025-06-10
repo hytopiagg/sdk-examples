@@ -87,7 +87,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _optionMap: Map<number, BaseEntityDialogueOption> = new Map();
   private _wanderAccumulatorMs: number = 0;
   
-  public constructor(options: BaseEntityOptions) {
+  public constructor(options: BaseEntityOptions = {}) {
     super({
       ...options,
       controller: new PathfindingEntityController(),

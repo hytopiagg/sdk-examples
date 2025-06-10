@@ -22,7 +22,7 @@ export default class GameManager {
     // Chitter Forest, Forest Region
     const chitterForestRegion = new ChitterForestRegion();
     this._regions.set(chitterForestRegion.tag!, chitterForestRegion);
-    GameClock.instance.addWorldClockCycle(chitterForestRegion.world);
+    // GameClock.instance.addWorldClockCycle(chitterForestRegion.world);
     this._startRegion = chitterForestRegion;
 
     // Stalkhaven, Main City (Start)

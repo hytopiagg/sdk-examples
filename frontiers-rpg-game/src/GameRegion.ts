@@ -1,4 +1,5 @@
 import {
+  Audio,
   ErrorHandler,
   Player,
   PlayerEvent,
@@ -11,15 +12,24 @@ import {
 import GamePlayerEntity from './GamePlayerEntity';
 
 export type GameRegionOptions = {
+  ambientAudioUri?: string,
+  ambientAudioVolume?: number,
   spawnPoint?: Vector3Like,
 } & Omit<WorldOptions, 'id'>;
 
 export default class GameRegion {
+  private _ambientAudio: Audio | undefined;
   private _isSetup: boolean = false;
   private _spawnPoint: Vector3Like;
   private readonly _world: World;
 
   public constructor(options: GameRegionOptions) {
+    this._ambientAudio = options.ambientAudioUri ? new Audio({
+      uri: options.ambientAudioUri,
+      volume: options.ambientAudioVolume ?? 0.05,
+      loop: true,
+    }) : undefined;
+
     this._spawnPoint = options.spawnPoint ?? { x: 0, y: 10, z: 0 };
 
     this._world = WorldManager.instance.createWorld(options);
@@ -41,6 +51,10 @@ export default class GameRegion {
   protected setup(): void { // intended to be overridden by subclasses
     if (this._isSetup) {
       return ErrorHandler.warning(`GameRegion.setup(): ${this.name} already setup.`);
+    }
+
+    if (this._ambientAudio) {
+      this._ambientAudio.play(this._world);
     }
 
     this._isSetup = true;
