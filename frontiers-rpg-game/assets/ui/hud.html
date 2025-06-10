@@ -33,11 +33,11 @@
         </div>
       </div>
     </button>
-    <button class="hud-action-button" id="hud-stats-btn">
-      <img src="{{CDN_ASSETS_URL}}/icons/buttons/stats.png" alt="Stats" class="hud-action-button-icon">
+    <button class="hud-action-button" id="hud-skills-btn">
+      <img src="{{CDN_ASSETS_URL}}/icons/buttons/skills.png" alt="Skills" class="hud-action-button-icon">
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
-          Stats - View your current character stats.
+          Skills - View your current character skills.
         </div>
       </div>
     </button>
@@ -121,7 +121,7 @@
         gameTime = { hour: data.hour, minute: data.minute };
         updateClock();
         break;
-      case 'syncExperience':
+      case 'syncExp':
         updateExperienceBar(data.level, data.exp, data.currentLevelExp, data.nextLevelExp);
         break;
       case 'syncHealth':
@@ -180,7 +180,7 @@
     const buttons = {
       'hud-log-btn': () => showNotification('Progress log opened!', 'success'),
       'hud-backpack-btn': () => window.frontiersRPG.openBackpack(),
-      'hud-stats-btn': () => window.frontiersRPG.openStats()
+      'hud-skills-btn': () => window.frontiersRPG.openSkills()
     };
 
     Object.entries(buttons).forEach(([id, handler]) => {

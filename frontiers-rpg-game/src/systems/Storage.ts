@@ -15,7 +15,7 @@ export default class Storage extends ItemInventory {
 
   protected override onSlotChanged(position: number, item: BaseItem | null): void {
     this._owner.ui.sendData({
-      type: 'backpackUpdate',
+      type: 'storageUpdate',
       position,
       ...(item ? {
         name: item.name,

@@ -108,7 +108,7 @@ export default class BaseMerchantEntity extends BaseEntity {
       merchantName: this.name,
       merchantTitle: this.dialogueRoot?.title,
       merchantAvatarUri: this.dialogueRoot?.avatarImageUri,
-    })
+    });
   }
 
   public sellItem(interactor: GamePlayerEntity, itemInventory: ItemInventory, itemIndex: number, quantity: number): void {
@@ -134,6 +134,7 @@ export default class BaseMerchantEntity extends BaseEntity {
       if (!interactor.adjustGold(totalGoldEarned)) {
         return interactor.showNotification('Your inventory seems full. You cannot receive any gold.', 'error');
       }
+
       itemInventory.adjustItemQuantity(itemIndex, -quantity);
     }
 

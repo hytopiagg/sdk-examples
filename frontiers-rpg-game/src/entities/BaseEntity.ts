@@ -138,7 +138,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public get moveSpeed(): number { return this._moveSpeed; }
   public get pathfindingController(): PathfindingEntityController { return this.controller as PathfindingEntityController; }
 
-  public die(): void {
+  public die(killer?: Entity): void {
     if (this._dying) return;
 
     this._dying = true;
@@ -146,6 +146,11 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this.startModelOneshotAnimations(this._deathAnimations);
     this.stopMoving();
     this.dropItems();
+
+    if (this._combatExperienceReward > 0 && killer instanceof GamePlayerEntity) {
+      killer.adjustSkillExperience(SkillId.COMBAT, this._combatExperienceReward);
+    }
+
     setTimeout(() => this.despawn(), this._deathDespawnDelayMs);
   }
 
@@ -255,11 +260,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     });
 
     if (this._health <= 0) {
-      if (this._combatExperienceReward > 0 && attacker instanceof GamePlayerEntity) {
-        attacker.adjustSkillExperience(SkillId.COMBAT, this._combatExperienceReward);
-      }
-
-      this.die();
+      this.die(attacker);
     }
   }
 
