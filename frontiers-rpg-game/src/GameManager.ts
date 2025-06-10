@@ -3,6 +3,7 @@ import GameClock from './GameClock';
 import type GameRegion from './GameRegion';
 
 // Regions
+import ChitterForestRegion from './regions/ChitterForestRegion';
 import StalkhavenRegion from './regions/StalkhavenRegion';
 
 export default class GameManager {
@@ -18,15 +19,21 @@ export default class GameManager {
   }
 
   public loadRegions(): void {
+    // Chitter Forest, Forest Region
+    const chitterForestRegion = new ChitterForestRegion();
+    this._regions.set(chitterForestRegion.tag!, chitterForestRegion);
+    GameClock.instance.addWorldClockCycle(chitterForestRegion.world);
+    this._startRegion = chitterForestRegion;
+
     // Stalkhaven, Main City (Start)
     const stalkhavenRegion = new StalkhavenRegion();
     this._regions.set(stalkhavenRegion.tag!, stalkhavenRegion);
     GameClock.instance.addWorldClockCycle(stalkhavenRegion.world);
-    this._startRegion = stalkhavenRegion;
+    // this._startRegion = stalkhavenRegion;
 
     // Other regions...
 
     // Set Stalkhaven as the region/world players automatically join when they connect to the game.
-    WorldManager.instance.setDefaultWorld(stalkhavenRegion.world);
+    WorldManager.instance.setDefaultWorld(this._startRegion.world);
   }
 }
