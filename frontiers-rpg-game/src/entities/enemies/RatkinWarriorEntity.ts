@@ -40,8 +40,8 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
         {
           item: new GoldItem(),
           probability: 1,
-          minQuantity: 5,
-          maxQuantity: 20
+          minQuantity: 50,
+          maxQuantity: 70
         },
         {
           item: new WoodenSwordItem(),

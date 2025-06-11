@@ -1,4 +1,5 @@
 import BaseConsumableItem, { BaseConsumableItemOptions } from '../BaseConsumableItem';
+import type GamePlayerEntity from '../../GamePlayerEntity';
 
 export default class MinorHealingPotionItem extends BaseConsumableItem {
   public constructor(options?: Partial<BaseConsumableItemOptions>) {
@@ -13,5 +14,22 @@ export default class MinorHealingPotionItem extends BaseConsumableItem {
       stackable: true,
       ...options,
     });
+  }
+
+  public override consume(): void {
+    if (!this.entity?.parent) return;
+
+    const gamePlayerEntity = this.entity.parent as GamePlayerEntity;
+
+    // Don't consume if player is at max health
+    if (gamePlayerEntity.health >= gamePlayerEntity.maxHealth) {
+      return;
+    }
+
+    super.consume();
+  }
+
+  protected override applyEffects(playerEntity: GamePlayerEntity): void {
+    playerEntity.gamePlayer.adjustHealth(20);
   }
 }

@@ -18,8 +18,8 @@ export default class BaseConsumableItem extends BaseItem {
     this.consumeCooldownMs = options.consumeCooldownMs;
   }
 
-  public override clone(overrideOptions?: Partial<BaseConsumableItemOptions>): BaseConsumableItem {
-    return new BaseConsumableItem({
+  public override clone(overrideOptions?: Partial<BaseConsumableItemOptions>): this {
+    return new (this.constructor as new (options: BaseConsumableItemOptions) => this)({
       ...this.toOptions(),
       ...overrideOptions,
     });
@@ -33,12 +33,8 @@ export default class BaseConsumableItem extends BaseItem {
     if (now - this._lastConsumeTimeMs < this.consumeCooldownMs) {
       return;
     }
-
-    if (!(this.entity.parent instanceof GamePlayerEntity)) {
-      return;
-    }
     
-    const gamePlayerEntity = this.entity.parent;
+    const gamePlayerEntity = this.entity.parent as GamePlayerEntity;
     const gamePlayer = gamePlayerEntity.gamePlayer;
     const itemInventory = 
       gamePlayer.hotbar.getItemPosition(this) !== null ? gamePlayer.hotbar : 

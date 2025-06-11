@@ -132,8 +132,8 @@ export default class BaseItem implements IInteractable {
   }
 
   // Clone the item with optional overrides.
-  public clone(overrideOptions?: Partial<BaseItemOptions>): BaseItem {
-    return new (this.constructor as new (options: BaseItemOptions) => BaseItem)({
+  public clone(overrideOptions?: Partial<BaseItemOptions>): this {
+    return new (this.constructor as new (options: BaseItemOptions) => this)({
       ...this.toOptions(),
       ...overrideOptions,
     });

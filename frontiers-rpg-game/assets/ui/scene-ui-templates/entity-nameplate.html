@@ -72,7 +72,7 @@
         level.textContent = `Lvl ${state.level}`;
       }
 
-      if (state.health && state.maxHealth) {
+      if (state.health >= 0 && state.maxHealth > 0) {
         healthBar.style.display = 'block';
         const healthPercent = state.health / state.maxHealth;
         

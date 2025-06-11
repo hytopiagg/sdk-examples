@@ -50,8 +50,8 @@ export default class BaseWeaponItem extends BaseItem {
     };
   }
 
-  public override clone(overrideOptions?: Partial<BaseWeaponItemOptions>): BaseWeaponItem {
-    return new BaseWeaponItem({
+  public override clone(overrideOptions?: Partial<BaseWeaponItemOptions>): this {
+    return new (this.constructor as new (options: BaseWeaponItemOptions) => this)({
       ...this.toOptions(),
       ...overrideOptions,
     });
