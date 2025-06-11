@@ -2,6 +2,7 @@ import {
   Player,
   PlayerUIEvent,
   EventPayloads,
+  Vector3Like,
 } from 'hytopia';
 
 import { SkillId, skills } from './config';
@@ -29,6 +30,7 @@ export default class GamePlayer {
   private _globalExperience: number = 0;
   private _health: number = 100;
   private _maxHealth: number = 100;
+  private _nextRegionSpawnPoint: Vector3Like | undefined;
   private _skillExperience: Map<SkillId, number> = new Map();
 
   private constructor(player: Player) {
@@ -102,27 +104,30 @@ export default class GamePlayer {
     return this._maxHealth;
   }
 
-  // Entity and UI management
-  public spawnInRegion(entity: GamePlayerEntity): void {
-    // Associate entity and load complete UI for region
-    this._currentEntity = entity;
-    this._loadUI();
-    this._spawnHeldItem();
-  }
-
-  public despawnFromRegion(): void {
-    this._currentEntity = undefined;
-  }
-
-  public setCurrentDialogueEntity(entity: BaseEntity): void {
-    this._currentDialogueEntity = entity;
-  }
-
-  public setCurrentMerchantEntity(entity: BaseMerchantEntity): void {
-    this._currentMerchantEntity = entity;
+  public get nextRegionSpawnPoint(): Vector3Like | undefined {
+    return this._nextRegionSpawnPoint;
   }
 
   // Game state methods
+  public adjustHealth(amount: number): void {
+    this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
+    this._updateHudHealthUI();
+  }
+
+  public adjustInventoryItemQuantity(itemInventory: Backpack | Hotbar | Storage, item: BaseItem, amount: number): boolean {
+    if (amount === 0) return true;
+
+    const newQuantity = item.quantity + amount;
+    
+    if (newQuantity <= 0) {
+      itemInventory.removeItemByReference(item);
+      return true;
+    } else {
+      itemInventory.adjustItemQuantityByReference(item, amount);
+      return true;
+    }
+  }
+
   public adjustGold(amount: number, allowNegative: boolean = false): boolean {
     if (amount === 0) return true;
 
@@ -130,10 +135,8 @@ export default class GamePlayer {
       // Adding gold - stack with existing or create new
       const existingGold = this.hotbar.getItemByClass(GoldItem) ?? this.backpack.getItemByClass(GoldItem);
       if (existingGold) {
-        // Use inventory method to trigger UI update
         const inventory = this.hotbar.getItemByClass(GoldItem) === existingGold ? this.hotbar : this.backpack;
-        inventory.adjustItemQuantityByReference(existingGold, amount);
-        return true;
+        return this.adjustInventoryItemQuantity(inventory, existingGold, amount);
       } else {
         const goldItem = new GoldItem({ quantity: amount });
         return this.hotbar.addItem(goldItem) || this.backpack.addItem(goldItem);
@@ -142,46 +145,42 @@ export default class GamePlayer {
       // Subtracting gold - handle multiple stacks across inventories
       const hotbarGolds = this.hotbar.getItemsByClass(GoldItem);
       const backpackGolds = this.backpack.getItemsByClass(GoldItem);
-      const totalGold = [...hotbarGolds, ...backpackGolds].reduce((sum, gold) => sum + gold.quantity, 0);
+      let totalGold = 0;
+      
+      // Calculate total gold without creating new arrays
+      for (const gold of hotbarGolds) {
+        totalGold += gold.quantity;
+      }
+      for (const gold of backpackGolds) {
+        totalGold += gold.quantity;
+      }
+      
       let remainingToRemove = Math.abs(amount);
       
       if (totalGold < remainingToRemove && !allowNegative) {
         return false;
       }
-            
-      // Process hotbar golds first
+
+      // Process hotbar gold first
       for (const gold of hotbarGolds) {
         if (remainingToRemove <= 0) break;
         
-        if (gold.quantity <= remainingToRemove) {
-          remainingToRemove -= gold.quantity;
-          this.hotbar.removeItemByReference(gold);
-        } else {
-          this.hotbar.adjustItemQuantityByReference(gold, -remainingToRemove);
-          remainingToRemove = 0;
-        }
+        const removeFromThis = Math.min(gold.quantity, remainingToRemove);
+        this.adjustInventoryItemQuantity(this.hotbar, gold, -removeFromThis);
+        remainingToRemove -= removeFromThis;
       }
       
-      // Process backpack golds if needed
+      // Process backpack gold if needed
       for (const gold of backpackGolds) {
         if (remainingToRemove <= 0) break;
         
-        if (gold.quantity <= remainingToRemove) {
-          remainingToRemove -= gold.quantity;
-          this.backpack.removeItemByReference(gold);
-        } else {
-          this.backpack.adjustItemQuantityByReference(gold, -remainingToRemove);
-          remainingToRemove = 0;
-        }
+        const removeFromThis = Math.min(gold.quantity, remainingToRemove);
+        this.adjustInventoryItemQuantity(this.backpack, gold, -removeFromThis);
+        remainingToRemove -= removeFromThis;
       }
       
       return true;
     }
-  }
-
-  public adjustHealth(amount: number): void {
-    this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
-    this._updateHudHealthUI();
   }
 
   public adjustSkillExperience(skillId: SkillId, amount: number): void {
@@ -209,11 +208,38 @@ export default class GamePlayer {
     this._updateExperienceUI();
   }
 
+  public despawnFromRegion(): void {
+    this._currentEntity = undefined;
+  }
+
+  public getAndClearNextRegionSpawnPoint(): Vector3Like | undefined {
+    const spawnPoint = this._nextRegionSpawnPoint;
+    this._nextRegionSpawnPoint = undefined;
+    return spawnPoint;
+  }
+
   public getSkillExperience(skillId: SkillId): number {
     return this._skillExperience.get(skillId) ?? 0;
   }
 
-  // UI Communication
+  public onEntitySpawned(entity: GamePlayerEntity): void {
+    this._currentEntity = entity;
+    this._loadUI();
+    this._spawnHeldItem();
+  }
+
+  public setCurrentDialogueEntity(entity: BaseEntity): void {
+    this._currentDialogueEntity = entity;
+  }
+
+  public setCurrentMerchantEntity(entity: BaseMerchantEntity): void {
+    this._currentMerchantEntity = entity;
+  }
+
+  public setNextRegionSpawnPoint(position: Vector3Like): void {
+    this._nextRegionSpawnPoint = position;
+  }
+
   public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
     this.player.ui.sendData({
       type: 'showNotification',
@@ -242,9 +268,7 @@ export default class GamePlayer {
     this.player.ui.sendData({ type: 'toggleSkills' });
   }
 
-  // Private implementation
   private _spawnHeldItem(): void {
-    // Spawn held item for new entity
     if (this._currentEntity && this.hotbar.selectedItem) {
       this.hotbar.selectedItem.spawnEntityAsHeld(this._currentEntity, 'hand_right_anchor');
     }

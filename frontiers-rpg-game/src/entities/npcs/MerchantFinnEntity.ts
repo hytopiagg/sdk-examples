@@ -2,7 +2,7 @@ import BaseMerchantEntity, { BaseMerchantEntityOptions } from '../BaseMerchantEn
 import RatkinTailItem from '../../items/materials/RatkinTailItem';
 import WoodenSwordItem from '../../items/weapons/WoodenSwordItem';
 
-export default class MerchantEntity extends BaseMerchantEntity {
+export default class MerchantFinnEntity extends BaseMerchantEntity {
   public constructor(options?: Partial<BaseMerchantEntityOptions>) {
     super({
       buyableItems: [

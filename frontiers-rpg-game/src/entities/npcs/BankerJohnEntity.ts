@@ -1,6 +1,6 @@
 import BaseEntity, { BaseEntityOptions } from '../BaseEntity';
 
-export default class BankerEntity extends BaseEntity {
+export default class BankerJohnEntity extends BaseEntity {
   public constructor(options?: BaseEntityOptions) {
     super({
       idleAnimations: [ 'idle' ],

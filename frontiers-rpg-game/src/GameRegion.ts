@@ -63,7 +63,11 @@ export default class GameRegion {
 
   protected onPlayerJoin(player: Player) {
     const gamePlayer = GamePlayer.getOrCreate(player);
-    (new GamePlayerEntity(gamePlayer, this)).spawn(this._world, this._spawnPoint);
+    
+    // Get the region spawn point if set by a portal or something else, otherwise use the default region spawn point.
+    const spawnPoint = gamePlayer.getAndClearNextRegionSpawnPoint() ?? this._spawnPoint;
+    
+    (new GamePlayerEntity(gamePlayer, this)).spawn(this._world, spawnPoint);
   }
 
   protected onPlayerLeave(player: Player) {

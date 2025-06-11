@@ -4,8 +4,8 @@ import GamePlayer from './GamePlayer';
 import type GameRegion from './GameRegion';
 
 // Regions
-import ChitterForestRegion from './regions/ChitterForestRegion';
-import StalkhavenRegion from './regions/StalkhavenRegion';
+import ChitterForestRegion from './regions/chitter-forest/ChitterForestRegion';
+import StalkhavenRegion from './regions/stalkhaven/StalkhavenRegion';
 
 // Since globalEventRouter isn't exported in the main index, we'll handle cleanup differently
 // We can rely on the GamePlayer.remove() method being called manually when needed

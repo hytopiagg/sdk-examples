@@ -134,7 +134,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     super.spawn(world, position, rotation);
     
 
-    this._gamePlayer.spawnInRegion(this);
+    this._gamePlayer.onEntitySpawned(this);
     
     this._nameplateSceneUI.load(world);
 

@@ -46,6 +46,7 @@ export default class PortalEntity extends Entity {
                 return;
               }
 
+              other.gamePlayer.setNextRegionSpawnPoint(this.destinationRegionPosition);              
               other.player.joinWorld(destinationRegion.world);
             },
           },
