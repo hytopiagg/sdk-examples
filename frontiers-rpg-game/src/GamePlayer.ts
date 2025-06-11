@@ -106,7 +106,7 @@ export default class GamePlayer {
   public spawnInRegion(entity: GamePlayerEntity): void {
     // Associate entity and load complete UI for region
     this._currentEntity = entity;
-    this._loadCompleteUI();
+    this._loadUI();
     this._spawnHeldItem();
   }
 
@@ -338,7 +338,7 @@ export default class GamePlayer {
     }
   }
 
-  private _loadCompleteUI(): void {
+  private _loadUI(): void {
     // Complete UI reload for region changes (client disconnect/reconnect)
     this.player.ui.load('ui/index.html');
 

@@ -133,7 +133,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
     
-    // Associate entity and setup complete UI for this region
+
     this._gamePlayer.spawnInRegion(this);
     
     this._nameplateSceneUI.load(world);

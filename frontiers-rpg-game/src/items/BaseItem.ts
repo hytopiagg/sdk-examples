@@ -109,9 +109,10 @@ export default class BaseItem implements IInteractable {
     this._updateNameplateSceneUI();
   }
 
-  // Clone the item with optional overrides.
-  public clone(overrideOptions?: Partial<BaseItemOptions>): BaseItem {
-    return new BaseItem({
+  // Convert current state to constructor options for cloning
+  public toOptions(): BaseItemOptions {
+    return {
+      buyPrice: this.buyPrice,
       defaultRelativePositionAsChild: this.defaultRelativePositionAsChild,
       defaultRelativeRotationAsChild: this.defaultRelativeRotationAsChild,
       description: this.description,
@@ -124,7 +125,16 @@ export default class BaseItem implements IInteractable {
       heldModelTintColor: this.heldModelTintColor,
       name: this.name,
       quantity: this._quantity,
+      rarity: this.rarity,
+      sellPrice: this.sellPrice,
       stackable: this.stackable,
+    };
+  }
+
+  // Clone the item with optional overrides.
+  public clone(overrideOptions?: Partial<BaseItemOptions>): BaseItem {
+    return new (this.constructor as new (options: BaseItemOptions) => BaseItem)({
+      ...this.toOptions(),
       ...overrideOptions,
     });
   }

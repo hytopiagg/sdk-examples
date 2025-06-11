@@ -36,6 +36,27 @@ export default class BaseWeaponItem extends BaseItem {
     this.attackReach = options.attackReach;
   }
 
+  // Convert current state to constructor options for cloning
+  public override toOptions(): BaseWeaponItemOptions {
+    return {
+      ...super.toOptions(),
+      attackAnimations: this.attackAnimations,
+      attackCooldownMs: this.attackCooldownMs,
+      attackDamage: this.attackDamage,
+      attackDamageDelayMs: this.attackDamageDelayMs,
+      attackDamageVariance: this.attackDamageVariance,
+      attackKnockbackForce: this.attackKnockbackForce,
+      attackReach: this.attackReach,
+    };
+  }
+
+  public override clone(overrideOptions?: Partial<BaseWeaponItemOptions>): BaseWeaponItem {
+    return new BaseWeaponItem({
+      ...this.toOptions(),
+      ...overrideOptions,
+    });
+  }
+
   public override useMouseLeft(): void {
     this.attack();
   }
