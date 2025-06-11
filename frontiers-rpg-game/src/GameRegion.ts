@@ -65,7 +65,7 @@ export default class GameRegion {
     const gamePlayer = GamePlayer.getOrCreate(player);
     
     // Get the region spawn point if set by a portal or something else, otherwise use the default region spawn point.
-    const spawnPoint = gamePlayer.getAndClearNextRegionSpawnPoint() ?? this._spawnPoint;
+    const spawnPoint = gamePlayer.regionSpawnPoint ?? this._spawnPoint;
     
     (new GamePlayerEntity(gamePlayer, this)).spawn(this._world, spawnPoint);
   }

@@ -30,7 +30,7 @@ export default class GamePlayer {
   private _globalExperience: number = 0;
   private _health: number = 100;
   private _maxHealth: number = 100;
-  private _nextRegionSpawnPoint: Vector3Like | undefined;
+  private _regionSpawnPoint: Vector3Like | undefined;
   private _skillExperience: Map<SkillId, number> = new Map();
 
   private constructor(player: Player) {
@@ -104,14 +104,15 @@ export default class GamePlayer {
     return this._maxHealth;
   }
 
-  public get nextRegionSpawnPoint(): Vector3Like | undefined {
-    return this._nextRegionSpawnPoint;
+  public get regionSpawnPoint(): Vector3Like | undefined {
+    return this._regionSpawnPoint;
   }
 
   // Game state methods
   public adjustHealth(amount: number): void {
     this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
     this._updateHudHealthUI();
+    this._updateEntityHealthSceneUI();
   }
 
   public adjustInventoryItemQuantity(itemInventory: Backpack | Hotbar | Storage, item: BaseItem, amount: number): boolean {
@@ -212,12 +213,6 @@ export default class GamePlayer {
     this._currentEntity = undefined;
   }
 
-  public getAndClearNextRegionSpawnPoint(): Vector3Like | undefined {
-    const spawnPoint = this._nextRegionSpawnPoint;
-    this._nextRegionSpawnPoint = undefined;
-    return spawnPoint;
-  }
-
   public getSkillExperience(skillId: SkillId): number {
     return this._skillExperience.get(skillId) ?? 0;
   }
@@ -236,8 +231,8 @@ export default class GamePlayer {
     this._currentMerchantEntity = entity;
   }
 
-  public setNextRegionSpawnPoint(position: Vector3Like): void {
-    this._nextRegionSpawnPoint = position;
+  public setRegionSpawnPoint(position: Vector3Like): void {
+    this._regionSpawnPoint = position;
   }
 
   public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
@@ -376,6 +371,16 @@ export default class GamePlayer {
     // Setup UI event listener (remove existing to prevent duplicates)
     this.player.ui.off(PlayerUIEvent.DATA, this._onPlayerUIData);
     this.player.ui.on(PlayerUIEvent.DATA, this._onPlayerUIData);
+  }
+
+  private _updateEntityHealthSceneUI(): void {
+    if (!this._currentEntity) return;
+
+    this._currentEntity.nameplateSceneUI.setState({
+      dodged: false,
+      health: this.health,
+      maxHealth: this.maxHealth,
+    });
   }
 
   private _updateExperienceUI(): void {

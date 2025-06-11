@@ -22,22 +22,25 @@
     const healthBarFill = clone.querySelector('.entity-nameplate-health-bar-fill');
     
     let damageCount = 0;
+    let lastHealth = null;
 
     onState(state => {
-      if (state.damage) {
-        const damageEl = document.createElement('div');
-        damageEl.className = 'entity-nameplate-damage';
-        damageEl.textContent = `-${state.damage}`;
+      // Calculate health change if we have a previous health value
+      if (lastHealth !== null && state.health !== undefined && state.health !== lastHealth) {
+        const healthChange = state.health - lastHealth;
         
-        const delay = damageCount++ * 50;
-        
-        nameplate.appendChild(damageEl);
-        
-        setTimeout(() => damageEl.classList.add('show'), delay);
-        setTimeout(() => {
-          damageEl.remove();
-          damageCount--;
-        }, 800 + delay);
+        if (healthChange < 0) {
+          // Damage taken - show red damage number
+          showDamageNumber(-healthChange, 'damage');
+        } else if (healthChange > 0) {
+          // Healing received - show green healing number
+          showDamageNumber(healthChange, 'healing');
+        }
+      }
+      
+      // Update lastHealth for next comparison
+      if (state.health !== undefined) {
+        lastHealth = state.health;
       }
 
       if (state.dodged) {
@@ -84,6 +87,22 @@
         else healthBarFill.classList.add('health-low');
       }
     });
+
+    function showDamageNumber(amount, type) {
+      const numberEl = document.createElement('div');
+      numberEl.className = `entity-nameplate-${type}`;
+      numberEl.textContent = type === 'damage' ? `-${amount}` : `+${amount}`;
+      
+      const delay = damageCount++ * 50;
+      
+      nameplate.appendChild(numberEl);
+      
+      setTimeout(() => numberEl.classList.add('show'), delay);
+      setTimeout(() => {
+        numberEl.remove();
+        damageCount--;
+      }, 800 + delay);
+    }
 
     return clone;
   });
@@ -150,6 +169,19 @@
     pointer-events: none;
   }
 
+  .entity-nameplate-healing {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    font-size: 18px;
+    font-weight: 700;
+    color: #00ff00;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9), 1px 1px 0 #000, -1px -1px 0 #000;
+    opacity: 0;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
   .entity-nameplate-dodged {
     position: absolute;
     top: -15px;
@@ -167,6 +199,10 @@
     animation: damageFloat 0.8s ease-out;
   }
 
+  .entity-nameplate-healing.show {
+    animation: healingFloat 0.8s ease-out;
+  }
+
   .entity-nameplate-dodged.show {
     animation: dodgedFloat 0.8s ease-out;
   }
@@ -176,6 +212,14 @@
     15% { opacity: 1; transform: translateX(-50%) translateY(-8px) scale(1.2); }
     30% { transform: translateX(-50%) translateY(-12px) scale(1); }
     100% { opacity: 0; transform: translateX(-50%) translateY(-30px) scale(0.8); }
+  }
+
+  @keyframes healingFloat {
+    0% { opacity: 0; transform: translateX(-50%) translateY(0) scale(0.5); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(-10px) scale(1.1); }
+    30% { transform: translateX(-50%) translateY(-15px) scale(1); }
+    60% { transform: translateX(-50%) translateY(-20px) scale(1.05); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-35px) scale(0.9); }
   }
 
   @keyframes dodgedFloat {

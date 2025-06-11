@@ -96,6 +96,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   public get maxHealth(): number {
     return this._gamePlayer.maxHealth;
   } 
+
+  public get nameplateSceneUI(): SceneUI {
+    return this._nameplateSceneUI;
+  }
   
   public get playerController(): DefaultPlayerEntityController {
     return this.controller as DefaultPlayerEntityController;
@@ -159,24 +163,16 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     if (this.isDodging) { // in dodge state, don't take damage
       this.adjustSkillExperience(SkillId.AGILITY, damage);
       
-      this._nameplateSceneUI.setState({
-        damage: 0,
-        dodged: true
-      });
+      this._nameplateSceneUI.setState({ dodged: true });
 
       return;
     } 
 
     this._gamePlayer.adjustHealth(-damage);
 
-    this._nameplateSceneUI.setState({
-      damage,
-      dodged: false,
-      health: this._gamePlayer.health,
-    });
-
     if (this._gamePlayer.health <= 0) {
-      console.log('Player died');
+      this._gamePlayer.adjustHealth(this._gamePlayer.maxHealth);
+      this.setPosition(this._gamePlayer.regionSpawnPoint ?? this._region.spawnPoint);
     }
   }
 
