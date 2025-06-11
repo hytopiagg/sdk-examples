@@ -56,7 +56,7 @@ export default class BaseMerchantEntity extends BaseEntity {
     }
 
     const totalGoldCost = item.buyPrice * quantity;
-    const totalEmptySlots = interactor.hotbar.totalEmptySlots + interactor.backpack.totalEmptySlots;
+    const totalEmptySlots = interactor.gamePlayer.hotbar.totalEmptySlots + interactor.gamePlayer.backpack.totalEmptySlots;
     const slotsNeeded = item.stackable ? 1 : quantity;
 
     if (totalEmptySlots < slotsNeeded) {
@@ -70,11 +70,11 @@ export default class BaseMerchantEntity extends BaseEntity {
     // Create and add items based on stackability
     if (item.stackable) {
       const boughtItem = item.clone({ quantity });
-      interactor.hotbar.addItem(boughtItem) || interactor.backpack.addItem(boughtItem);
+      interactor.gamePlayer.hotbar.addItem(boughtItem) || interactor.gamePlayer.backpack.addItem(boughtItem);
     } else {
       for (let i = 0; i < quantity; i++) {
         const boughtItem = item.clone();
-        interactor.hotbar.addItem(boughtItem) || interactor.backpack.addItem(boughtItem);
+        interactor.gamePlayer.hotbar.addItem(boughtItem) || interactor.gamePlayer.backpack.addItem(boughtItem);
       }
     }
 

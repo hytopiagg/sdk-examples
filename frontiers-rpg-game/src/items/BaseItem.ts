@@ -4,6 +4,7 @@ import {
   CollisionGroup,
   ErrorHandler,
   Entity,
+  EntityEvent,
   QuaternionLike,
   RgbColor,
   SceneUI,
@@ -132,21 +133,17 @@ export default class BaseItem implements IInteractable {
   public despawnEntity(): void {
     if (!this._entity) return;
 
-    this._nameplateSceneUI?.unload();
-    this._nameplateSceneUI = undefined;
-
     this._entity.despawn();
-    this._entity = undefined; 
   }
 
   public interact(playerEntity: GamePlayerEntity): void {
-    const wouldAddToSelectedIndex = playerEntity.hotbar.wouldAddAtSelectedIndex(this);
+    const wouldAddToSelectedIndex = playerEntity.gamePlayer.hotbar.wouldAddAtSelectedIndex(this);
     
     if (wouldAddToSelectedIndex) {
       this.despawnEntity(); // Must despawn first, since hotbar.addItem will trigger a held spawn when item added to selected index.
     }
 
-    if (playerEntity.hotbar.addItem(this) || playerEntity.backpack.addItem(this)) {
+    if (playerEntity.gamePlayer.hotbar.addItem(this) || playerEntity.gamePlayer.backpack.addItem(this)) {
       if (!wouldAddToSelectedIndex) {
         this.despawnEntity();
       }
@@ -181,6 +178,8 @@ export default class BaseItem implements IInteractable {
       },
     });
 
+    this._entity.on(EntityEvent.DESPAWN, () => this._despawnCleanup())
+
     this._entity.spawn(world, position, rotation);
     this._loadNameplateSceneUI();
     this._afterSpawn();
@@ -199,6 +198,8 @@ export default class BaseItem implements IInteractable {
       parent: parent,
       parentNodeName: parentNodeName,
     });
+
+    this._entity.on(EntityEvent.DESPAWN, () => this._despawnCleanup())
 
     this._entity.spawn(
       parent.world!, // Entity constructor ensures parent is spawned.
@@ -261,6 +262,12 @@ export default class BaseItem implements IInteractable {
       belongsTo: [ CustomCollisionGroup.ITEM ],
       collidesWith: [ CollisionGroup.BLOCK, CollisionGroup.ENVIRONMENT_ENTITY ],
     });
+  }
+
+  private _despawnCleanup(): void {
+    this._nameplateSceneUI?.unload();
+    this._nameplateSceneUI = undefined;
+    this._entity = undefined; 
   }
 
   private _loadNameplateSceneUI(): void {

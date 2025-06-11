@@ -1,3 +1,4 @@
+import type { Player } from 'hytopia';
 import BaseItem from '../items/BaseItem';
 
 export default class ItemInventory {
@@ -5,14 +6,16 @@ export default class ItemInventory {
   private _itemPositions: Map<BaseItem, number> = new Map();
   private _positionItems: Map<number, BaseItem> = new Map();
   private _size: number;
+  private _tag: string;
 
-  public constructor(size: number, gridWidth: number) {
+  public constructor(size: number, gridWidth: number, tag: string) {
     if (size <= 0 || gridWidth <= 0) {
       throw new Error('Size and gridWidth must be positive numbers');
     }
     
     this._size = size;
     this._gridWidth = gridWidth;
+    this._tag = tag;
   }
 
   public get gridWidth(): number { return this._gridWidth; }
@@ -20,6 +23,7 @@ export default class ItemInventory {
   public get isFull(): boolean { return this._itemPositions.size >= this._size; }
   public get rows(): number { return Math.ceil(this._size / this._gridWidth); }
   public get size(): number { return this._size; }
+  public get tag(): string { return this._tag; }
   public get totalEmptySlots(): number { return this._size - this._itemPositions.size; }
 
   public addItem(item: BaseItem, position?: number): boolean {
@@ -216,6 +220,26 @@ export default class ItemInventory {
       return false;
     }
     return this.removeItem(position) !== null;
+  }
+
+  public syncUIUpdate(player: Player, position: number, item: BaseItem | null): void {
+    player.ui.sendData({
+      type: `${this._tag}Update`,
+      position,
+      ...(item ? {
+        name: item.name,
+        iconImageUri: item.iconImageUri,
+        description: item.description,
+        quantity: item.quantity,
+        sellPrice: item.sellPrice,
+      } : { removed: true })
+    })
+  }
+
+  public syncUI(player: Player): void {
+    for (const [ position, item ] of this._positionItems) {
+      this.syncUIUpdate(player, position, item);
+    }
   }
 
   protected onSlotChanged(position: number, item: BaseItem | null): void {

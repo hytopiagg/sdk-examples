@@ -10,7 +10,7 @@ export default class Hotbar extends ItemInventory {
   private _selectedIndex: number = 0;
 
   public constructor(owner: Player) {
-    super(HOTBAR_SIZE, HOTBAR_SIZE);
+    super(HOTBAR_SIZE, HOTBAR_SIZE, 'hotbar');
     this._owner = owner;
   }
 
@@ -90,16 +90,6 @@ export default class Hotbar extends ItemInventory {
   }
 
   protected override onSlotChanged(position: number, item: BaseItem | null): void {
-    this._owner.ui.sendData({
-      type: 'hotbarUpdate',
-      position,
-      ...(item ? {
-        name: item.name,
-        iconImageUri: item.iconImageUri,
-        description: item.description,
-        quantity: item.quantity,
-        sellPrice: item.sellPrice,
-      } : { removed: true })
-    })
+    this.syncUIUpdate(this._owner, position, item);
   }
 }

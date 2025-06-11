@@ -31,7 +31,7 @@ export default class StalkhavenRegion extends GameRegion {
       world: this.world,
     });
 
-    // spawner.start(true);
+    spawner.start(true);
 
     const portal = new PortalEntity({
       destinationRegionTag: 'stalkhaven',

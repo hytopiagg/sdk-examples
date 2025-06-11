@@ -6,27 +6,20 @@ import {
   DefaultPlayerEntityController,
   EventPayloads,
   Player,
-  PlayerUIEvent,
   QuaternionLike,
   SceneUI,
   Vector3Like,
   World,
 } from 'hytopia';
 
-import { SkillId, skills } from './config';
-import Backpack from './systems/Backpack';
+import { SkillId } from './config';
 import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
-import GoldItem from './items/general/GoldItem';
-import Hotbar from './systems/Hotbar';
+import GamePlayer from './GamePlayer';
 import Levels from './systems/Levels';
-import Storage from './systems/Storage';
-import type BaseEntity from './entities/BaseEntity';
-import type BaseMerchantEntity from './entities/BaseMerchantEntity';
-import type BaseItem from './items/BaseItem';
+import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 import type GameRegion from './GameRegion';
 import type IDamageable from './interfaces/IDamageable';
-import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 
 const CAMERA_OFFSET_Y = 0.8;
 const CAMERA_SHOULDER_ANGLE = 11;
@@ -38,38 +31,27 @@ const DODGE_VERTICAL_FORCE = 6;
 const INTERACT_REACH = 3;
 
 export default class GamePlayerEntity extends DefaultPlayerEntity implements IDamageable {
-  public readonly backpack: Backpack;
-  public readonly hotbar: Hotbar;
-  public readonly storage: Storage;
-  private _currentDialogueEntity: BaseEntity | undefined;
-  private _currentMerchantEntity: BaseMerchantEntity | undefined;
-  private _globalExperience: number = 0;
+  private readonly _gamePlayer: GamePlayer;
   private _lastDodgeTimeMs: number = 0;
-  private _health: number = 100;
-  private _maxHealth: number = 100;
   private _nameplateSceneUI: SceneUI;
   private _region: GameRegion;
-  private _skillExperience: Map<SkillId, number> = new Map();
 
-  public constructor(player: Player, region: GameRegion) {
+  public constructor(gamePlayer: GamePlayer, region: GameRegion) {
     super({
-      player,
+      player: gamePlayer.player,
       name: 'Player',
     });
 
-    this.backpack = new Backpack(this.player);
-    this.hotbar = new Hotbar(this.player);
-    this.storage = new Storage(this.player);
-    
+    this._gamePlayer = gamePlayer;
     this._region = region;
 
     this._setupPlayerCamera();
     this._setupPlayerController();
-    this._setupPlayerInventories();
     this._setupPlayerUI();
   }
 
-  public get adjustedRaycastPosition(): Vector3Like { // I think this is still slightly off..
+  // Delegate state getters to GamePlayer
+  public get adjustedRaycastPosition(): Vector3Like {
     return {
       x: this.position.x,
       y: this.position.y + CAMERA_OFFSET_Y / 2,
@@ -77,8 +59,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
   }
 
-  public get adjustedFacingDirection(): Vector3Like { // May still be slightly off, revisit later.
-    const shoulderAngleRad = -this.player.camera.shoulderAngle * Math.PI / 180; // We should maybe make the SDK account for this in the future?
+  public get adjustedFacingDirection(): Vector3Like {
+    const shoulderAngleRad = -this.player.camera.shoulderAngle * Math.PI / 180;
     const facingDirection = this.player.camera.facingDirection;
     const cos = Math.cos(shoulderAngleRad);
     const sin = Math.sin(shoulderAngleRad);
@@ -94,12 +76,16 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     return performance.now() - this._lastDodgeTimeMs >= DODGE_COOLDOWN_MS;
   }
 
+  public get gamePlayer(): GamePlayer {
+    return this._gamePlayer;
+  }
+
   public get globalExperience(): number {
-    return this._globalExperience;
+    return this._gamePlayer.globalExperience;
   }
   
   public get health(): number {
-    return this._health;
+    return this._gamePlayer.health;
   }
   
   public get isDodging(): boolean {
@@ -108,129 +94,67 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   }
   
   public get maxHealth(): number {
-    return this._maxHealth;
+    return this._gamePlayer.maxHealth;
   } 
   
   public get playerController(): DefaultPlayerEntityController {
     return this.controller as DefaultPlayerEntityController;
   }
 
+  // Delegate state management methods to GamePlayer
   public adjustGold(amount: number, allowNegative: boolean = false): boolean {
-    if (amount === 0) return true;
-
-    if (amount > 0) {
-      // Adding gold - stack with existing or create new
-      const existingGold = this.hotbar.getItemByClass(GoldItem) ?? this.backpack.getItemByClass(GoldItem);
-      if (existingGold) {
-        // Use inventory method to trigger UI update
-        const inventory = this.hotbar.getItemByClass(GoldItem) === existingGold ? this.hotbar : this.backpack;
-        inventory.adjustItemQuantityByReference(existingGold, amount);
-        return true;
-      } else {
-        const goldItem = new GoldItem({ quantity: amount });
-        return this.hotbar.addItem(goldItem) || this.backpack.addItem(goldItem);
-      }
-    } else {
-      // Subtracting gold - handle multiple stacks across inventories
-      const hotbarGolds = this.hotbar.getItemsByClass(GoldItem);
-      const backpackGolds = this.backpack.getItemsByClass(GoldItem);
-      const totalGold = [...hotbarGolds, ...backpackGolds].reduce((sum, gold) => sum + gold.quantity, 0);
-      let remainingToRemove = Math.abs(amount);
-      
-      if (totalGold < remainingToRemove && !allowNegative) {
-        return false;
-      }
-            
-      // Process hotbar golds first
-      for (const gold of hotbarGolds) {
-        if (remainingToRemove <= 0) break;
-        
-        if (gold.quantity <= remainingToRemove) {
-          remainingToRemove -= gold.quantity;
-          this.hotbar.removeItemByReference(gold);
-        } else {
-          this.hotbar.adjustItemQuantityByReference(gold, -remainingToRemove);
-          remainingToRemove = 0;
-        }
-      }
-      
-      // Process backpack golds if needed
-      for (const gold of backpackGolds) {
-        if (remainingToRemove <= 0) break;
-        
-        if (gold.quantity <= remainingToRemove) {
-          remainingToRemove -= gold.quantity;
-          this.backpack.removeItemByReference(gold);
-        } else {
-          this.backpack.adjustItemQuantityByReference(gold, -remainingToRemove);
-          remainingToRemove = 0;
-        }
-      }
-      
-      return true;
-    }
+    return this._gamePlayer.adjustGold(amount, allowNegative);
   }
 
   public adjustHealth(amount: number): void {
-    this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
-    this._updateHudHealthUI();
+    this._gamePlayer.adjustHealth(amount);
   }
 
   public adjustSkillExperience(skillId: SkillId, amount: number): void {
-    // Capture current levels
-    const oldMainLevel = Levels.getLevelFromExperience(this._globalExperience);
-    const oldSkillLevel = Levels.getLevelFromExperience(this.getSkillExperience(skillId));
-    
-    // Update experience
-    this._globalExperience += amount;
-    this._skillExperience.set(skillId, (this._skillExperience.get(skillId) ?? 0) + amount);
-    
-    // Check for level ups and notify
-    const newMainLevel = Levels.getLevelFromExperience(this._globalExperience);
-    const newSkillLevel = Levels.getLevelFromExperience(this.getSkillExperience(skillId));
-    
-    if (newMainLevel > oldMainLevel) {
-      this.showNotification(`Level up! You are now level ${newMainLevel}!`, 'success');
-    }
-    
-    if (newSkillLevel > oldSkillLevel) {
-      const skillName = skills.find(s => s.id === skillId)?.name ?? skillId;
-      this.showNotification(`${skillName} leveled up to ${newSkillLevel}!`, 'success');
-    }
-    
-    this._updateExperienceUI();
+    this._gamePlayer.adjustSkillExperience(skillId, amount);
   }
 
   public getSkillExperience(skillId: SkillId): number {
-    return this._skillExperience.get(skillId) ?? 0;
+    return this._gamePlayer.getSkillExperience(skillId);
   }
 
-  public setCurrentDialogueEntity(entity: BaseEntity): void {
-    this._currentDialogueEntity = entity;
+  public setCurrentDialogueEntity(entity: any): void {
+    this._gamePlayer.setCurrentDialogueEntity(entity);
   }
 
-  public setCurrentMerchantEntity(entity: BaseMerchantEntity): void {
-    this._currentMerchantEntity = entity;
+  public setCurrentMerchantEntity(entity: any): void {
+    this._gamePlayer.setCurrentMerchantEntity(entity);
   }
 
   public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
-    this.player.ui.sendData({
-      type: 'showNotification',
-      message,
-      notificationType,
-    });
+    this._gamePlayer.showNotification(message, notificationType);
   }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
+    
+    // Associate entity and setup complete UI for this region
+    this._gamePlayer.spawnInRegion(this);
+    
     this._nameplateSceneUI.load(world);
 
-    const woodenSword = new WoodenSwordItem();
-    this.hotbar.addItem(woodenSword);
+    // Give starting equipment if the player doesn't have any items yet
+    if (this._gamePlayer.hotbar.totalEmptySlots === this._gamePlayer.hotbar.size && 
+        this._gamePlayer.backpack.totalEmptySlots === this._gamePlayer.backpack.size) {
+      const woodenSword = new WoodenSwordItem();
+      this._gamePlayer.hotbar.addItem(woodenSword);
+    }
+  }
+
+  public override despawn(): void {
+    // Call super despawn first to clean up the entity properly
+    super.despawn();
+    // Disassociate entity from GamePlayer
+    this._gamePlayer.despawnFromRegion();
   }
 
   public takeDamage(damage: number): void {
-    if (this._health <= 0) return; // dead, don't take more damage
+    if (this._gamePlayer.health <= 0) return; // dead, don't take more damage
     
     if (this.isDodging) { // in dodge state, don't take damage
       this.adjustSkillExperience(SkillId.AGILITY, damage);
@@ -243,17 +167,15 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       return;
     } 
 
-    this._health -= damage;
+    this._gamePlayer.adjustHealth(-damage);
 
     this._nameplateSceneUI.setState({
       damage,
       dodged: false,
-      health: this._health,
+      health: this._gamePlayer.health,
     });
 
-    this._updateHudHealthUI();
-
-    if (this._health <= 0) {
+    if (this._gamePlayer.health <= 0) {
       console.log('Player died');
     }
   }
@@ -284,12 +206,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       this.adjustedFacingDirection,
       INTERACT_REACH,
       {
-        filterGroups: CollisionGroupsBuilder.buildRawCollisionGroups({ // The collision group the raycast belongs to
+        filterGroups: CollisionGroupsBuilder.buildRawCollisionGroups({
           belongsTo: [ CollisionGroup.ALL ],
           collidesWith: [ CollisionGroup.ENTITY, CustomCollisionGroup.ITEM ],
         }),
-        filterExcludeRigidBody: this.rawRigidBody, // ignore self
-        filterFlags: 8, // Rapier exclude sensors,
+        filterExcludeRigidBody: this.rawRigidBody,
+        filterFlags: 8,
       },
     );
 
@@ -300,17 +222,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
   }
 
-  private _onHotbarSelectedItemChanged = (selectedItem: BaseItem | null, lastItem: BaseItem | null): void => {
-    lastItem?.despawnEntity();
-    selectedItem?.spawnEntityAsHeld(this, 'hand_right_anchor');
-  }
-
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
 
     // Left click item usage
     if (input.ml) {
-      const selectedItem = this.hotbar.selectedItem;
+      const selectedItem = this._gamePlayer.hotbar.selectedItem;
       
       if (selectedItem) {
         selectedItem.useMouseLeft();
@@ -323,7 +240,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
     // Right click item usage
     if (input.mr) {
-      const selectedItem = this.hotbar.selectedItem;
+      const selectedItem = this._gamePlayer.hotbar.selectedItem;
 
       if (selectedItem) {
         selectedItem.useMouseRight();
@@ -346,101 +263,20 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
     // Backpack
     if (input.i) {
-      this._toggleBackpack();
+      this._gamePlayer.toggleBackpack();
       input.i = false;
     }
 
     // Progress Log
     if (input.j) {
-      this._toggleLog();
+      this._gamePlayer.toggleLog();
       input.j = false;
     }
 
     // Skills
     if (input.m) {
-      this._toggleSkills();
+      this._gamePlayer.toggleSkills();
       input.m = false;
-    }
-  }
-
-  private _onPlayerUIData = (payload: EventPayloads[PlayerUIEvent.DATA]): void => {
-    const { data } = payload;
-
-    if (data.type === 'buyItem') {
-      const { sourceIndex, quantity } = data;
-
-      if (this._currentMerchantEntity) {
-        this._currentMerchantEntity.buyItem(this, sourceIndex, quantity);
-      }
-    }
-
-    if (data.type === 'dropItem') {
-      const fromType = data.fromType;
-      const fromIndex = parseInt(data.fromIndex);
-      const container =
-        fromType === 'backpack' ? this.backpack : 
-        fromType === 'hotbar' ? this.hotbar :
-        fromType === 'storage' ? this.storage :
-        null;
-      
-      const droppedItem = container?.removeItem(fromIndex);
-
-      if (droppedItem && this.world) {
-        droppedItem.spawnEntityAsEjectedDrop(this.world, this.position, this.directionFromRotation);
-      }
-    }
-
-    if (data.type === 'moveItem') {
-      const { fromType, toType } = data;
-      const fromIndex = parseInt(data.fromIndex);
-      const toIndex = parseInt(data.toIndex);
-
-      if (fromType === 'hotbar' && toType === 'hotbar') {
-        this.hotbar.moveItem(fromIndex, toIndex);
-      }
-
-      if (fromType === 'backpack' && toType === 'backpack') {
-        this.backpack.moveItem(fromIndex, toIndex);
-      }
-
-      if (fromType === 'backpack' && toType === 'hotbar') {
-        const item = this.backpack.removeItem(fromIndex);
-        if (item) {
-          this.hotbar.addItem(item, toIndex);
-        }
-      }
-
-      if (fromType === 'hotbar' && toType === 'backpack') {
-        const item = this.hotbar.removeItem(fromIndex);
-        if (item) {
-          this.backpack.addItem(item, toIndex);
-        }
-      }
-    }
-
-    if (data.type === 'progressDialogue') {
-      const { optionId } = data;
-
-      if (this._currentDialogueEntity && optionId !== undefined) {
-        this._currentDialogueEntity.progressDialogue(this, optionId);
-      }
-    }
-
-    if (data.type === 'sellItem') {
-      const { sourceType, sourceIndex, quantity } = data;
-      const fromItemInventory = 
-        sourceType === 'backpack' ? this.backpack :
-        sourceType === 'hotbar' ? this.hotbar :
-        sourceType === 'storage' ? this.storage :
-        null;
-
-      if (fromItemInventory && this._currentMerchantEntity) {
-        this._currentMerchantEntity.sellItem(this, fromItemInventory, sourceIndex, quantity);
-      }
-    }
-
-    if (data.type === 'setSelectedHotbarIndex') {
-      this.hotbar.setSelectedIndex(data.index);
     }
   }
 
@@ -452,17 +288,11 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   }
 
   private _setupPlayerController(): void {
-    this.playerController.interactOneshotAnimations = []; // disable default interact animations, we trigger them based on the item.
+    this.playerController.interactOneshotAnimations = [];
     this.playerController.on(BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT, this._onTickWithPlayerInput);
   } 
 
-  private _setupPlayerInventories(): void {
-    this.hotbar.onSelectedItemChanged = this._onHotbarSelectedItemChanged;
-  }
-
   private _setupPlayerUI(): void {
-    this.player.ui.load('ui/index.html');
-
     const nameplateYOffset = this.height / 2 + 0.2;
 
     // Setup Health UI
@@ -471,9 +301,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       templateId: 'entity-nameplate',
       state: {
         name: this.player.username,
-        level: Levels.getLevelFromExperience(this._globalExperience),
-        health: this._health,
-        maxHealth: this._maxHealth,
+        level: Levels.getLevelFromExperience(this._gamePlayer.globalExperience),
+        health: this._gamePlayer.health,
+        maxHealth: this._gamePlayer.maxHealth,
       },
       offset: { x: 0, y: nameplateYOffset, z: 0 },
     });
@@ -488,81 +318,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       minute: GameClock.instance.minute,
     });
 
-    // Sync Experience UI
-    this._updateExperienceUI();
-
-    // Sync Health UI
-    this._updateHudHealthUI();
-
-    // Sync Skills Menu UI
-    this._updateSkillsMenuUI();
-
-    // Listen for client->server UI data events
-    this.player.ui.on(PlayerUIEvent.DATA, this._onPlayerUIData);
-
     // Show Area Banner
-    this.player.ui.sendData({
-      type: 'showAreaBanner',
-      areaName: this._region.name,
-    });
-  }
-
-  private _toggleBackpack = (): void => {
-    this.player.ui.sendData({ type: 'toggleBackpack' });
-  }
-
-  private _toggleLog = (): void => {
-    this.player.ui.sendData({ type: 'toggleLog' });
-  }
-
-  private _toggleSkills = (): void => {
-    this._updateSkillsExperienceUI();
-    this.player.ui.sendData({ type: 'toggleSkills' });
-  }
-
-  private _updateExperienceUI = (): void => {
-    const level = Levels.getLevelFromExperience(this._globalExperience);
-    const currentLevelExp = Levels.getLevelRequiredExperience(level);
-    const nextLevelExp = Levels.getLevelRequiredExperience(level + 1);
-    
-    this.player.ui.sendData({
-      type: 'syncExp',
-      level,
-      exp: this._globalExperience,
-      currentLevelExp,
-      nextLevelExp,
-    });
-  }
-
-  private _updateHudHealthUI = (): void => {
-    this.player.ui.sendData({
-      type: 'syncHealth',
-      health: this._health,
-      maxHealth: this._maxHealth,
-    });
-  }
-
-  private _updateSkillsMenuUI = (): void => {
-    this.player.ui.sendData({
-      type: 'syncSkills',
-      skills,
-    });
-  }
-
-  private _updateSkillsExperienceUI = (): void => {
-    this.player.ui.sendData({
-      type: 'syncSkillsExp',
-      skills: skills.map(skill => {
-        const level = Levels.getLevelFromExperience(this.getSkillExperience(skill.id));
-
-        return {
-          skillId: skill.id,
-          level,
-          exp: this.getSkillExperience(skill.id),
-          currentLevelExp: Levels.getLevelRequiredExperience(level),
-          nextLevelExp: Levels.getLevelRequiredExperience(level + 1),
-        }
-      }),
-    });
+    this._gamePlayer.showAreaBanner(this._region.name);
   }
 }

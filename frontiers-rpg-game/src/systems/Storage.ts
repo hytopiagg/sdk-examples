@@ -9,21 +9,11 @@ export default class Storage extends ItemInventory {
   private _owner: Player;
   
   public constructor(owner: Player) {
-    super(STORAGE_SIZE, STORAGE_GRID_WIDTH);
+    super(STORAGE_SIZE, STORAGE_GRID_WIDTH, 'storage');
     this._owner = owner;
   }
 
   protected override onSlotChanged(position: number, item: BaseItem | null): void {
-    this._owner.ui.sendData({
-      type: 'storageUpdate',
-      position,
-      ...(item ? {
-        name: item.name,
-        iconImageUri: item.iconImageUri,
-        description: item.description,
-        quantity: item.quantity,
-        sellPrice: item.sellPrice,
-      } : { removed: true })
-    })
+    this.syncUIUpdate(this._owner, position, item);
   }
 }

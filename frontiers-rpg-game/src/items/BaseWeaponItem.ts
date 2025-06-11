@@ -45,7 +45,6 @@ export default class BaseWeaponItem extends BaseItem {
   }
 
   public attack(): void {
-
     if (!this.entity?.parent) {
       return;
     }

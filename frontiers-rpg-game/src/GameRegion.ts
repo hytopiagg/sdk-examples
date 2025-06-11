@@ -9,6 +9,7 @@ import {
   Vector3Like,
 } from 'hytopia';
 
+import GamePlayer from './GamePlayer';
 import GamePlayerEntity from './GamePlayerEntity';
 
 export type GameRegionOptions = {
@@ -61,12 +62,16 @@ export default class GameRegion {
   }
 
   protected onPlayerJoin(player: Player) {
-    (new GamePlayerEntity(player, this)).spawn(this._world, this._spawnPoint);
+    const gamePlayer = GamePlayer.getOrCreate(player);
+    (new GamePlayerEntity(gamePlayer, this)).spawn(this._world, this._spawnPoint);
   }
 
   protected onPlayerLeave(player: Player) {
     this._world.entityManager.getPlayerEntitiesByPlayer(player).forEach(entity => {
-      entity.despawn()
-  });
+      entity.despawn();
+    });
+    
+    // Note: We don't remove the GamePlayer instance here since the player
+    // might move to another region and we want to preserve their state
   }
 }
