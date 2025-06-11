@@ -1,6 +1,7 @@
 import GameRegion from '../GameRegion';
 import RatkinWarriorEntity from '../entities/enemies/RatkinWarriorEntity';
 import Spawner from '../systems/Spawner';
+import PortalEntity from '../entities/PortalEntity';
 
 import chitterForestMap from '../../assets/maps/chitter-forest.json';
 
@@ -12,6 +13,7 @@ export default class StalkhavenRegion extends GameRegion {
       skyboxUri: 'skyboxes/partly-cloudy',
       spawnPoint: { x: -7, y: 5, z: 75 },
       ambientAudioUri: 'audio/music/jungle-theme-looping.mp3',
+      tag: 'chitterForest',
     });
   }
 
@@ -29,11 +31,14 @@ export default class StalkhavenRegion extends GameRegion {
       world: this.world,
     });
 
-    spawner.start(true);
+    // spawner.start(true);
+
+    const portal = new PortalEntity({
+      destinationRegionTag: 'stalkhaven',
+      destinationRegionPosition: { x: 0, y: 5, z: 0 },
+      modelScale: 2,
+    });
+
+    portal.spawn(this.world, { x: -7, y: 3.5, z: 80.2 });
   }
 }
-
-// -45, y, 28
-//35, y, 30
-// 36, y, -42
-// -50, y, -45

@@ -16,6 +16,7 @@ import RatkinWarriorEntity from '../entities/enemies/RatkinWarriorEntity';
 import WoodenSwordItem from '../items/weapons/WoodenSwordItem';
 import RatkinTailItem from '../items/materials/RatkinTailItem';
 import GoldItem from '../items/general/GoldItem';
+import PortalEntity from '../entities/PortalEntity';
 
 export default class StalkhavenRegion extends GameRegion {
   public constructor() {
@@ -25,12 +26,41 @@ export default class StalkhavenRegion extends GameRegion {
       skyboxUri: 'skyboxes/partly-cloudy',
       spawnPoint: { x: 1, y: 5, z: 40 },
       ambientAudioUri: 'audio/music/hytopia-main-theme.mp3',
+      tag: 'stalkhaven',
     });
   }
 
   protected override setup(): void {
     super.setup();
     
+    const portal = new PortalEntity({
+      destinationRegionTag: 'chitterForest',
+      destinationRegionPosition: { x: -7, y: 5, z: 80 },
+      modelScale: 2,
+    });
+    portal.spawn(this.world, { x: 1, y: 3.5, z: 46 });
+
+
+    for (let i = 0; i < 10; i++) {
+      const x = Math.random() * 40 - 20; // Random between -20 and 20
+      const z = Math.random() * 40 - 20; // Random between -20 and 20
+      const facingAngle = Math.random() * 360; // Random facing angle
+      
+      const ratkin = new RatkinWarriorEntity();
+      ratkin.setCcdEnabled(true);
+      ratkin.spawn(this.world, { x, y: 10, z });
+    }
+
+    const sword = new WoodenSwordItem();
+    // sword.spawnEntity(this.world, { x: 1, y: 5, z: 35 });
+
+    for (let i = 0; i < 20; i++) {
+      const gold = new GoldItem({ quantity: 1000 });
+      const x = 1 + (Math.random() * 4 - 2); // Random between -1 and 3
+      const z = 35 + (Math.random() * 4 - 2); // Random between 33 and 37
+      gold.spawnEntityAsDrop(this.world, { x, y: 5, z });
+    }
+
     // (new AdventurerEntity({ facingAngle: 90 })).spawn(this.world, { x: 30, y: 2, z: 22 });
     (new BankerEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });
     // (new BlacksmithEntity({ facingAngle: -120 })).spawn(this.world, { x: -25.5, y: 3, z: -12.5 });
