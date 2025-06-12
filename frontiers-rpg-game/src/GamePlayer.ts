@@ -125,6 +125,10 @@ export default class GamePlayer {
     this._isDead = this._health <= 0;
     this._updateHudHealthUI();
     this._updateEntityHealthSceneUI();
+
+    if (this._currentEntity) {
+      this._currentEntity.playerController.idleLoopedAnimations = this._isDead ? ['sleep'] : ['idle-lower', 'idle-upper'];
+    }
   }
 
   public adjustInventoryItemQuantity(itemInventory: Backpack | Hotbar | Storage, item: BaseItem, amount: number): boolean {
@@ -239,12 +243,7 @@ export default class GamePlayer {
     if (!this._isDead || !this._currentEntity) return;
 
     // Restore health
-    this._health = this._maxHealth;
-    this._isDead = false;
-
-    // Update UI
-    this._updateHudHealthUI();
-    this._updateEntityHealthSceneUI();
+    this.adjustHealth(this._maxHealth);
 
     // Teleport to spawn point if available
     this._currentEntity.setPosition(this._regionSpawnPoint ?? this._currentRegion!.spawnPoint);
