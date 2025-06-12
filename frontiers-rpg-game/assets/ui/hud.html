@@ -20,6 +20,9 @@
     </div>
   </div>
 
+  <!-- Respawn Fade Overlay -->
+  <div class="hud-respawn-fade" id="hud-respawn-fade"></div>
+
   <!-- Game Clock (top right) -->
   <div class="hud-clock-container">
     <div class="hud-clock">
@@ -114,11 +117,16 @@
 <script>
   // Configuration
   const HUD_CONFIG = {
+    // Layout
     hotbarSlots: 8,
+    
+    // Timing (in milliseconds)
     clockUpdateInterval: 1000,
+    elementFadeDuration: 500,
     expGainStaggerDelay: 100,
     expGainDuration: 1200,
-    notificationDuration: 4000
+    notificationDuration: 4000,
+    respawnDelay: 250
   };
 
   // State Management
@@ -200,10 +208,7 @@
     });
 
     // Setup death overlay respawn button
-    document.getElementById('hud-death-respawn-btn').addEventListener('click', () => {
-      hideDeathOverlay();
-      hytopia.sendData({ type: 'respawnPlayer' });
-    });
+    document.getElementById('hud-death-respawn-btn').addEventListener('click', handleRespawn);
   }
 
   // Utility Functions
@@ -368,15 +373,48 @@
 
   // Death Overlay Functions
   function showDeathOverlay() {
-    const overlay = document.getElementById('hud-death-overlay');
-    overlay.classList.add('show');
+    document.getElementById('hud-death-overlay').classList.add('show');
     hytopia.lockPointer(false);
   }
 
   function hideDeathOverlay() {
-    const overlay = document.getElementById('hud-death-overlay');
-    overlay.classList.remove('show');
+    document.getElementById('hud-death-overlay').classList.remove('show');
     hytopia.lockPointer(true);
+  }
+
+  // Utility Functions
+  function fadeElement(element, opacity, duration = HUD_CONFIG.elementFadeDuration) {
+    return new Promise(resolve => {
+      element.style.transition = `opacity ${duration}ms ease-in-out`;
+      element.style.opacity = opacity;
+      setTimeout(resolve, duration);
+    });
+  }
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function handleRespawn() {
+    const respawnFade = document.getElementById('hud-respawn-fade');
+    const respawnBtn = document.getElementById('hud-death-respawn-btn');
+    
+    if (respawnBtn.disabled) return;
+    
+    try {
+      respawnBtn.disabled = true;
+      respawnBtn.style.opacity = '0.6';
+      
+      await fadeElement(respawnFade, 1);
+      hideDeathOverlay();
+      hytopia.sendData({ type: 'respawnPlayer' });
+      await delay(HUD_CONFIG.respawnDelay);
+      await fadeElement(respawnFade, 0);
+      
+    } finally {
+      respawnBtn.disabled = false;
+      respawnBtn.style.opacity = '';
+    }
   }
 
   // Initialize HUD
@@ -982,6 +1020,22 @@
   .hud-death-overlay.show {
     opacity: 1;
     pointer-events: auto;
+  }
+
+  /* ============================================
+     RESPAWN FADE OVERLAY
+     ============================================ */
+
+  .hud-respawn-fade {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    z-index: 15000;
+    opacity: 0;
+    pointer-events: none;
   }
 
   .hud-death-content {
