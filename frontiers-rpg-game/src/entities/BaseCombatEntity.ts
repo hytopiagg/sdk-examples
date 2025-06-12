@@ -17,14 +17,24 @@ import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
 
+export type ComplexAttack = (params: {
+  attacker: BaseCombatEntity;
+  direction: Vector3Like;
+  position: Vector3Like;
+  target: BaseEntity | GamePlayerEntity;
+  world: World;
+}) => void;
+
 export type BaseCombatEntityAttack = {
   animations: string[];
-  damage: number;
-  damageVariance?: number; // Percentage variance (0-1), e.g., 0.2 = ±20% damage
-  damageDelayMs?: number; // When during animation to deal damage
+  complexAttack?: ComplexAttack;
+  complexAttackDelayMs?: number;
   cooldownMs: number;
   range: number;
   reach: number;
+  simpleAttackDamage: number;
+  simpleAttackDamageVariance?: number; // Percentage variance (0-1), e.g., 0.2 = ±20% damage
+  simpleAttackDamageDelayMs?: number; // When during animation to deal damage (if projectile, delay after hit)
   weight: number;
   onHit?: (target: BaseEntity | GamePlayerEntity, attacker: BaseCombatEntity) => void;
 }
@@ -99,25 +109,37 @@ export default class BaseCombatEntity extends BaseEntity {
     
     this.startModelOneshotAnimations(attack.animations);
     
-    const damageDelay = attack.damageDelayMs ?? 0;
-    
-    setTimeout(() => {
-      if (!target || !this._aggroPotentialTargets.has(target) || this.isDying) return;
-      
-      const distanceSquared = this._distanceSquaredToTarget(target);
-      const reachSquared = attack.reach ** 2;
-      
-      if (distanceSquared <= reachSquared) { // make sure target is in reach still
-        if (isDamageable(target)) {
-          const damage = this._calculateDamageWithVariance(attack.damage, attack.damageVariance);
-          target.takeDamage(damage, this);
-        }
+    if (!attack.complexAttack) { // Simple attack, animation + damage
+      setTimeout(() => {
+        if (!target || !this._aggroPotentialTargets.has(target) || this.isDying) return;
         
-        if (attack.onHit) {
-          attack.onHit(target, this);
+        const distanceSquared = this._distanceSquaredToTarget(target);
+        const reachSquared = attack.reach ** 2;
+        
+        if (distanceSquared <= reachSquared) { // make sure target is in reach still
+          if (isDamageable(target)) {
+            const damage = this._calculateDamageWithVariance(attack.simpleAttackDamage, attack.simpleAttackDamageVariance);
+            target.takeDamage(damage, this);
+          }
+          
+          if (attack.onHit) {
+            attack.onHit(target, this);
+          }
         }
-      }
-    }, damageDelay);
+      }, attack.simpleAttackDamageDelayMs ?? 0);
+    } else { // Complex attack, such as projectile, spell, AoE, etc
+      setTimeout(() => {
+        if (this.isDying || !attack.complexAttack || !this.world) return;
+
+        attack.complexAttack({
+          attacker: this,
+          direction: this.directionFromRotation,
+          position: this.position,
+          target: target,
+          world: this.world,
+        });
+      }, attack.complexAttackDelayMs ?? 0);
+    }
 
     this._attackCooldownMs = this._nextAttack.cooldownMs;
     this._nextAttack = this._pickRandomAttack();

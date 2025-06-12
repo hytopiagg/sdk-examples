@@ -368,6 +368,26 @@
     }
   }
 
+  function hasTooltipData(itemData) {
+    return itemData.name || itemData.description || itemData.sellPrice !== undefined;
+  }
+
+  // Parse color formatting in text: [HEXCODE]text[/] -> <span style="color: #HEXCODE">text</span>
+  // Parse line breaks: [b] -> <br>
+  function parseText(text) {
+    if (!text) return text;
+    
+    // First, replace [b] with <br> for line breaks
+    text = text.replace(/\[b\]/g, '<br>');
+    
+    // Then, handle color formatting [HEXCODE]text[/] pattern
+    const colorPattern = /\[([A-Fa-f0-9]{6})\](.*?)\[\/\]/g;
+    
+    return text.replace(colorPattern, (match, hexCode, content) => {
+      return `<span style="color: #${hexCode}">${content}</span>`;
+    });
+  }
+
   function createTooltip(slot, itemData) {
     if (!hasTooltipData(itemData)) return;
 
@@ -379,7 +399,10 @@
     
     const sections = [];
     if (itemData.name) sections.push(`<div class="backpack-tooltip-name">${itemData.name}</div>`);
-    if (itemData.description) sections.push(`<div class="backpack-tooltip-description">${itemData.description}</div>`);
+    if (itemData.description) {
+      const parsedDescription = parseText(itemData.description);
+      sections.push(`<div class="backpack-tooltip-description">${parsedDescription}</div>`);
+    }
     
     const sellPrice = itemData.sellPrice || 0;
     if (sellPrice > 0) sections.push(`<div class="backpack-tooltip-value">Sells For: ${sellPrice.toLocaleString()} gold</div>`);
@@ -392,10 +415,6 @@
   function removeTooltip(slot) {
     const existingTooltip = slot.querySelector('.backpack-item-tooltip');
     if (existingTooltip) existingTooltip.remove();
-  }
-
-  function hasTooltipData(itemData) {
-    return itemData.name || itemData.description || itemData.sellPrice !== undefined;
   }
 
   // Specific update functions
