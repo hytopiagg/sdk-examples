@@ -57,6 +57,10 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
       moveAnimations: [ 'walk' ],
       moveSpeed: 3,
       name: 'Ratkin Ranger',
+      pathfindingOptions: {
+        maxJump: 2,
+        maxFall: 2,
+      },
       ...options,
     });
   }

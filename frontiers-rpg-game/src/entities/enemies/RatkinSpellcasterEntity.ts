@@ -47,6 +47,10 @@ export default class RatkinSpellcasterEntity extends BaseCombatEntity {
       moveAnimations: [ 'walk' ],
       moveSpeed: 3,
       name: 'Ratkin Spellcaster',
+      pathfindingOptions: {
+        maxJump: 2,
+        maxFall: 2,
+      },
       ...options,
     });
   }

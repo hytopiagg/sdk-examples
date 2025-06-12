@@ -5,6 +5,7 @@ import RatkinSpellcasterEntity from '../../entities/enemies/RatkinSpellcasterEnt
 import RatkinWarriorEntity from '../../entities/enemies/RatkinWarriorEntity';
 import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
+import type { WanderOptions } from '../../entities/BaseEntity';
 
 import chitterForestMap from '../../../assets/maps/chitter-forest.json';
 
@@ -37,13 +38,27 @@ export default class ChitterForestRegion extends GameRegion {
   }
 
   private _setupSpawners(): void {
+    const roamWanderOptions: WanderOptions = {
+      idleMinMs: 6000,
+      idleMaxMs: 25000,
+      maxWanderRadius: 12,
+      moveOptions: { moveCompletesWhenStuck: true }
+    };
+
+    const campWanderOptions: WanderOptions = {
+      idleMinMs: 7000,
+      idleMaxMs: 25000,
+      maxWanderRadius: 4,
+      moveOptions: { moveCompletesWhenStuck: true }
+    };
+
     const forestAreaSpawner = new Spawner({
       maxSpawns: 15,
       spawnableEntities: [
-        { entity: RatkinBruteEntity, weight: 2 },
-        { entity: RatkinRangerEntity, weight: 2 },
-        { entity: RatkinSpellcasterEntity, weight: 1.5 },
-        { entity: RatkinWarriorEntity, weight: 7 },
+        { entity: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: roamWanderOptions },
+        { entity: RatkinRangerEntity, weight: 2, wanders: true, wanderOptions: roamWanderOptions },
+        { entity: RatkinSpellcasterEntity, weight: 1.5, wanders: true, wanderOptions: roamWanderOptions },
+        { entity: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: roamWanderOptions },
       ],
       spawnBounds: {
         min: { x: -49, y: 2, z: -35 },
@@ -56,8 +71,8 @@ export default class ChitterForestRegion extends GameRegion {
     const forestCamp1Spawner = new Spawner({
       maxSpawns: 6,
       spawnableEntities: [
-        { entity: RatkinBruteEntity, weight: 2 },
-        { entity: RatkinWarriorEntity, weight: 7 },
+        { entity: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: campWanderOptions },
+        { entity: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnBounds: {
         min: { x: -27, y: 2, z: -15 },
@@ -70,9 +85,9 @@ export default class ChitterForestRegion extends GameRegion {
     const forestCamp2Spawner = new Spawner({
       maxSpawns: 8,
       spawnableEntities: [
-        { entity: RatkinBruteEntity, weight: 2 },
-        { entity: RatkinRangerEntity, weight: 4 },
-        { entity: RatkinWarriorEntity, weight: 7 },
+        { entity: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: campWanderOptions },
+        { entity: RatkinRangerEntity, weight: 4, wanders: true, wanderOptions: campWanderOptions },
+        { entity: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnBounds: {
         min: { x: -9, y: 2, z: -48 },
@@ -85,10 +100,10 @@ export default class ChitterForestRegion extends GameRegion {
     const pathCampSpawner = new Spawner({
       maxSpawns: 10,
       spawnableEntities: [
-        { entity: RatkinBruteEntity, weight: 3 },
-        { entity: RatkinRangerEntity, weight: 3 },
-        { entity: RatkinSpellcasterEntity, weight: 3 },
-        { entity: RatkinWarriorEntity, weight: 5 },
+        { entity: RatkinBruteEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
+        { entity: RatkinRangerEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
+        { entity: RatkinSpellcasterEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
+        { entity: RatkinWarriorEntity, weight: 5, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnBounds: {
         min: { x: 48, y: 2, z: 21 },
@@ -101,8 +116,8 @@ export default class ChitterForestRegion extends GameRegion {
     const lakeCampSpawner = new Spawner({
       maxSpawns: 6,
       spawnableEntities: [
-        { entity: RatkinRangerEntity, weight: 6 },
-        { entity: RatkinSpellcasterEntity, weight: 3 },
+        { entity: RatkinRangerEntity, weight: 6, wanders: true, wanderOptions: campWanderOptions },
+        { entity: RatkinSpellcasterEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnBounds: {
         min: { x: -108, y: 2, z: 22 },

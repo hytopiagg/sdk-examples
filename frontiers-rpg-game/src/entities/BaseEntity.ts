@@ -61,15 +61,17 @@ export type BaseEntityOptions = {
   health?: number;
   moveAnimations?: string[];
   moveAnimationSpeed?: number;
+  moveOptions?: MoveOptions;
   moveSpeed?: number;
+  pathfindingOptions?: PathfindingOptions;
   pushable?: boolean;
 } & EntityOptions;
 
 export type WanderOptions = {
   idleMinMs: number;
   idleMaxMs: number;
+  maxWanderRadius: number;
   moveOptions?: MoveOptions;
-  pathfindOptions?: PathfindingOptions;
 }
 
 export default class BaseEntity extends Entity implements IInteractable, IDamageable {
@@ -83,10 +85,12 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _dying: boolean = false;
   private _health: number;
   private _maxHealth: number;
+  private _moveOptions: MoveOptions | undefined;
   private _moveSpeed: number;
   private _nameplateSceneUI: SceneUI;
   private _optionMap: Map<number, BaseEntityDialogueOption> = new Map();
-  private _wanderAccumulatorMs: number = 0;
+  private _pathfindingOptions: PathfindingOptions | undefined;
+  private _wanderTimeout: NodeJS.Timeout | undefined;
   
   public constructor(options: BaseEntityOptions = {}) {
     super({
@@ -110,8 +114,10 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._dialogueRoot = options.dialogue;
     this._health = options.health ?? 0; // 0 is infinite health, will not show health bar
     this._maxHealth = this._health;
+    this._moveOptions = options.moveOptions;
     this._moveSpeed = options.moveSpeed ?? 2;
-
+    this._pathfindingOptions = options.pathfindingOptions;
+    
     if (this._dialogueRoot) {
       this._buildDialogueOptionMap();
     }
@@ -194,11 +200,11 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   }
 
   public moveTo(target: Vector3Like, speed: number = this._moveSpeed, options?: MoveOptions) {
-    this.pathfindingController.move(target, speed, options);
+    this.pathfindingController.move(target, speed, options ?? this._moveOptions);
   }
 
   public pathfindTo(target: Vector3Like, speed: number = this._moveSpeed, options?: PathfindingOptions) {
-    this.pathfindingController.pathfind(target, speed, options);
+    this.pathfindingController.pathfind(target, speed, options ?? this._pathfindingOptions);
   }
 
   public progressDialogue(interactor: GamePlayerEntity, optionId: number): void {
@@ -242,7 +248,13 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public stopMoving() {
     this.pathfindingController.stopFace();
     this.pathfindingController.stopMove();
-    // need to add stopPathfind()?
+  }
+
+  public stopWandering() {
+    if (this._wanderTimeout) {
+      clearTimeout(this._wanderTimeout);
+      this._wanderTimeout = undefined;
+    }
   }
 
   public takeDamage(damage: number, attacker?: Entity): void {
@@ -261,20 +273,40 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     }
   }
 
-  public wander(targets: Vector3Like[], speed: number = this._moveSpeed, options?: WanderOptions) {
-    const randomIndex = Math.floor(Math.random() * targets.length);
-    const target = targets[randomIndex];
-    this.pathfindTo(target, speed, {
-      debug: true,
-      maxFall: 5,
-      maxJump: 0,
-      maxOpenSetIterations: 400,
-      waypointTimeoutMs: 500,
-      pathfindCompleteCallback: () => {
-        setTimeout(() => this.wander(targets, speed, options), 2000);
-      }
-    });
-    console.log('wandering to', target);
+  public wander(speed: number = this._moveSpeed, options: WanderOptions): void {
+    // Basic validation and early exit for invalid states
+    if (this._dying || !this.world || speed <= 0 || options.maxWanderRadius <= 0) return;
+
+    // Allow subclasses to defer wandering for other behaviors
+    if (this.shouldDeferWander()) {
+      const { idleMinMs, idleMaxMs } = options;
+      const idleTimeMs = Math.floor(Math.random() * (idleMaxMs - idleMinMs + 1)) + idleMinMs;
+      this._wanderTimeout = setTimeout(() => this.wander(speed, options), idleTimeMs);
+      return;
+    }
+
+    this.stopWandering();
+
+    const { idleMinMs, idleMaxMs, maxWanderRadius, moveOptions } = options;
+    const idleTimeMs = Math.floor(Math.random() * (idleMaxMs - idleMinMs + 1)) + idleMinMs;
+
+    this._wanderTimeout = setTimeout(() => {
+      if (this._dying || !this.world) return;
+
+      const offsetX = (Math.random() - 0.5) * 2 * maxWanderRadius;
+      const offsetZ = (Math.random() - 0.5) * 2 * maxWanderRadius;
+      const target = {
+        x: this.position.x + offsetX,
+        y: this.position.y,
+        z: this.position.z + offsetZ,
+      };
+
+      this.faceTowards(target, this._moveSpeed * 2);
+      this.moveTo(target, speed, moveOptions);
+
+      const travelTimeMs = Math.max(500, ((offsetX + offsetZ) / speed) * 1000);
+      this._wanderTimeout = setTimeout(() => this.wander(speed, options), travelTimeMs);
+    }, idleTimeMs);
   }
 
   protected setupNameplateUI(): void {
@@ -289,6 +321,10 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
         maxHealth: this.maxHealth,
       },
     });
+  }
+
+  protected shouldDeferWander(): boolean {
+    return true; // override in subclasses to prevent wandering
   }
 
   private _buildDialogueOptionMap(): void {

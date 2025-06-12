@@ -5,9 +5,12 @@ import {
 } from 'hytopia';
 import type { Vector3Like, World } from 'hytopia';
 import type BaseEntity from '../entities/BaseEntity';
+import type { WanderOptions } from '../entities/BaseEntity';
 
 export type SpawnableEntity = {
   entity: typeof BaseEntity;
+  wanders?: boolean;
+  wanderOptions?: WanderOptions;
   weight: number;
 }
 
@@ -126,6 +129,10 @@ export default class Spawner {
     
     entity.spawn(this.world, spawnPoint, Quaternion.fromEuler(0, Math.random() * 360, 0));
     
+    if (spawnableEntity.wanders && spawnableEntity.wanderOptions) {
+      entity.wander(entity.moveSpeed, spawnableEntity.wanderOptions);
+    }
+
     this._spawnedEntities.add(entity);
   }
 }

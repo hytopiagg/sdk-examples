@@ -55,6 +55,10 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
       moveAnimations: [ 'walk' ],
       moveSpeed: 3,
       name: 'Ratkin Warrior',
+      pathfindingOptions: {
+        maxJump: 2,
+        maxFall: 2,
+      },
       ...options,
     });
   }

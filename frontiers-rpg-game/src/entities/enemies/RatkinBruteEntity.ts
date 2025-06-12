@@ -65,6 +65,10 @@ export default class RatkinBruteEntity extends BaseCombatEntity {
       moveAnimations: [ 'walk' ],
       moveSpeed: 2.5,
       name: 'Ratkin Brute',
+      pathfindingOptions: {
+        maxJump: 2,
+        maxFall: 2,
+      },
       ...options,
     });
   }

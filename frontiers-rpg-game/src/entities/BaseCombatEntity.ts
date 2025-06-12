@@ -56,7 +56,7 @@ export default class BaseCombatEntity extends BaseEntity {
   private _aggroPathfinding: boolean = false;
   private _aggroPathfindAccumulatorMs: number = 0;
   private _aggroPathfindLastPosition: Vector3Like | null = null;
-  private _aggroPathfindIntervalMs: number = 2000;
+  private _aggroPathfindIntervalMs: number = 1000;
   private _aggroPotentialTargets: Set<BaseEntity | GamePlayerEntity> = new Set();
   private _aggroPotentialTargetTypes: (typeof BaseEntity | typeof GamePlayerEntity)[];
   private _aggroRadius: number;
@@ -198,6 +198,10 @@ export default class BaseCombatEntity extends BaseEntity {
     
     return Math.floor(min + Math.random() * (max - min));
   }
+
+  protected override shouldDeferWander(): boolean {
+    return !!this._aggroActiveTarget;
+  }
   
   private _distanceSquaredBetweenPositions(currentPosition: Vector3Like, targetPosition: Vector3Like): number {
     const dx = targetPosition.x - currentPosition.x;
@@ -232,10 +236,7 @@ export default class BaseCombatEntity extends BaseEntity {
 
     if (this._aggroPotentialTargets.size === 0) {
       if (this._aggroReturnToStart && this._aggroStartPosition) {
-        this.pathfindTo(this._aggroStartPosition, this.moveSpeed, {
-          maxOpenSetIterations: 400,
-          waypointTimeoutMs: 500,
-        });
+        this.pathfindTo(this._aggroStartPosition, this.moveSpeed);
       } else {
         this.stopMoving();
       }
@@ -335,11 +336,11 @@ export default class BaseCombatEntity extends BaseEntity {
     const notAtDestination = this._nextAttack ? targetDistanceSquared > this._nextAttack.range ** 2 : false;
     
     const shouldPathfind = isStuck && notAtDestination;
-    
+    console.log('shouldPathfind', shouldPathfind);
     if (shouldPathfind !== this._aggroPathfinding) {
       this._aggroPathfinding = shouldPathfind;
       if (shouldPathfind && this._aggroActiveTarget) {
-        this.pathfindTo(this._aggroActiveTarget.position, this.moveSpeed, { waypointTimeoutMs: 500 });
+        this.pathfindTo(this._aggroActiveTarget.position, this.moveSpeed);
       }
     }
     
@@ -370,5 +371,5 @@ export default class BaseCombatEntity extends BaseEntity {
       this._aggroActiveTarget = newTarget;
       this._aggroPathfinding = false;
     }
-  }  
+  }
 }
