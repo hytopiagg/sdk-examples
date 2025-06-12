@@ -334,9 +334,8 @@ export default class BaseCombatEntity extends BaseEntity {
     const distanceMovedSquared = this._distanceSquaredBetweenPositions(this._aggroPathfindLastPosition, this.position);
     const isStuck = distanceMovedSquared < MOVEMENT_NOT_STUCK_DISTANCE_SQUARED;
     const notAtDestination = this._nextAttack ? targetDistanceSquared > this._nextAttack.range ** 2 : false;
-    
     const shouldPathfind = isStuck && notAtDestination;
-    console.log('shouldPathfind', shouldPathfind);
+
     if (shouldPathfind !== this._aggroPathfinding) {
       this._aggroPathfinding = shouldPathfind;
       if (shouldPathfind && this._aggroActiveTarget) {

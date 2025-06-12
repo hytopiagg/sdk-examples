@@ -64,7 +64,7 @@ export default class ChitterForestRegion extends GameRegion {
         min: { x: -49, y: 2, z: -35 },
         max: { x: 35, y: 6, z: 23 },
       },
-      spawnIntervalMs: 25000,
+      spawnIntervalMs: 60000,
       world: this.world,
     });
 
@@ -78,7 +78,7 @@ export default class ChitterForestRegion extends GameRegion {
         min: { x: -27, y: 2, z: -15 },
         max: { x: -2, y: 6, z: 14 },
       },
-      spawnIntervalMs: 25000,
+      spawnIntervalMs: 60000,
       world: this.world,
     });
     
@@ -93,7 +93,7 @@ export default class ChitterForestRegion extends GameRegion {
         min: { x: -9, y: 2, z: -48 },
         max: { x: 19, y: 6, z: -21 },
       },
-      spawnIntervalMs: 25000,
+      spawnIntervalMs: 60000,
       world: this.world,
     });
     
@@ -109,7 +109,7 @@ export default class ChitterForestRegion extends GameRegion {
         min: { x: 48, y: 2, z: 21 },
         max: { x: 84, y: 6, z: 45 },
       },
-      spawnIntervalMs: 25000,
+      spawnIntervalMs: 60000,
       world: this.world,
     });
     
@@ -123,7 +123,7 @@ export default class ChitterForestRegion extends GameRegion {
         min: { x: -108, y: 2, z: 22 },
         max: { x: -98, y: 6, z: 52 },
       },
-      spawnIntervalMs: 25000,
+      spawnIntervalMs: 60000,
       world: this.world,
     });
 
