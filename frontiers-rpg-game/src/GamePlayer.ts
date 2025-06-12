@@ -298,14 +298,14 @@ export default class GamePlayer {
 
   private _spawnHeldItem(): void {
     if (this._currentEntity && this.hotbar.selectedItem) {
-      this.hotbar.selectedItem.spawnEntityAsHeld(this._currentEntity, 'hand_right_anchor');
+      this.hotbar.selectedItem.spawnEntityAsHeld(this._currentEntity, 'hand-right-anchor');
     }
   }
 
   private _onHotbarSelectedItemChanged = (selectedItem: BaseItem | null, lastItem: BaseItem | null): void => {
     lastItem?.despawnEntity();
     if (this._currentEntity && selectedItem) {
-      selectedItem.spawnEntityAsHeld(this._currentEntity, 'hand_right_anchor');
+      selectedItem.spawnEntityAsHeld(this._currentEntity, 'hand-right-anchor');
     }
   }
 

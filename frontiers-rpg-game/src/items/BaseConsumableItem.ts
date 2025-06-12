@@ -2,7 +2,7 @@ import BaseItem, { BaseItemOptions } from './BaseItem';
 import GamePlayerEntity from '../GamePlayerEntity';
 
 export type BaseConsumableItemOptions = {
-  consumeAnimations: string[];
+  consumeAnimations?: string[];
   consumeCooldownMs: number;
 } & BaseItemOptions;
 
@@ -13,8 +13,7 @@ export default class BaseConsumableItem extends BaseItem {
 
   public constructor(options: BaseConsumableItemOptions) {
     super(options);
-
-    this.consumeAnimations = options.consumeAnimations;
+    this.consumeAnimations = options.consumeAnimations ?? [ 'consume-upper' ];
     this.consumeCooldownMs = options.consumeCooldownMs;
   }
 
