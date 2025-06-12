@@ -5,7 +5,6 @@ import {
   DefaultPlayerEntity,
   DefaultPlayerEntityController,
   EventPayloads,
-  Player,
   QuaternionLike,
   SceneUI,
   Vector3Like,
@@ -34,16 +33,14 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   private readonly _gamePlayer: GamePlayer;
   private _lastDodgeTimeMs: number = 0;
   private _nameplateSceneUI: SceneUI;
-  private _region: GameRegion;
 
-  public constructor(gamePlayer: GamePlayer, region: GameRegion) {
+  public constructor(gamePlayer: GamePlayer) {
     super({
       player: gamePlayer.player,
       name: 'Player',
     });
 
     this._gamePlayer = gamePlayer;
-    this._region = region;
 
     this._setupPlayerCamera();
     this._setupPlayerController();
@@ -103,6 +100,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   
   public get playerController(): DefaultPlayerEntityController {
     return this.controller as DefaultPlayerEntityController;
+  }
+
+  public get region(): GameRegion {
+    return this._gamePlayer.currentRegion!;
   }
 
   // Delegate state management methods to GamePlayer
@@ -171,8 +172,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this._gamePlayer.adjustHealth(-damage);
 
     if (this._gamePlayer.health <= 0) {
-      this._gamePlayer.adjustHealth(this._gamePlayer.maxHealth);
-      this.setPosition(this._gamePlayer.regionSpawnPoint ?? this._region.spawnPoint);
+
     }
   }
 
@@ -220,9 +220,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
+    const isDead = this._gamePlayer.isDead;
 
     // Left click item usage
-    if (input.ml) {
+    if (input.ml && !isDead) {
       const selectedItem = this._gamePlayer.hotbar.selectedItem;
       
       if (selectedItem) {
@@ -235,7 +236,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
 
     // Right click item usage
-    if (input.mr) {
+    if (input.mr && !isDead) {
       const selectedItem = this._gamePlayer.hotbar.selectedItem;
 
       if (selectedItem) {
@@ -246,13 +247,13 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
 
     // NPC & Environment Interact
-    if (input.e) {
+    if (input.e && !isDead) {
       this._interact();
       input.e = false;
     }
 
     // Dodge
-    if (input.q) {
+    if (input.q && !isDead) {
       this._dodge();
       input.q = false;
     }
@@ -285,6 +286,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   private _setupPlayerController(): void {
     this.playerController.interactOneshotAnimations = [];
+    this.playerController.canJump = () => !this._gamePlayer.isDead;
+    this.playerController.canRun = () => !this._gamePlayer.isDead;
+    this.playerController.canSwim = () => !this._gamePlayer.isDead;
+    this.playerController.canWalk = () => !this._gamePlayer.isDead;
     this.playerController.on(BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT, this._onTickWithPlayerInput);
   } 
 
@@ -315,6 +320,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     });
 
     // Show Area Banner
-    this._gamePlayer.showAreaBanner(this._region.name);
+    this._gamePlayer.showAreaBanner(this._gamePlayer.currentRegion!.name);
   }
 }

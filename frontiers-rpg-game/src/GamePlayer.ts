@@ -15,6 +15,7 @@ import type BaseEntity from './entities/BaseEntity';
 import type BaseMerchantEntity from './entities/BaseMerchantEntity';
 import type BaseItem from './items/BaseItem';
 import type GamePlayerEntity from './GamePlayerEntity';
+import type GameRegion from './GameRegion';
 
 export default class GamePlayer {
   private static _instances: Map<string, GamePlayer> = new Map();
@@ -27,8 +28,10 @@ export default class GamePlayer {
   private _currentDialogueEntity: BaseEntity | undefined;
   private _currentMerchantEntity: BaseMerchantEntity | undefined;
   private _currentEntity: GamePlayerEntity | undefined;
+  private _currentRegion: GameRegion | undefined;
   private _globalExperience: number = 0;
   private _health: number = 100;
+  private _isDead: boolean = false;
   private _maxHealth: number = 100;
   private _regionSpawnPoint: Vector3Like | undefined;
   private _skillExperience: Map<SkillId, number> = new Map();
@@ -92,12 +95,20 @@ export default class GamePlayer {
     return this._currentEntity;
   }
 
+  public get currentRegion(): GameRegion | undefined {
+    return this._currentRegion;
+  }
+
   public get globalExperience(): number {
     return this._globalExperience;
   }
   
   public get health(): number {
     return this._health;
+  }
+
+  public get isDead(): boolean {
+    return this._isDead;
   }
   
   public get maxHealth(): number {
@@ -111,6 +122,7 @@ export default class GamePlayer {
   // Game state methods
   public adjustHealth(amount: number): void {
     this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
+    this._isDead = this._health <= 0;
     this._updateHudHealthUI();
     this._updateEntityHealthSceneUI();
   }
@@ -223,6 +235,24 @@ export default class GamePlayer {
     this._spawnHeldItem();
   }
 
+  public respawn(): void {
+    if (!this._isDead || !this._currentEntity) return;
+
+    // Restore health
+    this._health = this._maxHealth;
+    this._isDead = false;
+
+    // Update UI
+    this._updateHudHealthUI();
+    this._updateEntityHealthSceneUI();
+
+    // Teleport to spawn point if available
+    this._currentEntity.setPosition(this._regionSpawnPoint ?? this._currentRegion!.spawnPoint);
+
+    // Show respawn notification
+    this.showNotification('You have respawned!', 'success');
+  }
+
   public setCurrentDialogueEntity(entity: BaseEntity): void {
     this._currentDialogueEntity = entity;
   }
@@ -233,6 +263,10 @@ export default class GamePlayer {
 
   public setRegionSpawnPoint(position: Vector3Like): void {
     this._regionSpawnPoint = position;
+  }
+
+  public setCurrentRegion(region: GameRegion): void {
+    this._currentRegion = region;
   }
 
   public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
@@ -337,6 +371,10 @@ export default class GamePlayer {
       if (this._currentDialogueEntity && this._currentEntity && optionId !== undefined) {
         this._currentDialogueEntity.progressDialogue(this._currentEntity, optionId);
       }
+    }
+
+    if (data.type === 'respawnPlayer') {
+      this.respawn();
     }
 
     if (data.type === 'sellItem') {

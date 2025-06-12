@@ -8,6 +8,18 @@
     </div>
   </div>
 
+  <!-- Death Overlay -->
+  <div class="hud-death-overlay" id="hud-death-overlay">
+    <div class="hud-death-content">
+      <div class="hud-death-title">You Died!</div>
+      <div class="hud-death-subtitle">Await revival or choose to respawn</div>
+      <div class="hud-death-underline"></div>
+      <button class="hud-death-respawn-btn" id="hud-death-respawn-btn">
+        <span class="hud-death-respawn-text">Respawn</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Game Clock (top right) -->
   <div class="hud-clock-container">
     <div class="hud-clock">
@@ -186,6 +198,12 @@
     Object.entries(buttons).forEach(([id, handler]) => {
       document.getElementById(id).addEventListener('click', handler);
     });
+
+    // Setup death overlay respawn button
+    document.getElementById('hud-death-respawn-btn').addEventListener('click', () => {
+      hideDeathOverlay();
+      hytopia.sendData({ type: 'respawnPlayer' });
+    });
   }
 
   // Utility Functions
@@ -230,6 +248,13 @@
     }
     
     healthText.textContent = `${Math.max(0, health)} / ${maxHealth}`;
+
+    // Show death overlay if health reaches 0, hide if health is restored
+    if (health <= 0) {
+      showDeathOverlay();
+    } else if (health > 0) {
+      hideDeathOverlay();
+    }
   }
 
   function updateExperienceBar(level, exp, currentLevelExp, nextLevelExp) {
@@ -339,6 +364,19 @@
       notification.classList.add('hide');
       setTimeout(() => notification.remove(), 400);
     }, HUD_CONFIG.notificationDuration);
+  }
+
+  // Death Overlay Functions
+  function showDeathOverlay() {
+    const overlay = document.getElementById('hud-death-overlay');
+    overlay.classList.add('show');
+    hytopia.lockPointer(false);
+  }
+
+  function hideDeathOverlay() {
+    const overlay = document.getElementById('hud-death-overlay');
+    overlay.classList.remove('show');
+    hytopia.lockPointer(true);
   }
 
   // Initialize HUD
@@ -922,6 +960,180 @@
   }
 
   /* ============================================
+     DEATH OVERLAY
+     ============================================ */
+
+  .hud-death-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease-out;
+  }
+
+  .hud-death-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .hud-death-content {
+    text-align: center;
+    transform: translateY(15px);
+    opacity: 0;
+    transition: all 0.8s ease-out;
+    max-width: 500px;
+    margin: 0 20px;
+  }
+
+  .hud-death-overlay.show .hud-death-content {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .hud-death-title {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 600;
+    color: #dc2626;
+    text-shadow: 
+      0 0 30px rgba(220, 38, 38, 0.4),
+      0 4px 12px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 5px 0;
+    white-space: nowrap;
+    transform: translateY(15px);
+    opacity: 0;
+  }
+
+  .hud-death-overlay.show .hud-death-title {
+    animation: deathTitleShow 1s ease-out 0.3s forwards;
+  }
+
+  .hud-death-subtitle {
+    font-family: var(--hud-font);
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-weight: 500;
+    color: var(--hud-text-secondary);
+    text-shadow: var(--hud-text-shadow);
+    margin: 0 0 12px 0;
+    opacity: 0.8;
+    line-height: 1.4;
+    transform: translateY(15px);
+    opacity: 0;
+  }
+
+  .hud-death-overlay.show .hud-death-subtitle {
+    animation: deathSubtitleShow 1s ease-out 0.5s forwards;
+  }
+
+  .hud-death-underline {
+    width: 0;
+    height: 3px;
+    margin: 0 auto 24px auto;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(220, 38, 38, 0.6) 25%, 
+      #dc2626 50%, 
+      rgba(220, 38, 38, 0.6) 75%, 
+      transparent);
+    box-shadow: 
+      0 0 20px rgba(220, 38, 38, 0.5),
+      0 2px 6px rgba(0, 0, 0, 0.6);
+    border-radius: 2px;
+    opacity: 0;
+  }
+
+  .hud-death-overlay.show .hud-death-underline {
+    animation: deathUnderlineExpand 1.2s ease-out 0.8s forwards;
+  }
+
+  .hud-death-respawn-btn {
+    background: linear-gradient(145deg, #dc2626, #b91c1c);
+    border: 2px solid #991b1b;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-family: var(--hud-font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--hud-text);
+    text-shadow: var(--hud-text-shadow);
+    cursor: pointer;
+    transition: all var(--hud-transition);
+    box-shadow: 
+      0 4px 12px rgba(220, 38, 38, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+    min-width: 120px;
+    pointer-events: auto;
+  }
+
+  .hud-death-respawn-btn:hover {
+    background: linear-gradient(145deg, #ef4444, #dc2626);
+    border-color: #b91c1c;
+    transform: translateY(-2px);
+    box-shadow: 
+      0 6px 16px rgba(220, 38, 38, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  }
+
+  .hud-death-respawn-btn:active {
+    transform: translateY(0);
+  }
+
+  .hud-death-respawn-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .hud-death-respawn-btn:hover::before {
+    left: 100%;
+  }
+
+  .hud-death-respawn-text {
+    position: relative;
+    z-index: 2;
+  }
+
+  @keyframes deathTitleShow {
+    to { 
+      opacity: 0.9; 
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes deathSubtitleShow {
+    to { 
+      opacity: 0.9; 
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes deathUnderlineExpand {
+    to { 
+      width: min(250px, 60vw); 
+      opacity: 1; 
+    }
+  }
+
+  /* ============================================
      MOBILE RESPONSIVE
      ============================================ */
 
@@ -1031,6 +1243,40 @@
         width: min(300px, 85vw); 
         opacity: 1; 
       }
+    }
+
+    /* Death Overlay Mobile */
+    .hud-death-content {
+      margin: 0 16px;
+      max-width: 90vw;
+    }
+
+    .hud-death-title {
+      font-size: clamp(1.8rem, 10vw, 3.5rem);
+      margin: 0 0 4px 0;
+      letter-spacing: 0.05em;
+    }
+
+    .hud-death-subtitle {
+      font-size: clamp(0.8rem, 4vw, 1rem);
+      margin: 0 0 10px 0;
+    }
+
+    .hud-death-underline {
+      margin: 0 auto 20px auto;
+    }
+
+    @keyframes deathUnderlineExpand {
+      to { 
+        width: min(200px, 80vw); 
+        opacity: 1; 
+      }
+    }
+
+    .hud-death-respawn-btn {
+      font-size: 12px;
+      padding: 10px 20px;
+      min-width: 100px;
     }
   }
 
