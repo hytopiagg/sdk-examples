@@ -20,9 +20,7 @@ import { isDamageable } from '../interfaces/IDamageable';
 export type ComplexAttack = (params: {
   attacker: BaseCombatEntity;
   direction: Vector3Like;
-  position: Vector3Like;
   target: BaseEntity | GamePlayerEntity;
-  world: World;
 }) => void;
 
 export type BaseCombatEntityAttack = {
@@ -30,11 +28,11 @@ export type BaseCombatEntityAttack = {
   complexAttack?: ComplexAttack;
   complexAttackDelayMs?: number;
   cooldownMs: number;
-  range: number;
-  reach: number;
-  simpleAttackDamage: number;
+  range: number; // Considered when target is < range distance
+  simpleAttackDamage?: number;
   simpleAttackDamageVariance?: number; // Percentage variance (0-1), e.g., 0.2 = ±20% damage
   simpleAttackDamageDelayMs?: number; // When during animation to deal damage (if projectile, delay after hit)
+  simpleAttackReach?: number; // Applies damage if target is < reach after delay
   weight: number;
   onHit?: (target: BaseEntity | GamePlayerEntity, attacker: BaseCombatEntity) => void;
 }
@@ -93,7 +91,7 @@ export default class BaseCombatEntity extends BaseEntity {
         ErrorHandler.error(`BaseCombatEntity.constructor(): Attack at index ${i} has a negative weight!`);
       }
 
-      if (attack.reach < attack.range) {
+      if (attack.simpleAttackReach && attack.simpleAttackReach < attack.range) {
         ErrorHandler.error(`BaseCombatEntity.constructor(): Attack at index ${i} has a reach that is less than it's range!`);
       }
     }
@@ -113,12 +111,16 @@ export default class BaseCombatEntity extends BaseEntity {
       setTimeout(() => {
         if (!target || !this._aggroPotentialTargets.has(target) || this.isDying) return;
         
+        if (!attack.simpleAttackDamage) {
+          return ErrorHandler.warning(`BaseCombatEntity.attack(): Simple attack has no simple attack damage!`);
+        };
+        
         const distanceSquared = this._distanceSquaredToTarget(target);
-        const reachSquared = attack.reach ** 2;
+        const reachSquared = attack.simpleAttackReach ? attack.simpleAttackReach ** 2 : attack.range ** 2;
         
         if (distanceSquared <= reachSquared) { // make sure target is in reach still
           if (isDamageable(target)) {
-            const damage = this._calculateDamageWithVariance(attack.simpleAttackDamage, attack.simpleAttackDamageVariance);
+            const damage = this.calculateDamageWithVariance(attack.simpleAttackDamage, attack.simpleAttackDamageVariance);
             target.takeDamage(damage, this);
           }
           
@@ -134,9 +136,7 @@ export default class BaseCombatEntity extends BaseEntity {
         attack.complexAttack({
           attacker: this,
           direction: this.directionFromRotation,
-          position: this.position,
           target: target,
-          world: this.world,
         });
       }, attack.complexAttackDelayMs ?? 0);
     }
@@ -168,8 +168,8 @@ export default class BaseCombatEntity extends BaseEntity {
       }
     });
   }
-  
-  private _calculateDamageWithVariance(baseDamage: number, variance?: number): number {
+
+  protected calculateDamageWithVariance(baseDamage: number, variance?: number): number {
     if (!variance) return baseDamage;
     
     // variance of 0.2 means damage can be 80% to 120% of base damage

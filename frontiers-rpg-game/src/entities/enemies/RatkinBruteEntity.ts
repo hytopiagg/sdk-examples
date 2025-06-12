@@ -16,30 +16,30 @@ export default class RatkinBruteEntity extends BaseCombatEntity {
           animations: [ 'atk1' ],
           cooldownMs: 4000,
           range: 2,
-          reach: 3,
           simpleAttackDamage: 25,
           simpleAttackDamageVariance: 0.6, // ±60% damage
           simpleAttackDamageDelayMs: 1000, // Deal damage 1000ms into animation
+          simpleAttackReach: 3,
           weight: 1,
         },
         { // Light hammer swing attack
           animations: [ 'atk2' ],
           cooldownMs: 1500,
           range: 2,
-          reach: 3,
           simpleAttackDamage: 13,
           simpleAttackDamageVariance: 0.15, // ±15% damage
           simpleAttackDamageDelayMs: 500, // Deal damage 500ms into animation
+          simpleAttackReach: 3,
           weight: 2,
         },
         { // Light hammer swing 2 attack
           animations: [ 'atk3' ],
           cooldownMs: 1500,
           range: 2,
-          reach: 3,
           simpleAttackDamage: 9,
           simpleAttackDamageVariance: 0.15, // ±15% damage
           simpleAttackDamageDelayMs: 350, // Deal damage 350ms into animation
+          simpleAttackReach: 3,
           weight: 2,
         },
       ],
