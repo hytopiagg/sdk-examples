@@ -1,15 +1,18 @@
-import { EntityEvent, Entity } from 'hytopia';
+import {
+  Entity,
+  EntityEvent,
+  Quaternion,
+} from 'hytopia';
 import type { Vector3Like, World } from 'hytopia';
 import type BaseEntity from '../entities/BaseEntity';
 
 export type SpawnableEntity = {
   entity: typeof BaseEntity;
-  probability: number; // 0 - 1
+  weight: number;
 }
 
 export type SpawnerOptions = {
   maxSpawns: number;
-  respawnDelayRangeMs: [ number, number ];
   spawnableEntities: SpawnableEntity[];
   spawnBounds: { min: Vector3Like; max: Vector3Like; };
   spawnIntervalMs: number;
@@ -18,7 +21,6 @@ export type SpawnerOptions = {
 
 export default class Spawner {
   public readonly maxSpawns: number;
-  public readonly respawnDelayRangeMs: [ number, number ];
   public readonly spawnableEntities: SpawnableEntity[];
   public readonly spawnBounds: { min: Vector3Like; max: Vector3Like; };
   public readonly world: World;
@@ -26,14 +28,16 @@ export default class Spawner {
   private _spawnedEntities: Set<BaseEntity> = new Set();
   private _spawnInterval: NodeJS.Timeout | undefined;
   private _started: boolean = false;
+  private _totalWeight: number = 0;
 
   public constructor(options: SpawnerOptions) {
     this.maxSpawns = options.maxSpawns;
-    this.respawnDelayRangeMs = options.respawnDelayRangeMs;
     this.spawnableEntities = options.spawnableEntities;
     this.spawnBounds = options.spawnBounds;
     this.world = options.world;
     this._spawnIntervalMs = options.spawnIntervalMs;
+
+    this._totalWeight = this.spawnableEntities.reduce((sum, e) => sum + e.weight, 0);
   }
 
   public get isStarted(): boolean { return this._started; }
@@ -69,30 +73,58 @@ export default class Spawner {
     this._started = false;
   }
 
-  private _spawnEntity(): void {
-    // Select random entity based on probability
-    let selectedEntityClass: typeof BaseEntity | null = null;
+  private _pickRandomSpawnableEntity(): SpawnableEntity | null {
+    if (this._totalWeight <= 0) return null;
+
+    const random = Math.random() * this._totalWeight;
+    let cumulativeWeight = 0;
+
     for (const spawnableEntity of this.spawnableEntities) {
-      if (Math.random() <= spawnableEntity.probability) {
-        selectedEntityClass = spawnableEntity.entity;
-        break;
+      cumulativeWeight += spawnableEntity.weight;
+      if (random < cumulativeWeight) {
+        return spawnableEntity;
       }
     }
+
+    // Should never reach here.
+    return null;
+  }
+
+  private _spawnEntity(): void {
+    const spawnableEntity = this._pickRandomSpawnableEntity();
     
-    if (!selectedEntityClass) return;
+    if (!spawnableEntity) return;
             
-    const entity = new selectedEntityClass();
+    const entity = new spawnableEntity.entity();
     
     entity.on(EntityEvent.DESPAWN, ({ entity }: { entity: Entity }) => {
       this._spawnedEntities.delete(entity as BaseEntity);
     });
 
+    // Pick a random spawn point that is not in a block, with a maximum number of retries.
     const { min, max } = this.spawnBounds;
-    entity.spawn(this.world, {
-      x: Math.random() * (max.x - min.x) + min.x,
-      y: Math.random() * (max.y - min.y) + min.y,
-      z: Math.random() * (max.z - min.z) + min.z,
-    });
+    let spawnPoint: Vector3Like | undefined;
+    const maxRetries = 10;
+
+    for (let i = 0; i < maxRetries; i++) {
+      const point: Vector3Like = {
+        x: Math.random() * (max.x - min.x) + min.x,
+        y: Math.random() * (max.y - min.y) + min.y,
+        z: Math.random() * (max.z - min.z) + min.z,
+      };
+
+      if (!this.world.chunkLattice.hasBlock(point)) {
+        spawnPoint = point;
+        break;
+      }
+    }
+
+    // If no valid spawn point was found after all retries, abort.
+    if (!spawnPoint) {
+      return;
+    }
+    
+    entity.spawn(this.world, spawnPoint, Quaternion.fromEuler(0, Math.random() * 360, 0));
     
     this._spawnedEntities.add(entity);
   }

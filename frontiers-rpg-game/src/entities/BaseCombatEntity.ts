@@ -7,6 +7,7 @@ import {
   ErrorHandler,
   EventPayloads,
   QuaternionLike,
+  Vector3,
   Vector3Like,
   World,
 } from 'hytopia';
@@ -19,7 +20,6 @@ import { isDamageable } from '../interfaces/IDamageable';
 
 export type ComplexAttack = (params: {
   attacker: BaseCombatEntity;
-  direction: Vector3Like;
   target: BaseEntity | GamePlayerEntity;
 }) => void;
 
@@ -48,6 +48,10 @@ export type BaseCombatEntityOptions = {
 } & BaseEntityOptions;
 
 export default class BaseCombatEntity extends BaseEntity {
+  // Reusable temp vectors to avoid allocations
+  private static readonly _scratchTargetVec3 = Vector3.create();
+  private static readonly _scratchSourceVec3 = Vector3.create();
+
   private _aggroActiveTarget: BaseEntity | GamePlayerEntity | null = null;
   private _aggroPathfinding: boolean = false;
   private _aggroPathfindAccumulatorMs: number = 0;
@@ -135,7 +139,6 @@ export default class BaseCombatEntity extends BaseEntity {
 
         attack.complexAttack({
           attacker: this,
-          direction: this.directionFromRotation,
           target: target,
         });
       }, attack.complexAttackDelayMs ?? 0);
@@ -143,6 +146,23 @@ export default class BaseCombatEntity extends BaseEntity {
 
     this._attackCooldownMs = this._nextAttack.cooldownMs;
     this._nextAttack = this._pickRandomAttack();
+  }
+
+  public calculateDirectionToTargetPosition(targetPosition: Vector3Like): Vector3Like {
+    const target = BaseCombatEntity._scratchTargetVec3;
+    const source = BaseCombatEntity._scratchSourceVec3;
+    
+    target.x = targetPosition.x;
+    target.y = targetPosition.y;
+    target.z = targetPosition.z;
+    
+    source.x = this.position.x;
+    source.y = this.position.y;
+    source.z = this.position.z;
+    
+    target.subtract(source).normalize();
+    
+    return { x: target.x, y: target.y, z: target.z };
   }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
@@ -285,13 +305,13 @@ export default class BaseCombatEntity extends BaseEntity {
 
     for (const attack of this._attacks) {
       cumulativeWeight += attack.weight;
-      if (randomValue <= cumulativeWeight) {
+      if (randomValue < cumulativeWeight) {
         return attack;
       }
     }
 
-    // Fallback to last attack (should never reach here)
-    return this._attacks[this._attacks.length - 1];
+    // Fallback in case of rounding error, though it should be unreachable.
+    return null;
   }
 
   private _shouldSwitchTarget(newTarget: BaseEntity | GamePlayerEntity): boolean {

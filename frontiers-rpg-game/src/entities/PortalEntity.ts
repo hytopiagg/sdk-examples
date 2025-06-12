@@ -26,7 +26,7 @@ export default class PortalEntity extends Entity {
     colliderOptions.halfExtents!.x = Math.max(colliderOptions.halfExtents!.x, 0.5);
 
     super({
-      ...options,
+      modelScale: 2,
       modelUri: 'models/environment/portal.gltf',
       modelLoopedAnimations: [ 'idle' ],
       rigidBodyOptions: {
@@ -40,18 +40,19 @@ export default class PortalEntity extends Entity {
               if (!started || !(other instanceof GamePlayerEntity)) return;
               
               const destinationRegion = GameManager.instance.getRegion(this.destinationRegionTag);
-
+              
               if (!destinationRegion) {
                 ErrorHandler.warning(`PortalEntity: Destination region ${this.destinationRegionTag} not found`);
                 return;
               }
-
+              
               other.gamePlayer.setRegionSpawnPoint(this.destinationRegionPosition);              
               other.player.joinWorld(destinationRegion.world);
             },
           },
         ],
-      }
+      },
+      ...options,
     });
 
     this.destinationRegionTag = options.destinationRegionTag;

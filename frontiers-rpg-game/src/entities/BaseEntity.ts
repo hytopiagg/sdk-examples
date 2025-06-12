@@ -42,7 +42,7 @@ export type BaseEntityItemDrop = {
   item: BaseItem;
   maxQuantity?: number; // Alternative range vs quantity
   minQuantity?: number; // Alternative range vs quantity
-  probability: number; // 0 - 1
+  weight: number;
   quantity?: number;
 }
 
@@ -77,6 +77,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _deathAnimations: string[];
   private _deathDespawnDelayMs: number;
   private _deathItemDrops: BaseEntityItemDrop[];
+  private _deathItemDropsTotalWeight: number = 0;
   private _deathItemMaxDrops: number;
   private _dialogueRoot: BaseEntityDialogueRoot | undefined;
   private _dying: boolean = false;
@@ -104,6 +105,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._deathAnimations = options.deathAnimations ?? [];
     this._deathDespawnDelayMs = options.deathDespawnDelayMs ?? 0;
     this._deathItemDrops = options.deathItemDrops ?? [];
+    this._deathItemDropsTotalWeight = this._deathItemDrops.reduce((sum, drop) => sum + drop.weight, 0);
     this._deathItemMaxDrops = options.deathItemMaxDrops ?? 1;
     this._dialogueRoot = options.dialogue;
     this._health = options.health ?? 0; // 0 is infinite health, will not show health bar
@@ -155,28 +157,23 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   }
 
   public dropItems(): void {
-    if (!this._deathItemDrops || !this.world) return;
+    if (!this.world || !this._deathItemDrops || this._deathItemDrops.length === 0) return;
 
     const maxDrops = Math.floor(Math.random() * (this._deathItemMaxDrops ?? 1) + 1);
+    const droppedItems = new Set<BaseEntityItemDrop>();
 
     for (let i = 0; i < maxDrops; i++) {
-      for (let j = 0; j < this._deathItemDrops.length; j++) {
-        const drop = this._deathItemDrops[j];
+      const pickedDrop = this._pickRandomDeathItemDrop();
 
-        if (Math.random() > drop.probability) continue;
-        
-        // Set quantity
-        const quantity = drop.quantity ?? Math.floor(Math.random() * (drop.maxQuantity ?? 1) + (drop.minQuantity ?? 1));
-        drop.item.setQuantity(quantity);
-        
-        // Spawn item for pickup
-        drop.item.spawnEntityAsEjectedDrop(this.world, this.position);
+      if (!pickedDrop) continue;
 
-        // Remove the drop from the array since it has been used
-        this._deathItemDrops.splice(j, 1);
+      // If this item has NOT been dropped yet, then we drop it and record it.
+      if (!droppedItems.has(pickedDrop)) {
+        droppedItems.add(pickedDrop);
 
-        // Break out of the inner loop since we found a drop for this iteration
-        break;
+        const quantity = pickedDrop.quantity ?? Math.floor(Math.random() * (pickedDrop.maxQuantity ?? 1) + (pickedDrop.minQuantity ?? 1));
+        pickedDrop.item.setQuantity(quantity);
+        pickedDrop.item.spawnEntityAsEjectedDrop(this.world, this.position);
       }
     }
   }
@@ -252,7 +249,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     // Infinite health, doesn't take damage if max health is 0
     if (this._maxHealth === 0) return; 
 
-    this._health -= damage;
+    this._health = Math.max(0, this._health - damage);
 
     this._nameplateSceneUI.setState({
       damage,
@@ -314,5 +311,21 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     };
     
     assignOptionIds(this._dialogueRoot.dialogue);
+  }
+
+  private _pickRandomDeathItemDrop(): BaseEntityItemDrop | null {
+    if (this._deathItemDropsTotalWeight <= 0) return null;
+
+    const random = Math.random() * this._deathItemDropsTotalWeight;
+    let cumulativeWeight = 0;
+
+    for (const drop of this._deathItemDrops) {
+      cumulativeWeight += drop.weight;
+      if (random < cumulativeWeight) {
+        return drop;
+      }
+    }
+
+    return null;
   }
 }

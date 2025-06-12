@@ -11,27 +11,27 @@ export type RatkinRangerEntityOptions = {
 export default class RatkinRangerEntity extends BaseCombatEntity {
   constructor(options?: RatkinRangerEntityOptions) {
     super({
-      aggroRadius: 9,
+      aggroRadius: 11,
       aggroSensorForwardOffset: 3,
       attacks: [
         { // Fast bow attack
           animations: [ 'atk1' ],
           complexAttack: (params) => {
-            this._shootArrow(params.direction, this.calculateDamageWithVariance(10, 0.5));
+            this._shootArrow(params.target.position, this.calculateDamageWithVariance(10, 0.5));
           },
           complexAttackDelayMs: 700,
           cooldownMs: 2000,
-          range: 7,
+          range: 10,
           weight: 2,
         },
         { // Slow heavy bow attack
           animations: [ 'atk2' ],
           complexAttack: (params) => {
-            this._shootArrow(params.direction, this.calculateDamageWithVariance(20, 0.5));
+            this._shootArrow(params.target.position, this.calculateDamageWithVariance(20, 0.5));
           },
           complexAttackDelayMs: 1600,
           cooldownMs: 3000,
-          range: 7,
+          range: 10,
           weight: 3,
         },
       ],
@@ -41,13 +41,13 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
       deathItemDrops: [
         {
           item: new GoldItem(),
-          probability: 1,
           minQuantity: 50,
-          maxQuantity: 70
+          maxQuantity: 70,
+          weight: 1,
         },
         {
           item: new WoodenSwordItem(),
-          probability: 0.1,
+          weight: 0.1,
         },
       ],
       health: 100,
@@ -61,15 +61,16 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
     });
   }
 
-  private _shootArrow(direction: Vector3Like, damage: number) {
+  private _shootArrow(targetPosition: Vector3Like, damage: number) {
     if (!this.world) return;
     
     const arrow = new BaseProjectileEntity({
       damage,
       despawnAfterMs: 1000,
-      direction,
+      direction: this.calculateDirectionToTargetPosition(targetPosition),
       gravityScale: 0.1,
-      modelUri: 'models/projectiles/arrow.gltf',
+      modelUri: 'models/projectiles/arrow.glb',
+      modelScale: 0.75,
       speed: 30,
       source: this,
     });

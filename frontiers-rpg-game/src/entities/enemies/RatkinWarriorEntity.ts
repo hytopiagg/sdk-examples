@@ -39,13 +39,13 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
       deathItemDrops: [
         {
           item: new GoldItem(),
-          probability: 1,
           minQuantity: 50,
-          maxQuantity: 70
+          maxQuantity: 70,
+          weight: 1
         },
         {
           item: new WoodenSwordItem(),
-          probability: 0.1,
+          weight: 0.1,
         },
       ],
       health: 100,
