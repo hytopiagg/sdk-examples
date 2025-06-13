@@ -1,5 +1,9 @@
 import {
   Audio,
+  Collider,
+  ColliderShape,
+  BlockType,
+  Entity,
   ErrorHandler,
   Player,
   PlayerEvent,
@@ -21,6 +25,7 @@ export type GameRegionOptions = {
 export default class GameRegion {
   private _ambientAudio: Audio | undefined;
   private _isSetup: boolean = false;
+  private _outOfWorldCollider: Collider | undefined;
   private _spawnPoint: Vector3Like;
   private readonly _world: World;
 
@@ -58,7 +63,29 @@ export default class GameRegion {
       this._ambientAudio.play(this._world);
     }
 
+    this._outOfWorldCollider = new Collider({
+      shape: ColliderShape.BLOCK,
+      halfExtents: { x: 500, y : 32, z: 500 },
+      isSensor: true,
+      relativePosition: { x: 0, y: -64, z: 0 },
+      onCollision: this.onEntityOutOfWorld,
+      simulation: this._world.simulation, // setting this auto adds collider to simulation upon creation.
+    });
+
     this._isSetup = true;
+  }
+
+  protected onEntityOutOfWorld(other: BlockType | Entity, started: boolean) {
+    if (!started) return;
+
+    if (other instanceof GamePlayerEntity) {
+      other.setPosition(other.gamePlayer.respawnPoint);
+      return other.takeDamage(other.maxHealth);
+    }
+
+    if (other instanceof Entity) {
+      return other.despawn();
+    }
   }
 
   protected onPlayerJoin(player: Player) {

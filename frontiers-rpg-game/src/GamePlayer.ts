@@ -119,6 +119,10 @@ export default class GamePlayer {
     return this._regionSpawnPoint;
   }
 
+  public get respawnPoint(): Vector3Like {
+    return this._regionSpawnPoint ?? this._currentRegion!.spawnPoint;
+  }
+
   // Game state methods
   public adjustHealth(amount: number): void {
     this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
@@ -246,7 +250,7 @@ export default class GamePlayer {
     this.adjustHealth(this._maxHealth);
 
     // Teleport to spawn point if available
-    this._currentEntity.setPosition(this._regionSpawnPoint ?? this._currentRegion!.spawnPoint);
+    this._currentEntity.setPosition(this.respawnPoint);
 
     // Show respawn notification
     this.showNotification('You have respawned!', 'success');
