@@ -166,21 +166,17 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     if (!this.world || !this._deathItemDrops || this._deathItemDrops.length === 0) return;
 
     const maxDrops = Math.floor(Math.random() * (this._deathItemMaxDrops ?? 1) + 1);
-    const droppedItems = new Set<BaseEntityItemDrop>();
 
     for (let i = 0; i < maxDrops; i++) {
       const pickedDrop = this._pickRandomDeathItemDrop();
-
       if (!pickedDrop) continue;
 
-      // If this item has NOT been dropped yet, then we drop it and record it.
-      if (!droppedItems.has(pickedDrop)) {
-        droppedItems.add(pickedDrop);
-
-        const quantity = pickedDrop.quantity ?? Math.floor(Math.random() * (pickedDrop.maxQuantity ?? 1) + (pickedDrop.minQuantity ?? 1));
-        pickedDrop.item.setQuantity(quantity);
-        pickedDrop.item.spawnEntityAsEjectedDrop(this.world, this.position);
-      }
+      const min = pickedDrop.minQuantity ?? 1;
+      const max = pickedDrop.maxQuantity ?? 1;
+      const quantity = pickedDrop.quantity ?? Math.floor(Math.random() * (max - min + 1)) + min;
+      
+      pickedDrop.item.setQuantity(quantity);
+      pickedDrop.item.spawnEntityAsEjectedDrop(this.world, this.position);
     }
   }
 

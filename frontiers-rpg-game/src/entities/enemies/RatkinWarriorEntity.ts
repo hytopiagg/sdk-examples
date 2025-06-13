@@ -1,9 +1,12 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
-import GoldItem from "../../items/general/GoldItem";
+
+import CommonMushroomItem from "../../items/consumables/CommonMushroomItem";
 import CommonSeedsItem from "../../items/seeds/CommonSeedsItem";
-import UnusualSeedsItem from "../../items/seeds/UnusualSeeds";
-import RareSeedsItem from "../../items/seeds/RareSeeds";
-import WoodenSwordItem from "../../items/weapons/WoodenSwordItem";
+import GoldItem from "../../items/general/GoldItem";
+import RatkinBonesItem from "../../items/materials/RatkinBonesItem";
+import RatkinEyesItem from "../../items/materials/RatkinEyes";
+import RatkinTailItem from "../../items/materials/RatkinTailItem";
+import RatkinToothItem from "../../items/materials/RatkinToothItem.ts";
 
 export type RatkinWarriorEntityOptions = {
 
@@ -42,21 +45,35 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
       deathItemDrops: [
         {
           item: new GoldItem(),
-          minQuantity: 50,
+          minQuantity: 30,
           maxQuantity: 70,
-          weight: 0
+          weight: 2,
+        },
+        {
+          item: new CommonMushroomItem(),
+          minQuantity: 1,
+          maxQuantity: 3,
+          weight: 1,
         },
         {
           item: new CommonSeedsItem(),
-          weight: 0.33,
+          weight: 0.5,
         },
         {
-          item: new UnusualSeedsItem(),
-          weight: 0.33,
+          item: new RatkinBonesItem(),
+          weight: 0.8,
         },
         {
-          item: new RareSeedsItem(),
-          weight: 0.33,
+          item: new RatkinEyesItem(),
+          weight: 0.8,
+        },
+        {
+          item: new RatkinToothItem(),
+          weight: 0.8,
+        },
+        {
+          item: new RatkinTailItem(),
+          weight: 0.8,
         },
       ],
       health: 100,
