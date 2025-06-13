@@ -1,5 +1,8 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import GoldItem from "../../items/general/GoldItem";
+import CommonSeedsItem from "../../items/seeds/CommonSeedsItem";
+import UnusualSeedsItem from "../../items/seeds/UnusualSeeds";
+import RareSeedsItem from "../../items/seeds/RareSeeds";
 import WoodenSwordItem from "../../items/weapons/WoodenSwordItem";
 
 export type RatkinWarriorEntityOptions = {
@@ -41,11 +44,19 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
           item: new GoldItem(),
           minQuantity: 50,
           maxQuantity: 70,
-          weight: 1
+          weight: 0
         },
         {
-          item: new WoodenSwordItem(),
-          weight: 0.1,
+          item: new CommonSeedsItem(),
+          weight: 0.33,
+        },
+        {
+          item: new UnusualSeedsItem(),
+          weight: 0.33,
+        },
+        {
+          item: new RareSeedsItem(),
+          weight: 0.33,
         },
       ],
       health: 100,

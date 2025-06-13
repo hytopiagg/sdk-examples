@@ -84,6 +84,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   public get health(): number {
     return this._gamePlayer.health;
   }
+
+  public get isDamaged(): boolean {
+    return this._gamePlayer.health < this._gamePlayer.maxHealth;
+  }
   
   public get isDodging(): boolean {
     const timeSinceDodge = performance.now() - this._lastDodgeTimeMs;

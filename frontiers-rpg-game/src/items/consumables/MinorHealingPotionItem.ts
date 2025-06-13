@@ -5,6 +5,7 @@ export default class MinorHealingPotionItem extends BaseConsumableItem {
   public constructor(options?: Partial<BaseConsumableItemOptions>) {
     super({
       consumeCooldownMs: 2000,
+      consumeRequiresDamaged: true,
       name: 'Minor Healing Potion',
       description: `Restores 20 health when consumed. A common remedy used by Frontier travelers and novice adventurers.`,
       iconImageUri: 'icons/items/minor-healing-potion.png',
@@ -13,19 +14,6 @@ export default class MinorHealingPotionItem extends BaseConsumableItem {
       stackable: true,
       ...options,
     });
-  }
-
-  public override consume(): void {
-    if (!this.entity?.parent) return;
-
-    const gamePlayerEntity = this.entity.parent as GamePlayerEntity;
-
-    // Don't consume if player is at max health
-    if (gamePlayerEntity.health >= gamePlayerEntity.maxHealth) {
-      return;
-    }
-
-    super.consume();
   }
 
   protected override applyEffects(playerEntity: GamePlayerEntity): void {

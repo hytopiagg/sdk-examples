@@ -4,17 +4,20 @@ import GamePlayerEntity from '../GamePlayerEntity';
 export type BaseConsumableItemOptions = {
   consumeAnimations?: string[];
   consumeCooldownMs: number;
+  consumeRequiresDamaged?: boolean;
 } & BaseItemOptions;
 
 export default class BaseConsumableItem extends BaseItem {
   public readonly consumeAnimations: string[];
   public readonly consumeCooldownMs: number;
+  public readonly consumeRequiresDamaged: boolean;
   private _lastConsumeTimeMs: number = 0;
 
   public constructor(options: BaseConsumableItemOptions) {
     super(options);
     this.consumeAnimations = options.consumeAnimations ?? [ 'consume-upper' ];
     this.consumeCooldownMs = options.consumeCooldownMs;
+    this.consumeRequiresDamaged = options.consumeRequiresDamaged ?? false;
   }
 
   public override clone(overrideOptions?: Partial<BaseConsumableItemOptions>): this {
@@ -35,6 +38,11 @@ export default class BaseConsumableItem extends BaseItem {
     
     const gamePlayerEntity = this.entity.parent as GamePlayerEntity;
     const gamePlayer = gamePlayerEntity.gamePlayer;
+
+    if (this.consumeRequiresDamaged && !gamePlayerEntity.isDamaged) {
+      return;
+    }
+
     const itemInventory = 
       gamePlayer.hotbar.getItemPosition(this) !== null ? gamePlayer.hotbar : 
       gamePlayer.backpack.getItemPosition(this) !== null ? gamePlayer.backpack : null;
