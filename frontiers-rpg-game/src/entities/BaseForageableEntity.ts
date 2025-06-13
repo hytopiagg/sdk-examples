@@ -54,12 +54,13 @@ export default class BaseForageableEntity extends BaseEntity {
       const pickedDrop = this._pickRandomForageItemDrop();
       if (!pickedDrop) continue;
 
+      const item = pickedDrop.item.clone(); // must clone otherwise same item picked twice will fail since we use instances for drops still..
       const min = pickedDrop.minQuantity ?? 1;
       const max = pickedDrop.maxQuantity ?? 1;
       const quantity = pickedDrop.quantity ?? Math.floor(Math.random() * (max - min + 1)) + min;
       
-      pickedDrop.item.setQuantity(quantity);
-      pickedDrop.item.spawnEntityAsEjectedDrop(this.world, this.position);
+      item.setQuantity(quantity);
+      item.spawnEntityAsEjectedDrop(this.world, this.position);
     }
   }
 

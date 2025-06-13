@@ -1,8 +1,9 @@
-import { Entity, Vector3Like } from 'hytopia';
+import { Entity } from 'hytopia';
 import BaseEntity from '../entities/BaseEntity';
 import BaseItem, { BaseItemOptions } from './BaseItem';
 import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
+import type { QuaternionLike, RawShape, Vector3Like } from 'hytopia';
 
 export type BaseWeaponItemAttack = {
   id?: string;
@@ -10,7 +11,7 @@ export type BaseWeaponItemAttack = {
   cooldownMs: number;
   damage: number;
   damageDelayMs: number;
-  damageVariance?: number;
+  damageVariance?: number; // 0.2 = +/- 20% of damage
   knockbackForce?: number;
   reach: number;
 }
@@ -78,8 +79,18 @@ export default class BaseWeaponItem extends BaseItem {
     setTimeout(() => this.processAttackDamageTargets(this.specialAttack), this.specialAttack.damageDelayMs);
   }
 
+  protected calculateDamageWithVariance(baseDamage: number, variance?: number): number {
+    if (!variance) return baseDamage;
+    
+    // variance of 0.2 means damage can be 80% to 120% of base damage
+    const min = baseDamage * (1 - variance);
+    const max = baseDamage * (1 + variance);
+    
+    return Math.floor(min + Math.random() * (max - min));
+  }
+
   protected processAttackDamageTargets(attack: BaseWeaponItemAttack): void {
-    if (!this.entity?.parent || !this.entity.parent.world) return;
+    if (!this.entity?.parent) return;
 
     const attackPosition = (this.entity.parent as GamePlayerEntity).adjustedRaycastPosition ?? this.entity.parent.position;
     const attackDirection = (this.entity.parent as GamePlayerEntity).adjustedFacingDirection ?? this.entity.parent.directionFromRotation;
@@ -91,7 +102,7 @@ export default class BaseWeaponItem extends BaseItem {
     );
 
     if (target) {
-      const damage = this._calculateDamageWithVariance(attack.damage, attack.damageVariance);
+      const damage = this.calculateDamageWithVariance(attack.damage, attack.damageVariance);
       this.dealDamage(target, damage, attackDirection, attack.knockbackForce);
     }
   }
@@ -112,6 +123,24 @@ export default class BaseWeaponItem extends BaseItem {
     }
   }
 
+  protected getTargetsByRawShapeIntersection(rawShape: RawShape, position: Vector3Like, rotation: QuaternionLike, reach: number): Entity[] {
+    if (!this.entity?.parent || !this.entity.parent.world) {
+      return [];
+    }
+    
+    const intersectionsResults = this.entity.parent.world.simulation.intersectionsWithRawShape(
+      rawShape,
+      position,
+      rotation,
+      {
+        filterExcludeRigidBody: this.entity.parent.rawRigidBody, // ignore self (parent/player)
+        filterFlags: 8, // Rapier flag to exclude sensor colliders
+      },
+    );
+
+    return intersectionsResults.map(result => result.intersectedEntity).filter(Boolean) as Entity[];
+  }
+
   protected getTargetByRaycast(fromPosition: Vector3Like, toDirection: Vector3Like, reach: number): Entity | undefined {
     if (!this.entity?.parent || !this.entity.parent.world) {
       return;
@@ -128,15 +157,5 @@ export default class BaseWeaponItem extends BaseItem {
 
   protected updateAttackCooldown(attackCooldownMs: number): void {
     this._attackCooledDownAtMs = performance.now() + attackCooldownMs;
-  }
-
-  private _calculateDamageWithVariance(baseDamage: number, variance?: number): number {
-    if (!variance) return baseDamage;
-    
-    // variance of 0.2 means damage can be 80% to 120% of base damage
-    const min = baseDamage * (1 - variance);
-    const max = baseDamage * (1 + variance);
-    
-    return Math.floor(min + Math.random() * (max - min));
   }
 }
