@@ -20,7 +20,7 @@ export default class ForageableLogEntity extends BaseForageableEntity {
       forageItemDrops: [
         { item: new CommonMushroomItem(), weight: 100, minQuantity: 1, maxQuantity: 3 },
         { item: new CommonSeedsItem(), weight: 50 },
-        { item: new EmbercapMushroomItem(), weight: 20, minQuantity: 1, maxQuantity: 3 },
+        { item: new EmbercapMushroomItem(), weight: 5, minQuantity: 1, maxQuantity: 3 },
         { item: new GoldItem(), weight: 15, minQuantity: 6, maxQuantity: 17 },
         { item: new MinorHealingPotionItem(), weight: 25 },
         { item: new MonsterHideItem(), weight: 10 },

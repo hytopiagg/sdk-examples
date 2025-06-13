@@ -1,53 +1,45 @@
-import { Entity } from 'hytopia';
+import { Entity, Vector3Like } from 'hytopia';
 import BaseEntity from '../entities/BaseEntity';
 import BaseItem, { BaseItemOptions } from './BaseItem';
 import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
 
+export type BaseWeaponItemAttack = {
+  id?: string;
+  animations: string[];
+  cooldownMs: number;
+  damage: number;
+  damageDelayMs: number;
+  damageVariance?: number;
+  knockbackForce?: number;
+  reach: number;
+}
+
 export type BaseWeaponItemOptions = {
-  attackAnimations: string[];
-  attackCooldownMs: number;
-  attackDamage: number;
-  attackDamageDelayMs: number;
-  attackDamageVariance?: number;
-  attackKnockbackForce?: number;
-  attackReach: number;
+  attack: BaseWeaponItemAttack;
+  specialAttack?: BaseWeaponItemAttack;
 } & Omit<BaseItemOptions, 'stackable' | 'quantity'>
   
 export default class BaseWeaponItem extends BaseItem {
-  public readonly attackAnimations: string[];
-  public readonly attackCooldownMs: number;
-  public readonly attackDamage: number;
-  public readonly attackDamageDelayMs: number;
-  public readonly attackDamageVariance: number;
-  public readonly attackKnockbackForce: number;
-  public readonly attackReach: number;
-  private _lastAttackCooldownMs: number = 0;
-  private _lastAttackTimeMs: number = 0;
+  public readonly attack: BaseWeaponItemAttack;
+  public readonly specialAttack: BaseWeaponItemAttack;
+  private _attackCooledDownAtMs: number = 0;
 
   public constructor(options: BaseWeaponItemOptions) {
     super(options);
 
-    this.attackAnimations = options.attackAnimations;
-    this.attackCooldownMs = options.attackCooldownMs;
-    this.attackDamage = options.attackDamage;
-    this.attackDamageDelayMs = options.attackDamageDelayMs ?? 0;
-    this.attackDamageVariance = options.attackDamageVariance ?? 0;
-    this.attackKnockbackForce = options.attackKnockbackForce ?? 0;
-    this.attackReach = options.attackReach;
+    this.attack = options.attack;
+    this.specialAttack = options.specialAttack ?? this.attack;
   }
+
+  public get canAttack(): boolean { return performance.now() >= this._attackCooledDownAtMs; }
 
   // Convert current state to constructor options for cloning
   public override toOptions(): BaseWeaponItemOptions {
     return {
       ...super.toOptions(),
-      attackAnimations: this.attackAnimations,
-      attackCooldownMs: this.attackCooldownMs,
-      attackDamage: this.attackDamage,
-      attackDamageDelayMs: this.attackDamageDelayMs,
-      attackDamageVariance: this.attackDamageVariance,
-      attackKnockbackForce: this.attackKnockbackForce,
-      attackReach: this.attackReach,
+      attack: this.attack,
+      specialAttack: this.specialAttack,
     };
   }
 
@@ -59,53 +51,83 @@ export default class BaseWeaponItem extends BaseItem {
   }
 
   public override useMouseLeft(): void {
-    this.attack();
+    this.performAttack();
   }
 
   public override useMouseRight(): void {
-    this.entity?.parent?.startModelOneshotAnimations([ 'sword-attack2-upper' ]);
+    this.performSpecialAttack();
   }
 
-  public attack(): void {
-    if (!this.entity?.parent) {
-      return;
-    }
-    
-    const now = performance.now();
-
-    if (now - this._lastAttackTimeMs < this._lastAttackCooldownMs) {
+  public performAttack(): void {
+    if (!this.entity?.parent || !this.canAttack) {
       return;
     }
 
-    this._lastAttackTimeMs = now;
-    this._lastAttackCooldownMs = this.attackCooldownMs;
-
-    this.entity.parent.startModelOneshotAnimations(this.attackAnimations);
-
-    this.processAttack();
+    this.entity.parent.startModelOneshotAnimations(this.attack.animations);
+    this.updateAttackCooldown(this.attack.cooldownMs);
+    setTimeout(() => this.processAttackDamageTargets(this.attack), this.attack.damageDelayMs);
   }
 
-  protected applyAttackDamage(hitEntity: Entity): void {
-    if (!isDamageable(hitEntity)) {
+  public performSpecialAttack(): void {
+    if (!this.entity?.parent || !this.canAttack) {
       return;
     }
 
+    this.entity.parent.startModelOneshotAnimations(this.specialAttack.animations);
+    this.updateAttackCooldown(this.specialAttack.cooldownMs);
+    setTimeout(() => this.processAttackDamageTargets(this.specialAttack), this.specialAttack.damageDelayMs);
+  }
+
+  protected processAttackDamageTargets(attack: BaseWeaponItemAttack): void {
+    if (!this.entity?.parent || !this.entity.parent.world) return;
+
+    const attackPosition = (this.entity.parent as GamePlayerEntity).adjustedRaycastPosition ?? this.entity.parent.position;
+    const attackDirection = (this.entity.parent as GamePlayerEntity).adjustedFacingDirection ?? this.entity.parent.directionFromRotation;
+
+    const target = this.getTargetByRaycast(
+      attackPosition,
+      attackDirection,
+      attack.reach,
+    );
+
+    if (target) {
+      const damage = this._calculateDamageWithVariance(attack.damage, attack.damageVariance);
+      this.dealDamage(target, damage, attackDirection, attack.knockbackForce);
+    }
+  }
+
+  protected dealDamage(target: Entity, damage: number, knockbackDirection: Vector3Like, knockbackForce?: number): void {
+    if (!isDamageable(target)) {
+      return;
+    }
+
+    target.takeDamage(damage, this.entity?.parent);
+
+    if (knockbackForce && target instanceof BaseEntity && target.pushable) {
+      target.applyImpulse({
+        x: knockbackDirection.x * knockbackForce * target.mass,
+        y: 0,
+        z: knockbackDirection.z * knockbackForce * target.mass,
+      });
+    }
+  }
+
+  protected getTargetByRaycast(fromPosition: Vector3Like, toDirection: Vector3Like, reach: number): Entity | undefined {
     if (!this.entity?.parent || !this.entity.parent.world) {
       return;
     }
 
-    const damage = this._calculateDamageWithVariance(this.attackDamage, this.attackDamageVariance);
-    hitEntity.takeDamage(damage, this.entity.parent);
+    const raycastResult = this.entity.parent.world.simulation.raycast(fromPosition, toDirection, reach, {
+        filterExcludeRigidBody: this.entity.parent.rawRigidBody, // ignore self (parent/player)
+        filterFlags: 8, // Rapier flag to exclude sensor colliders
+      },
+    );
 
-    // Apply knockback if the entity is a BaseEntity and is pushable
-    if (this.attackKnockbackForce && hitEntity instanceof BaseEntity && hitEntity.pushable) {
-      const direction = this.entity.parent.directionFromRotation;
-      hitEntity.applyImpulse({
-        x: direction.x * this.attackKnockbackForce * hitEntity.mass,
-        y: 0,
-        z: direction.z * this.attackKnockbackForce * hitEntity.mass,
-      });
-    }
+    return raycastResult?.hitEntity;
+  }
+
+  protected updateAttackCooldown(attackCooldownMs: number): void {
+    this._attackCooledDownAtMs = performance.now() + attackCooldownMs;
   }
 
   private _calculateDamageWithVariance(baseDamage: number, variance?: number): number {
@@ -116,27 +138,5 @@ export default class BaseWeaponItem extends BaseItem {
     const max = baseDamage * (1 + variance);
     
     return Math.floor(min + Math.random() * (max - min));
-  }
-
-  protected processAttack(): void {
-    setTimeout(() => {
-      if (!this.entity?.parent || !this.entity.parent.world) {
-        return;
-      }
-
-      const raycastResult = this.entity.parent.world.simulation.raycast(
-        (this.entity.parent as GamePlayerEntity)?.adjustedRaycastPosition ?? this.entity.parent.position,
-        (this.entity.parent as GamePlayerEntity)?.adjustedFacingDirection ?? this.entity.directionFromRotation, 
-        this.attackReach, 
-        {
-          filterExcludeRigidBody: this.entity.parent.rawRigidBody, // ignore self
-          filterFlags: 8, // Rapier exclude sensors,
-        },
-      );
-
-      if (raycastResult?.hitEntity) {
-        this.applyAttackDamage(raycastResult.hitEntity);
-      }
-    }, this.attackDamageDelayMs);
   }
 }
