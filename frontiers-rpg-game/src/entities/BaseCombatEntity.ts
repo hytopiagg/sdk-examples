@@ -72,7 +72,10 @@ export default class BaseCombatEntity extends BaseEntity {
   private _nextAttack: BaseCombatEntityAttack | null = null;
 
   constructor(options: BaseCombatEntityOptions) {
-    super(options);
+    super({
+      pushable: true,
+      ...options,
+    });
 
     this._aggroRadius = options.aggroRadius;
     this._aggroRetargetIntervalMs = options.aggroRetargetIntervalMs ?? 1000;

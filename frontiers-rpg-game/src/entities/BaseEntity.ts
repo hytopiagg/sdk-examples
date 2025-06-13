@@ -58,11 +58,13 @@ export type BaseEntityOptions = {
   facingPosition?: Vector3Like;
   idleAnimations?: string[];
   idleAnimationSpeed?: number;
+  interactActionText?: string;
   health?: number;
   moveAnimations?: string[];
   moveAnimationSpeed?: number;
   moveOptions?: MoveOptions;
   moveSpeed?: number;
+  nameplateViewDistnace?: number;
   pathfindingOptions?: PathfindingOptions;
   pushable?: boolean;
 } & EntityOptions;
@@ -84,12 +86,15 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _dialogueRoot: BaseEntityDialogueRoot | undefined;
   private _dying: boolean = false;
   private _health: number;
+  private _interactActionText: string | undefined;
   private _maxHealth: number;
   private _moveOptions: MoveOptions | undefined;
-  private _moveSpeed: number;
+  private _moveSpeed: number; 
   private _nameplateSceneUI: SceneUI;
+  private _nameplateViewDistance: number | undefined;
   private _optionMap: Map<number, BaseEntityDialogueOption> = new Map();
   private _pathfindingOptions: PathfindingOptions | undefined;
+  private _pushable: boolean;
   private _wanderTimeout: NodeJS.Timeout | undefined;
   
   public constructor(options: BaseEntityOptions = {}) {
@@ -113,11 +118,13 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._deathItemMaxDrops = options.deathItemMaxDrops ?? 1;
     this._dialogueRoot = options.dialogue;
     this._health = options.health ?? 0; // 0 is infinite health, will not show health bar
+    this._interactActionText = options.interactActionText;
     this._maxHealth = this._health;
     this._moveOptions = options.moveOptions;
     this._moveSpeed = options.moveSpeed ?? 2;
+    this._nameplateViewDistance = options.nameplateViewDistnace;
     this._pathfindingOptions = options.pathfindingOptions;
-    
+    this._pushable = options.pushable ?? false;
     if (this._dialogueRoot) {
       this._buildDialogueOptionMap();
     }
@@ -137,14 +144,16 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public get dialogueRoot(): BaseEntityDialogueRoot | undefined { return this._dialogueRoot; }
   public get idleAnimations(): string[] { return this.pathfindingController.idleLoopedAnimations; }
   public get idleAnimationsSpeed(): number | undefined { return this.pathfindingController.idleLoopedAnimationsSpeed; }
+  public get interactActionText(): string | undefined { return this._interactActionText; }
   public get isDying(): boolean { return this._dying; }
-  public get isInteractable(): boolean { return !!this._dialogueRoot; }
+  public get isInteractable(): boolean { return !!this._dialogueRoot || !!this._interactActionText; }
   public get health(): number { return this._health; }
   public get maxHealth(): number { return this._maxHealth; }
   public get moveAnimations(): string[] { return this.pathfindingController.moveLoopedAnimations; }
   public get moveAnimationsSpeed(): number | undefined { return this.pathfindingController.moveLoopedAnimationsSpeed; }
   public get moveSpeed(): number { return this._moveSpeed; }
   public get pathfindingController(): PathfindingEntityController { return this.controller as PathfindingEntityController; }
+  public get pushable(): boolean { return this._pushable; }
 
   public die(killer?: Entity): void {
     if (this._dying) return;
@@ -310,10 +319,12 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
       attachedToEntity: this,
       offset: { x: 0, y: this.height / 2 + 0.25, z: 0 },
       templateId: 'entity-nameplate',
+      viewDistance: this._nameplateViewDistance,
       state: {
         name: this.name,
         health: this.health,
         interactable: this.isInteractable,
+        interactActionText: this.interactActionText,
         maxHealth: this.maxHealth,
       },
     });

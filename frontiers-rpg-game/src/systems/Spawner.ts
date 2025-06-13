@@ -126,7 +126,6 @@ export default class Spawner {
       }
 
       this._spawnedEntities.add(instance);
-
     } else if (instance instanceof BaseItem) {
       // Set quantity of item
       if (spawnable.maxQuantity && spawnable.maxQuantity > 1) {
@@ -141,6 +140,7 @@ export default class Spawner {
       
       // Track the created entity (BaseItem handles its own despawn cleanup)
       const spawnedEntity = instance.entity;
+
       if (spawnedEntity) {
         // Only set up tracking removal - BaseItem handles its own cleanup
         spawnedEntity.on(EntityEvent.DESPAWN, ({ entity }: { entity: Entity }) => {

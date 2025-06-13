@@ -10,7 +10,6 @@ export default class CapfolkKnightEntity extends BaseEntity {
       moveAnimationSpeed: 2,
       moveSpeed: 3,
       name: 'Capfolk Knight',
-      pushable: false,
       ...options,
     });
   }

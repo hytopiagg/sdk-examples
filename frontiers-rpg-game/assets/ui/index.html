@@ -3329,6 +3329,10 @@
         interact.style.display = 'none';
       }
 
+      if (state.interactActionText) {
+        interact.textContent = state.interactActionText;
+      }
+
       if (state.name) {
         name.style.display = 'block';
         name.textContent = state.name;

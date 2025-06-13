@@ -9,13 +9,8 @@ import RatkinRangerEntity from '../../entities/enemies/RatkinRangerEntity';
 import RatkinSpellcasterEntity from '../../entities/enemies/RatkinSpellcasterEntity';
 import RatkinWarriorEntity from '../../entities/enemies/RatkinWarriorEntity';
 
-// Spawner Items
-import CommonMushroomItem from '../../items/consumables/CommonMushroomItem';
-import CommonSeedsItem from '../../items/seeds/CommonSeedsItem';
-import EmbercapMushroomItem from '../../items/consumables/EmbercapMushroomItem';
-import GoldItem from '../../items/general/GoldItem';
-import StonebellyFungusMushroomItem from '../../items/consumables/StonebellyFungusMushroomItem';
-import UnusualSeedsItem from '../../items/seeds/UnusualSeedsItem';
+// Spawner Forageables
+import ForageableLogEntity from '../../entities/forageables/ForageableLogEntity';
 
 import chitterForestMap from '../../../assets/maps/chitter-forest.json';
 
@@ -33,9 +28,9 @@ export default class ChitterForestRegion extends GameRegion {
 
   protected override setup(): void {
     super.setup();
-
+ 
     this._setupEnemySpawners();
-    this._setupItemSpawners();
+    this._setupForageableSpawners();
     this._setupPortals();
   }
   private _setupEnemySpawners(): void {
@@ -151,16 +146,11 @@ export default class ChitterForestRegion extends GameRegion {
     lakeCampSpawner.start(true);
   }
 
-  private _setupItemSpawners(): void {
+  private _setupForageableSpawners(): void {
     const forestAreaSpawner = new Spawner({
       maxSpawns: 20,
       spawnables: [
-        { constructor: CommonMushroomItem, weight: 100, maxQuantity: 3 },
-        { constructor: CommonSeedsItem, weight: 25, maxQuantity: 3 },
-        { constructor: EmbercapMushroomItem, weight: 5, maxQuantity: 3 },
-        { constructor: GoldItem, weight: 10, minQuantity: 3, maxQuantity: 20 },
-        { constructor: StonebellyFungusMushroomItem, weight: 2, maxQuantity: 3 },
-        { constructor: UnusualSeedsItem, weight: 1, maxQuantity: 2 },
+        { constructor: ForageableLogEntity, weight: 1 },
       ],
       spawnRegions: [
         { // Main forest area

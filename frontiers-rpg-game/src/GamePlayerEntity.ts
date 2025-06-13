@@ -31,6 +31,7 @@ const INTERACT_REACH = 3;
 
 export default class GamePlayerEntity extends DefaultPlayerEntity implements IDamageable {
   private readonly _gamePlayer: GamePlayer;
+  private _isMovementDisabled: boolean = false;
   private _lastDodgeTimeMs: number = 0;
   private _nameplateSceneUI: SceneUI;
 
@@ -93,6 +94,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     const timeSinceDodge = performance.now() - this._lastDodgeTimeMs;
     return timeSinceDodge >= DODGE_DELAY_MS && timeSinceDodge < (DODGE_DELAY_MS + DODGE_DURATION_MS);
   }
+
+  public get isMovementDisabled(): boolean {
+    return this._isMovementDisabled;
+  }
   
   public get maxHealth(): number {
     return this._gamePlayer.maxHealth;
@@ -133,6 +138,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   public setCurrentMerchantEntity(entity: any): void {
     this._gamePlayer.setCurrentMerchantEntity(entity);
+  }
+
+  public setIsMovementDisabled(isDisabled: boolean): void {
+    this._isMovementDisabled = isDisabled;
   }
 
   public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
@@ -224,10 +233,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
-    const isDead = this._gamePlayer.isDead;
+    const canInteract = !this._isMovementDisabled && !this._gamePlayer.isDead;
 
     // Left click item usage
-    if (input.ml && !isDead) {
+    if (input.ml && canInteract) {
       const selectedItem = this._gamePlayer.hotbar.selectedItem;
       
       if (selectedItem) {
@@ -240,7 +249,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
 
     // Right click item usage
-    if (input.mr && !isDead) {
+    if (input.mr && canInteract) {
       const selectedItem = this._gamePlayer.hotbar.selectedItem;
 
       if (selectedItem) {
@@ -251,13 +260,13 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
 
     // NPC & Environment Interact
-    if (input.e && !isDead) {
+    if (input.e && canInteract) {
       this._interact();
       input.e = false;
     }
 
     // Dodge
-    if (input.q && !isDead) {
+    if (input.q && canInteract) {
       this._dodge();
       input.q = false;
     }
@@ -290,10 +299,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   private _setupPlayerController(): void {
     this.playerController.interactOneshotAnimations = [];
-    this.playerController.canJump = () => !this._gamePlayer.isDead;
-    this.playerController.canRun = () => !this._gamePlayer.isDead;
-    this.playerController.canSwim = () => !this._gamePlayer.isDead;
-    this.playerController.canWalk = () => !this._gamePlayer.isDead;
+    this.playerController.canJump = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
+    this.playerController.canRun = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
+    this.playerController.canSwim = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
+    this.playerController.canWalk = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
     this.playerController.on(BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT, this._onTickWithPlayerInput);
   } 
 

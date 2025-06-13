@@ -252,6 +252,9 @@ export default class GamePlayer {
     // Teleport to spawn point if available
     this._currentEntity.setPosition(this.respawnPoint);
 
+    // Re enable movement if it was disabled
+    this._currentEntity.setIsMovementDisabled(false);
+
     // Show respawn notification
     this.showNotification('You have respawned!', 'success');
   }

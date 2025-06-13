@@ -1,4 +1,5 @@
 import { Entity } from 'hytopia';
+import BaseEntity from '../entities/BaseEntity';
 import BaseItem, { BaseItemOptions } from './BaseItem';
 import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
@@ -96,13 +97,14 @@ export default class BaseWeaponItem extends BaseItem {
     const damage = this._calculateDamageWithVariance(this.attackDamage, this.attackDamageVariance);
     hitEntity.takeDamage(damage, this.entity.parent);
 
-    if (this.attackKnockbackForce) {
+    // Apply knockback if the entity is a BaseEntity and is pushable
+    if (this.attackKnockbackForce && hitEntity instanceof BaseEntity && hitEntity.pushable) {
       const direction = this.entity.parent.directionFromRotation;
       hitEntity.applyImpulse({
         x: direction.x * this.attackKnockbackForce * hitEntity.mass,
         y: 0,
         z: direction.z * this.attackKnockbackForce * hitEntity.mass,
-      })
+      });
     }
   }
 

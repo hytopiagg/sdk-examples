@@ -10,7 +10,6 @@ export default class CaptainSpornEntity extends BaseEntity {
       moveAnimationSpeed: 2,
       moveSpeed: 3,
       name: 'Captain Sporn',
-      pushable: false,
       dialogue: {
         avatarImageUri: 'avatars/capfolk-knight.png',
         title: 'South Gate Guard',

@@ -28,7 +28,7 @@ export const skills: Skill[] = [
   {
     id: SkillId.FORAGING,
     name: 'Foraging',
-    description: 'Gather environmental resources while exploring to gain XP.<br/><br/>Increasing foraging yield and unlocks new foraging perks.',
+    description: 'Gather items from the environment while exploring to gain XP.<br/><br/>Increasing foraging yields and unlocks new foraging perks.',
     iconAssetUri: 'icons/skills/foraging.png'
   },
   {
