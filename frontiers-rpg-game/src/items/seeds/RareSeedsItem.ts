@@ -1,6 +1,6 @@
 import BaseItem, { BaseItemOptions } from '../BaseItem';
 
-export default class CommonSeedsItem extends BaseItem {
+export default class RareSeedsItem extends BaseItem {
   public constructor(options?: Partial<BaseItemOptions>) {
     super({
       name: 'Rare Seeds',

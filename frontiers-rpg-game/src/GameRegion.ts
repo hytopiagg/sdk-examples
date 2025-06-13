@@ -79,8 +79,8 @@ export default class GameRegion {
     if (!started) return;
 
     if (other instanceof GamePlayerEntity) {
-      other.setPosition(other.gamePlayer.respawnPoint);
-      return other.takeDamage(other.maxHealth);
+      other.setPosition(other.gamePlayer.respawnPoint); // move them to respawn point
+      return other.takeDamage(other.maxHealth); // kill player
     }
 
     if (other instanceof Entity) {
