@@ -1,13 +1,9 @@
-import BaseItem, { BaseItemOptions } from '../BaseItem';
+import BaseItem from '../BaseItem';
 
 export default class RatkinTailItem extends BaseItem {
-  public constructor(options?: Partial<BaseItemOptions>) {
-    super({
-      name: 'Ratkin Tail',
-      description: 'A tail from a ratkin.',
-      iconImageUri: 'icons/items/ratkin-tail.png',
-      stackable: true,
-      ...options,
-    });
-  }
+  static readonly id = 'ratkin_tail';
+  static readonly name = 'Ratkin Tail';
+  static readonly iconImageUri = 'icons/items/ratkin-tail.png';
+  static readonly description = 'A tail from a ratkin.';
+  static readonly stackable = true;
 }

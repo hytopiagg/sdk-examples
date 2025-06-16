@@ -1,14 +1,10 @@
-import BaseItem, { BaseItemOptions } from '../BaseItem';
+import BaseItem from '../BaseItem';
 
 export default class RatkinBonesItem extends BaseItem {
-  public constructor(options?: Partial<BaseItemOptions>) {
-    super({
-      name: 'Ratkin Bones',
-      description: 'A pile of bones from a Ratkin. Strangely fragile.',
-      iconImageUri: 'icons/items/ratkin-bones.png',
-      stackable: true,
-      sellPrice: 5,
-      ...options,
-    });
-  }
+  static readonly id = 'ratkin_bones';
+  static readonly name = 'Ratkin Bones';
+  static readonly iconImageUri = 'icons/items/ratkin-bones.png';
+  static readonly description = 'A pile of bones from a Ratkin. Strangely fragile.';
+  static readonly stackable = true;
+  static readonly sellPrice = 5;
 }

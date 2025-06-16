@@ -1,21 +1,17 @@
-import BaseConsumableItem, { BaseConsumableItemOptions } from '../BaseConsumableItem';
+import BaseConsumableItem from '../BaseConsumableItem';
 import type GamePlayerEntity from '../../GamePlayerEntity';
 
 export default class SunsporeClusterMushroomItem extends BaseConsumableItem {
-  public constructor(options?: Partial<BaseConsumableItemOptions>) {
-    super({
-      consumeCooldownMs: 400,
-      consumeRequiresDamaged: true,
-      name: 'Sunspore Cluster Mushroom',
-      description: `Heals 15hp. A large, spore-filled mushroom with a golden glow.`,
-      iconImageUri: 'icons/items/sunspore-cluster-mushroom.png',
-      buyPrice: 10,
-      rarity: 'unusual',
-      sellPrice: 15,
-      stackable: true,
-      ...options,
-    });
-  }
+  static readonly id = 'sunspore_cluster_mushroom';
+  static readonly name = 'Sunspore Cluster Mushroom';
+  static readonly iconImageUri = 'icons/items/sunspore-cluster-mushroom.png';
+  static readonly consumeCooldownMs = 400;
+  static readonly description = `Heals 15hp. A large, spore-filled mushroom with a golden glow.`;
+  static readonly buyPrice = 10;
+  static readonly rarity = 'unusual';
+  static readonly sellPrice = 15;
+  static readonly stackable = true;
+  static readonly consumeRequiresDamaged = true;
 
   protected override applyEffects(playerEntity: GamePlayerEntity): void {
     playerEntity.gamePlayer.adjustHealth(15);

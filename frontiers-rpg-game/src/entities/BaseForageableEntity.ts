@@ -1,10 +1,11 @@
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import { SkillId } from '../config';
 import type BaseItem from '../items/BaseItem';
+import type { ItemClass } from '../items/BaseItem';
 import type GamePlayerEntity from '../GamePlayerEntity';
 
-export type BaseForageableEntityItemDrop = {
-  item: BaseItem;
+export type ForageableItemDrop = {
+  itemClass: ItemClass;
   maxQuantity?: number;
   minQuantity?: number;
   weight: number;
@@ -13,18 +14,18 @@ export type BaseForageableEntityItemDrop = {
 
 export type BaseForageableEntityOptions = {
   forageDurationMs: number;
-  forageItemDrops: BaseForageableEntityItemDrop[];
-  forageItemMaxDrops?: number;
-  foragingExperienceReward?: number;
+  itemDrops: ForageableItemDrop[];
+  maxDropsPerForage?: number;
+  experienceReward?: number;
 } & BaseEntityOptions;
 
 export default class BaseForageableEntity extends BaseEntity {
   private _forageDurationMs: number;
-  private _forageItemDrops: BaseForageableEntityItemDrop[];
-  private _forageItemDropsTotalWeight: number = 0;
-  private _forageItemMaxDrops: number;
+  private _itemDrops: ForageableItemDrop[];
+  private _totalDropWeight: number = 0;
+  private _maxDropsPerForage: number;
   private _isBeingForaged: boolean = false;
-  private _foragingExperienceReward: number;
+  private _experienceReward: number;
 
   public constructor(options: BaseForageableEntityOptions) {
     super({
@@ -34,32 +35,28 @@ export default class BaseForageableEntity extends BaseEntity {
     });
 
     this._forageDurationMs = options.forageDurationMs;
-    this._forageItemDrops = options.forageItemDrops;
-    this._forageItemDropsTotalWeight = this._forageItemDrops.reduce((sum, drop) => sum + drop.weight, 0);
-    this._forageItemMaxDrops = options.forageItemMaxDrops ?? 1;
-    this._foragingExperienceReward = options.foragingExperienceReward ?? 1;
+    this._itemDrops = options.itemDrops;
+    this._totalDropWeight = this._itemDrops.reduce((sum, drop) => sum + drop.weight, 0);
+    this._maxDropsPerForage = options.maxDropsPerForage ?? 1;
+    this._experienceReward = options.experienceReward ?? 1;
   }
 
   public get forageDurationMs(): number { return this._forageDurationMs; }
-  public get forageItemDrops(): BaseForageableEntityItemDrop[] { return this._forageItemDrops; }
-  public get forageItemMaxDrops(): number { return this._forageItemMaxDrops; }
+  public get itemDrops(): ForageableItemDrop[] { return this._itemDrops; }
+  public get maxDropsPerForage(): number { return this._maxDropsPerForage; }
   public get isBeingForaged(): boolean { return this._isBeingForaged; }
 
   public forageItems(): void {
-    if (!this.world || !this._forageItemDrops || this._forageItemDrops.length === 0) return;
+    if (!this.world || !this._itemDrops || this._itemDrops.length === 0) return;
 
-    const maxDrops = Math.floor(Math.random() * this._forageItemMaxDrops) + 1;
+    const maxDrops = Math.floor(Math.random() * this._maxDropsPerForage) + 1;
 
     for (let i = 0; i < maxDrops; i++) {
-      const pickedDrop = this._pickRandomForageItemDrop();
-      if (!pickedDrop) continue;
+      const selectedDrop = this._selectRandomDrop();
+      if (!selectedDrop) continue;
 
-      const item = pickedDrop.item.clone(); // must clone otherwise same item picked twice will fail since we use instances for drops still..
-      const min = pickedDrop.minQuantity ?? 1;
-      const max = pickedDrop.maxQuantity ?? 1;
-      const quantity = pickedDrop.quantity ?? Math.floor(Math.random() * (max - min + 1)) + min;
-      
-      item.setQuantity(quantity);
+      const quantity = this._calculateDropQuantity(selectedDrop);
+      const item = selectedDrop.itemClass.create({ quantity });
       item.spawnEntityAsEjectedDrop(this.world, this.position);
     }
   }
@@ -80,7 +77,7 @@ export default class BaseForageableEntity extends BaseEntity {
       }
 
       if (!interactor.gamePlayer.isDead) {
-        interactor.gamePlayer.adjustSkillExperience(SkillId.FORAGING, this._foragingExperienceReward);
+        interactor.gamePlayer.adjustSkillExperience(SkillId.FORAGING, this._experienceReward);
       }
 
       this.forageItems();
@@ -88,13 +85,19 @@ export default class BaseForageableEntity extends BaseEntity {
     }, this._forageDurationMs);
   }
 
-  private _pickRandomForageItemDrop(): BaseForageableEntityItemDrop | null {
-    if (this._forageItemDropsTotalWeight <= 0) return null;
+  private _calculateDropQuantity(drop: ForageableItemDrop): number {
+    const min = drop.minQuantity ?? 1;
+    const max = drop.maxQuantity ?? 1;
+    return drop.quantity ?? Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
-    const random = Math.random() * this._forageItemDropsTotalWeight;
+  private _selectRandomDrop(): ForageableItemDrop | null {
+    if (this._totalDropWeight <= 0) return null;
+
+    const random = Math.random() * this._totalDropWeight;
     let cumulativeWeight = 0;
 
-    for (const drop of this._forageItemDrops) {
+    for (const drop of this._itemDrops) {
       cumulativeWeight += drop.weight;
       if (random < cumulativeWeight) {
         return drop;

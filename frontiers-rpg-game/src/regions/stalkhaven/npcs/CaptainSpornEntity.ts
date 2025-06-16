@@ -5,9 +5,7 @@ export default class CaptainSpornEntity extends BaseEntity {
     super({
       idleAnimations: [ 'idle' ],
       modelUri: 'models/npcs/mushroom-knight.gltf',
-      modelScale: 0.5 + Math.random() * 0.2,
-      moveAnimations: [ 'walk' ],
-      moveAnimationSpeed: 2,
+      modelScale: 0.65,
       moveSpeed: 3,
       name: 'Captain Sporn',
       dialogue: {

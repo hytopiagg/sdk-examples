@@ -1,6 +1,6 @@
 import BaseEntity, { BaseEntityOptions } from '../BaseEntity';
 
-export default class CapfolkBoyEntity extends BaseEntity {
+export default class CapfolkVillagerEntity extends BaseEntity {
   public constructor(options?: BaseEntityOptions) {
     super({
       idleAnimations: [ 'idle' ],
@@ -9,7 +9,7 @@ export default class CapfolkBoyEntity extends BaseEntity {
       moveAnimations: [ 'walk' ],
       moveAnimationSpeed: 2,
       moveSpeed: 3,
-      name: 'Capfolk Boy',
+      name: 'Capfolk Villager',
       ...options,
     });
   }

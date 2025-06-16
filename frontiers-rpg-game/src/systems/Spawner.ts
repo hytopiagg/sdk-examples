@@ -8,6 +8,7 @@ import {
 
 import BaseEntity from '../entities/BaseEntity';
 import BaseItem from '../items/BaseItem';
+import type { ItemClass } from '../items/BaseItem';
 import type { WanderOptions } from '../entities/BaseEntity';
 
 export type BoundingBox = {
@@ -19,14 +20,21 @@ export type SpawnRegion = BoundingBox & {
   weight?: number;
 };
 
-export type Spawnable = {
-  constructor: new () => BaseEntity | BaseItem;
+export type EntitySpawnable = {
+  entityConstructor: new () => BaseEntity;
+  weight: number;
+  wanders?: boolean;
+  wanderOptions?: WanderOptions;
+};
+
+export type ItemSpawnable = {
+  itemClass: ItemClass;
   minQuantity?: number;
   maxQuantity?: number;
   weight: number;
-  wanders?: boolean; // Only works for BaseEntity, not items
-  wanderOptions?: WanderOptions;
 };
+
+export type Spawnable = EntitySpawnable | ItemSpawnable;
 
 export type SpawnerOptions = {
   exclusionZones?: BoundingBox[];
@@ -109,11 +117,12 @@ export default class Spawner {
     const spawnPoint = this._findValidSpawnPoint();
     if (!spawnPoint) return;
 
-    const instance = new spawnable.constructor();
     const rotation = Quaternion.fromEuler(0, Math.random() * 360, 0);
 
-    if (instance instanceof BaseEntity) {
-      // Handle BaseEntity spawning - set up despawn tracking
+    if ('entityConstructor' in spawnable) {
+      // Handle BaseEntity spawning
+      const instance = new spawnable.entityConstructor();
+      
       instance.on(EntityEvent.DESPAWN, ({ entity }: { entity: Entity }) => {
         this._spawnedEntities.delete(entity);
       });
@@ -126,23 +135,19 @@ export default class Spawner {
       }
 
       this._spawnedEntities.add(instance);
-    } else if (instance instanceof BaseItem) {
-      // Set quantity of item
-      if (spawnable.maxQuantity && spawnable.maxQuantity > 1) {
-        const minQty = spawnable.minQuantity ?? 1;
-        const maxQty = spawnable.maxQuantity;
-        const quantity = Math.floor(Math.random() * (maxQty - minQty + 1)) + minQty;
-        instance.adjustQuantity(quantity);
-      }
-
-      // Handle BaseItem spawning - BaseItem manages its own entity lifecycle
+    } else {
+      // Handle BaseItem spawning
+      const minQty = spawnable.minQuantity ?? 1;
+      const maxQty = spawnable.maxQuantity ?? 1;
+      const quantity = Math.floor(Math.random() * (maxQty - minQty + 1)) + minQty;
+      
+      const instance = spawnable.itemClass.create({ quantity });
       instance.spawnEntityAsDrop(this._world, spawnPoint, rotation);
       
       // Track the created entity (BaseItem handles its own despawn cleanup)
       const spawnedEntity = instance.entity;
 
       if (spawnedEntity) {
-        // Only set up tracking removal - BaseItem handles its own cleanup
         spawnedEntity.on(EntityEvent.DESPAWN, ({ entity }: { entity: Entity }) => {
           this._spawnedEntities.delete(entity);
         });

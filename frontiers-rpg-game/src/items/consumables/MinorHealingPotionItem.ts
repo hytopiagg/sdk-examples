@@ -1,20 +1,16 @@
-import BaseConsumableItem, { BaseConsumableItemOptions } from '../BaseConsumableItem';
+import BaseConsumableItem from '../BaseConsumableItem';
 import type GamePlayerEntity from '../../GamePlayerEntity';
 
 export default class MinorHealingPotionItem extends BaseConsumableItem {
-  public constructor(options?: Partial<BaseConsumableItemOptions>) {
-    super({
-      consumeCooldownMs: 2000,
-      consumeRequiresDamaged: true,
-      name: 'Minor Healing Potion',
-      description: `Restores 20 health when consumed. A common remedy used by Frontier travelers and novice adventurers.`,
-      iconImageUri: 'icons/items/minor-healing-potion.png',
-      buyPrice: 50,
-      sellPrice: 5,
-      stackable: true,
-      ...options,
-    });
-  }
+  static readonly id = 'minor_healing_potion';
+  static readonly name = 'Minor Healing Potion';
+  static readonly iconImageUri = 'icons/items/minor-healing-potion.png';
+  static readonly consumeCooldownMs = 2000;
+  static readonly description = `Restores 20 health when consumed. A common remedy used by Frontier travelers and novice adventurers.`;
+  static readonly buyPrice = 50;
+  static readonly sellPrice = 5;
+  static readonly stackable = true;
+  static readonly consumeRequiresDamaged = true;
 
   protected override applyEffects(playerEntity: GamePlayerEntity): void {
     playerEntity.gamePlayer.adjustHealth(20);

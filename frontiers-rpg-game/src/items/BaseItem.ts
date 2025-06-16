@@ -10,6 +10,7 @@ import {
   SceneUI,
   Vector3Like,
   World,
+  RigidBodyType,
 } from 'hytopia';
 
 import BaseItemEntity from '../entities/BaseItemEntity';
@@ -30,119 +31,94 @@ export const RARITY_RGB_COLORS: Record<ItemRarity, RgbColor> = {
   utopian: { r: 255, g: 70, b: 70 },     // Pink-red - unique and special
 };
 
+export type ItemClass = typeof BaseItem;
+
 export type ItemRarity = 'common' | 'unusual' | 'rare' | 'epic' | 'legendary' | 'utopian';
 
-export type BaseItemOptions = {
-  buyPrice?: number;
-  defaultRelativePositionAsChild?: Vector3Like;
-  defaultRelativeRotationAsChild?: QuaternionLike;
-  description?: string;
-  iconImageUri: string;
-  dropModelUri?: string;
-  dropModelScale?: number;
-  dropModelTintColor?: RgbColor;
-  heldModelUri?: string;
-  heldModelScale?: number;
-  heldModelTintColor?: RgbColor;
-  name: string;
+export type ItemOverrides = {
   quantity?: number;
-  rarity?: ItemRarity;
-  sellPrice?: number;
-  stackable?: boolean;
 };
 
-export default class BaseItem implements IInteractable {
-  public readonly buyPrice: number | undefined;
-  public readonly defaultRelativePositionAsChild: Vector3Like;
-  public readonly defaultRelativeRotationAsChild: QuaternionLike | undefined;
-  public readonly description: string;
-  public readonly iconImageUri: string;
-  public readonly dropModelUri: string | undefined;
-  public readonly dropModelScale: number;
-  public readonly dropModelTintColor: RgbColor | undefined;
-  public readonly heldModelUri: string | undefined;
-  public readonly heldModelScale: number;
-  public readonly heldModelTintColor: RgbColor | undefined;
-  public readonly name: string;
-  public readonly rarity: ItemRarity;
-  public readonly sellPrice: number;
-  public readonly stackable: boolean;
+export default abstract class BaseItem implements IInteractable {
+  // Required static properties that subclasses MUST implement
+  static readonly id: string;
+  static readonly name: string;
+  static readonly iconImageUri: string;
+  
+  // Optional static properties with defaults
+  static readonly buyPrice?: number = undefined;
+  static readonly description: string = '';
+  static readonly dropModelUri?: string = undefined;
+  static readonly dropModelScale: number = DEFAULT_MODEL_SCALE;
+  static readonly dropModelTintColor?: RgbColor = undefined;
+  static readonly heldModelUri?: string = undefined;
+  static readonly heldModelScale: number = DEFAULT_MODEL_SCALE;
+  static readonly heldModelTintColor?: RgbColor = undefined;
+  static readonly defaultRelativePositionAsChild: Vector3Like = DEFAULT_MODEL_CHILD_RELATIVE_POSITION;
+  static readonly defaultRelativeRotationAsChild?: QuaternionLike = undefined;
+  static readonly rarity: ItemRarity = 'common';
+  static readonly sellPrice: number = 1;
+  static readonly stackable: boolean = false;
 
+  // Simple factory method
+  static create(overrides?: ItemOverrides): BaseItem {
+    const ItemClass = this as any;
+    return new ItemClass(overrides);
+  }
+
+  // Instance properties (mostly delegate to static)
+  public get id(): string { return (this.constructor as typeof BaseItem).id; }
+  public get name(): string { return (this.constructor as typeof BaseItem).name; }
+  public get iconImageUri(): string { return (this.constructor as typeof BaseItem).iconImageUri; }
+  public get buyPrice(): number | undefined { return (this.constructor as typeof BaseItem).buyPrice; }
+  public get description(): string { return (this.constructor as typeof BaseItem).description; }
+  public get dropModelUri(): string | undefined { return (this.constructor as typeof BaseItem).dropModelUri; }
+  public get dropModelScale(): number { return (this.constructor as typeof BaseItem).dropModelScale; }
+  public get dropModelTintColor(): RgbColor | undefined { return (this.constructor as typeof BaseItem).dropModelTintColor; }
+  public get heldModelUri(): string | undefined { return (this.constructor as typeof BaseItem).heldModelUri; }
+  public get heldModelScale(): number { return (this.constructor as typeof BaseItem).heldModelScale; }
+  public get heldModelTintColor(): RgbColor | undefined { return (this.constructor as typeof BaseItem).heldModelTintColor; }
+  public get defaultRelativePositionAsChild(): Vector3Like { return (this.constructor as typeof BaseItem).defaultRelativePositionAsChild; }
+  public get defaultRelativeRotationAsChild(): QuaternionLike | undefined { return (this.constructor as typeof BaseItem).defaultRelativeRotationAsChild; }
+  public get rarity(): ItemRarity { return (this.constructor as typeof BaseItem).rarity; }
+  public get sellPrice(): number { return (this.constructor as typeof BaseItem).sellPrice; }
+  public get stackable(): boolean { return (this.constructor as typeof BaseItem).stackable; }
+
+  // Instance-specific properties that can be overridden
   private _entity: BaseItemEntity | undefined;
   private _nameplateSceneUI: SceneUI | undefined;
   private _quantity: number = 1;
 
-  public constructor(options: BaseItemOptions) {
-    this.buyPrice = options.buyPrice;
-    this.defaultRelativePositionAsChild = options.defaultRelativePositionAsChild ?? (!options.heldModelUri ? DEFAULT_MODEL_CHILD_RELATIVE_POSITION : { x: 0, y: 0, z: 0 });
-    this.defaultRelativeRotationAsChild = options.defaultRelativeRotationAsChild;
-    this.description = options.description ?? '';
-    this.iconImageUri = options.iconImageUri;
-    this.dropModelUri = options.dropModelUri;
-    this.dropModelScale = options.dropModelScale ?? (!options.dropModelUri ? DEFAULT_MODEL_SCALE : 1);
-    this.dropModelTintColor = options.dropModelTintColor;
-    this.heldModelUri = options.heldModelUri;
-    this.heldModelScale = options.heldModelScale ?? (!options.heldModelUri ? DEFAULT_MODEL_SCALE : 1);
-    this.heldModelTintColor = options.heldModelTintColor;
-    this.name = options.name;
-    this.rarity = options.rarity ?? 'common';
-    this.sellPrice = options.sellPrice ?? 1;
-    this.stackable = options.stackable ?? false;
-
-    if (this.stackable && options.quantity) {
-      this._quantity = options.quantity;
+  public constructor(overrides?: ItemOverrides) {
+    const staticClass = this.constructor as typeof BaseItem;
+    
+    if (staticClass.stackable && overrides?.quantity) {
+      this._quantity = overrides.quantity;
     }
   }
 
   public get entity(): Entity | undefined { return this._entity; }
   public get quantity(): number { return this._quantity; }
 
-  // If stackable (can have more than 1), adjust the quantity of the item.
-  // Use this for spawned items (ground drops, held items) - updates nameplate only.
-  // For inventory items, use inventory.adjustItemQuantity() to trigger UI updates.
   public adjustQuantity(quantity: number): void {
     if (!this.stackable) {
-      return ErrorHandler.warning(`BaseItem.adjustQuantity(): Item ${this.name} is not stackable and cannot have a quantity.`);
+      return ErrorHandler.warning(`BaseItem.adjustQuantity(): Item ${this.name} is not stackable.`);
     }
     
     this._quantity += quantity;
     this._updateNameplateSceneUI();
   }
 
-  // Convert current state to constructor options for cloning
-  public toOptions(): BaseItemOptions {
-    return {
-      buyPrice: this.buyPrice,
-      defaultRelativePositionAsChild: this.defaultRelativePositionAsChild,
-      defaultRelativeRotationAsChild: this.defaultRelativeRotationAsChild,
-      description: this.description,
-      iconImageUri: this.iconImageUri,
-      dropModelUri: this.dropModelUri,
-      dropModelScale: this.dropModelScale,
-      dropModelTintColor: this.dropModelTintColor,
-      heldModelUri: this.heldModelUri,
-      heldModelScale: this.heldModelScale,
-      heldModelTintColor: this.heldModelTintColor,
-      name: this.name,
+  public clone(overrides?: ItemOverrides): BaseItem {
+    const ItemClass = this.constructor as any;
+    return new ItemClass({
       quantity: this._quantity,
-      rarity: this.rarity,
-      sellPrice: this.sellPrice,
-      stackable: this.stackable,
-    };
-  }
-
-  // Clone the item with optional overrides.
-  public clone(overrideOptions?: Partial<BaseItemOptions>): this {
-    return new (this.constructor as new (options: BaseItemOptions) => this)({
-      ...this.toOptions(),
-      ...overrideOptions,
+      ...overrides,
     });
   }
 
-  // Despawn the entity equivalent of the item from the world or parent entity.
   public despawnEntity(): void {
     if (!this._entity) return;
-
     this._entity.despawn();
   }
 
@@ -150,7 +126,7 @@ export default class BaseItem implements IInteractable {
     const wouldAddToSelectedIndex = playerEntity.gamePlayer.hotbar.wouldAddAtSelectedIndex(this);
     
     if (wouldAddToSelectedIndex) {
-      this.despawnEntity(); // Must despawn first, since hotbar.addItem will trigger a held spawn when item added to selected index.
+      this.despawnEntity();
     }
 
     if (playerEntity.gamePlayer.hotbar.addItem(this) || playerEntity.gamePlayer.backpack.addItem(this)) {
@@ -162,14 +138,13 @@ export default class BaseItem implements IInteractable {
 
   public setQuantity(quantity: number): void {
     if (!this.stackable && quantity > 1) {
-      return ErrorHandler.warning(`BaseItem.setQuantity(): Item ${this.name} is not stackable and cannot have a quantity.`);
+      return ErrorHandler.warning(`BaseItem.setQuantity(): Item ${this.name} is not stackable.`);
     }
 
     this._quantity = quantity;
     this._updateNameplateSceneUI();
   }
 
-  // Spawn the entity equivalent of the item in the world, such as a drop.
   public spawnEntityAsDrop(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     if (!this._requireNotSpawned()) return;
 
@@ -182,20 +157,19 @@ export default class BaseItem implements IInteractable {
       modelScale: this.dropModelScale,
       tintColor: this.dropModelTintColor ?? RARITY_RGB_COLORS[this.rarity],
       rigidBodyOptions: {
-        colliders: [ // 2x the collider scale for easier interacts
+        type: RigidBodyType.DYNAMIC,
+        colliders: [
           Collider.optionsFromModelUri(modelUri, this.dropModelScale * 4, ColliderShape.BLOCK)
         ],
       },
     });
 
     this._entity.on(EntityEvent.DESPAWN, () => this._despawnCleanup())
-
     this._entity.spawn(world, position, rotation);
     this._loadNameplateSceneUI();
     this._afterSpawn();
   }
 
-  // Spawn the entity equivalent of the item as a child held by another entity, such as held by a player.
   public spawnEntityAsHeld(parent: Entity, parentNodeName?: string, relativePosition?: Vector3Like, relativeRotation?: QuaternionLike): void {
     if (!this._requireNotSpawned()) return;
 
@@ -210,13 +184,11 @@ export default class BaseItem implements IInteractable {
     });
 
     this._entity.on(EntityEvent.DESPAWN, () => this._despawnCleanup())
-
     this._entity.spawn(
-      parent.world!, // Entity constructor ensures parent is spawned.
+      parent.world!,
       relativePosition ?? this.defaultRelativePositionAsChild,
       relativeRotation ?? this.defaultRelativeRotationAsChild,
     );
-
     this._afterSpawn();
   }
 
@@ -237,34 +209,29 @@ export default class BaseItem implements IInteractable {
     }
   }
   
-  // Split stackable item into a new item have a specified quantity which is deducted from the current item.
   public splitStack(newStackQuantity: number): BaseItem | undefined {
     if (!this.stackable) {
-      ErrorHandler.warning(`BaseItem.splitStack(): Item ${this.name} is not stackable and cannot be split.`);
+      ErrorHandler.warning(`BaseItem.splitStack(): Item ${this.name} is not stackable.`);
       return undefined;
     }
 
     if (newStackQuantity <= 0 || newStackQuantity >= this._quantity) {
-      ErrorHandler.warning(`BaseItem.splitStack(): Quantity must be greater than 0 and less than the current stack size (${this._quantity}).`);
+      ErrorHandler.warning(`BaseItem.splitStack(): Invalid quantity.`);
       return undefined;
     }
 
     this.adjustQuantity(-newStackQuantity);
-
     return this.clone({ quantity: newStackQuantity });
   }
 
   public useMouseLeft(): void {
-    // Default behavior: do nothing (for non-usable items), intended to be overridden by subclasses.
-    // useMouseLeft() is called when item is selected in the hotbar and mouse left is clicked.
+    // Override in subclasses for usable items
   }
 
   public useMouseRight(): void {
-    // Default behavior: do nothing (for non-usable items), intended to be overridden by subclasses.
-    // useMouseRight() is called when item is selected in the hotbar and mouse right is clicked.
+    // Override in subclasses for usable items
   }
 
-  // Helpers
   private _afterSpawn(): void {
     if (!this._entity) return;
 
@@ -301,10 +268,9 @@ export default class BaseItem implements IInteractable {
 
   private _requireNotSpawned(): boolean {
     if (this._entity) {
-      ErrorHandler.warning('BaseItem._requireNotSpawned(): Item is already spawned and must be despawned first.');
+      ErrorHandler.warning('BaseItem: Item is already spawned.');
       return false;
     }
-
     return true;
   }
 

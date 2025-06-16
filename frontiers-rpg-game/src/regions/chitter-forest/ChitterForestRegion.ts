@@ -28,7 +28,7 @@ export default class ChitterForestRegion extends GameRegion {
 
   protected override setup(): void {
     super.setup();
- 
+
     this._setupEnemySpawners();
     this._setupForageableSpawners();
     this._setupPortals();
@@ -51,10 +51,10 @@ export default class ChitterForestRegion extends GameRegion {
     const forestAreaSpawner = new Spawner({
       maxSpawns: 15,
       spawnables: [
-        { constructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: roamWanderOptions },
-        { constructor: RatkinRangerEntity, weight: 2, wanders: true, wanderOptions: roamWanderOptions },
-        { constructor: RatkinSpellcasterEntity, weight: 1.5, wanders: true, wanderOptions: roamWanderOptions },
-        { constructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: roamWanderOptions },
+        { entityConstructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: roamWanderOptions },
+        { entityConstructor: RatkinRangerEntity, weight: 2, wanders: true, wanderOptions: roamWanderOptions },
+        { entityConstructor: RatkinSpellcasterEntity, weight: 1.5, wanders: true, wanderOptions: roamWanderOptions },
+        { entityConstructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: roamWanderOptions },
       ],
       spawnRegions: [
         { // Main forest area
@@ -75,8 +75,8 @@ export default class ChitterForestRegion extends GameRegion {
     const forestCamp1Spawner = new Spawner({
       maxSpawns: 6,
       spawnables: [
-        { constructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: campWanderOptions },
-        { constructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnRegions: [
         {
@@ -91,9 +91,9 @@ export default class ChitterForestRegion extends GameRegion {
     const forestCamp2Spawner = new Spawner({
       maxSpawns: 8,
       spawnables: [
-        { constructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: campWanderOptions },
-        { constructor: RatkinRangerEntity, weight: 4, wanders: true, wanderOptions: campWanderOptions },
-        { constructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinRangerEntity, weight: 4, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnRegions: [
         {
@@ -108,10 +108,10 @@ export default class ChitterForestRegion extends GameRegion {
     const pathCampSpawner = new Spawner({
       maxSpawns: 10,
       spawnables: [
-        { constructor: RatkinBruteEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
-        { constructor: RatkinRangerEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
-        { constructor: RatkinSpellcasterEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
-        { constructor: RatkinWarriorEntity, weight: 5, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinBruteEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinRangerEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinSpellcasterEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinWarriorEntity, weight: 5, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnRegions: [
         {
@@ -126,8 +126,8 @@ export default class ChitterForestRegion extends GameRegion {
     const lakeCampSpawner = new Spawner({
       maxSpawns: 6,
       spawnables: [
-        { constructor: RatkinRangerEntity, weight: 6, wanders: true, wanderOptions: campWanderOptions },
-        { constructor: RatkinSpellcasterEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinRangerEntity, weight: 6, wanders: true, wanderOptions: campWanderOptions },
+        { entityConstructor: RatkinSpellcasterEntity, weight: 3, wanders: true, wanderOptions: campWanderOptions },
       ],
       spawnRegions: [
         {
@@ -150,7 +150,7 @@ export default class ChitterForestRegion extends GameRegion {
     const forestAreaSpawner = new Spawner({
       maxSpawns: 20,
       spawnables: [
-        { constructor: ForageableLogEntity, weight: 1 },
+        { entityConstructor: ForageableLogEntity, weight: 1 },
       ],
       spawnRegions: [
         { // Main forest area

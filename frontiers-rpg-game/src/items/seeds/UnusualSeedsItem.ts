@@ -1,14 +1,10 @@
-import BaseItem, { BaseItemOptions } from '../BaseItem';
+import BaseItem from '../BaseItem';
 
 export default class UnusualSeedsItem extends BaseItem {
-  public constructor(options?: Partial<BaseItemOptions>) {
-    super({
-      name: 'Unusual Seeds',
-      description: `[4CAF50]Plantable[/][b]A small amount of seeds not found in the Frontier. It's unclear what will grow if you plant these.`,
-      iconImageUri: 'icons/items/unusual-seeds.png',
-      rarity: 'unusual',
-      stackable: true,
-      ...options,
-    });
-  }
+  static readonly id = 'unusual_seeds';
+  static readonly name = 'Unusual Seeds';
+  static readonly iconImageUri = 'icons/items/unusual-seeds.png';
+  static readonly description = `[4CAF50]Plantable[/][b]A small amount of seeds not found in the Frontier. It's unclear what will grow if you plant these.`;
+  static readonly rarity = 'unusual';
+  static readonly stackable = true;
 }

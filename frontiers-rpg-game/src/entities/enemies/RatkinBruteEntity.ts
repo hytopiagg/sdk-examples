@@ -54,35 +54,35 @@ export default class RatkinBruteEntity extends BaseCombatEntity {
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
         {
-          item: new GoldItem(),
+          itemClass: GoldItem,
           minQuantity: 30,
           maxQuantity: 70,
           weight: 2,
         },
         {
-          item: new CommonMushroomItem(),
+          itemClass: CommonMushroomItem,
           minQuantity: 1,
           maxQuantity: 3,
           weight: 1,
         },
         {
-          item: new CommonSeedsItem(),
+          itemClass: CommonSeedsItem,
           weight: 0.5,
         },
         {
-          item: new RatkinBonesItem(),
+          itemClass: RatkinBonesItem,
           weight: 0.8,
         },
         {
-          item: new RatkinEyesItem(),
+          itemClass: RatkinEyesItem,
           weight: 0.8,
         },
         {
-          item: new RatkinToothItem(),
+          itemClass: RatkinToothItem,
           weight: 0.8,
         },
         {
-          item: new RatkinTailItem(),
+          itemClass: RatkinTailItem,
           weight: 0.8,
         },
       ],

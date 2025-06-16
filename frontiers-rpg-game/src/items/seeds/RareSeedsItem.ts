@@ -1,14 +1,10 @@
-import BaseItem, { BaseItemOptions } from '../BaseItem';
+import BaseItem from '../BaseItem';
 
 export default class RareSeedsItem extends BaseItem {
-  public constructor(options?: Partial<BaseItemOptions>) {
-    super({
-      name: 'Rare Seeds',
-      description: `[4CAF50]Plantable[/][b]These seeds seem special. Something exotic may grow from them!`,
-      iconImageUri: 'icons/items/rare-seeds.png',
-      rarity: 'rare',
-      stackable: true,
-      ...options,
-    });
-  }
+  static readonly id = 'rare_seeds';
+  static readonly name = 'Rare Seeds';
+  static readonly iconImageUri = 'icons/items/rare-seeds.png';
+  static readonly description = `[4CAF50]Plantable[/][b]These seeds seem special. Something exotic may grow from them!`;
+  static readonly rarity = 'rare';
+  static readonly stackable = true;
 }

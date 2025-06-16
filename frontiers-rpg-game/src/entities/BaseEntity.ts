@@ -13,10 +13,10 @@ import {
 } from 'hytopia';
 
 import { SkillId } from '../config';
-import type BaseItem from '../items/BaseItem';
 import GamePlayerEntity from '../GamePlayerEntity';
 import type IInteractable from '../interfaces/IInteractable';
 import type IDamageable from '../interfaces/IDamageable';
+import type { ItemClass } from '../items/BaseItem';
 
 export type BaseEntityDialogue = {
   text: string;
@@ -39,9 +39,9 @@ export type BaseEntityDialogueRoot = {
 }
 
 export type BaseEntityItemDrop = {
-  item: BaseItem;
-  maxQuantity?: number; // Alternative range vs quantity
-  minQuantity?: number; // Alternative range vs quantity
+  itemClass: ItemClass;
+  maxQuantity?: number;
+  minQuantity?: number;
   weight: number;
   quantity?: number;
 }
@@ -177,15 +177,15 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     const maxDrops = Math.floor(Math.random() * (this._deathItemMaxDrops ?? 1) + 1);
 
     for (let i = 0; i < maxDrops; i++) {
-      const pickedDrop = this._pickRandomDeathItemDrop();
-      if (!pickedDrop) continue;
+      const selectedDrop = this._pickRandomDeathItemDrop();
+      if (!selectedDrop) continue;
 
-      const min = pickedDrop.minQuantity ?? 1;
-      const max = pickedDrop.maxQuantity ?? 1;
-      const quantity = pickedDrop.quantity ?? Math.floor(Math.random() * (max - min + 1)) + min;
+      const min = selectedDrop.minQuantity ?? 1;
+      const max = selectedDrop.maxQuantity ?? 1;
+      const quantity = selectedDrop.quantity ?? Math.floor(Math.random() * (max - min + 1)) + min;
       
-      pickedDrop.item.setQuantity(quantity);
-      pickedDrop.item.spawnEntityAsEjectedDrop(this.world, this.position);
+      const item = selectedDrop.itemClass.create({ quantity });
+      item.spawnEntityAsEjectedDrop(this.world, this.position);
     }
   }
 
@@ -197,6 +197,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     if (this._dialogueRoot) {
       interactor.setCurrentDialogueEntity(this);
       this.showDialogue(interactor, this._dialogueRoot.dialogue);
+      this.faceTowards(interactor.position, 8);
     }
   }
 
@@ -331,7 +332,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   }
 
   protected shouldDeferWander(): boolean {
-    return true; // override in subclasses to prevent wandering
+    return false; // override in subclasses to prevent wandering
   }
 
   private _buildDialogueOptionMap(): void {

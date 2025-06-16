@@ -6,10 +6,10 @@ import WoodenSwordItem from '../../items/weapons/WoodenSwordItem';
 export default class MerchantFinnEntity extends BaseMerchantEntity {
   public constructor(options?: Partial<BaseMerchantEntityOptions>) {
     super({
-      buyableItems: [
-        new MinorHealingPotionItem(),
-        new WoodenSwordItem({ buyPrice: 10 }),
-        new RatkinTailItem({ buyPrice: 5 }),
+      buyableItemClasses: [
+        MinorHealingPotionItem,
+        WoodenSwordItem,
+        RatkinTailItem,
       ],
       dialogueAvatarImageUri: 'avatars/merchant.png',
       dialogueTitle: 'Goods Vendor',

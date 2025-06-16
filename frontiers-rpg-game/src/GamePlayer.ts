@@ -159,7 +159,7 @@ export default class GamePlayer {
         const inventory = this.hotbar.getItemByClass(GoldItem) === existingGold ? this.hotbar : this.backpack;
         return this.adjustInventoryItemQuantity(inventory, existingGold, amount);
       } else {
-        const goldItem = new GoldItem({ quantity: amount });
+        const goldItem = GoldItem.create({ quantity: amount });
         return this.hotbar.addItem(goldItem) || this.backpack.addItem(goldItem);
       }
     } else {

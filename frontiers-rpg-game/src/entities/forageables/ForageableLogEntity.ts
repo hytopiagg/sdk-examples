@@ -17,17 +17,17 @@ export default class ForageableLogEntity extends BaseForageableEntity {
   public constructor(options?: ForageableLogEntityOptions) {
     super({
       forageDurationMs: 2000,
-      forageItemDrops: [
-        { item: new CommonMushroomItem(), weight: 100, minQuantity: 1, maxQuantity: 3 },
-        { item: new CommonSeedsItem(), weight: 50 },
-        { item: new EmbercapMushroomItem(), weight: 5, minQuantity: 1, maxQuantity: 3 },
-        { item: new GoldItem(), weight: 15, minQuantity: 6, maxQuantity: 17 },
-        { item: new MinorHealingPotionItem(), weight: 25 },
-        { item: new MonsterHideItem(), weight: 10 },
-        { item: new UnusualSeedsItem(), weight: 1 },
+      itemDrops: [
+        { itemClass: CommonMushroomItem, weight: 100, minQuantity: 1, maxQuantity: 3 },
+        { itemClass: CommonSeedsItem, weight: 50 },
+        { itemClass: EmbercapMushroomItem, weight: 5, minQuantity: 1, maxQuantity: 3 },
+        { itemClass: GoldItem, weight: 15, minQuantity: 6, maxQuantity: 17 },
+        { itemClass: MinorHealingPotionItem, weight: 25 },
+        { itemClass: MonsterHideItem, weight: 10 },
+        { itemClass: UnusualSeedsItem, weight: 1 },
       ],
-      forageItemMaxDrops: 3,
-      foragingExperienceReward: 25,
+      maxDropsPerForage: 3,
+      experienceReward: 25,
       modelUri: 'models/forageables/fallen-log.gltf',
       modelScale: 0.5,
       name: 'Rotten Log',

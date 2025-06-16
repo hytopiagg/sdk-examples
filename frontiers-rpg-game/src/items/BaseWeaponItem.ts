@@ -1,6 +1,6 @@
 import { Entity } from 'hytopia';
 import BaseEntity from '../entities/BaseEntity';
-import BaseItem, { BaseItemOptions } from './BaseItem';
+import BaseItem, { ItemOverrides } from './BaseItem';
 import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
 import type { QuaternionLike, RawShape, Vector3Like } from 'hytopia';
@@ -16,38 +16,53 @@ export type BaseWeaponItemAttack = {
   reach: number;
 }
 
-export type BaseWeaponItemOptions = {
-  attack: BaseWeaponItemAttack;
+export type WeaponOverrides = {
+  attack?: BaseWeaponItemAttack;
   specialAttack?: BaseWeaponItemAttack;
-} & Omit<BaseItemOptions, 'stackable' | 'quantity'>
+} & ItemOverrides;
   
-export default class BaseWeaponItem extends BaseItem {
-  public readonly attack: BaseWeaponItemAttack;
-  public readonly specialAttack: BaseWeaponItemAttack;
+export default abstract class BaseWeaponItem extends BaseItem {
+  // Required static properties that weapon subclasses MUST implement
+  static readonly attack: BaseWeaponItemAttack;
+  
+  // Optional static properties with defaults
+  static readonly specialAttack?: BaseWeaponItemAttack = undefined;
+
+  // Simple factory method
+  static create(overrides?: WeaponOverrides): BaseWeaponItem {
+    const ItemClass = this as any;
+    return new ItemClass(overrides);
+  }
+
+  // Instance properties (delegate to static or use overrides)
+  public get attack(): BaseWeaponItemAttack { 
+    return this._attack ?? (this.constructor as typeof BaseWeaponItem).attack; 
+  }
+  public get specialAttack(): BaseWeaponItemAttack { 
+    return this._specialAttack ?? (this.constructor as typeof BaseWeaponItem).specialAttack ?? this.attack; 
+  }
+
+  // Instance-specific properties that can be overridden
+  private readonly _attack?: BaseWeaponItemAttack;
+  private readonly _specialAttack?: BaseWeaponItemAttack;
   private _attackCooledDownAtMs: number = 0;
 
-  public constructor(options: BaseWeaponItemOptions) {
-    super(options);
+  public constructor(overrides?: WeaponOverrides) {
+    super(overrides);
 
-    this.attack = options.attack;
-    this.specialAttack = options.specialAttack ?? this.attack;
+    this._attack = overrides?.attack;
+    this._specialAttack = overrides?.specialAttack;
   }
 
   public get canAttack(): boolean { return performance.now() >= this._attackCooledDownAtMs; }
 
-  // Convert current state to constructor options for cloning
-  public override toOptions(): BaseWeaponItemOptions {
-    return {
-      ...super.toOptions(),
-      attack: this.attack,
-      specialAttack: this.specialAttack,
-    };
-  }
-
-  public override clone(overrideOptions?: Partial<BaseWeaponItemOptions>): this {
-    return new (this.constructor as new (options: BaseWeaponItemOptions) => this)({
-      ...this.toOptions(),
-      ...overrideOptions,
+  public override clone(overrides?: WeaponOverrides): BaseWeaponItem {
+    const WeaponClass = this.constructor as any;
+    return new WeaponClass({
+      quantity: this.quantity,
+      attack: this._attack,
+      specialAttack: this._specialAttack,
+      ...overrides,
     });
   }
 

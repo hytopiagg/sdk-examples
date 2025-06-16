@@ -1,14 +1,10 @@
-import BaseItem, { BaseItemOptions } from '../BaseItem';
+import BaseItem from '../BaseItem';
 
 export default class RatkinToothItem extends BaseItem {
-  public constructor(options?: Partial<BaseItemOptions>) {
-    super({
-      name: 'Ratkin Tooth',
-      description: `A tooth from a Ratkin. Sharp and pointy.`,
-      iconImageUri: 'icons/items/ratkin-tooth.png',
-      stackable: true,
-      sellPrice: 10,
-      ...options,
-    });
-  }
+  static readonly id = 'ratkin_tooth';
+  static readonly name = 'Ratkin Tooth';
+  static readonly iconImageUri = 'icons/items/ratkin-tooth.png';
+  static readonly description = 'A sharp tooth from a Ratkin. Still has some bite to it.';
+  static readonly stackable = true;
+  static readonly sellPrice = 3;
 }

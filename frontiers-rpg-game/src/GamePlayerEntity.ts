@@ -62,7 +62,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     const facingDirection = this.player.camera.facingDirection;
     const cos = Math.cos(shoulderAngleRad);
     const sin = Math.sin(shoulderAngleRad);
-    
+
     return {
       x: facingDirection.x * cos + facingDirection.z * sin,
       y: facingDirection.y,
@@ -159,7 +159,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     // Give starting equipment if the player doesn't have any items yet
     if (this._gamePlayer.hotbar.totalEmptySlots === this._gamePlayer.hotbar.size && 
         this._gamePlayer.backpack.totalEmptySlots === this._gamePlayer.backpack.size) {
-      const woodenSword = new WoodenSwordItem();
+      const woodenSword = WoodenSwordItem.create();
       this._gamePlayer.hotbar.addItem(woodenSword);
     }
   }
@@ -235,6 +235,17 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     const { input } = payload;
     const canInteract = !this._isMovementDisabled && !this._gamePlayer.isDead;
 
+    // Face camera direction on item usage & interact
+    if ((input.ml || input.mr || input.e) && canInteract) {
+      const halfYaw = this.player.camera.orientation.yaw * 0.5;
+      this.setRotation({
+        x: 0,
+        y: Math.sin(halfYaw),
+        z: 0,
+        w: Math.cos(halfYaw),
+      });
+    }
+
     // Left click item usage
     if (input.ml && canInteract) {
       const selectedItem = this._gamePlayer.hotbar.selectedItem;
@@ -298,6 +309,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   }
 
   private _setupPlayerController(): void {
+    this.playerController.faceForwardOnStop = false;
     this.playerController.interactOneshotAnimations = [];
     this.playerController.canJump = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
     this.playerController.canRun = () => !this._gamePlayer.isDead && !this._isMovementDisabled;

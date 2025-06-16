@@ -1,14 +1,10 @@
-import BaseItem, { BaseItemOptions } from '../BaseItem';
+import BaseItem from '../BaseItem';
 
 export default class MonsterHideItem extends BaseItem {
-  public constructor(options?: Partial<BaseItemOptions>) {
-    super({
-      name: 'Monster Hide',
-      description: 'A regular sized hide from a Frontier monster.',
-      iconImageUri: 'icons/items/monster-hide.png',
-      stackable: true,
-      sellPrice: 10,
-      ...options,
-    });
-  }
+  static readonly id = 'monster_hide';
+  static readonly name = 'Monster Hide';
+  static readonly iconImageUri = 'icons/items/monster-hide.png';
+  static readonly description = 'Thick hide from a Frontier beast. Tough and weathered.';
+  static readonly stackable = true;
+  static readonly sellPrice = 15;
 }

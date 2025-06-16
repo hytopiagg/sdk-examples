@@ -35,13 +35,13 @@ export default class GameManager {
     const chitterForestRegion = new ChitterForestRegion();
     this._regions.set(chitterForestRegion.tag!, chitterForestRegion);
     GameClock.instance.addWorldClockCycle(chitterForestRegion.world);
-    this._startRegion = chitterForestRegion;
+    // this._startRegion = chitterForestRegion;
 
     // Stalkhaven
     const stalkhavenRegion = new StalkhavenRegion();
     this._regions.set(stalkhavenRegion.tag!, stalkhavenRegion);
     GameClock.instance.addWorldClockCycle(stalkhavenRegion.world);
-    // this._startRegion = stalkhavenRegion;
+    this._startRegion = stalkhavenRegion;
 
     // Set Stalkhaven as the region/world players automatically join when they connected to the game.
     WorldManager.instance.setDefaultWorld(this._startRegion.world);
