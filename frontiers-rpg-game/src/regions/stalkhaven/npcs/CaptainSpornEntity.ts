@@ -12,7 +12,7 @@ export default class CaptainSpornEntity extends BaseEntity {
         avatarImageUri: 'avatars/capfolk-knight.png',
         title: 'South Gate Guard',
         dialogue: {
-          text: `Hold there, traveler. I'm Captain Sporn. Chitter Forest is beyond this gate. Ever since the fog rolled over The Frontier, Chitter Forest has been overrun by twisted creatures. The Ratkin were never this aggressive before the fog came. You prepared for what's out there?`,
+          text: `Hold there, traveler. I'm Captain Sporn. I led Capfolk refugees here from the fog, now I guard this gate. Chitter Forest beyond is overrun with twisted creatures. The Ratkin were never this aggressive before. You prepared for what's out there?`,
           options: [
             {
               text: `I'm ready to fight.`,
@@ -64,7 +64,7 @@ export default class CaptainSpornEntity extends BaseEntity {
             {
               text: `What's this Frontier Fog?`,
               nextDialogue: {
-                text: `Came from nowhere two moons ago - a creeping fog that turns peaceful creatures into monsters. Lost three frontier towns already. My brother's patrol vanished when the fog first hit the forest.`,
+                text: `Came from nowhere two months ago - a creeping fog that turns peaceful creatures into monsters. Lost a dozen settlements already. My brother's patrol vanished when the fog first hit the forest.`,
                 options: [
                   {
                     text: `I'll find answers about your brother.`,

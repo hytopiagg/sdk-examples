@@ -4,8 +4,9 @@ import stalkhavenMap from '../../../assets/maps/stalkhaven.json';
 import CapfolkVillagerEntity from '../../entities/npcs/CapfolkVillagerEntity';
 import CaptainSpornEntity from './npcs/CaptainSpornEntity';
 import CommanderMarkEntity from './npcs/CommanderMarkEntity';
-import BankerJohnEntity from '../../entities/npcs/BankerJohnEntity';
-import MerchantFinnEntity from '../../entities/npcs/MerchantFinnEntity';
+import BankerJohnEntity from './npcs/BankerJohnEntity';
+import HealerMycelisEntity from './npcs/HealerMycelisEntity';
+import MerchantFinnEntity from './npcs/MerchantFinnEntity';
 import PortalEntity from '../../entities/PortalEntity';
 
 export default class StalkhavenRegion extends GameRegion {
@@ -33,6 +34,7 @@ export default class StalkhavenRegion extends GameRegion {
     (new BankerJohnEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });
     (new CaptainSpornEntity({ facingAngle: 315 })).spawn(this.world, { x: -2, y: 3, z: 43 });
     (new CommanderMarkEntity({ facingAngle: 180 })).spawn(this.world, { x: 3, y: 3, z: 12 });
+    (new HealerMycelisEntity({ facingAngle: 180 })).spawn(this.world, { x: -13.5, y: 3, z: -30 });
     (new MerchantFinnEntity({ facingAngle: 90 })).spawn(this.world, { x: 13, y: 3, z: 26.5 });
 
     // Wandering Villagers 

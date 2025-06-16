@@ -1,4 +1,4 @@
-import BaseEntity, { BaseEntityOptions } from '../BaseEntity';
+import BaseEntity, { BaseEntityOptions } from '../../../entities/BaseEntity';
 
 export default class BankerJohnEntity extends BaseEntity {
   public constructor(options?: BaseEntityOptions) {

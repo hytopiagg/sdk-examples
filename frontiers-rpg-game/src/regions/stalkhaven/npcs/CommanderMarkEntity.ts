@@ -11,17 +11,17 @@ export default class CommanderMarkEntity extends BaseEntity {
         avatarImageUri: 'avatars/commander.png',
         title: '7th Regiment Commander',
         dialogue: {
-          text: `Welcome to Stalkhaven, adventurer. I'm Commander Mark of the 7th Regiment. This might be the last free settlement in The Frontier - the fog has claimed everything else. You've come at a dark time, but we need brave souls like you.`,
+          text: `Welcome to Stalkhaven, adventurer. I'm Commander Mark of the 7th Regiment. This might be the last free settlement in The Frontier - we need brave souls like you.`,
           options: [
             {
               text: `Tell me about Stalkhaven.`,
               nextDialogue: {
-                text: `Once The Frontier's greatest trading hub, now a refuge for survivors. Our port brought goods from distant lands, but we're barely holding the line against the fog.`,
+                text: `Once The Frontier's greatest trading hub, now a refugee shelter. We're barely holding the line against the fog.`,
                 options: [
                   {
                     text: `What happened to other settlements?`,
-                    nextDialogue: {
-                      text: `Swallowed by fog, one by one. We've received refugees from a dozen settlements, but most places... nothing left but monsters and mist.`,
+                                          nextDialogue: {
+                        text: `Swallowed by fog, one by one. We've received refugees from a dozen settlements. Most places are just monsters and mist now.`,
                       options: [
                         {
                           text: `Are there other survivors out there?`,
@@ -38,8 +38,8 @@ export default class CommanderMarkEntity extends BaseEntity {
                         },
                         {
                           text: `How has Stalkhaven survived?`,
-                          nextDialogue: {
-                            text: `Strong walls, good people, determination. We've fortified every entrance, but honestly? We're just lucky the fog hasn't fully reached us yet.`,
+                                                      nextDialogue: {
+                              text: `Strong walls, good people, determination. We've fortified every entrance, but honestly? We're just lucky so far.`,
                             options: [
                               {
                                 text: `I'll help defend this place.`,
@@ -54,13 +54,13 @@ export default class CommanderMarkEntity extends BaseEntity {
                   },
                   {
                     text: `What about the port?`,
-                    nextDialogue: {
-                      text: `Eastern port is sealed tight. Sea monsters attacked days ago - creatures twisted by that same fog. No ships in or out until it's safe.`,
+                                            nextDialogue: {
+                          text: `Eastern port is sealed. Sea monsters attacked - fog-twisted creatures. No ships until it's safe.`,
                       options: [
                         {
                           text: `I could help clear the port.`,
-                          nextDialogue: {
-                            text: `Brave offer, but those waters are treacherous. Speak with the harbor master first - we can't lose more good people to those depths.`,
+                                                      nextDialogue: {
+                              text: `Brave offer, but those waters are treacherous. Speak with the harbor master first - we can't lose more people.`,
                             options: [
                               {
                                 text: `I'll investigate the harbor first.`,
@@ -72,8 +72,8 @@ export default class CommanderMarkEntity extends BaseEntity {
                         },
                         {
                           text: `What kind of sea monsters?`,
-                          nextDialogue: {
-                            text: `Massive tentacled beasts with glowing eyes. They pulled two merchant vessels under before we could react. Something vast moves beneath the waves.`,
+                                                      nextDialogue: {
+                              text: `Massive tentacled beasts with glowing eyes. They pulled two ships under. Something vast lurks beneath the waves.`,
                             options: [
                               {
                                 text: `The fog is affecting the seas too...`,
@@ -88,13 +88,13 @@ export default class CommanderMarkEntity extends BaseEntity {
                   },
                   {
                     text: `Where can I settle here?`,
-                    nextDialogue: {
-                      text: `Planning to stay? Good. Head west to the farmlands - old farmer by the gate wants to sell his plot. Humble land, but it's yours to build on.`,
+                                            nextDialogue: {
+                          text: `Planning to stay? Good. Head west to the farmlands - old farmer wants to sell his plot. Humble land, but yours to build on.`,
                       options: [
                         {
                           text: `How much is he asking?`,
-                          nextDialogue: {
-                            text: `Fair price. He wants someone who'll make good use of it. A working farm could help feed our growing refugee population.`,
+                                                      nextDialogue: {
+                              text: `Fair price. He wants someone who'll make good use of it. A working farm could help feed our refugees.`,
                             options: [
                               {
                                 text: `I'll speak with him about the land.`,
@@ -106,8 +106,8 @@ export default class CommanderMarkEntity extends BaseEntity {
                         },
                         {
                           text: `Is the farmland safe?`,
-                          nextDialogue: {
-                            text: `Safer than most places. Fog hasn't reached western fields yet, and we patrol regularly. Best place to make a stand in The Frontier.`,
+                                                      nextDialogue: {
+                              text: `Safer than most places. Fog hasn't reached western fields yet, and we patrol regularly. Best place to make a stand.`,
                             options: [
                               {
                                 text: `I'll consider it.`,
@@ -126,17 +126,17 @@ export default class CommanderMarkEntity extends BaseEntity {
             {
               text: `What threats are we facing?`,
               nextDialogue: {
-                text: `The fog spawns countless horrors. Chitter Forest is overrun with Ratkin - they were peaceful traders, now vicious killers under some "Whisker King."`,
+                text: `The fog spawns countless horrors. Chitter Forest is overrun with Ratkin - once peaceful traders, now killers under the "Whisker King."`,
                 options: [
                   {
                     text: `What changed the Ratkin?`,
-                    nextDialogue: {
-                      text: `Nobody knows. They were our allies for generations - peaceful merchants. Now they attack on sight, organized under this Whisker King.`,
+                                          nextDialogue: {
+                        text: `Nobody knows. They were our allies for generations - peaceful merchants. Now they attack on sight under this Whisker King.`,
                       options: [
                         {
                           text: `I'll confront this Whisker King.`,
-                          nextDialogue: {
-                            text: `You'll need more than courage. Talk to Captain Sporn at the south gate first - he knows their movements. Get properly armed.`,
+                                                      nextDialogue: {
+                              text: `You'll need more than courage. Talk to Captain Sporn at the south gate first - he knows their movements. Get armed.`,
                             options: [
                               {
                                 text: `I'll prepare thoroughly.`,
@@ -148,8 +148,8 @@ export default class CommanderMarkEntity extends BaseEntity {
                         },
                         {
                           text: `Can they be saved?`,
-                          nextDialogue: {
-                            text: `That's what keeps me awake. If the fog's influence can be broken, maybe they can return. But we need to find the fog's source first.`,
+                                                      nextDialogue: {
+                              text: `That's what keeps me awake. If the fog's influence can be broken, maybe they can return. We need to find the source first.`,
                             options: [
                               {
                                 text: `Finding the source is crucial then.`,
@@ -164,13 +164,13 @@ export default class CommanderMarkEntity extends BaseEntity {
                   },
                   {
                     text: `Where does the fog come from?`,
-                    nextDialogue: {
-                      text: `Million-gold question. Appeared two months ago, spreading ever since. Thickest to the northeast, but none who venture deep return.`,
+                                          nextDialogue: {
+                        text: `Million-gold question. Appeared two months ago, spreading ever since. Thickest to the northeast, but none who venture deep return.`,
                       options: [
                         {
                           text: `I'll investigate the source.`,
-                          nextDialogue: {
-                            text: `Many tried, few return. Those who do come back... changed. Gather allies first - this isn't a solo mission.`,
+                                                      nextDialogue: {
+                              text: `Many tried, few return. Those who do come back... changed. Gather allies first - not a solo mission.`,
                             options: [
                               {
                                 text: `I'll find others to help.`,
@@ -182,8 +182,8 @@ export default class CommanderMarkEntity extends BaseEntity {
                         },
                         {
                           text: `Any scouts survive to report back?`,
-                          nextDialogue: {
-                            text: `A handful. They speak of impossible things - shifting landscapes, creatures that shouldn't exist. The fog isn't just weather - it's alive.`,
+                                                      nextDialogue: {
+                              text: `A handful. They speak of impossible things - shifting landscapes, creatures that shouldn't exist. The fog isn't weather - it's alive.`,
                             options: [
                               {
                                 text: `Alive? What do you mean?`,
