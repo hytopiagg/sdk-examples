@@ -1,0 +1,43 @@
+{
+  "health": 15,
+  "maxHealth": 100,
+  "currentRegionId": "stalkhaven",
+  "currentRegionSpawnPoint": {
+    "x": 1,
+    "y": 2,
+    "z": 40
+  },
+  "skillExperience": [
+    [
+      "agility",
+      39
+    ],
+    [
+      "combat",
+      500
+    ]
+  ],
+  "backpack": {
+    "items": []
+  },
+  "hotbar": {
+    "items": [
+      {
+        "position": 0,
+        "itemId": "wooden_sword"
+      },
+      {
+        "position": 1,
+        "itemId": "ratkin_eyes"
+      },
+      {
+        "position": 2,
+        "itemId": "gold",
+        "quantity": 68
+      }
+    ]
+  },
+  "storage": {
+    "items": []
+  }
+}

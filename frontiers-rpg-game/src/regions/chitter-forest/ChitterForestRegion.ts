@@ -17,12 +17,12 @@ import chitterForestMap from '../../../assets/maps/chitter-forest.json';
 export default class ChitterForestRegion extends GameRegion {
   public constructor() {
     super({
+      id: 'chitterForest',
       name: 'Chitter Forest',
       map: chitterForestMap,
       skyboxUri: 'skyboxes/partly-cloudy',
       spawnPoint: { x: -7, y: 2, z: 75 },
       ambientAudioUri: 'audio/music/jungle-theme-looping.mp3',
-      tag: 'chitterForest',
     });
   }
 
@@ -173,7 +173,7 @@ export default class ChitterForestRegion extends GameRegion {
 
   private _setupPortals(): void {
     const stalkhavenPortal = new PortalEntity({
-      destinationRegionTag: 'stalkhaven',
+      destinationRegionId: 'stalkhaven',
       destinationRegionPosition: { x: 1, y: 2, z: 40 },
     });
 

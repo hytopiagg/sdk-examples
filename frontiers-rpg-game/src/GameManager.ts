@@ -1,6 +1,7 @@
-import { WorldManager, PlayerManagerEvent } from 'hytopia';
+import { Player, PlayerManager, World } from 'hytopia';
 import GameClock from './GameClock';
 import GamePlayer from './GamePlayer';
+import { initializeItems } from './items/ItemRegistry';
 import type GameRegion from './GameRegion';
 
 // Regions
@@ -14,36 +15,38 @@ import StalkhavenRegion from './regions/stalkhaven/StalkhavenRegion';
 export default class GameManager {
   public static readonly instance = new GameManager();
 
-  private _regions: Map<string, GameRegion> = new Map(); // tag -> region
+  private _regions: Map<string, GameRegion> = new Map(); // id -> region
   private _startRegion: GameRegion;
 
   public constructor() {
-    // Note: Player disconnection cleanup would ideally be handled here
-    // but since globalEventRouter isn't directly accessible from the SDK exports,
-    // we rely on manual cleanup or the garbage collection of unused instances
-    // The GamePlayer instances will remain in memory until explicitly removed
+    PlayerManager.instance.worldSelectionHandler = this._selectWorldForPlayer;
   }
 
   public get startRegion(): GameRegion { return this._startRegion; }
 
-  public getRegion(tag: string): GameRegion | undefined {
-    return this._regions.get(tag);
+  public getRegion(id: string): GameRegion | undefined {
+    return this._regions.get(id);
+  }
+
+  public loadItems(): void {
+    initializeItems();
   }
 
   public loadRegions(): void {
     // Chitter Forest
     const chitterForestRegion = new ChitterForestRegion();
-    this._regions.set(chitterForestRegion.tag!, chitterForestRegion);
+    this._regions.set(chitterForestRegion.id, chitterForestRegion);
     GameClock.instance.addWorldClockCycle(chitterForestRegion.world);
-    // this._startRegion = chitterForestRegion;
 
     // Stalkhaven
     const stalkhavenRegion = new StalkhavenRegion();
-    this._regions.set(stalkhavenRegion.tag!, stalkhavenRegion);
+    this._regions.set(stalkhavenRegion.id, stalkhavenRegion);
     GameClock.instance.addWorldClockCycle(stalkhavenRegion.world);
     this._startRegion = stalkhavenRegion;
+  }
 
-    // Set Stalkhaven as the region/world players automatically join when they connected to the game.
-    WorldManager.instance.setDefaultWorld(this._startRegion.world);
+  private _selectWorldForPlayer = async (player: Player): Promise<World | undefined> => {
+    const gamePlayer = await GamePlayer.getOrCreate(player);
+    return gamePlayer.currentRegion?.world ?? this._startRegion.world;
   }
 }

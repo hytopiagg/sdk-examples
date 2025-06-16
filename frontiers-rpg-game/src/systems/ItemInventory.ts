@@ -1,5 +1,16 @@
 import type { Player } from 'hytopia';
 import BaseItem from '../items/BaseItem';
+import { itemRegistry } from '../items/ItemRegistry';
+
+export type SerializedItem = {
+  position: number;
+  itemId: string;
+  quantity?: number;
+};
+
+export type SerializedItemInventoryData = {
+  items: SerializedItem[];
+};
 
 export default class ItemInventory {
   private _gridWidth: number;
@@ -244,6 +255,53 @@ export default class ItemInventory {
 
   protected onSlotChanged(position: number, item: BaseItem | null): void {
     // Default implementation does nothing - subclasses can override
+  }
+
+  public serialize(): SerializedItemInventoryData {
+    const items: SerializedItem[] = [];
+    
+    for (const [position, item] of this._positionItems) {
+      const serializedItem: SerializedItem = {
+        position,
+        itemId: item.id,
+      };
+      
+      // Only include quantity if it's not the default
+      if (item.stackable && item.quantity !== 1) {
+        serializedItem.quantity = item.quantity;
+      }
+      
+      items.push(serializedItem);
+    }
+    
+    return { items };
+  }
+
+  public loadFromSerializedData(serializedItemInventoryData: SerializedItemInventoryData): boolean {
+    try {
+      const { items } = serializedItemInventoryData;
+      
+      // Clear existing inventory
+      this._itemPositions.clear();
+      this._positionItems.clear();
+      
+      // Load items
+      for (const itemData of items) {
+        const ItemClass = itemRegistry.get(itemData.itemId);
+        if (!ItemClass) continue; // Skip unknown items silently
+        
+        if (itemData.position < 0 || itemData.position >= this._size) continue;
+        if (this._positionItems.has(itemData.position)) continue;
+        
+        const item = ItemClass.create({ quantity: itemData.quantity });
+        this._itemPositions.set(item, itemData.position);
+        this._positionItems.set(itemData.position, item);
+      }
+      
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   private _findEmptyPosition(): number {

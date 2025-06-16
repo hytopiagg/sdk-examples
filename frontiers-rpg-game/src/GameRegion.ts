@@ -17,12 +17,14 @@ import GamePlayer from './GamePlayer';
 import GamePlayerEntity from './GamePlayerEntity';
 
 export type GameRegionOptions = {
+  id: string,
   ambientAudioUri?: string,
   ambientAudioVolume?: number,
   spawnPoint?: Vector3Like,
 } & Omit<WorldOptions, 'id'>;
 
 export default class GameRegion {
+  private _id: string;
   private _ambientAudio: Audio | undefined;
   private _isSetup: boolean = false;
   private _outOfWorldCollider: Collider | undefined;
@@ -30,15 +32,18 @@ export default class GameRegion {
   private readonly _world: World;
 
   public constructor(options: GameRegionOptions) {
-    this._ambientAudio = options.ambientAudioUri ? new Audio({
-      uri: options.ambientAudioUri,
-      volume: options.ambientAudioVolume ?? 0.05,
+    const { id, ...regionOptions } = options;
+
+    this._id = id;
+    this._ambientAudio = regionOptions.ambientAudioUri ? new Audio({
+      uri: regionOptions.ambientAudioUri,
+      volume: regionOptions.ambientAudioVolume ?? 0.05,
       loop: true,
     }) : undefined;
 
-    this._spawnPoint = options.spawnPoint ?? { x: 0, y: 10, z: 0 };
+    this._spawnPoint = regionOptions.spawnPoint ?? { x: 0, y: 10, z: 0 };
 
-    this._world = WorldManager.instance.createWorld(options);
+    this._world = WorldManager.instance.createWorld(regionOptions);
     this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this.onPlayerJoin(player));
     this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this.onPlayerLeave(player));
 
@@ -49,9 +54,9 @@ export default class GameRegion {
     this.setup();
   }
 
+  public get id(): string { return this._id; }
   public get name(): string { return this._world.name; }
   public get spawnPoint(): Vector3Like { return this._spawnPoint; }
-  public get tag(): string | undefined { return this._world.tag; }
   public get world(): World { return this._world; }
 
   protected setup(): void { // intended to be overridden by subclasses
@@ -88,16 +93,22 @@ export default class GameRegion {
     }
   }
 
-  protected onPlayerJoin(player: Player) {
-    const gamePlayer = GamePlayer.getOrCreate(player);
+  protected async onPlayerJoin(player: Player) {
+    const gamePlayer = await GamePlayer.getOrCreate(player);
     
     // Set the current region for the player
     gamePlayer.setCurrentRegion(this);
     
     // Get the region spawn point if set by a portal or something else, otherwise use the default region spawn point.
-    const spawnPoint = gamePlayer.regionSpawnPoint ?? this._spawnPoint;
-    
-    (new GamePlayerEntity(gamePlayer)).spawn(this._world, spawnPoint);
+    const spawnPoint = gamePlayer.currentRegionSpawnPoint ?? this._spawnPoint;
+    const gamePlayerEntity = new GamePlayerEntity(gamePlayer);
+
+    gamePlayerEntity.spawn(this._world, spawnPoint);
+
+    // Since we're using an async onPlayerJoin, we need to explicitly set the camera
+    // since the camera attachment logic as of SDK 0.6.7 only checks for an entity
+    // the first tick after a player joins a world in order to auto attach the camera.
+    player.camera.setAttachedToEntity(gamePlayerEntity);
   }
 
   protected onPlayerLeave(player: Player) {

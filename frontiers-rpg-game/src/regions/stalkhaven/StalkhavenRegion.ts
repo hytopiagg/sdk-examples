@@ -11,12 +11,12 @@ import PortalEntity from '../../entities/PortalEntity';
 export default class StalkhavenRegion extends GameRegion {
   public constructor() {
     super({
+      id: 'stalkhaven',
       name: 'Stalkhaven',
       map: stalkhavenMap,
       skyboxUri: 'skyboxes/partly-cloudy',
       spawnPoint: { x: 1, y: 2, z: 40 },
       ambientAudioUri: 'audio/music/hytopia-main-theme.mp3',
-      tag: 'stalkhaven',
     });
   }
 
@@ -24,7 +24,7 @@ export default class StalkhavenRegion extends GameRegion {
     super.setup();
     
     const chitterForestPortal = new PortalEntity({
-      destinationRegionTag: 'chitterForest',
+      destinationRegionId: 'chitterForest',
       destinationRegionPosition: { x: -7, y: 2, z: 76 },
       modelScale: 2,
     });

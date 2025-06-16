@@ -10,12 +10,25 @@ import Backpack from './systems/Backpack';
 import Hotbar from './systems/Hotbar';
 import Levels from './systems/Levels';
 import Storage from './systems/Storage';
+import GameManager from './GameManager';
 import GoldItem from './items/general/GoldItem';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseMerchantEntity from './entities/BaseMerchantEntity';
 import type BaseItem from './items/BaseItem';
 import type GamePlayerEntity from './GamePlayerEntity';
 import type GameRegion from './GameRegion';
+import type { SerializedItemInventoryData } from './systems/ItemInventory';
+
+type SerializedGamePlayerData = {
+  health: number;
+  maxHealth: number;
+  currentRegionId: string | undefined;
+  currentRegionSpawnPoint: Vector3Like | undefined;
+  skillExperience: [SkillId, number][];
+  backpack: SerializedItemInventoryData;
+  hotbar: SerializedItemInventoryData;
+  storage: SerializedItemInventoryData;
+}
 
 export default class GamePlayer {
   private static _instances: Map<string, GamePlayer> = new Map();
@@ -29,11 +42,11 @@ export default class GamePlayer {
   private _currentMerchantEntity: BaseMerchantEntity | undefined;
   private _currentEntity: GamePlayerEntity | undefined;
   private _currentRegion: GameRegion | undefined;
+  private _currentRegionSpawnPoint: Vector3Like | undefined;
   private _globalExperience: number = 0;
   private _health: number = 100;
   private _isDead: boolean = false;
   private _maxHealth: number = 100;
-  private _regionSpawnPoint: Vector3Like | undefined;
   private _skillExperience: Map<SkillId, number> = new Map();
 
   private constructor(player: Player) {
@@ -46,10 +59,11 @@ export default class GamePlayer {
     this.hotbar.onSelectedItemChanged = this._onHotbarSelectedItemChanged;
   }
 
-  public static getOrCreate(player: Player): GamePlayer {
+  public static async getOrCreate(player: Player): Promise<GamePlayer> {
     let gamePlayer = this._instances.get(player.id);
     if (!gamePlayer) {
       gamePlayer = new GamePlayer(player);
+      await gamePlayer.load();
       this._instances.set(player.id, gamePlayer);
     }
     return gamePlayer;
@@ -99,6 +113,10 @@ export default class GamePlayer {
     return this._currentRegion;
   }
 
+  public get currentRegionSpawnPoint(): Vector3Like | undefined {
+    return this._currentRegionSpawnPoint;
+  }
+
   public get globalExperience(): number {
     return this._globalExperience;
   }
@@ -115,12 +133,9 @@ export default class GamePlayer {
     return this._maxHealth;
   }
 
-  public get regionSpawnPoint(): Vector3Like | undefined {
-    return this._regionSpawnPoint;
-  }
 
   public get respawnPoint(): Vector3Like {
-    return this._regionSpawnPoint ?? this._currentRegion!.spawnPoint;
+    return this._currentRegionSpawnPoint ?? this._currentRegion!.spawnPoint;
   }
 
   // Game state methods
@@ -237,6 +252,14 @@ export default class GamePlayer {
     return this._skillExperience.get(skillId) ?? 0;
   }
 
+  public async load(): Promise<void> {
+    const serializedGamePlayerData = await this.player.getPersistedData();
+
+    if (serializedGamePlayerData) {
+      this._loadFromSerializedData(serializedGamePlayerData as SerializedGamePlayerData);
+    }
+  }
+
   public onEntitySpawned(entity: GamePlayerEntity): void {
     this._currentEntity = entity;
     this._loadUI();
@@ -267,12 +290,17 @@ export default class GamePlayer {
     this._currentMerchantEntity = entity;
   }
 
-  public setRegionSpawnPoint(position: Vector3Like): void {
-    this._regionSpawnPoint = position;
-  }
-
+  
   public setCurrentRegion(region: GameRegion): void {
     this._currentRegion = region;
+  }
+  
+  public setCurrentRegionSpawnPoint(position: Vector3Like): void {
+    this._currentRegionSpawnPoint = position;
+  }
+
+  public save(): void {
+    this.player.setPersistedData(this._serialize());
   }
 
   public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
@@ -301,6 +329,48 @@ export default class GamePlayer {
   public toggleSkills = (): void => {
     this._updateSkillsExperienceUI();
     this.player.ui.sendData({ type: 'toggleSkills' });
+  }
+
+  private _loadFromSerializedData(serializedGamePlayerData: SerializedGamePlayerData): boolean {
+    try {
+      const playerData = serializedGamePlayerData;
+
+      console.log('data is', playerData);
+      
+      // Restore basic stats
+      this._currentRegionSpawnPoint = playerData.currentRegionSpawnPoint;
+      this._globalExperience = playerData.skillExperience.reduce((acc, [, experience]) => acc + experience, 0);
+      this._health = playerData.health;
+      this._isDead = this._health <= 0;
+      this._maxHealth = playerData.maxHealth;
+      
+      // Restore current region if available
+      if (playerData.currentRegionId) {
+        
+        const region = GameManager.instance.getRegion(playerData.currentRegionId);
+        if (region) {
+          this._currentRegion = region;
+        }
+      }
+      
+      // Restore skill experience
+      this._skillExperience.clear();
+      if (playerData.skillExperience) {
+        for (const [skillId, experience] of playerData.skillExperience) {
+          this._skillExperience.set(skillId, experience);
+        }
+      }
+      
+      // Restore inventories
+      const backpackSuccess = this.backpack.loadFromSerializedData(playerData.backpack);
+      const hotbarSuccess = this.hotbar.loadFromSerializedData(playerData.hotbar);
+      const storageSuccess = this.storage.loadFromSerializedData(playerData.storage);
+      
+      return backpackSuccess && hotbarSuccess && storageSuccess;
+    } catch (error) {
+      console.error('Failed to deserialize GamePlayer data:', error);
+      return false;
+    }
   }
 
   private _spawnHeldItem(): void {
@@ -415,6 +485,21 @@ export default class GamePlayer {
     // Setup UI event listener (remove existing to prevent duplicates)
     this.player.ui.off(PlayerUIEvent.DATA, this._onPlayerUIData);
     this.player.ui.on(PlayerUIEvent.DATA, this._onPlayerUIData);
+  }
+
+  private _serialize(): SerializedGamePlayerData {    
+    const playerData = {
+      health: this._health,
+      maxHealth: this._maxHealth,
+      currentRegionId: this._currentRegion?.id,
+      currentRegionSpawnPoint: this._currentRegionSpawnPoint,
+      skillExperience: Array.from(this._skillExperience.entries()),
+      backpack: this.backpack.serialize(),
+      hotbar: this.hotbar.serialize(),
+      storage: this.storage.serialize(),
+    };
+    
+    return playerData;
   }
 
   private _updateEntityHealthSceneUI(): void {

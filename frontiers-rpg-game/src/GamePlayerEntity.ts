@@ -151,7 +151,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
     
-
     this._gamePlayer.onEntitySpawned(this);
     
     this._nameplateSceneUI.load(world);
@@ -169,6 +168,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     super.despawn();
     // Disassociate entity from GamePlayer
     this._gamePlayer.despawnFromRegion();
+    // Save player data
+    this._gamePlayer.save();
   }
 
   public takeDamage(damage: number): void {

@@ -13,12 +13,12 @@ import GameManager from '../GameManager';
 import GamePlayerEntity from '../GamePlayerEntity';
 
 export type PortalEntityOptions = {
-  destinationRegionTag: string;
+  destinationRegionId: string;
   destinationRegionPosition: Vector3Like;
 } & ModelEntityOptions;
 
 export default class PortalEntity extends Entity {
-  public readonly destinationRegionTag: string;
+  public readonly destinationRegionId: string;
   public readonly destinationRegionPosition: Vector3Like;
 
   public constructor(options: PortalEntityOptions) {
@@ -39,14 +39,14 @@ export default class PortalEntity extends Entity {
             onCollision: (other, started) => {
               if (!started || !(other instanceof GamePlayerEntity)) return;
               
-              const destinationRegion = GameManager.instance.getRegion(this.destinationRegionTag);
+              const destinationRegion = GameManager.instance.getRegion(this.destinationRegionId);
               
               if (!destinationRegion) {
-                ErrorHandler.warning(`PortalEntity: Destination region ${this.destinationRegionTag} not found`);
+                ErrorHandler.warning(`PortalEntity: Destination region ${this.destinationRegionId} not found`);
                 return;
               }
-              
-              other.gamePlayer.setRegionSpawnPoint(this.destinationRegionPosition);              
+              other.gamePlayer.setCurrentRegion(destinationRegion);
+              other.gamePlayer.setCurrentRegionSpawnPoint(this.destinationRegionPosition);              
               other.player.joinWorld(destinationRegion.world);
             },
           },
@@ -55,7 +55,7 @@ export default class PortalEntity extends Entity {
       ...options,
     });
 
-    this.destinationRegionTag = options.destinationRegionTag;
+    this.destinationRegionId = options.destinationRegionId;
     this.destinationRegionPosition = options.destinationRegionPosition;
   }
 }
