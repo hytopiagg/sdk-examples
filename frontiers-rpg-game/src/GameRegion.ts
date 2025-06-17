@@ -11,6 +11,7 @@ import {
   WorldManager,
   WorldOptions,
   Vector3Like,
+  Quaternion,
 } from 'hytopia';
 
 import GamePlayer from './GamePlayer';
@@ -20,6 +21,7 @@ export type GameRegionOptions = {
   id: string,
   ambientAudioUri?: string,
   ambientAudioVolume?: number,
+  spawnFacingAngle?: number,
   spawnPoint?: Vector3Like,
 } & Omit<WorldOptions, 'id'>;
 
@@ -28,7 +30,9 @@ export default class GameRegion {
   private _ambientAudio: Audio | undefined;
   private _isSetup: boolean = false;
   private _outOfWorldCollider: Collider | undefined;
+  private _spawnFacingAngle: number;
   private _spawnPoint: Vector3Like;
+
   private readonly _world: World;
 
   public constructor(options: GameRegionOptions) {
@@ -41,6 +45,7 @@ export default class GameRegion {
       loop: true,
     }) : undefined;
 
+    this._spawnFacingAngle = regionOptions.spawnFacingAngle ?? 0;
     this._spawnPoint = regionOptions.spawnPoint ?? { x: 0, y: 10, z: 0 };
 
     this._world = WorldManager.instance.createWorld(regionOptions);
@@ -56,6 +61,7 @@ export default class GameRegion {
 
   public get id(): string { return this._id; }
   public get name(): string { return this._world.name; }
+  public get spawnFacingAngle(): number { return this._spawnFacingAngle; }
   public get spawnPoint(): Vector3Like { return this._spawnPoint; }
   public get world(): World { return this._world; }
 
@@ -101,14 +107,24 @@ export default class GameRegion {
     
     // Get the region spawn point if set by a portal or something else, otherwise use the default region spawn point.
     const spawnPoint = gamePlayer.currentRegionSpawnPoint ?? this._spawnPoint;
+    const spawnFacingAngle = gamePlayer.currentRegionSpawnFacingAngle ?? this._spawnFacingAngle;
     const gamePlayerEntity = new GamePlayerEntity(gamePlayer);
 
-    gamePlayerEntity.spawn(this._world, spawnPoint);
+    gamePlayerEntity.spawn(this._world, spawnPoint, Quaternion.fromEuler(0, spawnFacingAngle, 0));
 
     // Since we're using an async onPlayerJoin, we need to explicitly set the camera
     // since the camera attachment logic as of SDK 0.6.7 only checks for an entity
     // the first tick after a player joins a world in order to auto attach the camera.
     player.camera.setAttachedToEntity(gamePlayerEntity);
+    
+      // Make the camera look at the correct spawn facing angle.
+      // Calculate look direction based on facing angle (identity direction is -z, consistent with threejs)
+      const facingAngleRad = spawnFacingAngle * Math.PI / 180;  
+      player.camera.lookAtPosition({
+        x: spawnPoint.x - Math.sin(facingAngleRad),
+        y: spawnPoint.y,
+        z: spawnPoint.z - Math.cos(facingAngleRad),
+      });
   }
 
   protected onPlayerLeave(player: Player) {

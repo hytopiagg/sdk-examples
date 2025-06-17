@@ -1,7 +1,8 @@
 import {
+  EventPayloads,
   Player,
   PlayerUIEvent,
-  EventPayloads,
+  QuaternionLike,
   Vector3Like,
 } from 'hytopia';
 
@@ -23,6 +24,7 @@ type SerializedGamePlayerData = {
   health: number;
   maxHealth: number;
   currentRegionId: string | undefined;
+  currentRegionSpawnFacingAngle: number | undefined;
   currentRegionSpawnPoint: Vector3Like | undefined;
   skillExperience: [SkillId, number][];
   backpack: SerializedItemInventoryData;
@@ -42,6 +44,7 @@ export default class GamePlayer {
   private _currentMerchantEntity: BaseMerchantEntity | undefined;
   private _currentEntity: GamePlayerEntity | undefined;
   private _currentRegion: GameRegion | undefined;
+  private _currentRegionSpawnFacingAngle: number | undefined;
   private _currentRegionSpawnPoint: Vector3Like | undefined;
   private _globalExperience: number = 0;
   private _health: number = 100;
@@ -117,6 +120,10 @@ export default class GamePlayer {
     return this._currentRegionSpawnPoint;
   }
 
+  public get currentRegionSpawnFacingAngle(): number | undefined {
+    return this._currentRegionSpawnFacingAngle;
+  }
+
   public get globalExperience(): number {
     return this._globalExperience;
   }
@@ -133,6 +140,9 @@ export default class GamePlayer {
     return this._maxHealth;
   }
 
+  public get respawnFacingAngle(): number {
+    return this._currentRegionSpawnFacingAngle ?? this._currentRegion!.spawnFacingAngle;
+  }
 
   public get respawnPoint(): Vector3Like {
     return this._currentRegionSpawnPoint ?? this._currentRegion!.spawnPoint;
@@ -295,6 +305,10 @@ export default class GamePlayer {
     this._currentRegion = region;
   }
   
+  public setCurrentRegionSpawnFacingAngle(facingAngle: number): void {
+    this._currentRegionSpawnFacingAngle = facingAngle;
+  }
+
   public setCurrentRegionSpawnPoint(position: Vector3Like): void {
     this._currentRegionSpawnPoint = position;
   }
@@ -338,6 +352,7 @@ export default class GamePlayer {
       console.log('data is', playerData);
       
       // Restore basic stats
+      this._currentRegionSpawnFacingAngle = playerData.currentRegionSpawnFacingAngle;
       this._currentRegionSpawnPoint = playerData.currentRegionSpawnPoint;
       this._globalExperience = playerData.skillExperience.reduce((acc, [, experience]) => acc + experience, 0);
       this._health = playerData.health;
@@ -492,6 +507,7 @@ export default class GamePlayer {
       health: this._health,
       maxHealth: this._maxHealth,
       currentRegionId: this._currentRegion?.id,
+      currentRegionSpawnFacingAngle: this._currentRegionSpawnFacingAngle,
       currentRegionSpawnPoint: this._currentRegionSpawnPoint,
       skillExperience: Array.from(this._skillExperience.entries()),
       backpack: this.backpack.serialize(),

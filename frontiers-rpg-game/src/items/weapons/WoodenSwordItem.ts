@@ -33,6 +33,8 @@ export default class WoodenSwordItem extends BaseWeaponItem {
   static readonly heldModelScale = 0.5;
   static readonly defaultRelativeRotationAsChild = Quaternion.fromEuler(-90, 0, 90);
   static readonly defaultRelativePositionAsChild = { x: 0, y: 0.1, z: 0.15 };
+  static readonly buyPrice = 40;
+  static readonly sellPrice = 15;
 
   protected override processAttackDamageTargets(attack: BaseWeaponItemAttack): void {
     if (!this.entity?.parent) return;

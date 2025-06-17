@@ -1,3 +1,4 @@
+import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
 import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';

@@ -5,6 +5,7 @@ import {
   Entity,
   ErrorHandler,
   ModelEntityOptions,
+  QuaternionLike,
   RigidBodyType,
   Vector3Like
 } from 'hytopia';
@@ -14,11 +15,13 @@ import GamePlayerEntity from '../GamePlayerEntity';
 
 export type PortalEntityOptions = {
   destinationRegionId: string;
+  destinationRegionFacingAngle?: number;
   destinationRegionPosition: Vector3Like;
 } & ModelEntityOptions;
 
 export default class PortalEntity extends Entity {
   public readonly destinationRegionId: string;
+  public readonly destinationRegionFacingAngle: number;
   public readonly destinationRegionPosition: Vector3Like;
 
   public constructor(options: PortalEntityOptions) {
@@ -46,6 +49,7 @@ export default class PortalEntity extends Entity {
                 return;
               }
               other.gamePlayer.setCurrentRegion(destinationRegion);
+              other.gamePlayer.setCurrentRegionSpawnFacingAngle(this.destinationRegionFacingAngle);
               other.gamePlayer.setCurrentRegionSpawnPoint(this.destinationRegionPosition);              
               other.player.joinWorld(destinationRegion.world);
             },
@@ -56,6 +60,7 @@ export default class PortalEntity extends Entity {
     });
 
     this.destinationRegionId = options.destinationRegionId;
+    this.destinationRegionFacingAngle = options.destinationRegionFacingAngle ?? 0;
     this.destinationRegionPosition = options.destinationRegionPosition;
   }
 }
