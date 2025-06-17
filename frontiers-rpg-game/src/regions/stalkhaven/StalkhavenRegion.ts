@@ -1,3 +1,4 @@
+import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
 import stalkhavenMap from '../../../assets/maps/stalkhaven.json';
 
@@ -30,6 +31,13 @@ export default class StalkhavenRegion extends GameRegion {
       modelScale: 2,
     });
     chitterForestPortal.spawn(this.world, { x: 1, y: 3.5, z: 46 });
+
+    const stalkhavenPortPortal = new PortalEntity({
+      destinationRegionId: 'stalkhaven-port',
+      destinationRegionPosition: { x: -6, y: 8, z: -28 },
+      modelScale: 2,
+    });
+    stalkhavenPortPortal.spawn(this.world, { x: 35.5, y: 2, z: 1 }, Quaternion.fromEuler(0, 90, 0));
 
     (new BankerJohnEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });
     (new CaptainSpornEntity({ facingAngle: 315 })).spawn(this.world, { x: -2, y: 3, z: 43 });

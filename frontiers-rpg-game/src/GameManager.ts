@@ -7,6 +7,7 @@ import type GameRegion from './GameRegion';
 // Regions
 import ChitterForestRegion from './regions/chitter-forest/ChitterForestRegion';
 import StalkhavenRegion from './regions/stalkhaven/StalkhavenRegion';
+import StalkhavenPortRegion from './regions/stalkhaven-port/StalkhavenPortRegion';
 
 // Since globalEventRouter isn't exported in the main index, we'll handle cleanup differently
 // We can rely on the GamePlayer.remove() method being called manually when needed
@@ -42,7 +43,12 @@ export default class GameManager {
     const stalkhavenRegion = new StalkhavenRegion();
     this._regions.set(stalkhavenRegion.id, stalkhavenRegion);
     GameClock.instance.addWorldClockCycle(stalkhavenRegion.world);
-    this._startRegion = stalkhavenRegion;
+
+    // Stalkhaven Port
+    const stalkhavenPortRegion = new StalkhavenPortRegion();
+    this._regions.set(stalkhavenPortRegion.id, stalkhavenPortRegion);
+    GameClock.instance.addWorldClockCycle(stalkhavenPortRegion.world);
+    this._startRegion = stalkhavenPortRegion;
   }
 
   private _selectWorldForPlayer = async (player: Player): Promise<World | undefined> => {

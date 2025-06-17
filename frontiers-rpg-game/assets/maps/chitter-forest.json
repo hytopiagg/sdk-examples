@@ -150,7 +150,7 @@
     },
     {
       "id": 102,
-      "name": "castle-will",
+      "name": "castle-wall",
       "textureUri": "blocks/castle_wall",
       "isCustom": true,
       "isMultiTexture": false
@@ -1305,7 +1305,6 @@
     "-106,1,10": 13,
     "-106,1,11": 13,
     "-106,1,12": 13,
-    "-106,1,56": 13,
     "-106,1,57": 13,
     "-106,1,58": 13,
     "-106,1,59": 13,
@@ -1324,8 +1323,6 @@
     "-106,3,11": 13,
     "-106,3,12": 13,
     "-106,3,13": 13,
-    "-106,3,56": 13,
-    "-106,3,57": 13,
     "-106,3,58": 13,
     "-106,3,59": 13,
     "-106,4,12": 13,
@@ -1336,8 +1333,6 @@
     "-106,4,18": 13,
     "-106,4,19": 13,
     "-106,4,53": 7,
-    "-106,4,55": 13,
-    "-106,4,56": 13,
     "-106,4,57": 13,
     "-106,4,58": 13,
     "-106,5,15": 13,
@@ -1395,18 +1390,12 @@
     "-107,1,12": 13,
     "-107,1,13": 13,
     "-107,1,29": 46,
-    "-107,1,55": 13,
-    "-107,1,56": 13,
-    "-107,1,57": 13,
     "-107,1,58": 13,
     "-107,1,59": 13,
     "-107,1,60": 13,
     "-107,2,11": 13,
     "-107,2,12": 13,
     "-107,2,13": 13,
-    "-107,2,55": 7,
-    "-107,2,57": 13,
-    "-107,2,58": 13,
     "-107,2,59": 13,
     "-107,2,60": 13,
     "-107,2,61": 13,
@@ -1414,10 +1403,6 @@
     "-107,3,12": 13,
     "-107,3,13": 13,
     "-107,3,14": 13,
-    "-107,3,54": 13,
-    "-107,3,55": 13,
-    "-107,3,56": 13,
-    "-107,3,57": 13,
     "-107,4,13": 13,
     "-107,4,14": 13,
     "-107,4,15": 13,
@@ -1425,16 +1410,12 @@
     "-107,4,17": 13,
     "-107,4,18": 13,
     "-107,4,53": 13,
-    "-107,4,54": 13,
-    "-107,4,55": 13,
     "-107,4,56": 13,
     "-107,4,57": 13,
     "-107,5,14": 13,
     "-107,5,15": 13,
     "-107,5,16": 7,
     "-107,5,17": 13,
-    "-107,5,55": 13,
-    "-107,5,56": 13,
     "-107,6,55": 13,
     "-107,6,56": 13,
     "-107,6,57": 13,
@@ -1491,22 +1472,12 @@
     "-108,1,29": 46,
     "-108,1,30": 46,
     "-108,1,53": 7,
-    "-108,1,54": 13,
-    "-108,1,55": 13,
-    "-108,1,56": 13,
-    "-108,1,57": 13,
-    "-108,1,58": 13,
     "-108,1,59": 13,
     "-108,2,11": 13,
     "-108,2,12": 13,
     "-108,2,13": 13,
     "-108,2,15": 7,
     "-108,2,29": 46,
-    "-108,2,54": 13,
-    "-108,2,55": 13,
-    "-108,2,56": 13,
-    "-108,2,57": 13,
-    "-108,2,58": 13,
     "-108,2,59": 13,
     "-108,3,11": 13,
     "-108,3,12": 13,
@@ -1514,9 +1485,6 @@
     "-108,3,14": 13,
     "-108,3,15": 13,
     "-108,3,53": 13,
-    "-108,3,54": 13,
-    "-108,3,55": 13,
-    "-108,3,56": 13,
     "-108,4,13": 13,
     "-108,4,14": 13,
     "-108,4,15": 13,
@@ -1592,9 +1560,6 @@
     "-109,1,52": 13,
     "-109,1,53": 13,
     "-109,1,54": 13,
-    "-109,1,55": 13,
-    "-109,1,56": 13,
-    "-109,1,58": 13,
     "-109,2,11": 13,
     "-109,2,12": 13,
     "-109,2,13": 13,
@@ -1603,10 +1568,6 @@
     "-109,2,16": 7,
     "-109,2,53": 13,
     "-109,2,54": 13,
-    "-109,2,55": 13,
-    "-109,2,56": 13,
-    "-109,2,57": 13,
-    "-109,2,58": 13,
     "-109,3,12": 13,
     "-109,3,13": 13,
     "-109,3,14": 13,
@@ -1970,7 +1931,6 @@
     "-110,2,53": 13,
     "-110,2,54": 13,
     "-110,2,55": 13,
-    "-110,2,56": 13,
     "-110,3,14": 13,
     "-110,3,15": 13,
     "-110,3,16": 13,
@@ -11694,6 +11654,7 @@
     "-51,1,37": 23,
     "-51,1,38": 23,
     "-51,1,39": 23,
+    "-51,1,4": 23,
     "-51,1,40": 23,
     "-51,1,41": 23,
     "-51,1,42": 23,
@@ -15030,6 +14991,7 @@
     "-62,5,-36": 13,
     "-62,5,-37": 13,
     "-62,5,-38": 13,
+    "-62,5,34": 64,
     "-62,5,35": 64,
     "-62,6,-33": 13,
     "-62,6,-34": 13,
@@ -17919,7 +17881,6 @@
     "-7,4,62": 13,
     "-7,4,63": 13,
     "-7,4,64": 13,
-    "-7,4,79": 23,
     "-7,4,81": 48,
     "-7,5,62": 7,
     "-7,5,63": 13,
@@ -44102,6 +44063,7 @@
     "64,0,32": 23,
     "64,0,33": 23,
     "64,0,34": 23,
+    "64,0,35": 13,
     "64,0,36": 23,
     "64,0,37": 24,
     "64,0,38": 23,
@@ -47823,9 +47785,285 @@
     "99,5,-7": 13,
     "99,5,-8": 13,
     "99,5,-9": 13,
-    "64,0,35": 13,
-    "-62,5,34": 64,
-    "-51,1,4": 23
+    "-109,0,55": 7,
+    "-108,0,57": 7,
+    "-110,0,57": 7,
+    "-111,0,59": 7,
+    "-112,0,58": 7,
+    "-110,0,55": 8,
+    "-110,0,56": 8,
+    "-109,0,56": 8,
+    "-109,0,57": 8,
+    "-108,0,58": 8,
+    "-109,0,58": 8,
+    "-109,0,59": 8,
+    "-110,0,58": 8,
+    "-111,0,55": 8,
+    "-111,0,56": 8,
+    "-111,0,58": 24,
+    "-112,0,55": 24,
+    "-111,0,57": 13,
+    "-110,0,59": 13,
+    "-112,0,59": 13,
+    "-111,1,54": 13,
+    "-111,1,55": 13,
+    "-112,0,56": 13,
+    "-112,1,55": 13,
+    "-112,1,56": 13,
+    "-113,0,56": 13,
+    "-113,0,57": 13,
+    "-112,0,57": 13,
+    "-113,0,58": 13,
+    "-108,0,60": 13,
+    "-109,0,60": 13,
+    "-110,0,61": 13,
+    "-110,0,62": 13,
+    "-111,0,62": 13,
+    "-112,0,62": 13,
+    "-113,0,62": 13,
+    "-114,0,59": 13,
+    "-114,0,60": 13,
+    "-114,0,61": 13,
+    "-111,2,54": 7,
+    "-112,2,55": 7,
+    "-113,1,57": 7,
+    "-113,1,58": 7,
+    "-114,1,59": 7,
+    "-114,1,61": 7,
+    "-112,1,62": 7,
+    "-110,0,60": 24,
+    "-112,0,61": 24,
+    "-113,0,60": 24,
+    "-111,0,61": 13,
+    "-111,0,60": 13,
+    "-113,0,61": 13,
+    "-113,0,59": 13,
+    "-112,0,60": 13,
+    "-108,1,60": 13,
+    "-114,1,60": 13,
+    "-113,1,62": 13,
+    "-112,2,56": 13,
+    "-109,0,61": 13,
+    "-109,0,62": 13,
+    "-108,0,61": 13,
+    "-110,1,62": 13,
+    "-109,1,61": 13,
+    "-109,1,62": 13,
+    "-109,1,63": 13,
+    "-108,1,62": 13,
+    "-111,1,63": 13,
+    "-110,1,63": 13,
+    "-110,1,64": 13,
+    "-112,0,63": 13,
+    "-111,0,63": 13,
+    "-111,0,64": 13,
+    "-110,0,63": 13,
+    "-113,1,63": 13,
+    "-112,1,63": 13,
+    "-112,1,64": 13,
+    "-114,2,57": 13,
+    "-113,2,56": 13,
+    "-113,2,57": 13,
+    "-113,2,58": 13,
+    "-112,2,57": 13,
+    "-115,2,59": 13,
+    "-114,2,58": 13,
+    "-114,2,59": 13,
+    "-114,2,60": 13,
+    "-113,2,59": 13,
+    "-115,2,61": 13,
+    "-114,2,61": 13,
+    "-114,2,62": 13,
+    "-113,2,61": 13,
+    "-114,2,63": 13,
+    "-113,2,62": 13,
+    "-113,2,63": 13,
+    "-113,2,64": 13,
+    "-112,2,63": 13,
+    "-109,2,62": 13,
+    "-108,2,61": 13,
+    "-108,2,62": 13,
+    "-108,2,63": 13,
+    "-107,2,62": 13,
+    "-111,2,63": 13,
+    "-110,2,62": 13,
+    "-110,2,63": 13,
+    "-110,2,64": 13,
+    "-109,2,63": 13,
+    "-112,3,54": 13,
+    "-111,3,54": 13,
+    "-111,3,55": 13,
+    "-114,3,56": 13,
+    "-113,3,55": 13,
+    "-113,3,56": 13,
+    "-113,3,57": 13,
+    "-112,3,56": 13,
+    "-115,3,58": 13,
+    "-114,3,57": 13,
+    "-114,3,58": 13,
+    "-114,3,59": 13,
+    "-113,3,58": 13,
+    "-115,3,60": 13,
+    "-114,3,60": 13,
+    "-114,3,61": 13,
+    "-113,3,60": 13,
+    "-114,3,62": 13,
+    "-113,3,61": 13,
+    "-113,3,62": 13,
+    "-113,3,63": 13,
+    "-112,3,62": 13,
+    "-107,3,60": 13,
+    "-106,3,60": 13,
+    "-106,3,61": 13,
+    "-107,3,62": 13,
+    "-106,3,62": 13,
+    "-106,3,63": 13,
+    "-105,3,62": 13,
+    "-109,3,62": 13,
+    "-108,3,61": 13,
+    "-108,3,62": 13,
+    "-108,3,63": 13,
+    "-111,3,63": 13,
+    "-110,3,62": 13,
+    "-110,3,63": 13,
+    "-110,3,64": 13,
+    "-109,3,63": 13,
+    "-112,3,63": 13,
+    "-112,3,64": 13,
+    "-112,4,55": 13,
+    "-111,4,54": 13,
+    "-111,4,55": 13,
+    "-111,4,56": 13,
+    "-110,4,55": 13,
+    "-113,4,56": 13,
+    "-112,4,56": 13,
+    "-112,4,57": 13,
+    "-114,4,57": 13,
+    "-113,4,57": 13,
+    "-113,4,58": 13,
+    "-115,4,58": 13,
+    "-114,4,58": 13,
+    "-114,4,59": 13,
+    "-115,4,60": 13,
+    "-114,4,60": 13,
+    "-114,4,61": 13,
+    "-113,4,60": 13,
+    "-113,4,61": 13,
+    "-113,4,62": 13,
+    "-112,4,61": 13,
+    "-112,4,63": 13,
+    "-111,4,62": 13,
+    "-111,4,63": 13,
+    "-111,4,64": 13,
+    "-110,4,63": 13,
+    "-110,4,62": 13,
+    "-109,4,61": 13,
+    "-109,4,62": 13,
+    "-109,4,63": 13,
+    "-108,4,62": 13,
+    "-107,3,61": 13,
+    "-107,4,59": 13,
+    "-106,4,59": 13,
+    "-106,4,60": 13,
+    "-105,4,59": 13,
+    "-108,4,61": 13,
+    "-107,4,60": 13,
+    "-107,4,61": 13,
+    "-107,4,62": 13,
+    "-106,4,61": 13,
+    "-112,4,62": 13,
+    "-112,5,56": 13,
+    "-111,5,55": 13,
+    "-111,5,56": 13,
+    "-111,5,57": 13,
+    "-110,5,56": 13,
+    "-113,5,57": 13,
+    "-112,5,57": 13,
+    "-112,5,58": 13,
+    "-113,4,59": 13,
+    "-112,4,59": 13,
+    "-114,5,60": 13,
+    "-113,5,59": 13,
+    "-113,5,60": 13,
+    "-113,5,61": 13,
+    "-112,5,60": 13,
+    "-113,5,62": 13,
+    "-112,5,61": 13,
+    "-112,5,62": 13,
+    "-112,5,63": 13,
+    "-111,5,62": 13,
+    "-110,5,61": 13,
+    "-110,5,62": 13,
+    "-110,5,63": 13,
+    "-109,5,62": 13,
+    "-109,5,60": 13,
+    "-109,5,61": 13,
+    "-108,5,61": 13,
+    "-108,5,60": 13,
+    "-107,5,59": 13,
+    "-107,5,60": 13,
+    "-107,5,61": 13,
+    "-106,5,60": 13,
+    "-107,5,58": 13,
+    "-106,5,57": 13,
+    "-106,5,58": 13,
+    "-106,5,59": 13,
+    "-105,5,58": 13,
+    "-110,6,61": 13,
+    "-109,6,60": 13,
+    "-109,6,61": 13,
+    "-109,6,62": 13,
+    "-108,6,61": 13,
+    "-113,6,61": 13,
+    "-112,6,60": 13,
+    "-112,6,61": 13,
+    "-112,6,62": 13,
+    "-111,6,61": 13,
+    "-111,6,56": 13,
+    "-110,6,56": 13,
+    "-110,6,57": 13,
+    "-112,6,57": 13,
+    "-111,6,57": 13,
+    "-111,6,58": 13,
+    "-114,6,59": 13,
+    "-113,6,58": 13,
+    "-113,6,59": 13,
+    "-113,6,60": 13,
+    "-112,6,59": 13,
+    "-111,7,57": 13,
+    "-110,7,56": 13,
+    "-110,7,57": 13,
+    "-110,7,58": 13,
+    "-109,7,57": 13,
+    "-108,6,60": 13,
+    "-107,6,59": 13,
+    "-107,6,60": 13,
+    "-107,6,61": 13,
+    "-106,6,60": 13,
+    "-111,6,59": 13,
+    "-111,6,60": 13,
+    "-110,6,60": 13,
+    "-111,7,60": 13,
+    "-110,7,59": 13,
+    "-110,7,60": 13,
+    "-110,7,61": 13,
+    "-109,7,60": 13,
+    "-108,7,59": 13,
+    "-108,7,60": 13,
+    "-108,7,61": 13,
+    "-107,7,60": 13,
+    "-108,7,58": 13,
+    "-107,7,57": 13,
+    "-107,7,58": 13,
+    "-107,7,59": 13,
+    "-106,7,58": 13,
+    "-109,7,58": 13,
+    "-109,7,59": 13,
+    "-111,8,58": 13,
+    "-110,8,57": 13,
+    "-110,8,58": 13,
+    "-110,8,59": 13,
+    "-109,8,58": 13
   },
   "entities": {
     "7.5215408736609755,1.371946792680074,53.48342776034817": {
@@ -53156,6 +53394,78 @@
         }
       }
     },
+    "-102.11409451978035,1.3737436782782761,56.53274350606663": {
+      "modelUri": "models/environment/flower-rose.gltf",
+      "modelPreferredShape": "none",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "flower-rose",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7569586576688861,
+          "z": 0,
+          "w": 0.6534627690849097
+        }
+      }
+    },
+    "-100.32641234938569,1.3737436782782761,57.782508875908626": {
+      "modelUri": "models/environment/flower-rose.gltf",
+      "modelPreferredShape": "none",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "flower-rose",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.09303506491585671,
+          "z": 0,
+          "w": -0.995662832838558
+        }
+      }
+    },
+    "-105.20670068250865,1.3737436782782761,52.77681262926631": {
+      "modelUri": "models/environment/flower-rose.gltf",
+      "modelPreferredShape": "none",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "flower-rose",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.15698114788238654,
+          "z": 0,
+          "w": -0.9876015994364976
+        }
+      }
+    },
+    "-105.03926816282004,1.3737436782782761,51.18820788381314": {
+      "modelUri": "models/environment/flower-rose.gltf",
+      "modelPreferredShape": "none",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "flower-rose",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8300236488363283,
+          "z": 0,
+          "w": 0.5577281975769448
+        }
+      }
+    },
     "9.51624588164492,1.2513394369696216,54.53588602484678": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
@@ -56738,6 +57048,546 @@
         }
       }
     },
+    "-105.03283324010327,1.2812812477350235,48.642796915856856": {
+      "modelUri": "models/environment/flower-white-2.gltf",
+      "modelPreferredShape": "none",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "flower-white-2",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9774766397991155,
+          "z": 0,
+          "w": -0.2110436415697715
+        }
+      }
+    },
+    "-99.74515673130367,1.2812812477350235,59.616066703543325": {
+      "modelUri": "models/environment/flower-white-2.gltf",
+      "modelPreferredShape": "none",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "flower-white-2",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7247196563520351,
+          "z": 0,
+          "w": -0.6890438445389293
+        }
+      }
+    },
+    "27.816987559668053,2.363166260736239,51.128088512148885": {
+      "modelUri": "models/environment/bulletin-board.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "bulletin-board",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9659260112393703,
+          "z": 0,
+          "w": -0.25881835485761023
+        }
+      }
+    },
+    "29.49499087715575,1.9375,63.1003865178175": {
+      "modelUri": "models/environment/stove.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stove",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.382682112964088,
+          "z": 0,
+          "w": -0.9238800790239722
+        }
+      }
+    },
+    "6,1.119533525250568,-37": {
+      "modelUri": "models/environment/campfire-unlit.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "campfire-unlit",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        }
+      }
+    },
+    "-105.58495358043741,1.119533525250568,35.442992989858865": {
+      "modelUri": "models/environment/campfire-unlit.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "campfire-unlit",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9723893215363595,
+          "z": 0,
+          "w": 0.23336453749886338
+        }
+      }
+    },
+    "70.90481126273079,1.119533525250568,29.25267779754422": {
+      "modelUri": "models/environment/campfire-unlit.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "campfire-unlit",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8557106564310315,
+          "z": 0,
+          "w": -0.5174546090918246
+        }
+      }
+    },
+    "-17.062407063883104,1.119533525250568,-2.832652655846041": {
+      "modelUri": "models/environment/campfire-unlit.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "campfire-unlit",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.5321751360543756,
+          "z": 0,
+          "w": -0.8466342921034482
+        }
+      }
+    },
+    "7.794044189424285,1.75,-37.99703130442809": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.665129817905994,
+          "z": 0,
+          "w": -0.7467277451202273
+        }
+      }
+    },
+    "3.9955352056346807,1.75,-39.795112500850756": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.5331949437637149,
+          "z": 0,
+          "w": -0.8459924065526883
+        }
+      }
+    },
+    "-106.9197426714799,1.75,32.52612722253448": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7260155320800342,
+          "z": 0,
+          "w": 0.6876783020995682
+        }
+      }
+    },
+    "74.95514469213462,1.75,30.878693918274568": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.976495253617747,
+          "z": 0,
+          "w": -0.2155389052166963
+        }
+      }
+    },
+    "67.7118737961052,1.75,22.8276961649221": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.745200191773788,
+          "z": 0,
+          "w": 0.6668408162225147
+        }
+      }
+    },
+    "-18.908426367450353,1.75,-10.349806756935818": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7832601775157325,
+          "z": 0,
+          "w": -0.6216940520207855
+        }
+      }
+    },
+    "-15.819361451396038,1.75,9.790352749956037": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.35036895513025434,
+          "z": 0,
+          "w": 0.9366117633688645
+        }
+      }
+    },
+    "-105.99573163129797,1.75,49.553797037139006": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9888028071528425,
+          "z": 0,
+          "w": 0.1492280421591686
+        }
+      }
+    },
+    "-108.3515614870057,1.75,51.046582318526816": {
+      "modelUri": "models/environment/arrow-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "arrow-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8185239081331956,
+          "z": 0,
+          "w": -0.5744724639304828
+        }
+      }
+    },
+    "3.6672487262571254,1.4629756640216822,-34.320522111506726": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9833260679895425,
+          "z": 0,
+          "w": -0.18185115895211024
+        }
+      }
+    },
+    "-103.54508020380861,1.4629756640216822,34.65760548149578": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8636507764867162,
+          "z": 0,
+          "w": -0.504090603239033
+        }
+      }
+    },
+    "62.704103372922084,1.4629756640216822,26.396655578410595": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.013532240548313857,
+          "z": 0,
+          "w": -0.9999084350408004
+        }
+      }
+    },
+    "69.54198122082602,1.4629756640216822,25.876246829506055": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8775616230035721,
+          "z": 0,
+          "w": -0.47946386499019555
+        }
+      }
+    },
+    "73.05998800344015,1.4629756640216822,34.21964583535491": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7616884506504343,
+          "z": 0,
+          "w": 0.647943442088691
+        }
+      }
+    },
+    "-20.67497892166495,1.4629756640216822,-1.0420270612759248": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7124389104023968,
+          "z": 0,
+          "w": -0.7017341369383746
+        }
+      }
+    },
+    "-22.798802187605595,1.4629756640216822,-1.3365859243869624": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9230913249276775,
+          "z": 0,
+          "w": -0.38458081835066205
+        }
+      }
+    },
+    "-20.815199864996444,1.4629756640216822,-2.2506431641959113": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.02394771043568681,
+          "z": 0,
+          "w": 0.9997132124588974
+        }
+      }
+    },
+    "-14.567207520579531,1.4629756640216822,-8.623343642067093": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.5761967558382541,
+          "z": 0,
+          "w": -0.8173110170317487
+        }
+      }
+    },
+    "-106.06945116748138,1.4629756640216822,54.0226062527506": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.4524929158530991,
+          "z": 0,
+          "w": -0.8917679973528766
+        }
+      }
+    },
+    "-106.3539598683006,1.4629756640216822,51.59941803775116": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8859140691588107,
+          "z": 0,
+          "w": 0.4638493958888791
+        }
+      }
+    },
+    "-103.28958468656708,1.4629756640216822,57.811471699333346": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.934614852930288,
+          "z": 0,
+          "w": -0.3556614635887561
+        }
+      }
+    },
+    "-101.13476039447836,1.4629756640216822,58.67148309037346": {
+      "modelUri": "models/environment/apple-basket.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "apple-basket",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.20834658211199797,
+          "z": 0,
+          "w": 0.9780550606802505
+        }
+      }
+    },
     "35,2.5047443153419042,45.624956875": {
       "modelUri": "models/environment/tent.gltf",
       "modelPreferredShape": "trimesh",
@@ -56810,21 +57660,21 @@
         }
       }
     },
-    "29.49499087715575,1.9375,63.1003865178175": {
-      "modelUri": "models/environment/stove.gltf",
+    "35.039820166615506,1.656250012149811,45.689989255624766": {
+      "modelUri": "models/environment/bed-double.gltf",
       "modelPreferredShape": "trimesh",
       "modelLoopedAnimations": [
         "idle"
       ],
       "modelScale": 1,
-      "name": "stove",
+      "name": "bed-double",
       "rigidBodyOptions": {
         "type": "fixed",
         "rotation": {
           "x": 0,
-          "y": 0.382682112964088,
+          "y": 0.9999999999991198,
           "z": 0,
-          "w": -0.9238800790239722
+          "w": 0.0000013267948966775328
         }
       }
     },
@@ -56846,32 +57696,158 @@
         }
       }
     },
-    "35.039820166615506,1.656250012149811,45.689989255624766": {
-      "modelUri": "models/environment/bed-double.gltf",
+    "11.372750697055967,1.6965281775309682,-35.929366987778344": {
+      "modelUri": "models/environment/tanning-rack.gltf",
       "modelPreferredShape": "trimesh",
       "modelLoopedAnimations": [
         "idle"
       ],
       "modelScale": 1,
-      "name": "bed-double",
+      "name": "tanning-rack",
       "rigidBodyOptions": {
         "type": "fixed",
         "rotation": {
           "x": 0,
-          "y": 0.9999999999991198,
+          "y": 0.2940272800627724,
           "z": 0,
-          "w": 0.0000013267948966775328
+          "w": -0.9557970279190493
         }
       }
     },
-    "27.816987559668053,2.363166260736239,51.128088512148885": {
-      "modelUri": "models/environment/bulletin-board.gltf",
+    "74.04100638785879,1.6965281775309682,28.57308559408717": {
+      "modelUri": "models/environment/tanning-rack.gltf",
       "modelPreferredShape": "trimesh",
       "modelLoopedAnimations": [
         "idle"
       ],
       "modelScale": 1,
-      "name": "bulletin-board",
+      "name": "tanning-rack",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9952852628341688,
+          "z": 0,
+          "w": -0.09699095620272757
+        }
+      }
+    },
+    "-11.941548538119372,1.6965281775309682,4.392471931403415": {
+      "modelUri": "models/environment/tanning-rack.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "tanning-rack",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9170774992478975,
+          "z": 0,
+          "w": -0.3987089920897479
+        }
+      }
+    },
+    "8.428861646065963,1.90628124887228,-41.19096568988187": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.923878673347849,
+          "z": 0,
+          "w": 0.3826855065625277
+        }
+      }
+    },
+    "2.680531114184525,1.90628124887228,-36.07276026749676": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.4999990283118161,
+          "z": 0,
+          "w": -0.8660259647881464
+        }
+      }
+    },
+    "-108.69020417520704,1.90628124887228,34.21438663883011": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7933532162821144,
+          "z": 0,
+          "w": -0.6087615906205193
+        }
+      }
+    },
+    "-103.46269127384952,1.90628124887228,36.580038389897474": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.38268428076468186,
+          "z": 0,
+          "w": 0.923879181092213
+        }
+      }
+    },
+    "74.50330515151762,1.90628124887228,33.232219007879564": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.38268428076468186,
+          "z": 0,
+          "w": 0.923879181092213
+        }
+      }
+    },
+    "62.643742430406306,1.90628124887228,24.50567470410317": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
       "rigidBodyOptions": {
         "type": "fixed",
         "rotation": {
@@ -56879,6 +57855,204 @@
           "y": 0.9659260112393703,
           "z": 0,
           "w": -0.25881835485761023
+        }
+      }
+    },
+    "76.73813658906333,1.90628124887228,23.509268918340734": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8660266281835431,
+          "z": 0,
+          "w": 0.4999978792725457
+        }
+      }
+    },
+    "-12.813126308724765,1.90628124887228,-5.919339811909662": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8660266281835431,
+          "z": 0,
+          "w": 0.4999978792725457
+        }
+      }
+    },
+    "-21.494208524739506,1.90628124887228,-4.140881933895572": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7933532162821144,
+          "z": 0,
+          "w": -0.6087615906205193
+        }
+      }
+    },
+    "-19.272488781869185,1.90628124887228,2.0574991357546706": {
+      "modelUri": "models/environment/covering.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "covering",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.382682112964088,
+          "z": 0,
+          "w": -0.9238800790239722
+        }
+      }
+    },
+    "-109.31731414636936,1.9055740142401398,39.267602094473": {
+      "modelUri": "models/environment/archery-target.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "archery-target",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.45682494102497334,
+          "z": 0,
+          "w": -0.8895566161057595
+        }
+      }
+    },
+    "-108.76629088435197,1.9055740142401398,42.0529296981638": {
+      "modelUri": "models/environment/archery-target.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "archery-target",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.4907563838294455,
+          "z": 0,
+          "w": -0.8712968333069081
+        }
+      }
+    },
+    "4.845419346562732,1.9055740142401398,-45.75648813159166": {
+      "modelUri": "models/environment/archery-target.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "archery-target",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9887379790556691,
+          "z": 0,
+          "w": 0.14965697034522413
+        }
+      }
+    },
+    "2.1785675984500674,1.9055740142401398,-43.91743698181151": {
+      "modelUri": "models/environment/archery-target.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "archery-target",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.8524703288177894,
+          "z": 0,
+          "w": -0.5227756100711758
+        }
+      }
+    },
+    "65.53365474642314,1.9055740142401398,23.52416734726912": {
+      "modelUri": "models/environment/archery-target.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "archery-target",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9969837525400583,
+          "z": 0,
+          "w": -0.07761054806624999
+        }
+      }
+    },
+    "-16.459973355023365,1.9055740142401398,-9.2396323957407": {
+      "modelUri": "models/environment/archery-target.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "archery-target",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.9447955266427208,
+          "z": 0,
+          "w": 0.32766051461215734
+        }
+      }
+    },
+    "-17.241043530325005,1.9055740142401398,7.812707653308941": {
+      "modelUri": "models/environment/archery-target.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "archery-target",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7291353365934975,
+          "z": 0,
+          "w": -0.6843695353613332
         }
       }
     },
@@ -61112,723 +62286,39 @@
         }
       }
     },
-    "6,1.119533525250568,-37": {
-      "modelUri": "models/environment/campfire-unlit.gltf",
+    "-101.23999778548665,5.084365525310277,54.02949733390851": {
+      "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
       "modelLoopedAnimations": [
         "idle"
       ],
-      "modelScale": 1,
-      "name": "campfire-unlit",
+      "modelScale": 2.904437706887308,
+      "name": "basic-tree",
       "rigidBodyOptions": {
         "type": "fixed",
         "rotation": {
           "x": 0,
-          "y": 0,
+          "y": 0.5782733472424932,
           "z": 0,
-          "w": 1
+          "w": 0.8158430828713098
         }
       }
     },
-    "-105.58495132502752,1.119533525250568,35.44299225662139": {
-      "modelUri": "models/environment/campfire-unlit.gltf",
+    "-103.73570121246627,4.566354103782322,50.124684527019646": {
+      "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
       "modelLoopedAnimations": [
         "idle"
       ],
-      "modelScale": 1,
-      "name": "campfire-unlit",
+      "modelScale": 2.5360740293563175,
+      "name": "basic-tree",
       "rigidBodyOptions": {
         "type": "fixed",
         "rotation": {
           "x": 0,
-          "y": 0.9723889301877767,
+          "y": 0.541288029423098,
           "z": 0,
-          "w": 0.2333661681741189
-        }
-      }
-    },
-    "70.90481055976214,1.119533525250568,29.252675543791426": {
-      "modelUri": "models/environment/campfire-unlit.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "campfire-unlit",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.8557115202510378,
-          "z": 0,
-          "w": -0.5174531805967162
-        }
-      }
-    },
-    "-17.062404243204053,1.119533525250568,-2.8326516677844147": {
-      "modelUri": "models/environment/campfire-unlit.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "campfire-unlit",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.5321733468186421,
-          "z": 0,
-          "w": -0.8466354167738586
-        }
-      }
-    },
-    "7.794043943065607,1.75,-37.9970316502119": {
-      "modelUri": "models/environment/arrow-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "arrow-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.665130000783084,
-          "z": 0,
-          "w": -0.7467275822268082
-        }
-      }
-    },
-    "3.9955322200113152,1.75,-39.79511463757274": {
-      "modelUri": "models/environment/arrow-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "arrow-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.533196735409078,
-          "z": 0,
-          "w": -0.8459912773481189
-        }
-      }
-    },
-    "-106.91974124488357,1.75,32.52612950913376": {
-      "modelUri": "models/environment/arrow-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "arrow-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.726014462991765,
-          "z": 0,
-          "w": 0.6876794307864524
-        }
-      }
-    },
-    "74.95514339444993,1.75,30.878695687929334": {
-      "modelUri": "models/environment/arrow-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "arrow-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9764949807805858,
-          "z": 0,
-          "w": -0.2155401412969829
-        }
-      }
-    },
-    "67.71187134563094,1.75,22.827692691905124": {
-      "modelUri": "models/environment/arrow-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "arrow-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7452018267415116,
-          "z": 0,
-          "w": 0.666838989127896
-        }
-      }
-    },
-    "-18.908425952954147,1.75,-10.349805285577657": {
-      "modelUri": "models/environment/arrow-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "arrow-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7832596293307299,
-          "z": 0,
-          "w": -0.6216947426677241
-        }
-      }
-    },
-    "-15.819361003413626,1.75,9.790351527577213": {
-      "modelUri": "models/environment/arrow-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "arrow-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.35036965849386636,
-          "z": 0,
-          "w": 0.9366115002533822
-        }
-      }
-    },
-    "8.428856436912346,1.90628124887228,-41.1909677240063": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9238795325112867,
-          "z": 0,
-          "w": 0.38268343236508984
-        }
-      }
-    },
-    "2.6805288626687798,1.90628124887228,-36.07276192321367": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.49999999999999994,
-          "z": 0,
-          "w": -0.8660254037844387
-        }
-      }
-    },
-    "-108.69020425169487,1.90628124887228,34.214386137221915": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7933533402912352,
-          "z": 0,
-          "w": -0.6087614290087207
-        }
-      }
-    },
-    "-103.46269210585126,1.90628124887228,36.58004052057605": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.3826834323650898,
-          "z": 0,
-          "w": 0.9238795325112867
-        }
-      }
-    },
-    "74.50330431951588,1.90628124887228,33.23222113855814": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.3826834323650898,
-          "z": 0,
-          "w": 0.9238795325112867
-        }
-      }
-    },
-    "62.64374137589701,1.90628124887228,24.505676138065184": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9659258262890683,
-          "z": 0,
-          "w": -0.25881904510252085
-        }
-      }
-    },
-    "76.73814150304105,1.90628124887228,23.509272531965646": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.8660254037844386,
-          "z": 0,
-          "w": 0.5000000000000001
-        }
-      }
-    },
-    "-12.813121394747046,1.90628124887228,-5.91933619828475": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.8660254037844386,
-          "z": 0,
-          "w": 0.5000000000000001
-        }
-      }
-    },
-    "-21.494208601227335,1.90628124887228,-4.140882435503773": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7933533402912352,
-          "z": 0,
-          "w": -0.6087614290087207
-        }
-      }
-    },
-    "-19.27249209542411,1.90628124887228,2.057497841857347": {
-      "modelUri": "models/environment/covering.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "covering",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.3826834323650899,
-          "z": 0,
-          "w": -0.9238795325112867
-        }
-      }
-    },
-    "3.667248696916449,1.4629756640216822,-34.320522045744895": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9833260587298575,
-          "z": 0,
-          "w": -0.18185120902211485
-        }
-      }
-    },
-    "-103.54507951652198,1.4629756640216822,34.65760795271697": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.8636498621965926,
-          "z": 0,
-          "w": -0.5040921696751564
-        }
-      }
-    },
-    "62.70410408344987,1.4629756640216822,26.39665490533855": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.013531548558318502,
-          "z": 0,
-          "w": -0.9999084444055935
-        }
-      }
-    },
-    "69.54198180566958,1.4629756640216822,25.8762495116395": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.8775606923057561,
-          "z": 0,
-          "w": -0.47946556844036486
-        }
-      }
-    },
-    "73.05998888530505,1.4629756640216822,34.21964647075596": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7616879526560013,
-          "z": 0,
-          "w": 0.6479440275044667
-        }
-      }
-    },
-    "-20.674978326759373,1.4629756640216822,-1.042026448080255": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.712438486470747,
-          "z": 0,
-          "w": -0.7017345673367325
-        }
-      }
-    },
-    "-22.798802176965594,1.4629756640216822,-1.3365833362316164": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.923090621097984,
-          "z": 0,
-          "w": -0.3845825077157542
-        }
-      }
-    },
-    "-20.815201698570284,1.4629756640216822,-2.2506411459879283": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.02394578288635841,
-          "z": 0,
-          "w": 0.9997132586306733
-        }
-      }
-    },
-    "-14.567208959024635,1.4629756640216822,-8.623344324077095": {
-      "modelUri": "models/environment/apple-basket.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "apple-basket",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.5761976758596672,
-          "z": 0,
-          "w": -0.8173103684243324
-        }
-      }
-    },
-    "11.372747559543964,1.6965281775309682,-35.9293663891845": {
-      "modelUri": "models/environment/tanning-rack.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "tanning-rack",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.2940294387985544,
-          "z": 0,
-          "w": -0.9557963638347905
-        }
-      }
-    },
-    "74.04100491983415,1.6965281775309682,28.573087781372166": {
-      "modelUri": "models/environment/tanning-rack.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "tanning-rack",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9952850821672657,
-          "z": 0,
-          "w": -0.09699281012167367
-        }
-      }
-    },
-    "-11.941548567682164,1.6965281775309682,4.3924710826944295": {
-      "modelUri": "models/environment/tanning-rack.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "tanning-rack",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9170777386692287,
-          "z": 0,
-          "w": -0.3987084413921204
-        }
-      }
-    },
-    "-109.31731228919779,1.9055740142401398,39.26760239678364": {
-      "modelUri": "models/environment/archery-target.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "archery-target",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.4568237550061658,
-          "z": 0,
-          "w": -0.8895572251755739
-        }
-      }
-    },
-    "-108.76628749386975,1.9055740142401398,42.05293052224498": {
-      "modelUri": "models/environment/archery-target.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "archery-target",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.49075422966662524,
-          "z": 0,
-          "w": -0.871298046631758
-        }
-      }
-    },
-    "4.845421968862709,1.9055740142401398,-45.756489520321935": {
-      "modelUri": "models/environment/archery-target.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "archery-target",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9887376643879109,
-          "z": 0,
-          "w": 0.14965904924440374
-        }
-      }
-    },
-    "2.1785673966860823,1.9055740142401398,-43.91743759705611": {
-      "modelUri": "models/environment/archery-target.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "archery-target",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.8524705686627558,
-          "z": 0,
-          "w": -0.5227752189648985
-        }
-      }
-    },
-    "65.53365329705056,1.9055740142401398,23.524169343756192": {
-      "modelUri": "models/environment/archery-target.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "archery-target",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.996983616864576,
-          "z": 0,
-          "w": -0.07761229093145111
-        }
-      }
-    },
-    "-16.459971131729443,1.9055740142401398,-9.239632663429084": {
-      "modelUri": "models/environment/archery-target.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "archery-target",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.9447950067255491,
-          "z": 0,
-          "w": 0.3276620137679523
-        }
-      }
-    },
-    "-17.24104282962226,1.9055740142401398,7.81270844554989": {
-      "modelUri": "models/environment/archery-target.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "archery-target",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.729134823707348,
-          "z": 0,
-          "w": -0.6843700817958471
+          "w": 0.8408372429925184
         }
       }
     }
