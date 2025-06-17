@@ -18910,7 +18910,7 @@
   "entities": {
     "-4.47272639187636,7.373743678278276,-29.498602585586475": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -18928,7 +18928,7 @@
     },
     "-7.5257411603145,7.373743678278276,-29.509121136595194": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -18946,7 +18946,7 @@
     },
     "-1.516413517189454,8.373743678278275,-28.4781734354376": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -18964,7 +18964,7 @@
     },
     "-9.521602684443874,8.373743678278275,-25.483292920903295": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -18982,7 +18982,7 @@
     },
     "-7.522260068417503,7.373743678278276,-24.515820613805197": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19000,7 +19000,7 @@
     },
     "-9.474513149175745,9.373743678278275,-23.490190672694457": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19018,7 +19018,7 @@
     },
     "-4.501131946597045,7.373743678278276,-23.52728591512166": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19036,7 +19036,7 @@
     },
     "-5.52519092907842,9.373743678278275,-21.51054606842814": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19054,7 +19054,7 @@
     },
     "-2.5236848654116852,8.373743678278275,-21.48640479431728": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19072,7 +19072,7 @@
     },
     "1.5114873760659022,7.373743678278276,-22.524775848285085": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19090,7 +19090,7 @@
     },
     "4.505666385444197,7.373743678278276,-27.47328493789783": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19108,7 +19108,7 @@
     },
     "7.527201235897563,7.373743678278276,-24.497571989956736": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19126,7 +19126,7 @@
     },
     "2.4991967150291567,7.373743678278276,-18.47270243233582": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19144,7 +19144,7 @@
     },
     "8.491187008649717,7.373743678278276,-19.474151718614483": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19162,7 +19162,7 @@
     },
     "6.475140149615551,7.373743678278276,-26.511304437446764": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19180,7 +19180,7 @@
     },
     "8.485619243634913,7.373743678278276,-16.523216294137804": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19198,7 +19198,7 @@
     },
     "-0.500697606676667,7.373743678278276,-16.47269952725593": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19216,7 +19216,7 @@
     },
     "-5.526622400329232,7.373743678278276,-15.506086893118429": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19234,7 +19234,7 @@
     },
     "12.524393839956149,7.373743678278276,-12.487722254306314": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19252,7 +19252,7 @@
     },
     "9.514331908678628,7.373743678278276,-13.47675351938997": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
@@ -19270,7 +19270,7 @@
     },
     "1.486901689811361,7.373743678278276,-15.523963237204669": {
       "modelUri": "models/environment/flower-rose.gltf",
-      "modelPreferredShape": "trimesh",
+      "modelPreferredShape": "none",
       "modelLoopedAnimations": [
         "idle"
       ],
