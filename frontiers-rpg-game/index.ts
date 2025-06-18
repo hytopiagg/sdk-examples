@@ -17,5 +17,6 @@ import GameManager from './src/GameManager';
 
 startServer(() => {
   GameManager.instance.loadItems();
+  GameManager.instance.loadQuests();
   GameManager.instance.loadRegions();
 });

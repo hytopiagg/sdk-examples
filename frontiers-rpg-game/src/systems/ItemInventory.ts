@@ -1,6 +1,6 @@
 import type { Player } from 'hytopia';
 import BaseItem from '../items/BaseItem';
-import { itemRegistry } from '../items/ItemRegistry';
+import ItemRegistry from '../items/ItemRegistry';
 
 export type SerializedItem = {
   position: number;
@@ -287,7 +287,7 @@ export default class ItemInventory {
       
       // Load items
       for (const itemData of items) {
-        const ItemClass = itemRegistry.get(itemData.itemId);
+        const ItemClass = ItemRegistry.getItemClass(itemData.itemId);
         if (!ItemClass) continue; // Skip unknown items silently
         
         if (itemData.position < 0 || itemData.position >= this._size) continue;

@@ -20,6 +20,16 @@ import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 import type GameRegion from './GameRegion';
 import type IDamageable from './interfaces/IDamageable';
 
+export enum GamePlayerEntityPlayerEvent {
+  DAMAGED = 'GamePlayerEntity.DAMAGED',
+  DODGED = 'GamePlayerEntity.DODGED',
+}
+
+export type GamePlayerEntityPlayerEventPayloads = {
+  [GamePlayerEntityPlayerEvent.DAMAGED]: { damage: number };
+  [GamePlayerEntityPlayerEvent.DODGED]: null;
+}
+
 const CAMERA_OFFSET_Y = 0.8;
 const CAMERA_SHOULDER_ANGLE = 11;
 const DODGE_COOLDOWN_MS = 900;
@@ -185,9 +195,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
     this._gamePlayer.adjustHealth(-damage);
 
-    if (this._gamePlayer.health <= 0) {
-
-    }
+    this._gamePlayer.eventRouter.emit(GamePlayerEntityPlayerEvent.DAMAGED, { damage });
   }
 
   private _dodge(): void {
@@ -208,6 +216,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
         z: direction.z * horizontalForce,
       });
     }
+
+    this._gamePlayer.eventRouter.emit(GamePlayerEntityPlayerEvent.DODGED, null);
   }
 
   private _interact(): void {

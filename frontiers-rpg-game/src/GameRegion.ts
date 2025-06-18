@@ -17,6 +17,14 @@ import {
 import GamePlayer from './GamePlayer';
 import GamePlayerEntity from './GamePlayerEntity';
 
+export enum GameRegionPlayerEvent {
+  REACHED = 'GameRegion.REACHED',
+}
+
+export type GameRegionPlayerEventPayloads = {
+  [GameRegionPlayerEvent.REACHED]: { regionId: string };
+}
+
 export type GameRegionOptions = {
   id: string,
   ambientAudioUri?: string,
@@ -117,14 +125,17 @@ export default class GameRegion {
     // the first tick after a player joins a world in order to auto attach the camera.
     player.camera.setAttachedToEntity(gamePlayerEntity);
     
-      // Make the camera look at the correct spawn facing angle.
-      // Calculate look direction based on facing angle (identity direction is -z, consistent with threejs)
-      const facingAngleRad = spawnFacingAngle * Math.PI / 180;  
-      player.camera.lookAtPosition({
-        x: spawnPoint.x - Math.sin(facingAngleRad),
-        y: spawnPoint.y,
-        z: spawnPoint.z - Math.cos(facingAngleRad),
-      });
+    // Make the camera look at the correct spawn facing angle.
+    // Calculate look direction based on facing angle (identity direction is -z, consistent with threejs)
+    const facingAngleRad = spawnFacingAngle * Math.PI / 180;  
+    player.camera.lookAtPosition({
+      x: spawnPoint.x - Math.sin(facingAngleRad),
+      y: spawnPoint.y,
+      z: spawnPoint.z - Math.cos(facingAngleRad),
+    });
+
+    // Emit the reached event to the player's event router.
+    gamePlayer.eventRouter.emit(GameRegionPlayerEvent.REACHED, { regionId: this._id });
   }
 
   protected onPlayerLeave(player: Player) {

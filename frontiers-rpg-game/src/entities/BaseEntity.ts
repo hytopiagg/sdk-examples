@@ -14,9 +14,18 @@ import {
 
 import { SkillId } from '../config';
 import GamePlayerEntity from '../GamePlayerEntity';
+import QuestRegistry from '../quests/QuestRegistry';
 import type IInteractable from '../interfaces/IInteractable';
 import type IDamageable from '../interfaces/IDamageable';
 import type { ItemClass } from '../items/BaseItem';
+
+export enum BaseEntityPlayerEvent {
+  KILLED = 'BaseEntity.KILLED',
+}
+
+export type BaseEntityPlayerEventPayloads = {
+  [BaseEntityPlayerEvent.KILLED]: { entity: BaseEntity };
+}
 
 export type BaseEntityDialogue = {
   text: string;
@@ -167,6 +176,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
 
     if (this._combatExperienceReward > 0 && killer instanceof GamePlayerEntity) {
       killer.adjustSkillExperience(SkillId.COMBAT, this._combatExperienceReward);
+      killer.gamePlayer.eventRouter.emit(BaseEntityPlayerEvent.KILLED, { entity: this });
     }
 
     setTimeout(() => this.despawn(), this._deathDespawnDelayMs);
@@ -215,16 +225,17 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   }
 
   public progressDialogue(interactor: GamePlayerEntity, optionId: number): void {
-    const selectedOption = this._optionMap.get(optionId);
+    // Try local dialogue options first, then quest dialogue options with validation
+    const selectedOption = this._optionMap.get(optionId) || 
+                          QuestRegistry.getValidQuestDialogueOptionForNPC(this.constructor as typeof BaseEntity, optionId, interactor);
+
     if (!selectedOption) return;
     if (selectedOption.isSelectable && !selectedOption.isSelectable(interactor)) return;
 
-    // Call onSelect handler if it exists
     if (selectedOption.onSelect) {
       selectedOption.onSelect(interactor);
     }
-    
-    // Progress to next dialogue if it exists
+
     if (selectedOption.nextDialogue) {
       this.showDialogue(interactor, selectedOption.nextDialogue);
     }
@@ -238,13 +249,20 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public showDialogue(interactor: GamePlayerEntity, dialogue: BaseEntityDialogue): void {
     if (!this._dialogueRoot) return;
 
+    let questDialogueRootOptions: BaseEntityDialogueOption[] = [];
+    if (this._dialogueRoot.dialogue === dialogue) {
+      questDialogueRootOptions = QuestRegistry.getQuestRootDialogueOptionsForNPC(this.constructor as typeof BaseEntity, interactor);
+    }
+
+    const allDialogueOptions = [ ...questDialogueRootOptions, ...(dialogue.options || []) ];
+
     interactor.player.ui.sendData({
       type: 'dialogue',
       avatarImageUri: this._dialogueRoot.avatarImageUri,
       name: this.name,
       title: this._dialogueRoot.title,
       text: dialogue.text,
-      options: dialogue.options?.map(option => {
+      options: allDialogueOptions.map(option => {
         if (option.isSelectable && !option.isSelectable(interactor)) {
           return null;
         }

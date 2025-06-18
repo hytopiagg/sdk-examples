@@ -1,7 +1,7 @@
 {
   "health": 92,
   "maxHealth": 100,
-  "currentRegionId": "stalkhaven",
+  "currentRegionId": "stalkhaven-port",
   "skillExperience": [],
   "backpack": {
     "items": []
@@ -17,10 +17,10 @@
   "storage": {
     "items": []
   },
-  "currentRegionSpawnFacingAngle": 90,
+  "currentRegionSpawnFacingAngle": 180,
   "currentRegionSpawnPoint": {
-    "x": 32,
-    "y": 2,
-    "z": 1
+    "x": -6,
+    "y": 8,
+    "z": -28
   }
 }

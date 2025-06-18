@@ -1,24 +1,36 @@
 import {
   EventPayloads,
+  EventRouter,
   Player,
   PlayerUIEvent,
-  QuaternionLike,
   Vector3Like,
 } from 'hytopia';
 
 import { SkillId, skills } from './config';
 import Backpack from './systems/Backpack';
-import Hotbar from './systems/Hotbar';
-import Levels from './systems/Levels';
-import Storage from './systems/Storage';
 import GameManager from './GameManager';
 import GoldItem from './items/general/GoldItem';
+import Hotbar from './systems/Hotbar';
+import Levels from './systems/Levels';
+import QuestLog from './systems/QuestLog';
+import Storage from './systems/Storage';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseMerchantEntity from './entities/BaseMerchantEntity';
 import type BaseItem from './items/BaseItem';
 import type GamePlayerEntity from './GamePlayerEntity';
 import type GameRegion from './GameRegion';
 import type { SerializedItemInventoryData } from './systems/ItemInventory';
+import type { SerializedQuestLogData } from './systems/QuestLog';
+
+export enum GamePlayerPlayerEvent {
+  DIED = 'GamePlayer.DIED',
+  RESPAWNED = 'GamePlayer.RESPAWNED',
+}
+
+export type GamePlayerPlayerEventPayloads = {
+  [GamePlayerPlayerEvent.DIED]: null;
+  [GamePlayerPlayerEvent.RESPAWNED]: null;
+}
 
 type SerializedGamePlayerData = {
   health: number;
@@ -29,15 +41,18 @@ type SerializedGamePlayerData = {
   skillExperience: [SkillId, number][];
   backpack: SerializedItemInventoryData;
   hotbar: SerializedItemInventoryData;
+  questLog: SerializedQuestLogData;
   storage: SerializedItemInventoryData;
 }
 
 export default class GamePlayer {
   private static _instances: Map<string, GamePlayer> = new Map();
   
+  public readonly eventRouter: EventRouter;
   public readonly player: Player;
   public readonly backpack: Backpack;
   public readonly hotbar: Hotbar;
+  public readonly questLog: QuestLog;
   public readonly storage: Storage;
   
   private _currentDialogueEntity: BaseEntity | undefined;
@@ -53,10 +68,12 @@ export default class GamePlayer {
   private _skillExperience: Map<SkillId, number> = new Map();
 
   private constructor(player: Player) {
+    this.eventRouter = new EventRouter();
     this.player = player;
-    this.backpack = new Backpack(this.player);
-    this.hotbar = new Hotbar(this.player);
-    this.storage = new Storage(this.player);
+    this.backpack = new Backpack(this);
+    this.hotbar = new Hotbar(this);
+    this.storage = new Storage(this);
+    this.questLog = new QuestLog(this);
     
     // Setup hotbar item handling
     this.hotbar.onSelectedItemChanged = this._onHotbarSelectedItemChanged;
@@ -150,6 +167,7 @@ export default class GamePlayer {
 
   // Game state methods
   public adjustHealth(amount: number): void {
+    const willDie = this._health > 0 && this._health + amount <= 0;
     this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
     this._isDead = this._health <= 0;
     this._updateHudHealthUI();
@@ -157,6 +175,10 @@ export default class GamePlayer {
 
     if (this._currentEntity) {
       this._currentEntity.playerController.idleLoopedAnimations = this._isDead ? ['sleep'] : ['idle-lower', 'idle-upper'];
+    }
+
+    if (willDie) {
+      this.eventRouter.emit(GamePlayerPlayerEvent.DIED, null);
     }
   }
 
@@ -290,6 +312,9 @@ export default class GamePlayer {
 
     // Show respawn notification
     this.showNotification('You have respawned!', 'success');
+
+    // Emit event to GamePlayer to handle respawn
+    this.eventRouter.emit(GamePlayerPlayerEvent.RESPAWNED, null);
   }
 
   public setCurrentDialogueEntity(entity: BaseEntity): void {
@@ -349,8 +374,6 @@ export default class GamePlayer {
     try {
       const playerData = serializedGamePlayerData;
 
-      console.log('data is', playerData);
-      
       // Restore basic stats
       this._currentRegionSpawnFacingAngle = playerData.currentRegionSpawnFacingAngle;
       this._currentRegionSpawnPoint = playerData.currentRegionSpawnPoint;
@@ -381,7 +404,10 @@ export default class GamePlayer {
       const hotbarSuccess = this.hotbar.loadFromSerializedData(playerData.hotbar);
       const storageSuccess = this.storage.loadFromSerializedData(playerData.storage);
       
-      return backpackSuccess && hotbarSuccess && storageSuccess;
+      // Restore quest log
+      const questLogSuccess = this.questLog.loadFromSerializedData(playerData.questLog);
+
+      return backpackSuccess && hotbarSuccess && storageSuccess && questLogSuccess;
     } catch (error) {
       console.error('Failed to deserialize GamePlayer data:', error);
       return false;
@@ -512,6 +538,7 @@ export default class GamePlayer {
       skillExperience: Array.from(this._skillExperience.entries()),
       backpack: this.backpack.serialize(),
       hotbar: this.hotbar.serialize(),
+      questLog: this.questLog.serialize(),
       storage: this.storage.serialize(),
     };
     

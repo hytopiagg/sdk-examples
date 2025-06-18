@@ -1,7 +1,8 @@
 import { Player, PlayerManager, World } from 'hytopia';
 import GameClock from './GameClock';
 import GamePlayer from './GamePlayer';
-import { initializeItems } from './items/ItemRegistry';
+import ItemRegistry from './items/ItemRegistry';
+import QuestRegistry from './quests/QuestRegistry';
 import type GameRegion from './GameRegion';
 
 // Regions
@@ -30,7 +31,11 @@ export default class GameManager {
   }
 
   public loadItems(): void {
-    initializeItems();
+    ItemRegistry.initializeItems();
+  }
+
+  public loadQuests(): void {
+    QuestRegistry.initializeQuests();
   }
 
   public loadRegions(): void {
