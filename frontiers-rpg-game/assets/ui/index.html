@@ -2429,6 +2429,12 @@
   function openQuests() {
     document.querySelector('.quests-overlay').style.display = 'flex';
     hytopia.lockPointer(false, true);
+    
+    // Auto-select first active quest if available
+    if (questsState.activeQuests.size > 0 && !questsState.selectedQuestId) {
+      const firstActiveQuestId = questsState.activeQuests.keys().next().value;
+      selectQuest(firstActiveQuestId);
+    }
   }
 
   function toggleQuests() {
