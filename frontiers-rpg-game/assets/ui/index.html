@@ -1691,7 +1691,14 @@
         if (option.isQuestRoot) {
           optionEl.classList.add('dialogue-option-quest');
         }
-        optionEl.textContent = option.isQuestRoot ? `${option.text} [Quest]` : option.text;
+        if (option.isQuestRoot) {
+          optionEl.innerHTML = `
+            <img src="{{CDN_ASSETS_URL}}/icons/buttons/quests-transparent.png" alt="Quest" class="dialogue-quest-icon">
+            <span class="dialogue-option-text">${option.text}</span>
+          `;
+        } else {
+          optionEl.textContent = option.text;
+        }
         
         optionEl.addEventListener('click', () => {
           if (option.dismiss) {
@@ -1934,7 +1941,6 @@
     color: var(--dialogue-text);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
-    word-wrap: break-word;
     overflow-wrap: break-word;
   }
 
@@ -1954,9 +1960,10 @@
     color: var(--dialogue-text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
-    text-align: left;
-    word-wrap: break-word;
     overflow-wrap: break-word;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
   .dialogue-option:hover {
@@ -1978,14 +1985,26 @@
   }
 
   .dialogue-option-quest {
-    color: #4CAF50;
-    border-color: rgba(76, 175, 80, 0.3);
+    color: #66BB6A;
+    border-color: rgba(76, 175, 80, 0.4);
   }
 
   .dialogue-option-quest:hover {
     border-color: #4CAF50;
-    background: rgba(76, 175, 80, 0.1);
-    color: #66BB6A;
+    background: rgba(76, 175, 80, 0.08);
+    color: #81C784;
+  }
+
+  .dialogue-quest-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  }
+
+  .dialogue-option-text {
+    flex: 1;
   }
 
   /* Mobile and Small Screen Responsive */
@@ -2036,6 +2055,11 @@
       padding: 6px 8px;
       font-size: 10px;
     }
+
+    .dialogue-quest-icon {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   /* Very small screens (landscape phones, small devices) */
@@ -2058,6 +2082,11 @@
     .dialogue-option {
       padding: 5px 6px;
       font-size: 9px;
+    }
+
+    .dialogue-quest-icon {
+      width: 12px;
+      height: 12px;
     }
   }
 
