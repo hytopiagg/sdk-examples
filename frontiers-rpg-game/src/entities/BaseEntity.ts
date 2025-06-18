@@ -353,6 +353,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
       viewDistance: this._nameplateViewDistance,
       state: {
         name: this.name,
+        className: this.constructor.name,
         health: this.health,
         interactable: this.isInteractable,
         interactActionText: this.interactActionText,

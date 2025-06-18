@@ -61,6 +61,7 @@ export default class GamePlayer {
   private _currentRegion: GameRegion | undefined;
   private _currentRegionSpawnFacingAngle: number | undefined;
   private _currentRegionSpawnPoint: Vector3Like | undefined;
+  private _entityAlertClassNames: Set<string> = new Set();
   private _globalExperience: number = 0;
   private _health: number = 100;
   private _isDead: boolean = false;
@@ -163,6 +164,15 @@ export default class GamePlayer {
 
   public get respawnPoint(): Vector3Like {
     return this._currentRegionSpawnPoint ?? this._currentRegion!.spawnPoint;
+  }
+
+  public addEntityAlert(entityClass: typeof BaseEntity): void {
+    this._entityAlertClassNames.add(entityClass.name);
+
+    this.player.ui.sendData({
+      type: 'addEntityAlert',
+      className: entityClass.name,
+    });
   }
 
   // Game state methods
@@ -298,6 +308,15 @@ export default class GamePlayer {
     this._spawnHeldItem();
   }
 
+  public removeEntityAlert(entityClass: typeof BaseEntity): void {
+    this._entityAlertClassNames.delete(entityClass.name);
+
+    this.player.ui.sendData({
+      type: 'removeEntityAlert',
+      className: entityClass.name,
+    });
+  }
+
   public respawn(): void {
     if (!this._isDead || !this._currentEntity) return;
 
@@ -325,7 +344,6 @@ export default class GamePlayer {
     this._currentMerchantEntity = entity;
   }
 
-  
   public setCurrentRegion(region: GameRegion): void {
     this._currentRegion = region;
   }
@@ -520,6 +538,7 @@ export default class GamePlayer {
     this._updateExperienceUI();
     this._updateHudHealthUI();
     this._updateSkillsMenuUI();
+    this._updateEntityAlertsSceneUIs();
     this.backpack.syncUI(this.player);
     this.hotbar.syncUI(this.player);
     this.questLog.syncUI();
@@ -544,6 +563,13 @@ export default class GamePlayer {
     };
     
     return playerData;
+  }
+
+  private _updateEntityAlertsSceneUIs(): void {
+    this.player.ui.sendData({
+      type: 'syncEntityAlerts',
+      classNames: Array.from(this._entityAlertClassNames),
+    });
   }
 
   private _updateEntityHealthSceneUI(): void {

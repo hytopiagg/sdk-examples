@@ -4196,6 +4196,7 @@
 <!-- Scene UI Templates -->
 <template id="entity-nameplate-template">
   <div class="entity-nameplate">
+    <div class="entity-nameplate-alert">!</div>
     <div class="entity-nameplate-name">A Test Mob</div>
     <div class="entity-nameplate-interact">Press "E" to interact</div>
     <div class="entity-nameplate-level">Lvl 12</div>
@@ -4206,20 +4207,58 @@
 </template>
 
 <script>
+  // Track which entity class names should show alerts
+  let entityAlertClassNames = new Set();
+  
+  // Simple callback registry for alert updates
+  let alertUpdateCallbacks = [];
+
+  // Handle entity alert updates from GamePlayer
+  hytopia.onData(data => {
+    if (data.type === 'addEntityAlert') {
+      entityAlertClassNames.add(data.className);
+    } else if (data.type === 'removeEntityAlert') {
+      entityAlertClassNames.delete(data.className);
+    } else if (data.type === 'syncEntityAlerts') {
+      entityAlertClassNames = new Set(data.classNames);
+    }
+    
+    // Trigger all registered update callbacks
+    if (data.type === 'addEntityAlert' || data.type === 'removeEntityAlert' || data.type === 'syncEntityAlerts') {
+      alertUpdateCallbacks.forEach(callback => callback());
+    }
+  });
+
   hytopia.registerSceneUITemplate('entity-nameplate', (id, onState) => {
     const template = document.getElementById('entity-nameplate-template');
     const clone = template.content.cloneNode(true);
     const nameplate = clone.querySelector('.entity-nameplate');
+    const alert = clone.querySelector('.entity-nameplate-alert');
     const name = clone.querySelector('.entity-nameplate-name');
     const interact = clone.querySelector('.entity-nameplate-interact');
     const level = clone.querySelector('.entity-nameplate-level');
     const healthBar = clone.querySelector('.entity-nameplate-health-bar');
     const healthBarFill = clone.querySelector('.entity-nameplate-health-bar-fill');
     
+    let className = '';
     let damageCount = 0;
     let lastHealth = null;
 
+    // Function to update this nameplate's alert display
+    const updateAlert = () => {
+      const shouldShowAlert = className && entityAlertClassNames.has(className);
+      alert.style.display = shouldShowAlert ? 'block' : 'none';
+    };
+
+    // Register for alert updates
+    alertUpdateCallbacks.push(updateAlert);
+
     onState(state => {
+      if (state.className) {
+        className = state.className;
+        updateAlert();
+      }
+
       // Calculate health change if we have a previous health value
       if (lastHealth !== null && state.health !== undefined && state.health !== lastHealth) {
         const healthChange = state.health - lastHealth;
@@ -4316,6 +4355,45 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     user-select: none;
     pointer-events: none;
+  }
+
+  .entity-nameplate-alert {
+    display: none;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(145deg, #4CAF50, #66BB6A);
+    border: 1px solid rgba(76, 175, 80, 0.8);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    text-align: center;
+    line-height: 16px;
+    margin-bottom: 6px;
+    box-shadow: 
+      0 0 8px rgba(76, 175, 80, 0.5),
+      0 1px 4px rgba(0, 0, 0, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: alertPulse 2s ease-in-out infinite;
+    z-index: 10;
+  }
+
+  @keyframes alertPulse {
+    0%, 100% { 
+      transform: scale(1);
+      box-shadow: 
+        0 0 8px rgba(76, 175, 80, 0.5),
+        0 1px 4px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    50% { 
+      transform: scale(1.1);
+      box-shadow: 
+        0 0 12px rgba(76, 175, 80, 0.7),
+        0 1px 4px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
   }
 
   .entity-nameplate-name {
