@@ -21,9 +21,9 @@ export default class WelcomeToStalkhavenQuest extends BaseQuest {
 
   static readonly objectives: QuestObjective[] = [
     {
-      id: 'talk-to-sid',
-      name: 'Talk to Sid',
-      description: 'Find Sid in Stalkhaven and speak with him.',
+      id: 'talk-to-mark',
+      name: 'Talk to Commander Mark',
+      description: 'Find Commander Mark in Stalkhaven and speak with him.',
       target: 1,
     },
   ];
@@ -69,6 +69,7 @@ export default class WelcomeToStalkhavenQuest extends BaseQuest {
           ],
         },
         onSelect: (interactor: GamePlayerEntity) => {
+          interactor.gamePlayer.questLog.updateObjectiveProgress(this.id, 'talk-to-mark', 1);
           interactor.gamePlayer.questLog.completeQuest(this.id);
         }
       },

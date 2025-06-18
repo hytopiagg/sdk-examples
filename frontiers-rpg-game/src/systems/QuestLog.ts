@@ -61,6 +61,9 @@ export default class QuestLog {
 
     questState.state = 'completed';
     
+    this.syncUIUpdate(questId);
+    this._owner.showNotification(`Completed quest: ${questClass.name}.`, 'success');
+
     return true;
   }
 
