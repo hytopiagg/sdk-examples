@@ -361,8 +361,8 @@ export default class GamePlayer {
     this.player.ui.sendData({ type: 'toggleBackpack' });
   }
 
-  public toggleLog = (): void => {
-    this.player.ui.sendData({ type: 'toggleLog' });
+  public toggleQuests = (): void => {
+    this.player.ui.sendData({ type: 'toggleQuests' });
   }
 
   public toggleSkills = (): void => {
@@ -522,6 +522,7 @@ export default class GamePlayer {
     this._updateSkillsMenuUI();
     this.backpack.syncUI(this.player);
     this.hotbar.syncUI(this.player);
+    this.questLog.syncUI();
 
     // Setup UI event listener (remove existing to prevent duplicates)
     this.player.ui.off(PlayerUIEvent.DATA, this._onPlayerUIData);

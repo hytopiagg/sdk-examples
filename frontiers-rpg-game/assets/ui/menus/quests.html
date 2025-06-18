@@ -1,0 +1,868 @@
+<!-- Quests UI -->
+<div class="quests-overlay">
+  <div class="quests-container">
+    <div class="quests-header">
+      <h2 class="quests-title">Quests</h2>
+      <button class="quests-close">×</button>
+    </div>
+    
+    <div class="quests-content">
+      <!-- Left Sidebar -->
+      <div class="quests-sidebar">
+        <!-- Active Quests Section -->
+        <div class="quests-section">
+          <h3 class="quests-section-title">Active Quests</h3>
+          <div class="quests-list" id="quests-active-list">
+            <!-- Active quests will be populated by JavaScript -->
+          </div>
+        </div>
+        
+        <!-- Completed Quests Section -->
+        <div class="quests-section">
+          <h3 class="quests-section-title">Completed Quests</h3>
+          <div class="quests-list" id="quests-completed-list">
+            <!-- Completed quests will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quest Details Panel -->
+      <div class="quests-details-panel">
+        <div class="quests-details-content" id="quests-details-content" style="display: none;">
+          <!-- Quest details will be populated by JavaScript -->
+        </div>
+        
+        <!-- Empty state when no quest is selected -->
+        <div class="quests-empty-state" id="quests-empty-state">
+          <div class="quests-empty-content">
+            <div class="quests-empty-icon">📜</div>
+            <div class="quests-empty-text">No active quests. Explore & talk to NPCs to discover new quests!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // State management
+  const questsState = {
+    activeQuests: new Map(),
+    completedQuests: new Map(),
+    selectedQuestId: null
+  };
+
+  // Setup hytopia data handlers
+  hytopia.onData(data => {
+    if (data.type === 'toggleQuests') {
+      toggleQuests();
+    }
+    
+    if (data.type === 'questUpdate') {
+      updateQuestData(data);
+    }
+  });
+
+  // Initialize quest system
+  function initializeQuests() {
+    setupEventListeners();
+    renderQuestLists();
+    updateEmptyPlaceholders();
+  }
+
+  function setupEventListeners() {
+    const closeButton = document.querySelector('.quests-close');
+    closeButton.addEventListener('click', closeQuests);
+  }
+
+  function updateQuestData(questData) {
+    // Validate required data
+    if (!questData?.id || !questData?.name) {
+      console.warn('Invalid quest data received:', questData);
+      return;
+    }
+    
+    const { id, name, description, objectives, reward, state } = questData;
+    
+    // Sanitize and structure quest data
+    const questInfo = {
+      id: String(id),
+      name: sanitizeText(name),
+      description: sanitizeText(description || ''),
+      objectives: Array.isArray(objectives) ? objectives : [],
+      reward: reward || {},
+      state: state || { state: 'active', objectiveProgress: {} },
+      _cachedCompletedCount: undefined // Clear cache on data update
+    };
+
+    // Remove from both maps first
+    questsState.activeQuests.delete(id);
+    questsState.completedQuests.delete(id);
+
+    // Add to appropriate map based on state
+    const targetMap = state?.state === 'completed' ? questsState.completedQuests : questsState.activeQuests;
+    targetMap.set(id, questInfo);
+
+    // Efficiently update only the affected quest
+    updateQuestItem(id, questInfo);
+    
+    // If this quest is currently selected, update the details
+    if (questsState.selectedQuestId === id) {
+      showQuestDetails(id);
+    }
+    
+    // Ensure empty state is shown if needed
+    if (questsState.activeQuests.size === 0 && !questsState.selectedQuestId) {
+      showEmptyState();
+    }
+  }
+
+  function sanitizeText(text) {
+    if (typeof text !== 'string') return '';
+    return text.replace(/[<>&"']/g, char => ({
+      '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+  }
+
+  function renderQuestLists() {
+    renderQuestList('active', questsState.activeQuests, 'quests-active-list');
+    renderQuestList('completed', questsState.completedQuests, 'quests-completed-list');
+    
+    // Show empty state if no active quests and nothing is selected
+    if (questsState.activeQuests.size === 0 && !questsState.selectedQuestId) {
+      showEmptyState();
+    }
+  }
+
+  function renderQuestList(type, questsMap, containerId) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    if (questsMap.size === 0) {
+      // Show placeholder text when empty
+      const placeholder = document.createElement('div');
+      placeholder.className = 'quests-empty-section';
+      placeholder.textContent = type === 'active' ? 'No active quests' : 'No completed quests';
+      container.appendChild(placeholder);
+    } else {
+      for (const [questId, quest] of questsMap) {
+        container.appendChild(createQuestItem(questId, quest, type));
+      }
+    }
+  }
+
+  function createQuestItem(questId, quest, type) {
+    const questItem = document.createElement('div');
+    const isSelected = questsState.selectedQuestId === questId;
+    const isCompleted = type === 'completed';
+    
+    questItem.className = `quests-item${isCompleted ? ' quests-item-completed' : ''}${isSelected ? ' quests-item-selected' : ''}`;
+    questItem.dataset.questId = questId;
+    
+    const progress = isCompleted ? '✓' : `${calculateCompletedObjectives(quest)}/${quest.objectives.length}`;
+    
+    questItem.innerHTML = `
+      <div class="quests-item-name">${quest.name}</div>
+      <div class="quests-item-progress">${progress}</div>
+    `;
+    
+    questItem.addEventListener('click', () => selectQuest(questId));
+    return questItem;
+  }
+
+  function updateQuestItem(questId, quest) {
+    // Remove existing quest item from both lists
+    document.querySelectorAll(`[data-quest-id="${questId}"]`).forEach(item => item.remove());
+    
+    // Add to appropriate list
+    const isCompleted = quest.state.state === 'completed';
+    const containerId = isCompleted ? 'quests-completed-list' : 'quests-active-list';
+    const container = document.getElementById(containerId);
+    const type = isCompleted ? 'completed' : 'active';
+    
+    // Check if container is empty and needs placeholder removal
+    const emptyPlaceholder = container.querySelector('.quests-empty-section');
+    if (emptyPlaceholder) {
+      emptyPlaceholder.remove();
+    }
+    
+    container.appendChild(createQuestItem(questId, quest, type));
+    
+    // Add empty placeholders if lists become empty
+    updateEmptyPlaceholders();
+  }
+
+  function updateEmptyPlaceholders() {
+    const activeContainer = document.getElementById('quests-active-list');
+    const completedContainer = document.getElementById('quests-completed-list');
+    
+    // Handle active quests empty state
+    if (questsState.activeQuests.size === 0 && !activeContainer.querySelector('.quests-empty-section')) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'quests-empty-section';
+      placeholder.textContent = 'No active quests';
+      activeContainer.appendChild(placeholder);
+    }
+    
+    // Handle completed quests empty state
+    if (questsState.completedQuests.size === 0 && !completedContainer.querySelector('.quests-empty-section')) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'quests-empty-section';
+      placeholder.textContent = 'No completed quests';
+      completedContainer.appendChild(placeholder);
+    }
+  }
+
+  function selectQuest(questId) {
+    // Remove previous selection efficiently
+    if (questsState.selectedQuestId) {
+      const prevSelected = document.querySelector(`[data-quest-id="${questsState.selectedQuestId}"]`);
+      prevSelected?.classList.remove('quests-item-selected');
+    }
+    
+    // Add selection to clicked item
+    const selectedItem = document.querySelector(`[data-quest-id="${questId}"]`);
+    selectedItem?.classList.add('quests-item-selected');
+    
+    questsState.selectedQuestId = questId;
+    showQuestDetails(questId);
+  }
+
+  function calculateCompletedObjectives(quest) {
+    // Cache the result on the quest object to avoid recalculation
+    if (quest._cachedCompletedCount !== undefined) {
+      return quest._cachedCompletedCount;
+    }
+    
+    quest._cachedCompletedCount = quest.objectives.reduce((count, objective) => {
+      const progress = quest.state.objectiveProgress[objective.id] || 0;
+      return count + (progress >= objective.target ? 1 : 0);
+    }, 0);
+    
+    return quest._cachedCompletedCount;
+  }
+
+  function showQuestDetails(questId) {
+    const quest = questsState.activeQuests.get(questId) || questsState.completedQuests.get(questId);
+    if (!quest) return;
+
+    toggleDetailsPanels(true);
+    renderQuestDetails(quest);
+  }
+
+  function toggleDetailsPanels(showDetails) {
+    const detailsContent = document.getElementById('quests-details-content');
+    const emptyState = document.getElementById('quests-empty-state');
+    
+    if (showDetails) {
+      emptyState.style.display = 'none';
+      detailsContent.style.display = 'block';
+    } else {
+      detailsContent.style.display = 'none';
+      emptyState.style.display = 'flex';
+    }
+  }
+
+  function renderQuestDetails(quest) {
+    const completedObjectives = calculateCompletedObjectives(quest);
+    const totalObjectives = quest.objectives.length;
+    
+    const detailsContent = document.getElementById('quests-details-content');
+    detailsContent.innerHTML = `
+      <div class="quests-detail-header">
+        <h3 class="quests-detail-name">${quest.name}</h3>
+      </div>
+      
+      <div class="quests-detail-description">
+        <p>${quest.description}</p>
+      </div>
+      
+      <div class="quests-detail-objectives">
+        <h4 class="quests-objectives-title">Objectives (${completedObjectives}/${totalObjectives})</h4>
+        <ul class="quests-objectives-list">
+          ${generateObjectivesHTML(quest)}
+        </ul>
+      </div>
+      
+      <div class="quests-detail-rewards">
+        <h4 class="quests-rewards-title">Rewards</h4>
+        <div class="quests-rewards-list">
+          ${generateRewardsHTML(quest.reward)}
+        </div>
+      </div>
+    `;
+  }
+
+  function generateObjectivesHTML(quest) {
+    return quest.objectives.map(objective => {
+      const progress = quest.state.objectiveProgress[objective.id] || 0;
+      const isCompleted = progress >= objective.target;
+      const statusClass = isCompleted ? 'quests-objective-completed' : 'quests-objective-active';
+      const icon = isCompleted ? '✓' : '○';
+      
+      return `
+        <li class="quests-objective ${statusClass}">
+          <span class="quests-objective-icon">${icon}</span>
+          <span class="quests-objective-text">${sanitizeText(objective.description)}</span>
+        </li>
+      `;
+    }).join('');
+  }
+
+  function generateRewardsHTML(reward) {
+    const rewards = [];
+    
+    // Handle skill experience rewards
+    reward.skillExperience?.forEach(expReward => {
+      rewards.push(createRewardHTML('Experience', `${expReward.amount.toLocaleString()} ${expReward.skillId} Experience`));
+    });
+    
+    // Handle item rewards
+    reward.items?.forEach(itemReward => {
+      const quantity = itemReward.quantity > 1 ? ` x${itemReward.quantity.toLocaleString()}` : ' x1';
+      const itemName = itemReward.itemClass?.name || 'Unknown Item';
+      rewards.push(createRewardHTML('Item', `${sanitizeText(itemName)}${quantity}`));
+    });
+    
+    return rewards.length > 0 ? rewards.join('') : '<div class="quests-reward-item"><span class="quests-reward-text">No rewards</span></div>';
+  }
+
+  function createRewardHTML(type, text) {
+    return `
+      <div class="quests-reward-item">
+        <img src="{{CDN_ASSETS_URL}}/icons/items/gold.png" alt="${type}" class="quests-reward-icon">
+        <span class="quests-reward-text">${text}</span>
+      </div>
+    `;
+  }
+
+  function showEmptyState() {
+    toggleDetailsPanels(false);
+    questsState.selectedQuestId = null;
+    
+    // Update empty state message
+    const emptyText = document.querySelector('.quests-empty-text');
+    if (emptyText) {
+      emptyText.textContent = 'You have no active quests. Explore or talk to NPCs to discover new quests!';
+    }
+  }
+
+  function closeQuests() {
+    document.querySelector('.quests-overlay').style.display = 'none';
+    hytopia.lockPointer(true);
+  }
+
+  function openQuests() {
+    document.querySelector('.quests-overlay').style.display = 'flex';
+    hytopia.lockPointer(false, true);
+  }
+
+  function toggleQuests() {
+    const overlay = document.querySelector('.quests-overlay');
+    if (overlay.style.display === 'flex') {
+      closeQuests();
+    } else {
+      openQuests();
+    }
+  }
+
+  // Initialize
+  initializeQuests();
+
+  // Setup global function
+  window.frontiersRPG = window.frontiersRPG || {};
+  window.frontiersRPG.openQuests = openQuests;
+</script>
+
+<style>
+  :root {
+    --quests-font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .quests-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    font-family: var(--quests-font);
+    user-select: none;
+  }
+
+  /* Container Styles */
+  .quests-container {
+    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+    border: 2px solid #444;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    width: 800px;
+    height: 600px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header Styles */
+  .quests-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #3a3a3a, #2d2d2d);
+    border-bottom: 1px solid #444;
+    flex-shrink: 0;
+  }
+
+  .quests-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    letter-spacing: 0.3px;
+  }
+
+  .quests-close {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid rgba(255, 0, 0, 0.3);
+    border-radius: 6px;
+    color: #ff6b6b;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .quests-close:hover {
+    background: rgba(255, 0, 0, 0.3);
+    transform: scale(1.05);
+  }
+
+  /* Content Layout */
+  .quests-content {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Sidebar Styles */
+  .quests-sidebar {
+    width: 280px;
+    background: rgba(0, 0, 0, 0.3);
+    border-right: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .quests-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .quests-section:first-child {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* When active quests section has only placeholder, don't expand */
+  .quests-section:first-child:has(.quests-empty-section:only-child) {
+    flex: none;
+  }
+
+  .quests-section-title {
+    margin: 0;
+    padding: 12px 16px 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    border-bottom: 1px solid #333;
+    background: rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+  }
+
+  .quests-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  /* Quest Item Styles */
+  .quests-item {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .quests-item:hover {
+    border-color: #555;
+    background: rgba(0, 0, 0, 0.6);
+    transform: translateX(2px);
+  }
+
+  .quests-item-selected {
+    border-color: #4CAF50 !important;
+    background: rgba(76, 175, 80, 0.1) !important;
+    box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.3);
+  }
+
+  .quests-item-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #cccccc;
+    line-height: 1.3;
+    flex: 1;
+    min-width: 0;
+    word-wrap: break-word;
+  }
+
+  .quests-item-progress {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    flex-shrink: 0;
+  }
+
+  .quests-item-completed {
+    opacity: 0.7;
+  }
+
+  .quests-item-completed .quests-item-name {
+    color: #999;
+    text-decoration: line-through;
+  }
+
+  .quests-item-completed .quests-item-progress {
+    color: #4CAF50;
+  }
+
+  .quests-item-active .quests-item-progress {
+    color: #ffd700;
+  }
+
+  /* Empty section placeholder */
+  .quests-empty-section {
+    padding: 16px 12px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  /* Details Panel Styles */
+  .quests-details-panel {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .quests-details-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .quests-detail-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #333;
+  }
+
+  .quests-detail-name {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    line-height: 1.2;
+  }
+
+
+
+  .quests-detail-description {
+    margin-bottom: 24px;
+  }
+
+  .quests-detail-description p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #cccccc;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .quests-detail-objectives {
+    margin-bottom: 20px;
+  }
+
+  .quests-objectives-title {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .quests-objectives-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .quests-objective {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .quests-objective:last-child {
+    border-bottom: none;
+  }
+
+  .quests-objective-icon {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 1px;
+  }
+
+  .quests-objective-completed .quests-objective-icon {
+    color: #4CAF50;
+  }
+
+  .quests-objective-active .quests-objective-icon {
+    color: #ffd700;
+  }
+
+  .quests-objective-text {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #cccccc;
+    flex: 1;
+  }
+
+  .quests-objective-completed .quests-objective-text {
+    color: #999;
+    text-decoration: line-through;
+  }
+
+  /* Rewards Styles */
+  .quests-detail-rewards {
+    margin-bottom: 20px;
+  }
+
+  .quests-rewards-title {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+
+  .quests-rewards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .quests-reward-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .quests-reward-item:hover {
+    border-color: #555;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .quests-reward-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  }
+
+  .quests-reward-text {
+    font-size: 12px;
+    font-weight: 500;
+    color: #cccccc;
+    line-height: 1.3;
+  }
+
+  /* Empty State */
+  .quests-empty-state {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .quests-empty-content {
+    text-align: center;
+    color: #666;
+  }
+
+  .quests-empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  .quests-empty-text {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    padding: 0 12px;
+  }
+
+  /* Scrollbar Styles */
+  .quests-list::-webkit-scrollbar,
+  .quests-details-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .quests-list::-webkit-scrollbar-track,
+  .quests-details-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+  }
+
+  .quests-list::-webkit-scrollbar-thumb,
+  .quests-details-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+  }
+
+  .quests-list::-webkit-scrollbar-thumb:hover,
+  .quests-details-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Mobile Styles */
+  body.mobile .quests-container {
+    width: auto;
+    max-width: 98vw;
+    min-width: 300px;
+    height: 90vh;
+  }
+
+  body.mobile .quests-header {
+    padding: 8px 12px;
+  }
+
+  body.mobile .quests-title {
+    font-size: 14px;
+  }
+
+  body.mobile .quests-close {
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+  }
+
+  body.mobile .quests-content {
+    flex-direction: column;
+  }
+
+  body.mobile .quests-sidebar {
+    width: auto;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #444;
+  }
+
+  body.mobile .quests-section {
+    flex: none;
+  }
+
+  body.mobile .quests-section-title {
+    padding: 8px 12px 6px;
+    font-size: 12px;
+  }
+
+  body.mobile .quests-list {
+    padding: 6px;
+    max-height: 120px;
+  }
+
+  body.mobile .quests-item {
+    padding: 8px;
+    margin-bottom: 4px;
+  }
+
+  body.mobile .quests-item-name {
+    font-size: 11px;
+  }
+
+  body.mobile .quests-item-progress {
+    font-size: 10px;
+  }
+
+  body.mobile .quests-details-content {
+    padding: 12px;
+  }
+
+  body.mobile .quests-detail-name {
+    font-size: 16px;
+  }
+
+  body.mobile .quests-detail-description p {
+    font-size: 11px;
+  }
+
+  body.mobile .quests-objectives-title {
+    font-size: 12px;
+  }
+
+  body.mobile .quests-objective-text {
+    font-size: 11px;
+  }
+
+  body.mobile .quests-empty-section {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+
+</style>

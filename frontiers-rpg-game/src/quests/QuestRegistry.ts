@@ -8,6 +8,8 @@ import type { QuestNpcDialogueInteraction } from './BaseQuest';
 
 type QuestClass = typeof BaseQuest;
 
+export const QUEST_DIALOGUE_OPTION_START_ID = 1000;
+
 export default class QuestRegistry {
   private static _quests = new Map<string, QuestClass>();
   private static _dialogueOptionData = new Map<string, { option: BaseEntityDialogueOption; interaction: QuestNpcDialogueInteraction }>();
@@ -51,7 +53,7 @@ export default class QuestRegistry {
           this._quests.set(QuestClass.id, QuestClass);
           
           for (const interaction of QuestClass.dialogueInteractions) {
-            let currentId = npcIdCounters.get(interaction.npcClass) ?? 1000;
+            let currentId = npcIdCounters.get(interaction.npcClass) ?? QUEST_DIALOGUE_OPTION_START_ID;
             
             const assignIds = (dialogueOption: BaseEntityDialogueOption, isRoot: boolean = false): void => {
               const optionId = currentId++;

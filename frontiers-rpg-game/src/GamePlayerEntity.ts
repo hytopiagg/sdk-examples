@@ -299,9 +299,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       input.i = false;
     }
 
-    // Progress Log
+    // Quest Log
     if (input.j) {
-      this._gamePlayer.toggleLog();
+      this._gamePlayer.toggleQuests();
       input.j = false;
     }
 

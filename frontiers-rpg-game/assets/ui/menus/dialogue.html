@@ -56,7 +56,10 @@
         if (option.pureExit) {
           optionEl.classList.add('dialogue-option-exit');
         }
-        optionEl.textContent = option.text;
+        if (option.isQuestRoot) {
+          optionEl.classList.add('dialogue-option-quest');
+        }
+        optionEl.textContent = option.isQuestRoot ? `${option.text} [Quest]` : option.text;
         
         optionEl.addEventListener('click', () => {
           if (option.dismiss) {
@@ -341,6 +344,19 @@
     background: rgba(220, 38, 38, 0.1);
     color: #f87171;
   }
+
+  .dialogue-option-quest {
+    color: #4CAF50;
+    border-color: rgba(76, 175, 80, 0.3);
+  }
+
+  .dialogue-option-quest:hover {
+    border-color: #4CAF50;
+    background: rgba(76, 175, 80, 0.1);
+    color: #66BB6A;
+  }
+
+
 
   /* Mobile and Small Screen Responsive */
   @media (max-width: 768px) {

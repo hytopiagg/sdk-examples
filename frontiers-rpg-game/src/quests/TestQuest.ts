@@ -1,5 +1,6 @@
 import BaseQuest, { QuestObjective, QuestReward, QuestNpcDialogueInteraction } from './BaseQuest';
 import BoatRepairmanSidEntity from '../regions/stalkhaven-port/npcs/BoatRepairmanSidEntity';
+import type GamePlayerEntity from '../GamePlayerEntity';
 
 export default class TestQuest extends BaseQuest {
   static readonly id = 'test';
@@ -17,14 +18,19 @@ export default class TestQuest extends BaseQuest {
           text: 'Great thanks!',
           options: [
             {
-              text: 'Cool, done',
+              text: 'Cool, I will get to it',
               dismiss: true,
               pureExit: true,
             }
           ]
+        },
+        onSelect: (interactor: GamePlayerEntity) => {
+          interactor.gamePlayer.questLog.startQuest(this);
         }
       },
-      enabledForInteractor: () => true
+      enabledForInteractor: (interactor: GamePlayerEntity) => {
+        return !interactor.gamePlayer.questLog.hasQuest(this.id);
+      }
     }
   ];
 }

@@ -32,11 +32,11 @@
 
   <!-- Action Buttons (below clock) -->
   <div class="hud-action-buttons">
-    <button class="hud-action-button" id="hud-log-btn">
-      <img src="{{CDN_ASSETS_URL}}/icons/buttons/log.png" alt="Log" class="hud-action-button-icon">
+    <button class="hud-action-button" id="hud-quest-log-btn">
+      <img src="{{CDN_ASSETS_URL}}/icons/buttons/quests.png" alt="Quest Log" class="hud-action-button-icon">
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
-          Progress Log - See recent updates and progression details.
+          Quest Log - View your active and completed quests.
         </div>
       </div>
     </button>
@@ -198,7 +198,7 @@
 
   function setupActionButtons() {
     const buttons = {
-      'hud-log-btn': () => showNotification('Progress log opened!', 'success'),
+      'hud-quest-log-btn': () => window.frontiersRPG.openQuests(),
       'hud-backpack-btn': () => window.frontiersRPG.openBackpack(),
       'hud-skills-btn': () => window.frontiersRPG.openSkills()
     };

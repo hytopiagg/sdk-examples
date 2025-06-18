@@ -34,6 +34,9 @@ export default class QuestLog {
 
     this._questStates.set(questClass.id, questState);
 
+    this.syncUIUpdate(questClass.id);
+    this._owner.showNotification(`Started quest: ${questClass.name}. See quests for more details.`, 'success');
+
     return true;
   }
 
@@ -80,6 +83,29 @@ export default class QuestLog {
   public serialize(): SerializedQuestLogData {
     const quests = Array.from(this._questStates.values());
     return { quests };
+  }
+
+  public syncUI(): void {
+    for (const [ questId ] of this._questStates) {
+      this.syncUIUpdate(questId);
+    }
+  }
+
+  public syncUIUpdate(questId: string): void {
+    const questClass = QuestRegistry.getQuestClass(questId);
+    const questState = this._questStates.get(questId);
+
+    if (!questClass || !questState) return;
+
+    this._owner.player.ui.sendData({
+      type: 'questUpdate',
+      id: questId,
+      name: questClass.name,
+      description: questClass.description,
+      objectives: questClass.objectives,
+      reward: questClass.reward,
+      state: questState
+    });
   }
 
   public loadFromSerializedData(serializedQuestLogData: SerializedQuestLogData): boolean {

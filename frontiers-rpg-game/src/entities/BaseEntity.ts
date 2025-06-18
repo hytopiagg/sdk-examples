@@ -14,7 +14,7 @@ import {
 
 import { SkillId } from '../config';
 import GamePlayerEntity from '../GamePlayerEntity';
-import QuestRegistry from '../quests/QuestRegistry';
+import QuestRegistry, { QUEST_DIALOGUE_OPTION_START_ID } from '../quests/QuestRegistry';
 import type IInteractable from '../interfaces/IInteractable';
 import type IDamageable from '../interfaces/IDamageable';
 import type { ItemClass } from '../items/BaseItem';
@@ -249,8 +249,11 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public showDialogue(interactor: GamePlayerEntity, dialogue: BaseEntityDialogue): void {
     if (!this._dialogueRoot) return;
 
+    const isRootDialogue = this._dialogueRoot.dialogue === dialogue;
+    
     let questDialogueRootOptions: BaseEntityDialogueOption[] = [];
-    if (this._dialogueRoot.dialogue === dialogue) {
+
+    if (isRootDialogue) {
       questDialogueRootOptions = QuestRegistry.getQuestRootDialogueOptionsForNPC(this.constructor as typeof BaseEntity, interactor);
     }
 
@@ -272,6 +275,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
           text: option.text,
           dismiss: option.dismiss,
           pureExit: option.pureExit ?? false,
+          isQuestRoot: isRootDialogue && option._id && option._id >= QUEST_DIALOGUE_OPTION_START_ID,
         };
       }).filter(Boolean),
     });

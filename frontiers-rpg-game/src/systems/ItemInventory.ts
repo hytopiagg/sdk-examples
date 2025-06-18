@@ -232,6 +232,12 @@ export default class ItemInventory {
     }
     return this.removeItem(position) !== null;
   }
+  
+  public syncUI(player: Player): void {
+    for (const [ position, item ] of this._positionItems) {
+      this.syncUIUpdate(player, position, item);
+    }
+  }
 
   public syncUIUpdate(player: Player, position: number, item: BaseItem | null): void {
     player.ui.sendData({
@@ -247,11 +253,6 @@ export default class ItemInventory {
     })
   }
 
-  public syncUI(player: Player): void {
-    for (const [ position, item ] of this._positionItems) {
-      this.syncUIUpdate(player, position, item);
-    }
-  }
 
   protected onSlotChanged(position: number, item: BaseItem | null): void {
     // Default implementation does nothing - subclasses can override
