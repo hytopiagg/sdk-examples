@@ -103,7 +103,14 @@ export default class QuestLog {
       name: questClass.name,
       description: questClass.description,
       objectives: questClass.objectives,
-      reward: questClass.reward,
+      reward: {
+        items: questClass.reward.items?.map(item => ({
+          name: item.itemClass.name,
+          iconImageUri: item.itemClass.iconImageUri,
+          quantity: item.quantity,
+        })),
+        skillExperience: questClass.reward.skillExperience,
+      },
       state: questState
     });
   }
