@@ -35,6 +35,7 @@
     <button class="hud-action-button" id="hud-quest-log-btn">
       <img src="{{CDN_ASSETS_URL}}/icons/buttons/quests.png" alt="Quests" class="hud-action-button-icon">
       <div class="hud-action-key-indicator">J</div>
+      <div class="hud-quest-count-indicator" id="hud-quest-count-indicator">0</div>
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
           Quests - View your active and completed quests.
@@ -212,6 +213,17 @@
 
     // Setup death overlay respawn button
     document.getElementById('hud-death-respawn-btn').addEventListener('click', handleRespawn);
+  }
+
+  function updateHudQuestCount(count) {
+    const indicator = document.getElementById('hud-quest-count-indicator');
+    
+    if (count > 0) {
+      indicator.textContent = count.toString();
+      indicator.classList.add('show');
+    } else {
+      indicator.classList.remove('show');
+    }
   }
 
   // Utility Functions
@@ -422,6 +434,10 @@
 
   // Initialize HUD
   initializeHUD();
+
+  // Setup global functions
+  window.frontiersRPG = window.frontiersRPG || {};
+  window.frontiersRPG.updateHudQuestCount = updateHudQuestCount;
 </script>
 
 <style>
@@ -902,13 +918,15 @@
   /* Key Indicators */
   .hud-action-key-indicator {
     position: absolute;
-    top: -8px;
-    right: -8px;
+    bottom: 0px;
+    right: 0px;
     width: 20px;
     height: 20px;
-    background: linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
-    border: 1px solid var(--hud-border);
-    border-radius: 50%;
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6));
+    /* border: 2px solid var(--hud-border); */
+    border-radius: 6px;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -917,24 +935,55 @@
     color: var(--hud-text);
     text-shadow: var(--hud-text-shadow);
     z-index: 3;
-    box-shadow: 
-      0 2px 6px rgba(0, 0, 0, 0.8),
-      inset 0 1px 2px rgba(255, 255, 255, 0.1);
     transition: all var(--hud-transition);
     pointer-events: none;
   }
 
   .hud-action-button:hover .hud-action-key-indicator {
     background: linear-gradient(145deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.85));
-    transform: scale(1.1);
-    box-shadow: 
-      0 3px 8px rgba(0, 0, 0, 0.9),
-      inset 0 1px 2px rgba(255, 255, 255, 0.15);
   }
 
   /* Hide key indicators on mobile */
   body.mobile .hud-action-key-indicator {
     display: none;
+  }
+
+  /* Quest Count Indicator */
+  .hud-quest-count-indicator {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(145deg, #4CAF50, #66BB6A);
+    border: 1px solid rgba(76, 175, 80, 0.8);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    z-index: 4;
+    box-shadow: 
+      0 0 8px rgba(76, 175, 80, 0.5),
+      0 1px 4px rgba(0, 0, 0, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all var(--hud-transition);
+    pointer-events: none;
+  }
+
+  .hud-quest-count-indicator.show {
+    display: flex;
+  }
+
+  .hud-action-button:hover .hud-quest-count-indicator {
+    transform: scale(1.1);
+    box-shadow: 
+      0 0 12px rgba(76, 175, 80, 0.7),
+      0 1px 4px rgba(0, 0, 0, 0.8),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   /* ============================================
@@ -1307,6 +1356,14 @@
       height: 16px;
       top: -6px;
       right: -6px;
+      font-size: 8px;
+    }
+
+    .hud-quest-count-indicator {
+      min-width: 14px;
+      height: 14px;
+      top: -6px;
+      left: -6px;
       font-size: 8px;
     }
 

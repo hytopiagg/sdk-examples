@@ -115,6 +115,9 @@
     if (questsState.activeQuests.size === 0 && !questsState.selectedQuestId) {
       showEmptyState();
     }
+
+    // Trigger HUD quest count update
+    window.frontiersRPG.updateHudQuestCount(questsState.activeQuests.size);
   }
 
   function sanitizeText(text) {
@@ -377,9 +380,10 @@
   // Initialize
   initializeQuests();
 
-  // Setup global function
+  // Setup global functions
   window.frontiersRPG = window.frontiersRPG || {};
   window.frontiersRPG.openQuests = openQuests;
+  
 </script>
 
 <style>
