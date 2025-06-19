@@ -76,14 +76,23 @@ export default class QuestLog {
 
   public updateObjectiveProgress(questId: string, objectiveId: string, progress: number): boolean {
     const questState = this._questStates.get(questId);
-    if (!questState || questState.state !== 'active') {
-      return false;
-    }
+    if (!questState || questState.state !== 'active') return false;
+
+    const questClass = QuestRegistry.getQuestClass(questId);
+    if (!questClass) return false;
+
+    const objective = questClass.objectives.find(o => o.id === objectiveId);
+    if (!objective) return false;
 
     questState.objectiveProgress[objectiveId] = progress;
 
+    if (progress >= objective.target) {
+      this._owner.showNotification(`Completed objective: ${objective.name}.`, 'success');
+    }
+
+    this.syncUIUpdate(questId);
     this.updateEntityAlerts();
-    
+
     return true;
   }
 
@@ -119,6 +128,23 @@ export default class QuestLog {
 
   public isQuestCompleted(questId: string): boolean {
     return this._questStates.get(questId)?.state === 'completed';
+  }
+
+  public isQuestObjectiveCompleted(questId: string, objectiveId: string): boolean {
+    const questState = this._questStates.get(questId);
+    if (!questState || questState.state !== 'active') return false;
+
+    const questClass = QuestRegistry.getQuestClass(questId);
+    if (!questClass) return false;
+
+    const objective = questClass.objectives.find(o => o.id === objectiveId);
+    if (!objective) return false;
+
+    if (questState.objectiveProgress[objectiveId] >= objective.target) {
+      return true;
+    }
+
+    return false;
   }
 
   public serialize(): SerializedQuestLogData {

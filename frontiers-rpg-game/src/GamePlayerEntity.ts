@@ -16,7 +16,6 @@ import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
 import GamePlayer from './GamePlayer';
 import Levels from './systems/Levels';
-import WoodenSwordItem from './items/weapons/WoodenSwordItem';
 import type GameRegion from './GameRegion';
 import type IDamageable from './interfaces/IDamageable';
 
@@ -164,13 +163,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this._gamePlayer.onEntitySpawned(this);
     
     this._nameplateSceneUI.load(world);
-
-    // Give starting equipment if the player doesn't have any items yet
-    if (this._gamePlayer.hotbar.totalEmptySlots === this._gamePlayer.hotbar.size && 
-        this._gamePlayer.backpack.totalEmptySlots === this._gamePlayer.backpack.size) {
-      const woodenSword = WoodenSwordItem.create();
-      this._gamePlayer.hotbar.addItem(woodenSword);
-    }
 
     // Load entity alerts after spawn since alert state can depend on entity state not just the player.
     this._gamePlayer.questLog.updateEntityAlerts();

@@ -4736,15 +4736,17 @@
   <!-- Action Buttons (below clock) -->
   <div class="hud-action-buttons">
     <button class="hud-action-button" id="hud-quest-log-btn">
-      <img src="{{CDN_ASSETS_URL}}/icons/buttons/quests.png" alt="Quest Log" class="hud-action-button-icon">
+      <img src="{{CDN_ASSETS_URL}}/icons/buttons/quests.png" alt="Quests" class="hud-action-button-icon">
+      <div class="hud-action-key-indicator">J</div>
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
-          Quest Log - View your active and completed quests.
+          Quests - View your active and completed quests.
         </div>
       </div>
     </button>
     <button class="hud-action-button" id="hud-backpack-btn">
       <img src="{{CDN_ASSETS_URL}}/icons/buttons/backpack.png" alt="Backpack" class="hud-action-button-icon">
+      <div class="hud-action-key-indicator">I</div>
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
           Backpack - View and manage your backpack and equipment.
@@ -4753,6 +4755,7 @@
     </button>
     <button class="hud-action-button" id="hud-skills-btn">
       <img src="{{CDN_ASSETS_URL}}/icons/buttons/skills.png" alt="Skills" class="hud-action-button-icon">
+      <div class="hud-action-key-indicator">M</div>
       <div class="hud-action-tooltip">
         <div class="hud-action-tooltip-content">
           Skills - View your current character skills.
@@ -5591,11 +5594,50 @@
     height: 100%;
     object-fit: contain;
     opacity: 0.8;
+    border-radius: 6px;
     transition: opacity var(--hud-transition);
   }
 
   .hud-action-button:hover .hud-action-button-icon {
     opacity: 1;
+  }
+
+  /* Key Indicators */
+  .hud-action-key-indicator {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8));
+    border: 1px solid var(--hud-border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--hud-text);
+    text-shadow: var(--hud-text-shadow);
+    z-index: 3;
+    box-shadow: 
+      0 2px 6px rgba(0, 0, 0, 0.8),
+      inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    transition: all var(--hud-transition);
+    pointer-events: none;
+  }
+
+  .hud-action-button:hover .hud-action-key-indicator {
+    background: linear-gradient(145deg, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.85));
+    transform: scale(1.1);
+    box-shadow: 
+      0 3px 8px rgba(0, 0, 0, 0.9),
+      inset 0 1px 2px rgba(255, 255, 255, 0.15);
+  }
+
+  /* Hide key indicators on mobile */
+  body.mobile .hud-action-key-indicator {
+    display: none;
   }
 
   /* ============================================
@@ -5961,6 +6003,14 @@
 
     .hud-action-tooltip {
       display: none;
+    }
+
+    .hud-action-key-indicator {
+      width: 16px;
+      height: 16px;
+      top: -6px;
+      right: -6px;
+      font-size: 8px;
     }
 
     /* Notification Mobile Adjustments */

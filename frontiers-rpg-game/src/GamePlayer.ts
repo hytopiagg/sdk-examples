@@ -22,6 +22,8 @@ import type GameRegion from './GameRegion';
 import type { SerializedItemInventoryData } from './systems/ItemInventory';
 import type { SerializedQuestLogData } from './systems/QuestLog';
 
+import TrainingSwordItem from './items/weapons/TrainingSwordItem';
+
 export enum GamePlayerPlayerEvent {
   DIED = 'GamePlayer.DIED',
   RESPAWNED = 'GamePlayer.RESPAWNED',
@@ -303,8 +305,11 @@ export default class GamePlayer {
   public async load(): Promise<void> {
     const serializedGamePlayerData = await this.player.getPersistedData();
 
-    if (serializedGamePlayerData) {
+    if (serializedGamePlayerData) { // Existing player, load their state
       this._loadFromSerializedData(serializedGamePlayerData as SerializedGamePlayerData);
+    } else { // New player, give them starting training sword
+      const trainingSword = TrainingSwordItem.create();
+      this.hotbar.addItem(trainingSword);
     }
   }
 

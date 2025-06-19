@@ -1,12 +1,11 @@
 import { Collider, ColliderShape, Quaternion } from 'hytopia';
 import BaseWeaponItem, { BaseWeaponItemAttack } from '../BaseWeaponItem';
-import { Vector3Like } from 'hytopia';
 
-export default class WoodenSwordItem extends BaseWeaponItem {
+export default class DullSwordItem extends BaseWeaponItem {
   // Required static properties
-  static readonly id = 'wooden_sword';
-  static readonly name = 'Wooden Sword';
-  static readonly iconImageUri = 'icons/items/wooden-sword.png';
+  static readonly id = 'dull_sword';
+  static readonly name = 'Dull Sword';
+  static readonly iconImageUri = 'icons/items/dull-sword.png';
   static readonly attack: BaseWeaponItemAttack = {
     animations: ['sword-attack-upper'],
     cooldownMs: 500,
@@ -28,13 +27,13 @@ export default class WoodenSwordItem extends BaseWeaponItem {
     knockbackForce: 7,
     reach: 3,
   };
-  static readonly description = '[f44336]+10 damage[/][b]A basic wooden sword.';
-  static readonly heldModelUri = 'models/items/sword-wooden.gltf';
+  static readonly description = '[f44336]+10 damage[/][b]A dull metal sword. Better than nothing.';
+  static readonly heldModelUri = 'models/items/sword-stone.gltf';
   static readonly heldModelScale = 0.5;
   static readonly defaultRelativeRotationAsChild = Quaternion.fromEuler(-90, 0, 90);
   static readonly defaultRelativePositionAsChild = { x: 0, y: 0.1, z: 0.15 };
-  static readonly buyPrice = 40;
-  static readonly sellPrice = 15;
+  static readonly buyPrice = 25;
+  static readonly sellPrice = 10;
 
   protected override processAttackDamageTargets(attack: BaseWeaponItemAttack): void {
     if (!this.entity?.parent) return;
