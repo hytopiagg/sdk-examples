@@ -167,6 +167,8 @@ export default class GamePlayer {
   }
 
   public addEntityAlert(entityClass: typeof BaseEntity): void {
+    if (this._entityAlertClassNames.has(entityClass.name)) return;
+
     this._entityAlertClassNames.add(entityClass.name);
 
     this.player.ui.sendData({
@@ -309,6 +311,8 @@ export default class GamePlayer {
   }
 
   public removeEntityAlert(entityClass: typeof BaseEntity): void {
+    if (!this._entityAlertClassNames.has(entityClass.name)) return;
+
     this._entityAlertClassNames.delete(entityClass.name);
 
     this.player.ui.sendData({
