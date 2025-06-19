@@ -1,7 +1,7 @@
-import { Player } from 'hytopia';
 import QuestRegistry from '../quests/QuestRegistry';
 import type BaseQuest from '../quests/BaseQuest';
 import type GamePlayer from '../GamePlayer';
+import type BaseEntity from '../entities/BaseEntity';
 import type { PlayerQuestState } from '../quests/BaseQuest';
 
 export type SerializedQuestLogData = {
@@ -9,6 +9,7 @@ export type SerializedQuestLogData = {
 };
 
 export default class QuestLog {
+  private _entityAlertClasses = new Set<typeof BaseEntity>();
   private _owner: GamePlayer;
   private _questStates = new Map<string, PlayerQuestState>();
 
@@ -37,7 +38,40 @@ export default class QuestLog {
     this.syncUIUpdate(questClass.id);
     this._owner.showNotification(`Started quest: ${questClass.name}. See quests for more details.`, 'success');
 
+    this.updateEntityAlerts();
+
     return true;
+  }
+
+  public updateEntityAlerts(): void {
+    if (!this._owner.currentEntity) return;
+
+    const shouldShowEntityClasses = new Set<typeof BaseEntity>();
+
+    // Iterate all known quests and determine which entity classes should show alerts
+    for (const questClass of QuestRegistry.getQuests().values()) {
+      for (const dialogueInteraction of questClass.dialogueInteractions) {
+        if (dialogueInteraction.enabledForInteractor(this._owner.currentEntity)) {
+          shouldShowEntityClasses.add(dialogueInteraction.npcClass);
+        }
+      }
+    }
+
+    // Add new alerts
+    for (const entityClass of shouldShowEntityClasses) {
+      if (!this._entityAlertClasses.has(entityClass)) {
+        this._owner.addEntityAlert(entityClass);
+        this._entityAlertClasses.add(entityClass);
+      }
+    }
+
+    // Remove alerts that are no longer needed
+    for (const entityClass of this._entityAlertClasses) {
+      if (!shouldShowEntityClasses.has(entityClass)) {
+        this._owner.removeEntityAlert(entityClass);
+        this._entityAlertClasses.delete(entityClass);
+      }
+    }
   }
 
   public updateObjectiveProgress(questId: string, objectiveId: string, progress: number): boolean {
@@ -47,6 +81,8 @@ export default class QuestLog {
     }
 
     questState.objectiveProgress[objectiveId] = progress;
+
+    this.updateEntityAlerts();
     
     return true;
   }
@@ -63,6 +99,8 @@ export default class QuestLog {
     
     this.syncUIUpdate(questId);
     this._owner.showNotification(`Completed quest: ${questClass.name}.`, 'success');
+
+    this.updateEntityAlerts();
 
     return true;
   }
@@ -122,7 +160,8 @@ export default class QuestLog {
     try {
       const { quests } = serializedQuestLogData;
       
-      // Clear existing quest states
+      // Clear existing quest states and alert classes
+      this._entityAlertClasses.clear();
       this._questStates.clear();
       
       // Load quests

@@ -171,6 +171,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       const woodenSword = WoodenSwordItem.create();
       this._gamePlayer.hotbar.addItem(woodenSword);
     }
+
+    // Load entity alerts after spawn since alert state can depend on entity state not just the player.
+    this._gamePlayer.questLog.updateEntityAlerts();
   }
 
   public override despawn(): void {

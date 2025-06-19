@@ -15,6 +15,10 @@ export default class QuestRegistry {
   private static _dialogueOptionData = new Map<string, { option: BaseEntityDialogueOption; interaction: QuestNpcDialogueInteraction }>();
   private static _npcRootDialogueOptionIds = new Map<typeof BaseEntity, Set<number>>();
 
+  public static getQuests(): Map<string, QuestClass> {
+    return this._quests;
+  }
+
   public static getQuestClass(questId: string): QuestClass | undefined {
     return this._quests.get(questId);
   }

@@ -142,6 +142,10 @@ export default class GamePlayer {
     return this._currentRegionSpawnFacingAngle;
   }
 
+  public get entityAlertClassNames(): Set<string> {
+    return this._entityAlertClassNames;
+  }
+
   public get globalExperience(): number {
     return this._globalExperience;
   }
