@@ -30,6 +30,7 @@ includeContent('./menus/skills.html');
 includeContent('./menus/dialogue.html');
 includeContent('./menus/quests.html');
 includeContent('./menus/merchant.html');
+includeContent('./menus/help.html');
 includeContent('./scene-ui-templates/entity-nameplate.html');
 includeContent('./scene-ui-templates/item-nameplate.html');
 includeContent('./hud.html');

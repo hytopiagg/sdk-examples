@@ -392,6 +392,10 @@ export default class GamePlayer {
     this.player.ui.sendData({ type: 'toggleBackpack' });
   }
 
+  public toggleHelp = (): void => {
+    this.player.ui.sendData({ type: 'toggleHelp' });
+  }
+
   public toggleQuests = (): void => {
     this.player.ui.sendData({ type: 'toggleQuests' });
   }

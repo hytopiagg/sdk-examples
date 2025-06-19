@@ -60,6 +60,16 @@
         </div>
       </div>
     </button>
+    <button class="hud-action-button hud-help-button" id="hud-help-btn">
+      <div class="hud-help-icon">?</div>
+      <div class="hud-action-key-indicator">O</div>
+      <div class="hud-help-notification-indicator show" id="hud-help-notification-indicator"></div>
+      <div class="hud-action-tooltip">
+        <div class="hud-action-tooltip-content">
+          Help - View game controls and tips.
+        </div>
+      </div>
+    </button>
   </div>
 
   <!-- Player Status Bars (positioned above hotbar) -->
@@ -204,7 +214,8 @@
     const buttons = {
       'hud-quest-log-btn': () => window.frontiersRPG.openQuests(),
       'hud-backpack-btn': () => window.frontiersRPG.openBackpack(),
-      'hud-skills-btn': () => window.frontiersRPG.openSkills()
+      'hud-skills-btn': () => window.frontiersRPG.openSkills(),
+      'hud-help-btn': () => window.frontiersRPG.openHelp()
     };
 
     Object.entries(buttons).forEach(([id, handler]) => {
@@ -215,14 +226,21 @@
     document.getElementById('hud-death-respawn-btn').addEventListener('click', handleRespawn);
   }
 
-  function updateHudQuestCount(count) {
-    const indicator = document.getElementById('hud-quest-count-indicator');
+  function updateHudQuestCount(activeCount, completedCount) {
+    const questIndicator = document.getElementById('hud-quest-count-indicator');
+    const helpNotification = document.getElementById('hud-help-notification-indicator');
     
-    if (count > 0) {
-      indicator.textContent = count.toString();
-      indicator.classList.add('show');
+    // Update quest count indicator
+    if (activeCount > 0) {
+      questIndicator.textContent = activeCount.toString();
+      questIndicator.classList.add('show');
     } else {
-      indicator.classList.remove('show');
+      questIndicator.classList.remove('show');
+    }
+    
+    // Hide help notification if the user has any quests, meaning they've started the game.
+    if (activeCount > 0 || completedCount > 0) {
+      helpNotification.classList.remove('show');
     }
   }
 
@@ -915,6 +933,25 @@
     opacity: 1;
   }
 
+  /* Help Button Styles */
+  .hud-help-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+    color: #cccccc;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    opacity: 0.8;
+    transition: opacity var(--hud-transition);
+  }
+
+  .hud-action-button:hover .hud-help-icon {
+    opacity: 1;
+  }
+
   /* Key Indicators */
   .hud-action-key-indicator {
     position: absolute;
@@ -923,7 +960,6 @@
     width: 20px;
     height: 20px;
     background: linear-gradient(145deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6));
-    /* border: 2px solid var(--hud-border); */
     border-radius: 6px;
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
@@ -945,6 +981,11 @@
 
   /* Hide key indicators on mobile */
   body.mobile .hud-action-key-indicator {
+    display: none;
+  }
+
+  /* Hide help button on mobile */
+  body.mobile .hud-help-button {
     display: none;
   }
 
@@ -984,6 +1025,30 @@
       0 0 12px rgba(76, 175, 80, 0.7),
       0 1px 4px rgba(0, 0, 0, 0.8),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  /* Help Notification Indicator */
+  .hud-help-notification-indicator {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 14px;
+    height: 14px;
+    background: #dc2626;
+    border-radius: 50%;
+    display: none;
+    z-index: 4;
+    pointer-events: none;
+    animation: pulse 2s infinite;
+  }
+
+  .hud-help-notification-indicator.show {
+    display: block;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
   }
 
   /* ============================================
@@ -1365,6 +1430,12 @@
       top: -6px;
       left: -6px;
       font-size: 8px;
+    }
+
+
+
+    .hud-help-icon {
+      font-size: 18px;
     }
 
     /* Notification Mobile Adjustments */

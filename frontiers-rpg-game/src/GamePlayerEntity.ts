@@ -305,6 +305,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       this._gamePlayer.toggleSkills();
       input.m = false;
     }
+
+    // Help
+    if (input.o) {
+      this._gamePlayer.toggleHelp();
+      input.o = false;
+    }
   }
 
   private _setupPlayerCamera(): void {

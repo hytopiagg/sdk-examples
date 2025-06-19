@@ -117,7 +117,7 @@
     }
 
     // Trigger HUD quest count update
-    window.frontiersRPG.updateHudQuestCount(questsState.activeQuests.size);
+    window.frontiersRPG.updateHudQuestCount(questsState.activeQuests.size, questsState.completedQuests.size);
   }
 
   function sanitizeText(text) {
