@@ -4,6 +4,7 @@ import CommanderMarkEntity from '../../regions/stalkhaven/npcs/CommanderMarkEnti
 import { GamePlayerEntityPlayerEvent } from '../../GamePlayerEntity';
 import GoldItem from '../../items/general/GoldItem';
 import { SkillId } from '../../config';
+import StalkhavensOutpostQuest from './StalkhavensOutpostQuest';
 import type { BaseEntityPlayerEventPayloads } from '../../entities/BaseEntity';
 import type GamePlayer from '../../GamePlayer';
 import type GamePlayerEntity from '../../GamePlayerEntity';
@@ -51,10 +52,10 @@ export default class TestedMettleQuest extends BaseQuest {
       dialogueOption: {
         text: `I've cleared out some of the Ratkin in Chitter Forest.`,
         nextDialogue: {
-          text: `Impressive work. You've proven you can handle the corrupted Ratkin and stay alive doing it. Captain Sporn has established a forward camp in Chitter Forest with Capfolk warriors from his refugee group. They're planning coordinated strikes against the larger Ratkin encampments that threaten Stalkhaven. Report to the camp - they need someone with your proven abilities.`,
+          text: `Impressive work. You've proven you can handle the corrupted Ratkin and stay alive doing it. I want you to go meet Captain Chanterelion. He's established an outpost just outside the Stalkhaven gates in Chitter Forest with Capfolk knights from his refugee group. They're planning coordinated strikes against the larger Ratkin encampments closes to Stalkhaven. Report to the camp - they need someone with your proven abilities.`,
           options: [
             {
-              text: `I'll report to Captain Sporn's camp immediately.`,
+              text: `I'll report to Captain Chanterelion's camp immediately.`,
               dismiss: true,
               pureExit: true,
             }
@@ -63,6 +64,7 @@ export default class TestedMettleQuest extends BaseQuest {
         onSelect: (interactor: GamePlayerEntity) => {
           interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-mark', 1);
           interactor.gamePlayer.questLog.completeQuest(this.id);
+          interactor.gamePlayer.questLog.startQuest(StalkhavensOutpostQuest);
         }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
