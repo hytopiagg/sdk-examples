@@ -9,8 +9,13 @@ import RatkinRangerEntity from '../../entities/enemies/RatkinRangerEntity';
 import RatkinSpellcasterEntity from '../../entities/enemies/RatkinSpellcasterEntity';
 import RatkinWarriorEntity from '../../entities/enemies/RatkinWarriorEntity';
 
+import TaintedRatkinBruteEntity from '../../entities/enemies/TaintedRatkinBruteEntity';
+import TaintedRatkinRangerEntity from '../../entities/enemies/TaintedRatkinRangerEntity';
+import TaintedRatkinSpellcasterEntity from '../../entities/enemies/TaintedRatkinSpellcasterEntity';
+import TaintedRatkinWarriorEntity from '../../entities/enemies/TaintedRatkinWarriorEntity';
+
 // Spawner Forageables
-import RottenLogEntity from '../../entities/forageables/RottenLogEntity';
+import DecayingPileEntity from '../../entities/forageables/DecayingPileEntity';
 
 import ratkinNestMap from '../../../assets/maps/ratkin-nest.json';
 
@@ -38,10 +43,6 @@ export default class RatkinNestRegion extends GameRegion {
     this._setupPortals();
   }
   private _setupEnemySpawners(): void {
-    
-  }
-
-  private _setupForageableSpawners(): void {
     const wanderOptions: WanderOptions = {
       idleMinMs: 8000,
       idleMaxMs: 30000,
@@ -57,6 +58,10 @@ export default class RatkinNestRegion extends GameRegion {
         { entityConstructor: RatkinRangerEntity, weight: 2, wanders: true, wanderOptions },
         { entityConstructor: RatkinSpellcasterEntity, weight: 1.5, wanders: true, wanderOptions },
         { entityConstructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinBruteEntity, weight: 1, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinRangerEntity, weight: 1, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinSpellcasterEntity, weight: 0.5, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinWarriorEntity, weight: 3, wanders: true, wanderOptions },
       ],
       spawnRegions: [
         {
@@ -74,7 +79,63 @@ export default class RatkinNestRegion extends GameRegion {
       world: this.world,
     });
 
+    const lowerNestSpawner = new Spawner({
+      groundCheckDistance: 4,
+      maxSpawns: 20,
+      spawnables: [
+        { entityConstructor: RatkinBruteEntity, weight: 1, wanders: true, wanderOptions },
+        { entityConstructor: RatkinRangerEntity, weight: 1, wanders: true, wanderOptions },
+        { entityConstructor: RatkinSpellcasterEntity, weight: 0.5, wanders: true, wanderOptions },
+        { entityConstructor: RatkinWarriorEntity, weight: 3, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinBruteEntity, weight: 2, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinRangerEntity, weight: 2, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinSpellcasterEntity, weight: 1.5, wanders: true, wanderOptions },
+        { entityConstructor: TaintedRatkinWarriorEntity, weight: 7, wanders: true, wanderOptions },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -3, y: 1, z: -47 },
+          max: { x: 69, y: 3, z: 42 },
+          weight: 1,
+        }
+      ],
+      spawnIntervalMs: 60000,
+      world: this.world,
+    });
+
     upperNestSpawner.start(true);
+    lowerNestSpawner.start(true);
+  }
+
+  private _setupForageableSpawners(): void {
+    const ratkinNestSpawner = new Spawner({
+      groundCheckDistance: 6,
+      maxSpawns: 20,
+      spawnables: [
+        { entityConstructor: DecayingPileEntity, weight: 1 },
+      ],
+      spawnRegions: [
+        { // Upper Nest
+          min: { x: -79, y: 6, z: -75 },
+          max: { x: -20, y: 12, z: -24 },
+          weight: 0.5,
+        },
+        { // Upper Nest
+          min: { x: -75, y: 6, z: -16 },
+          max: { x: -7, y: 10, z: 25 },
+          weight: 1,
+        },
+        { // Lower Nest
+          min: { x: -3, y: 1, z: -47 },
+          max: { x: 69, y: 3, z: 42 },
+          weight: 2.5,
+        }
+      ],
+      spawnIntervalMs: 30000,
+      world: this.world,
+    });
+
+    ratkinNestSpawner.start(true);
   }
 
   private _setupPortals(): void {
