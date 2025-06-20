@@ -13,7 +13,7 @@ export default class WelcomeToStalkhavenQuest extends BaseQuest {
 
   static readonly reward = {
     skillExperience: [
-      { skillId: SkillId.EXPLORATION, amount: 100 },
+      { skillId: SkillId.EXPLORATION, amount: 50 },
     ],
   }
 
@@ -68,13 +68,13 @@ export default class WelcomeToStalkhavenQuest extends BaseQuest {
                     text: `I'll speak with everyone. Thank you, Commander.`,
                     dismiss: true,
                     pureExit: true,
-                    onSelect: (interactor: GamePlayerEntity) => {
-                      interactor.gamePlayer.questLog.updateObjectiveProgress(this.id, 'talk-to-mark', 1);
-                      interactor.gamePlayer.questLog.completeQuest(this.id);
-                      interactor.gamePlayer.questLog.startQuest(ExploringStalkhavenQuest);
-                    }
                   }
                 ],
+              },
+              onSelect: (interactor: GamePlayerEntity) => {
+                interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-mark', 1);
+                interactor.gamePlayer.questLog.completeQuest(this.id);
+                interactor.gamePlayer.questLog.startQuest(ExploringStalkhavenQuest);
               }
             }
           ],

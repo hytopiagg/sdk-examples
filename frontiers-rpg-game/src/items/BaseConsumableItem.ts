@@ -77,7 +77,7 @@ export default abstract class BaseConsumableItem extends BaseItem {
       gamePlayer.hotbar.getItemPosition(this) !== null ? gamePlayer.hotbar : 
       gamePlayer.backpack.getItemPosition(this) !== null ? gamePlayer.backpack : null;
    
-    if (!itemInventory || !gamePlayer.adjustInventoryItemQuantity(itemInventory, this, -1)) {
+    if (!itemInventory || !gamePlayer.adjustInventoryItemQuantityByReference(itemInventory, this, -1)) {
       return;
     }
 

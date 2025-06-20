@@ -4,6 +4,7 @@ import CaptainSpornEntity from '../../regions/stalkhaven/npcs/CaptainSpornEntity
 import CommanderMarkEntity from '../../regions/stalkhaven/npcs/CommanderMarkEntity';
 import MerchantFinnEntity from '../../regions/stalkhaven/npcs/MerchantFinnEntity';
 import { SkillId } from '../../config';
+import TestedMettleQuest from './TestedMettleQuest';
 import type GamePlayerEntity from '../../GamePlayerEntity';
 
 // Rewards
@@ -21,7 +22,7 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
       { itemClass: GoldItem, quantity: 75 },
     ],
     skillExperience: [
-      { skillId: SkillId.EXPLORATION, amount: 50 },
+      { skillId: SkillId.EXPLORATION, amount: 100 },
     ],
   }
 
@@ -65,11 +66,12 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
               text: `Thank you, Elder. I'll remember.`,
               dismiss: true,
               pureExit: true,
-              onSelect: (interactor: GamePlayerEntity) => {
-                interactor.gamePlayer.questLog.updateObjectiveProgress(this.id, 'talk-to-mycelis', 1);
-              }
+              
             }
           ]
+        },
+        onSelect: (interactor: GamePlayerEntity) => {
+          interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-mycelis', 1);
         }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
@@ -89,11 +91,11 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
               text: `I'll remember that. Thanks, Finn.`,
               dismiss: true,
               pureExit: true,
-              onSelect: (interactor: GamePlayerEntity) => {
-                interactor.gamePlayer.questLog.updateObjectiveProgress(this.id, 'talk-to-finn', 1);
-              }
             }
           ]
+        },
+        onSelect: (interactor: GamePlayerEntity) => {
+          interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-finn', 1);
         }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
@@ -113,11 +115,11 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
               text: `I'll arm myself first. Thanks for the warning.`,
               dismiss: true,
               pureExit: true,
-              onSelect: (interactor: GamePlayerEntity) => {
-                interactor.gamePlayer.questLog.updateObjectiveProgress(this.id, 'talk-to-sporn', 1);
-              }
             }
           ]
+        },
+        onSelect: (interactor: GamePlayerEntity) => {
+          interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-sporn', 1);
         }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
@@ -131,18 +133,19 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
       dialogueOption: {
         text: `I've spoken with Healer Mycelis, Merchant Finn, and Captain Sporn as you suggested.`,
         nextDialogue: {
-          text: `Excellent work. You've gained valuable allies - Mycelis for healing, Finn for equipment, Sporn for threat knowledge. Take this old dull sword I found - it's better than that wooden training blade. Also, here's some gold for supplies to get you started. You're ready for Chitter Forest. Stay vigilant against the Ratkin.`,
+          text: `Good work - now you understand what we're facing. The 7th Regiment needs help clearing corrupted Ratkin camps, but first I need to test your abilities. These aren't the peaceful traders we once knew - the fog twisted them under the "Whisker King." Take this blade and coin, head to Chitter Forest, and prove you can handle a few corrupted Ratkin.`,
           options: [
             {
-              text: `Thank you, Commander. I'll handle the Ratkin threat.`,
+              text: `Understood, Commander. I'll prove myself in Chitter Forest.`,
               dismiss: true,
               pureExit: true,
-              onSelect: (interactor: GamePlayerEntity) => {
-                interactor.gamePlayer.questLog.updateObjectiveProgress(this.id, 'talk-to-mark', 1);
-                interactor.gamePlayer.questLog.completeQuest(this.id);
-              }
             }
           ]
+        },
+        onSelect: (interactor: GamePlayerEntity) => {
+          interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-mark', 1);
+          interactor.gamePlayer.questLog.completeQuest(this.id);
+          interactor.gamePlayer.questLog.startQuest(TestedMettleQuest);
         }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {

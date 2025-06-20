@@ -31,6 +31,14 @@ export const RARITY_RGB_COLORS: Record<ItemRarity, RgbColor> = {
   utopian: { r: 255, g: 70, b: 70 },     // Pink-red - unique and special
 };
 
+export enum BaseItemPlayerEvent {
+  PICKED_UP = 'BaseItem.PICKED_UP',
+}
+
+export type BaseItemPlayerEventPayloads = {
+  [BaseItemPlayerEvent.PICKED_UP]: { item: BaseItem };
+}
+
 export type ItemClass = typeof BaseItem;
 
 export type ItemRarity = 'common' | 'unusual' | 'rare' | 'epic' | 'legendary' | 'utopian';
@@ -133,6 +141,8 @@ export default abstract class BaseItem implements IInteractable {
       if (!wouldAddToSelectedIndex) {
         this.despawnEntity();
       }
+
+      playerEntity.gamePlayer.eventRouter.emit(BaseItemPlayerEvent.PICKED_UP, { item: this });
     }
   }
 

@@ -303,10 +303,13 @@
       const statusClass = isCompleted ? 'quests-objective-completed' : 'quests-objective-active';
       const icon = isCompleted ? '✓' : '○';
       
+      // Add inline progress for objectives with target > 1
+      const progressText = objective.target > 1 ? ` (${progress}/${objective.target})` : '';
+      
       return `
         <li class="quests-objective ${statusClass}">
           <span class="quests-objective-icon">${icon}</span>
-          <span class="quests-objective-text">${sanitizeText(objective.description)}</span>
+          <span class="quests-objective-text">${sanitizeText(objective.description)}${progressText}</span>
         </li>
       `;
     }).join('');

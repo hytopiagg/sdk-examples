@@ -1,4 +1,3 @@
-import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
 import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
@@ -11,7 +10,7 @@ import RatkinSpellcasterEntity from '../../entities/enemies/RatkinSpellcasterEnt
 import RatkinWarriorEntity from '../../entities/enemies/RatkinWarriorEntity';
 
 // Spawner Forageables
-import ForageableLogEntity from '../../entities/forageables/ForageableLogEntity';
+import RottenLogEntity from '../../entities/forageables/RottenLogEntity';
 
 import chitterForestMap from '../../../assets/maps/chitter-forest.json';
 
@@ -151,7 +150,7 @@ export default class ChitterForestRegion extends GameRegion {
     const forestAreaSpawner = new Spawner({
       maxSpawns: 20,
       spawnables: [
-        { entityConstructor: ForageableLogEntity, weight: 1 },
+        { entityConstructor: RottenLogEntity, weight: 1 },
       ],
       spawnRegions: [
         { // Main forest area

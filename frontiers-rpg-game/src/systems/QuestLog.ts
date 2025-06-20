@@ -18,8 +18,33 @@ export default class QuestLog {
   }
 
   public get owner(): GamePlayer { return this._owner; }
+  
   public get activeQuests(): PlayerQuestState[] { 
     return Array.from(this._questStates.values()).filter(quest => quest.state === 'active');
+  }
+
+  public adjustObjectiveProgress(questId: string, objectiveId: string, adjustAmount: number): boolean {
+    const questState = this._questStates.get(questId);
+    if (!questState || questState.state !== 'active') return false;
+
+    const questClass = QuestRegistry.getQuestClass(questId);
+    if (!questClass) return false;
+
+    const objective = questClass.objectives.find(o => o.id === objectiveId);
+    if (!objective) return false;
+
+    if (questState.objectiveProgress[objectiveId] >= objective.target) return false; // Already completed
+
+    questState.objectiveProgress[objectiveId] += adjustAmount;
+
+    if (questState.objectiveProgress[objectiveId] >= objective.target) {
+      this._owner.showNotification(`Completed objective: ${objective.name}.`, 'complete');
+    }
+
+    this.syncUIUpdate(questId);
+    this.updateEntityAlerts();
+
+    return true;
   }
 
   public startQuest(questClass: typeof BaseQuest): boolean {
@@ -30,13 +55,15 @@ export default class QuestLog {
     const questState: PlayerQuestState = {
       questId: questClass.id,
       state: 'active',
-      objectiveProgress: Object.fromEntries(questClass.objectives.map(obj => [obj.id, 0]))
+      objectiveProgress: Object.fromEntries(questClass.objectives.map(obj => [obj.id, 0])),
+      completionCleanup: questClass.setupForPlayer(this._owner),
     };
 
     this._questStates.set(questClass.id, questState);
 
+
     this.syncUIUpdate(questClass.id);
-    this._owner.showNotification(`Started quest: ${questClass.name}. See quests for more details.`, 'success');
+    this._owner.showNotification(`Started quest: ${questClass.name}. See quests for more details.`, 'new');
 
     this.updateEntityAlerts();
 
@@ -74,28 +101,6 @@ export default class QuestLog {
     }
   }
 
-  public updateObjectiveProgress(questId: string, objectiveId: string, progress: number): boolean {
-    const questState = this._questStates.get(questId);
-    if (!questState || questState.state !== 'active') return false;
-
-    const questClass = QuestRegistry.getQuestClass(questId);
-    if (!questClass) return false;
-
-    const objective = questClass.objectives.find(o => o.id === objectiveId);
-    if (!objective) return false;
-
-    questState.objectiveProgress[objectiveId] = progress;
-
-    if (progress >= objective.target) {
-      this._owner.showNotification(`Completed objective: ${objective.name}.`, 'success');
-    }
-
-    this.syncUIUpdate(questId);
-    this.updateEntityAlerts();
-
-    return true;
-  }
-
   public completeQuest(questId: string): boolean {
     const questClass = QuestRegistry.getQuestClass(questId);
     const questState = this._questStates.get(questId);
@@ -105,6 +110,7 @@ export default class QuestLog {
     }
 
     questState.state = 'completed';
+    questState.completionCleanup?.();
     
     this.syncUIUpdate(questId);
     this._owner.showNotification(`Completed quest: ${questClass.name}.`, 'success');
@@ -192,22 +198,18 @@ export default class QuestLog {
       
       // Load quests
       for (const questState of quests) {
-        if (!questState.questId || !questState.state) continue;
+        const questClass = QuestRegistry.getQuestClass(questState.questId);
+        
+        if (!questState.questId || !questState.state || !questClass) continue;
         if (questState.state !== 'active' && questState.state !== 'completed') continue;
         
         // Load quest state
         this._questStates.set(questState.questId, {
           questId: questState.questId,
           state: questState.state,
-          objectiveProgress: questState.objectiveProgress || {}
+          objectiveProgress: questState.objectiveProgress || {},
+          completionCleanup: questClass.setupForPlayer(this._owner),
         });
-
-        // Setup quest for player, IE event listeners, etc.
-        const questClass = QuestRegistry.getQuestClass(questState.questId);
-
-        if (questClass) {
-          questClass.setupForPlayer(this._owner);
-        }
       }
 
       return true;

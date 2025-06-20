@@ -18,6 +18,7 @@ import GamePlayer from './GamePlayer';
 import Levels from './systems/Levels';
 import type GameRegion from './GameRegion';
 import type IDamageable from './interfaces/IDamageable';
+import type { NotificationType } from './GamePlayer';
 
 export enum GamePlayerEntityPlayerEvent {
   DAMAGED = 'GamePlayerEntity.DAMAGED',
@@ -153,7 +154,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this._isMovementDisabled = isDisabled;
   }
 
-  public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
+  public showNotification(message: string, notificationType: NotificationType): void {
     this._gamePlayer.showNotification(message, notificationType);
   }
 
@@ -185,6 +186,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       
       this._nameplateSceneUI.setState({ dodged: true });
 
+      this._gamePlayer.eventRouter.emit(GamePlayerEntityPlayerEvent.DODGED, null);
+
       return;
     } 
 
@@ -211,8 +214,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
         z: direction.z * horizontalForce,
       });
     }
-
-    this._gamePlayer.eventRouter.emit(GamePlayerEntityPlayerEvent.DODGED, null);
   }
 
   private _interact(): void {

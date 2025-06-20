@@ -30,6 +30,7 @@ export type PlayerQuestState = {
   questId: string;
   state: QuestState;
   objectiveProgress: { [objectiveId: string]: number };
+  completionCleanup?: () => void;
 }
 
 // Static quest definition class
@@ -45,8 +46,10 @@ export default abstract class BaseQuest {
     return true; // Override in subclasses for requirements
   }
 
-  public static setupForPlayer(gamePlayer: GamePlayer): void {
+  public static setupForPlayer(gamePlayer: GamePlayer): () => void {
     // Override in subclasses to set up event listeners, etc
+    // Returns a cleanup function that will be called when the quest is completed
+    return () => {};
   }
 
   public static rewardCompletionForPlayer(gamePlayer: GamePlayer): boolean {

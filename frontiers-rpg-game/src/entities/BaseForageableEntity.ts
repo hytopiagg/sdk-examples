@@ -1,8 +1,15 @@
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import { SkillId } from '../config';
-import type BaseItem from '../items/BaseItem';
 import type { ItemClass } from '../items/BaseItem';
 import type GamePlayerEntity from '../GamePlayerEntity';
+
+export enum BaseForageableEntityPlayerEvent {
+  FORAGED = 'BaseForageableEntity.FORAGED',
+}
+
+export type BaseForageableEntityPlayerEventPayloads = {
+  [BaseForageableEntityPlayerEvent.FORAGED]: { entity: BaseForageableEntity };
+}
 
 export type ForageableItemDrop = {
   itemClass: ItemClass;
@@ -80,6 +87,7 @@ export default class BaseForageableEntity extends BaseEntity {
 
       if (!interactor.gamePlayer.isDead) {
         interactor.gamePlayer.adjustSkillExperience(SkillId.FORAGING, this._experienceReward);
+        interactor.gamePlayer.eventRouter.emit(BaseForageableEntityPlayerEvent.FORAGED, { entity: this });
       }
 
       this.forageItems();

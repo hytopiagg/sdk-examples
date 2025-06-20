@@ -34,6 +34,8 @@ export type GamePlayerPlayerEventPayloads = {
   [GamePlayerPlayerEvent.RESPAWNED]: null;
 }
 
+export type NotificationType = 'success' | 'error' | 'warning' | 'complete' | 'new';
+
 type SerializedGamePlayerData = {
   health: number;
   maxHealth: number;
@@ -200,7 +202,7 @@ export default class GamePlayer {
     }
   }
 
-  public adjustInventoryItemQuantity(itemInventory: Backpack | Hotbar | Storage, item: BaseItem, amount: number): boolean {
+  public adjustInventoryItemQuantityByReference(itemInventory: Backpack | Hotbar | Storage, item: BaseItem, amount: number): boolean {
     if (amount === 0) return true;
 
     const newQuantity = item.quantity + amount;
@@ -222,7 +224,7 @@ export default class GamePlayer {
       const existingGold = this.hotbar.getItemByClass(GoldItem) ?? this.backpack.getItemByClass(GoldItem);
       if (existingGold) {
         const inventory = this.hotbar.getItemByClass(GoldItem) === existingGold ? this.hotbar : this.backpack;
-        return this.adjustInventoryItemQuantity(inventory, existingGold, amount);
+        return this.adjustInventoryItemQuantityByReference(inventory, existingGold, amount);
       } else {
         const goldItem = GoldItem.create({ quantity: amount });
         return this.hotbar.addItem(goldItem) || this.backpack.addItem(goldItem);
@@ -252,7 +254,7 @@ export default class GamePlayer {
         if (remainingToRemove <= 0) break;
         
         const removeFromThis = Math.min(gold.quantity, remainingToRemove);
-        this.adjustInventoryItemQuantity(this.hotbar, gold, -removeFromThis);
+        this.adjustInventoryItemQuantityByReference(this.hotbar, gold, -removeFromThis);
         remainingToRemove -= removeFromThis;
       }
       
@@ -261,7 +263,7 @@ export default class GamePlayer {
         if (remainingToRemove <= 0) break;
         
         const removeFromThis = Math.min(gold.quantity, remainingToRemove);
-        this.adjustInventoryItemQuantity(this.backpack, gold, -removeFromThis);
+        this.adjustInventoryItemQuantityByReference(this.backpack, gold, -removeFromThis);
         remainingToRemove -= removeFromThis;
       }
       
@@ -373,7 +375,7 @@ export default class GamePlayer {
     this.player.setPersistedData(this._serialize());
   }
 
-  public showNotification(message: string, notificationType: 'success' | 'error' | 'warning'): void {
+  public showNotification(message: string, notificationType: NotificationType): void {
     this.player.ui.sendData({
       type: 'showNotification',
       message,

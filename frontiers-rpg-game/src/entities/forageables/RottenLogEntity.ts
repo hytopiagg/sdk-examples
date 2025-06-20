@@ -9,12 +9,12 @@ import MinorHealingPotionItem from '../../items/consumables/MinorHealingPotionIt
 import MonsterHideItem from '../../items/materials/MonsterHideItem';
 import UnusualSeedsItem from '../../items/seeds/UnusualSeedsItem';
 
-export type ForageableLogEntityOptions = {
+export type RottenLogEntityOptions = {
 
 } & BaseForageableEntityOptions;
 
-export default class ForageableLogEntity extends BaseForageableEntity {
-  public constructor(options?: ForageableLogEntityOptions) {
+export default class RottenLogEntity extends BaseForageableEntity {
+  public constructor(options?: RottenLogEntityOptions) {
     super({
       forageDurationMs: 2000,
       itemDrops: [

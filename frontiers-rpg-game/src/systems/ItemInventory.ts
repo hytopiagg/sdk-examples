@@ -125,7 +125,7 @@ export default class ItemInventory {
     return this._positionItems.get(position) ?? null;
   }
 
-  public getItemByClass(itemClass: new (...args: any[]) => BaseItem): BaseItem | null {
+  public getItemByClass(itemClass: typeof BaseItem): BaseItem | null {
     for (const [ item ] of this._itemPositions) {
       if (item instanceof itemClass) {
         return item;
@@ -135,7 +135,7 @@ export default class ItemInventory {
     return null;
   }
 
-  public getItemsByClass(itemClass: new (...args: any[]) => BaseItem): BaseItem[] {
+  public getItemsByClass(itemClass: typeof BaseItem): BaseItem[] {
     const items: BaseItem[] = [];
 
     for (const [ item ] of this._itemPositions) {
@@ -151,7 +151,7 @@ export default class ItemInventory {
     return this._itemPositions.get(item) ?? null;
   }
 
-  public getItemPositionByClass(itemClass: new (...args: any[]) => BaseItem): number | null {
+  public getItemPositionByClass(itemClass: typeof BaseItem): number | null {
     for (const [ item, position ] of this._itemPositions) {
       if (item instanceof itemClass) {
         return position;
@@ -159,6 +159,16 @@ export default class ItemInventory {
     }
 
     return null;
+  }
+
+  public getItemQuantityByClass(itemClass: typeof BaseItem): number {
+    let quantity = 0;
+    
+    for (const item of this.getItemsByClass(itemClass)) {
+      quantity += item.quantity;
+    }
+    
+    return quantity;
   }
 
   public isEmpty(position: number): boolean {
