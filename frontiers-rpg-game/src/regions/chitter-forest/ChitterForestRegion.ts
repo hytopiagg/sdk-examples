@@ -35,9 +35,8 @@ export default class ChitterForestRegion extends GameRegion {
     this._setupPortals();
   }
   private _setupEnemySpawners(): void {
-    return;
     const roamWanderOptions: WanderOptions = {
-      idleMinMs: 6000,
+      idleMinMs: 8000,
       idleMaxMs: 25000,
       maxWanderRadius: 12,
       moveOptions: { moveCompletesWhenStuck: true }

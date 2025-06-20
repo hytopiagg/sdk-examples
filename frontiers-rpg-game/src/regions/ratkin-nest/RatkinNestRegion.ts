@@ -42,7 +42,39 @@ export default class RatkinNestRegion extends GameRegion {
   }
 
   private _setupForageableSpawners(): void {
-    
+    const wanderOptions: WanderOptions = {
+      idleMinMs: 8000,
+      idleMaxMs: 30000,
+      maxWanderRadius: 8,
+      moveOptions: { moveCompletesWhenStuck: true }
+    }
+
+    const upperNestSpawner = new Spawner({
+      groundCheckDistance: 6,
+      maxSpawns: 20,
+      spawnables: [
+        { entityConstructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions },
+        { entityConstructor: RatkinRangerEntity, weight: 2, wanders: true, wanderOptions },
+        { entityConstructor: RatkinSpellcasterEntity, weight: 1.5, wanders: true, wanderOptions },
+        { entityConstructor: RatkinWarriorEntity, weight: 7, wanders: true, wanderOptions },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -79, y: 6, z: -75 },
+          max: { x: -20, y: 12, z: -24 },
+          weight: 1,
+        },
+        {
+          min: { x: -75, y: 6, z: -16 },
+          max: { x: -7, y: 10, z: 25 },
+          weight: 2,
+        }
+      ],
+      spawnIntervalMs: 60000,
+      world: this.world,
+    });
+
+    upperNestSpawner.start(true);
   }
 
   private _setupPortals(): void {

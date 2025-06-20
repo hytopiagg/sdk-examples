@@ -1,6 +1,7 @@
 import {
   Entity,
   EntityEvent,
+  ErrorHandler,
   Quaternion,
   Vector3Like,
   World,
@@ -38,6 +39,7 @@ export type Spawnable = EntitySpawnable | ItemSpawnable;
 
 export type SpawnerOptions = {
   exclusionZones?: BoundingBox[];
+  groundCheckDistance?: number;
   maxSpawns: number;
   spawnables: Spawnable[];
   spawnRegions: SpawnRegion[];
@@ -47,6 +49,7 @@ export type SpawnerOptions = {
 
 export default class Spawner {
   private _exclusionZones: BoundingBox[];
+  private _groundCheckDistance: number;
   private _maxSpawns: number;
   private _spawnables: Spawnable[];
   private _spawnedEntities: Set<Entity> = new Set();
@@ -66,6 +69,7 @@ export default class Spawner {
       throw new Error('Spawner: spawnRegions cannot be empty');
     }
 
+    this._groundCheckDistance = options.groundCheckDistance ?? 4;
     this._maxSpawns = Math.max(1, options.maxSpawns);
     this._spawnables = options.spawnables;
     this._spawnRegions = options.spawnRegions;
@@ -90,9 +94,14 @@ export default class Spawner {
     if (this._spawnInterval) return;
 
     if (spawnAllImmediately) {
-      const spawnCount = this._maxSpawns - this._spawnedEntities.size;
-      for (let i = 0; i < spawnCount; i++) {
+      let attempts = 0;
+      while (this._spawnedEntities.size < this._maxSpawns) {
         this._spawnEntity();
+
+        if (attempts > 500) { // Prevent infinite loop
+          ErrorHandler.warning('Spawner: Failed to spawn all entities after 500 attempts');
+          break;
+        }
       }
     }
 
@@ -168,9 +177,24 @@ export default class Spawner {
         z: Math.random() * (region.max.z - region.min.z) + region.min.z,
       };
 
-      if (!this._world.chunkLattice.hasBlock(point) && !this._isInExclusionZone(point)) {
-        return point;
+      // Ignore exclusion zones
+      if (this._isInExclusionZone(point)) continue;
+
+      // Ignore spawn points that would spawn in a block
+      if (this._world.chunkLattice.hasBlock(point)) continue;
+
+      // Check for ground
+      let hasGround = false;
+      for (let i = 1; i <= this._groundCheckDistance; i++) {
+        if (this._world.chunkLattice.hasBlock({ x: point.x, y: point.y - i, z: point.z })) {
+          hasGround = true;
+          break;
+        }
       }
+
+      if (!hasGround) continue;
+
+      return point;
     }
 
     return null;
