@@ -15,7 +15,7 @@ export default class TestedMettleQuest extends BaseQuest {
   static readonly description = `Commander Mark wants to test your combat abilities before assigning you to military operations. Prove your mettle by eliminating corrupted Ratkin in Chitter Forest and demonstrating your dodging skills in combat.`;
 
   static readonly reward = {
-    itemRewards: [
+    items: [
       { itemClass: GoldItem, quantity: 150 },
     ],
     skillExperience: [

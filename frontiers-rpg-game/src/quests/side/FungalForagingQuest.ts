@@ -11,18 +11,18 @@ import type GamePlayer from '../../GamePlayer';
 import type GamePlayerEntity from '../../GamePlayerEntity';
 import CommonMushroomItem from '../../items/consumables/CommonMushroomItem';
 
-export default class TestedMettleQuest extends BaseQuest {
-  static readonly id = 'tested-mettle';
-  static readonly name = 'Tested Mettle';
-  static readonly description = `Commander Mark wants to test your combat abilities before assigning you to military operations. Prove your mettle by eliminating corrupted Ratkin in Chitter Forest and demonstrating your dodging skills in combat.`;
+export default class FungalForagingQuest extends BaseQuest {
+  static readonly id = 'fungal-foraging';
+  static readonly name = 'Fungal Foraging';
+  static readonly description = `Merchant Finn is running low on mushrooms, and you're running low on coins. Can you help him out?`;
 
   static readonly reward = {
-    itemRewards: [
-      { itemClass: GoldItem, quantity: 150 },
+    items: [
+      { itemClass: GoldItem, quantity: 125 },
     ],
     skillExperience: [
-      { skillId: SkillId.COMBAT, amount: 250 },
-      { skillId: SkillId.EXPLORATION, amount: 250 },
+      { skillId: SkillId.FORAGING, amount: 300 },
+      { skillId: SkillId.BARTERING, amount: 300 },
     ],
   }
 
@@ -35,8 +35,8 @@ export default class TestedMettleQuest extends BaseQuest {
     },
     {
       id: 'pick-mushrooms',
-      name: 'Pick 25 Common Mushrooms',
-      description: 'Forage Rotten Logs in Chitter Forest and collect 25 Common Mushrooms.',
+      name: 'Collect 25 Common Mushrooms',
+      description: 'Collect 25 Common Mushrooms from Rotten Logs in Chitter Forest.',
       target: 25,
     },
     {
@@ -52,17 +52,17 @@ export default class TestedMettleQuest extends BaseQuest {
     {
       npcClass: MerchantFinnEntity,
       dialogueOption: {
-        text: `I'm new to town, anything I could help with to earn a few coins?`,
+        text: `Looking for work - got anything that pays?`,
         nextDialogue: {
-          text: `Actually, yes! I'm running low on mushrooms ever since the Capfolk have come to Stalkhaven. Could you head into Chitter Forest and forage Rotten Logs and collect 25 Common Mushrooms for me?`,
+          text: `Business has been good, maybe too good. The Capfolk can't get enough mushrooms and my supply's running dry. If you can bring me 25 Common Mushrooms from the Rotten Logs in Chitter Forest, I'll make it worth your while.`,
           options: [
             {
-              text: `Happily! I'll head to Chitter Forest to forage for you.`,
+              text: `Sounds like a fair trade. I'll get those mushrooms.`,
               nextDialogue: {
-                text: `Wonderful! I'll be waiting here for those mushrooms. Oh! And be careful, Chitter Forest is filled with violent Ratkin these days.`,
+                text: `Smart thinking! Just watch yourself out there - those Ratkin don't take kindly to visitors in their forest.`,
                 options: [
                   {
-                    text: `Thanks, I'll be careful.`,
+                    text: `I can handle myself.`,
                     dismiss: true,
                     pureExit: true,
                   }
@@ -73,7 +73,7 @@ export default class TestedMettleQuest extends BaseQuest {
               }
             },
             {
-              text: `Sorry, I can't do that right now.`,
+              text: `Not interested in forest work right now.`,
               dismiss: true,
               pureExit: true,
             }
@@ -90,12 +90,12 @@ export default class TestedMettleQuest extends BaseQuest {
     {
       npcClass: MerchantFinnEntity,
       dialogueOption: {
-        text: `Here's your mushrooms!`,
+        text: `Got your mushrooms right here.`,
         nextDialogue: {
-          text: `Wonderful! These will do great for my customers and keep the Capfolk happy. Here's your payment.`,
+          text: `Perfect quality! My Capfolk customers will be pleased, and so will my coin purse. Here's your payment as promised.`,
           options: [
             {
-              text: `Thank you!`,
+              text: `Pleasure doing business.`,
               dismiss: true,
               pureExit: true,
             }
@@ -106,7 +106,7 @@ export default class TestedMettleQuest extends BaseQuest {
           const totalHotbarMushrooms = interactor.gamePlayer.hotbar.getItemQuantityByClass(CommonMushroomItem);
 
           if (totalHotbarMushrooms + totalBackpackMushrooms < 25) {
-            return interactor.showNotification(`You need at least 25 Common Mushrooms in your invetory to complete this quest!`, 'error');
+            return interactor.showNotification(`Merchant Finn is looking for 25 Common Mushrooms - seems you're a bit short!`, 'error');
           }
 
           // Remove 25 mushrooms from backpack and hotbar
@@ -149,7 +149,7 @@ export default class TestedMettleQuest extends BaseQuest {
 
     const itemPickupListener = (payload: BaseItemPlayerEventPayloads[BaseItemPlayerEvent.PICKED_UP]) => {
       if (payload.item.name === 'Common Mushroom') {
-        gamePlayer.questLog.adjustObjectiveProgress(this.id, 'pick-mushrooms', 1);
+        gamePlayer.questLog.adjustObjectiveProgress(this.id, 'pick-mushrooms', payload.item.quantity);
       }
     };
 
