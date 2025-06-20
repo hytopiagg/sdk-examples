@@ -128,6 +128,7 @@ export default class FungalForagingQuest extends BaseQuest {
             remaining -= toRemove;
           }
 
+          interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'give-mushrooms', 1);
           interactor.gamePlayer.questLog.completeQuest(this.id);
         }
       },
