@@ -17,6 +17,11 @@ import {
 import GamePlayer from './GamePlayer';
 import GamePlayerEntity from './GamePlayerEntity';
 
+const DEFAULT_MAX_AMBIENT_LIGHT_INTENSITY = 1.5;
+const DEFAULT_MAX_DIRECTIONAL_LIGHT_INTENSITY = 3.25;
+const DEFAULT_MIN_AMBIENT_LIGHT_INTENSITY = 0.4;
+const DEFAULT_MIN_DIRECTIONAL_LIGHT_INTENSITY = 0.3;
+
 export enum GameRegionPlayerEvent {
   REACHED = 'GameRegion.REACHED',
 }
@@ -29,6 +34,10 @@ export type GameRegionOptions = {
   id: string,
   ambientAudioUri?: string,
   ambientAudioVolume?: number,
+  maxAmbientLightIntensity?: number,
+  maxDirectionalLightIntensity?: number,
+  minAmbientLightIntensity?: number,
+  minDirectionalLightIntensity?: number,
   spawnFacingAngle?: number,
   spawnPoint?: Vector3Like,
 } & Omit<WorldOptions, 'id'>;
@@ -37,6 +46,10 @@ export default class GameRegion {
   private _id: string;
   private _ambientAudio: Audio | undefined;
   private _isSetup: boolean = false;
+  private _maxAmbientLightIntensity: number;
+  private _maxDirectionalLightIntensity: number;
+  private _minAmbientLightIntensity: number;
+  private _minDirectionalLightIntensity: number;
   private _outOfWorldCollider: Collider | undefined;
   private _spawnFacingAngle: number;
   private _spawnPoint: Vector3Like;
@@ -53,6 +66,10 @@ export default class GameRegion {
       loop: true,
     }) : undefined;
 
+    this._maxAmbientLightIntensity = regionOptions.maxAmbientLightIntensity ?? DEFAULT_MAX_AMBIENT_LIGHT_INTENSITY;
+    this._maxDirectionalLightIntensity = regionOptions.maxDirectionalLightIntensity ?? DEFAULT_MAX_DIRECTIONAL_LIGHT_INTENSITY;
+    this._minAmbientLightIntensity = regionOptions.minAmbientLightIntensity ?? DEFAULT_MIN_AMBIENT_LIGHT_INTENSITY;
+    this._minDirectionalLightIntensity = regionOptions.minDirectionalLightIntensity ?? DEFAULT_MIN_DIRECTIONAL_LIGHT_INTENSITY;
     this._spawnFacingAngle = regionOptions.spawnFacingAngle ?? 0;
     this._spawnPoint = regionOptions.spawnPoint ?? { x: 0, y: 10, z: 0 };
 
@@ -68,6 +85,10 @@ export default class GameRegion {
   }
 
   public get id(): string { return this._id; }
+  public get maxAmbientLightIntensity(): number { return this._maxAmbientLightIntensity; }
+  public get maxDirectionalLightIntensity(): number { return this._maxDirectionalLightIntensity; }
+  public get minAmbientLightIntensity(): number { return this._minAmbientLightIntensity; }
+  public get minDirectionalLightIntensity(): number { return this._minDirectionalLightIntensity; }
   public get name(): string { return this._world.name; }
   public get spawnFacingAngle(): number { return this._spawnFacingAngle; }
   public get spawnPoint(): Vector3Like { return this._spawnPoint; }

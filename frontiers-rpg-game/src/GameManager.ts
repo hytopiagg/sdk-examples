@@ -7,6 +7,7 @@ import type GameRegion from './GameRegion';
 
 // Regions
 import ChitterForestRegion from './regions/chitter-forest/ChitterForestRegion';
+import RatkinNestRegion from './regions/ratkin-nest/RatkinNestRegion';
 import StalkhavenRegion from './regions/stalkhaven/StalkhavenRegion';
 import StalkhavenPortRegion from './regions/stalkhaven-port/StalkhavenPortRegion';
 
@@ -42,18 +43,25 @@ export default class GameManager {
     // Chitter Forest
     const chitterForestRegion = new ChitterForestRegion();
     this._regions.set(chitterForestRegion.id, chitterForestRegion);
-    GameClock.instance.addWorldClockCycle(chitterForestRegion.world);
+    GameClock.instance.addRegionClockCycle(chitterForestRegion);
+    // this._startRegion = chitterForestRegion;
+
+    // Ratkin Nest (cave, no world lighting clock cycle)
+    const ratkinNestRegion = new RatkinNestRegion();
+    this._regions.set(ratkinNestRegion.id, ratkinNestRegion);
+    GameClock.instance.addRegionClockCycle(ratkinNestRegion);
+    this._startRegion = ratkinNestRegion;    
 
     // Stalkhaven
     const stalkhavenRegion = new StalkhavenRegion();
     this._regions.set(stalkhavenRegion.id, stalkhavenRegion);
-    GameClock.instance.addWorldClockCycle(stalkhavenRegion.world);
+    GameClock.instance.addRegionClockCycle(stalkhavenRegion);
 
     // Stalkhaven Port
     const stalkhavenPortRegion = new StalkhavenPortRegion();
     this._regions.set(stalkhavenPortRegion.id, stalkhavenPortRegion);
-    GameClock.instance.addWorldClockCycle(stalkhavenPortRegion.world);
-    this._startRegion = stalkhavenPortRegion;
+    GameClock.instance.addRegionClockCycle(stalkhavenPortRegion);
+    // this._startRegion = stalkhavenPortRegion;
   }
 
   private _selectWorldForPlayer = async (player: Player): Promise<World | undefined> => {

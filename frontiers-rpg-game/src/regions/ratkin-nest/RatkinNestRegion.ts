@@ -1,0 +1,51 @@
+import GameRegion from '../../GameRegion';
+import Spawner from '../../systems/Spawner';
+import PortalEntity from '../../entities/PortalEntity';
+import type { WanderOptions } from '../../entities/BaseEntity';
+
+// Spawner Enemies
+import RatkinBruteEntity from '../../entities/enemies/RatkinBruteEntity';
+import RatkinRangerEntity from '../../entities/enemies/RatkinRangerEntity';
+import RatkinSpellcasterEntity from '../../entities/enemies/RatkinSpellcasterEntity';
+import RatkinWarriorEntity from '../../entities/enemies/RatkinWarriorEntity';
+
+// Spawner Forageables
+import RottenLogEntity from '../../entities/forageables/RottenLogEntity';
+
+import ratkinNestMap from '../../../assets/maps/ratkin-nest.json';
+
+export default class RatkinNestRegion extends GameRegion {
+  public constructor() {
+    super({
+      id: 'ratkinNest',
+      name: 'Ratkin Nest',
+      map: ratkinNestMap,
+      maxAmbientLightIntensity: 0.275,
+      maxDirectionalLightIntensity: 1.75,
+      minAmbientLightIntensity: 0.225,
+      minDirectionalLightIntensity: 0.5,
+      skyboxUri: 'skyboxes/black',
+      spawnPoint: { x: -30, y: 23, z: -62 },
+      ambientAudioUri: 'audio/music/cave-theme-looping.mp3',
+    });
+  }
+
+  protected override setup(): void {
+    super.setup();
+
+    this._setupEnemySpawners();
+    this._setupForageableSpawners();
+    this._setupPortals();
+  }
+  private _setupEnemySpawners(): void {
+    
+  }
+
+  private _setupForageableSpawners(): void {
+    
+  }
+
+  private _setupPortals(): void {
+    
+  }
+}

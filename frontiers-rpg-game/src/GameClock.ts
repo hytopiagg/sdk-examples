@@ -1,4 +1,4 @@
-import { World } from 'hytopia';
+import type GameRegion from './GameRegion';
 
 const CYCLE_CLOCK_INTERVAL_MS = 5000; // Update clock every 1 second
 const CYCLE_CLOCK_OFFSET_HOURS = 7;
@@ -10,7 +10,7 @@ export default class GameClock {
   public static readonly instance = new GameClock();
 
   private _timeMs: number = 7 * 60 * 1000; // 5 + Offset time start (hours) 12pm
-  private _worlds: Set<World> = new Set();
+  private _regions: Set<GameRegion> = new Set();
 
   private constructor() {
     setInterval(() => this._tickClock(), CYCLE_CLOCK_INTERVAL_MS);
@@ -27,12 +27,12 @@ export default class GameClock {
     return Math.floor(totalMinutes) % 60;
   }
 
-  public addWorldClockCycle(world: World): void {
-    this._worlds.add(world);
+  public addRegionClockCycle(region: GameRegion): void {
+    this._regions.add(region);
   }
 
-  public removeWorldClockCycle(world: World): void {
-    this._worlds.delete(world);
+  public removeRegionClockCycle(region: GameRegion): void {
+    this._regions.delete(region);
   }
 
   private _tickClock(): void {
@@ -42,10 +42,12 @@ export default class GameClock {
       this._timeMs = 0;
     }
 
-    this._worlds.forEach((world) => this._updateWorldClockCycle(world));
+    this._regions.forEach((region) => this._updateRegionClockCycle(region));
   }
 
-  private _updateWorldClockCycle(world: World): void {
+  private _updateRegionClockCycle(region: GameRegion): void {
+    const world = region.world;
+    
     // Calculate sun position in circular path
     const timeProgress = this._timeMs / CYCLE_DURATION_MS;
     const sunAngle = timeProgress * 2 * Math.PI;
@@ -60,8 +62,8 @@ export default class GameClock {
     // Calculate lighting intensity based on sun height (simple and elegant)
     const sunHeightNormalized = (sunHeight - (-50)) / (250 - (-50)); // Normalize to 0-1
 
-    const lightIntensity = Math.max(0.3, sunHeightNormalized * 3.25);
-    const ambientIntensity = Math.max(0.4, sunHeightNormalized * 1.5);
+    const lightIntensity = Math.max(region.minDirectionalLightIntensity, sunHeightNormalized * region.maxDirectionalLightIntensity);
+    const ambientIntensity = Math.max(region.minAmbientLightIntensity, sunHeightNormalized * region.maxAmbientLightIntensity);
     
     // Calculate skybox intensity with ease-in transition
     const skyboxT = Math.max(0, Math.min(1, sunHeightNormalized));
