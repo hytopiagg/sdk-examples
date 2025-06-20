@@ -5,8 +5,8 @@ import type GamePlayerEntity from '../../GamePlayerEntity';
 
 export default class StalkhavensOutpostQuest extends BaseQuest {
   static readonly id = 'stalkhavens-outpost';
-  static readonly name = 'Stalkhaven\'s Outpost';
-  static readonly description = 'Commander Mark has instructed you to meet Captain Chanterelion at his outpost in Chitter Forest. He needs your help to clear the Ratkin from the area.';
+  static readonly name = `Stalkhaven's Outpost`;
+  static readonly description = 'Commander Mark has instructed you to meet Captain Chanterelion at his outpost in Chitter Forest just outside of the Stalkhaven gate. He needs your help to clear the Ratkin camps in the area.';
 
   static readonly reward = {
     skillExperience: [
