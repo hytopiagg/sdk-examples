@@ -4,6 +4,10 @@ import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
 import type { WanderOptions } from '../../entities/BaseEntity';
 
+// NPCs
+import CapfolkKnightEntity from '../../entities/npcs/CapfolkKnightEntity';
+import CaptainChanterelionEntity from './npcs/CaptainChanterelionEntity';
+
 // Spawner Enemies
 import RatkinBruteEntity from '../../entities/enemies/RatkinBruteEntity';
 import RatkinRangerEntity from '../../entities/enemies/RatkinRangerEntity';
@@ -32,8 +36,10 @@ export default class ChitterForestRegion extends GameRegion {
 
     this._setupEnemySpawners();
     this._setupForageableSpawners();
+    this._setupNPCs();
     this._setupPortals();
   }
+
   private _setupEnemySpawners(): void {
     const roamWanderOptions: WanderOptions = {
       idleMinMs: 8000,
@@ -170,6 +176,23 @@ export default class ChitterForestRegion extends GameRegion {
     });
 
     forestAreaSpawner.start(true);
+  }
+
+  private _setupNPCs(): void {
+    // Camp Knights
+    [
+      { facingAngle: 45, position: { x: 41, y: 2, z: 60 } },
+      { facingAngle: 135, position: { x: 40, y: 2, z: 51 } },
+      { facingAngle: 180, position: { x: 32, y: 2, z: 49 } },
+      { facingAngle: -45, position: { x: 32, y: 2, z: 60 } },
+    ].forEach(capfolkKnight => {
+      const knight = new CapfolkKnightEntity({ facingAngle: capfolkKnight.facingAngle });
+      knight.spawn(this.world, capfolkKnight.position);
+    });
+
+    // Captain Chanterelion
+    const captainChanterelion = new CaptainChanterelionEntity({ facingAngle: 90 });
+    captainChanterelion.spawn(this.world, { x: 42, y: 2, z: 55 });
   }
 
   private _setupPortals(): void {
