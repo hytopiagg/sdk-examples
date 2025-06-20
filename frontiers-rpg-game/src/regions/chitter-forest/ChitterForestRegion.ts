@@ -1,3 +1,4 @@
+import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
 import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
@@ -17,7 +18,7 @@ import chitterForestMap from '../../../assets/maps/chitter-forest.json';
 export default class ChitterForestRegion extends GameRegion {
   public constructor() {
     super({
-      id: 'chitterForest',
+      id: 'chitter-forest',
       name: 'Chitter Forest',
       map: chitterForestMap,
       skyboxUri: 'skyboxes/partly-cloudy',
@@ -34,6 +35,7 @@ export default class ChitterForestRegion extends GameRegion {
     this._setupPortals();
   }
   private _setupEnemySpawners(): void {
+    return;
     const roamWanderOptions: WanderOptions = {
       idleMinMs: 6000,
       idleMaxMs: 25000,
@@ -178,5 +180,13 @@ export default class ChitterForestRegion extends GameRegion {
     });
 
     stalkhavenPortal.spawn(this.world, { x: -7, y: 3.5, z: 80.2 });
+
+    const ratkinNestPortal = new PortalEntity({
+      destinationRegionId: 'ratkin-nest',
+      destinationRegionPosition: { x: -30, y: 23, z: -62 },
+      destinationRegionFacingAngle: 180,
+    });
+
+    ratkinNestPortal.spawn(this.world, { x: -105.75, y: 3.5, z: 55.5 }, Quaternion.fromEuler(0, -45, 0));
   }
 }

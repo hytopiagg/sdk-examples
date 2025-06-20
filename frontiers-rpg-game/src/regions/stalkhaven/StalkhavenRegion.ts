@@ -26,7 +26,7 @@ export default class StalkhavenRegion extends GameRegion {
     super.setup();
     
     const chitterForestPortal = new PortalEntity({
-      destinationRegionId: 'chitterForest',
+      destinationRegionId: 'chitter-forest',
       destinationRegionFacingAngle: 0,
       destinationRegionPosition: { x: -7, y: 2, z: 76 },
       modelScale: 2,

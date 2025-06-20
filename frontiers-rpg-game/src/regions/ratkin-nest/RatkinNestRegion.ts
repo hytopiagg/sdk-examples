@@ -17,7 +17,7 @@ import ratkinNestMap from '../../../assets/maps/ratkin-nest.json';
 export default class RatkinNestRegion extends GameRegion {
   public constructor() {
     super({
-      id: 'ratkinNest',
+      id: 'ratkin-nest',
       name: 'Ratkin Nest',
       map: ratkinNestMap,
       maxAmbientLightIntensity: 0.275,
@@ -46,6 +46,12 @@ export default class RatkinNestRegion extends GameRegion {
   }
 
   private _setupPortals(): void {
-    
+    const chitterForestPortal = new PortalEntity({
+      destinationRegionId: 'chitter-forest',
+      destinationRegionPosition: { x: -103.5, y: 2, z: 53.5 },
+      destinationRegionFacingAngle: -45,
+    });
+
+    chitterForestPortal.spawn(this.world, { x: -31, y: 23.5, z: -71 }); 
   }
 }

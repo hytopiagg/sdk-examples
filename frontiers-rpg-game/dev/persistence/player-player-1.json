@@ -1,0 +1,29 @@
+{
+  "health": 100,
+  "maxHealth": 100,
+  "currentRegionId": "ratkin-nest",
+  "currentRegionSpawnFacingAngle": 180,
+  "currentRegionSpawnPoint": {
+    "x": -30,
+    "y": 23,
+    "z": -62
+  },
+  "skillExperience": [],
+  "backpack": {
+    "items": []
+  },
+  "hotbar": {
+    "items": [
+      {
+        "position": 0,
+        "itemId": "toy_sword"
+      }
+    ]
+  },
+  "questLog": {
+    "quests": []
+  },
+  "storage": {
+    "items": []
+  }
+}
