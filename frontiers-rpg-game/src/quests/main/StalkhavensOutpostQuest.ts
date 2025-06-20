@@ -44,14 +44,14 @@ export default class StalkhavensOutpostQuest extends BaseQuest {
                   }
                 ],
               },
-              onSelect: (interactor: GamePlayerEntity) => {
-                interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-chanterelion', 1);
-                interactor.gamePlayer.questLog.completeQuest(this.id);
-                // start encampmment clearing quest.
-              }
             }
           ],
         },
+        onSelect: (interactor: GamePlayerEntity) => {
+          interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-chanterelion', 1);
+          interactor.gamePlayer.questLog.completeQuest(this.id);
+          // start encampmment clearing quest.
+        }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
         return interactor.gamePlayer.questLog.isQuestActive(this.id);
