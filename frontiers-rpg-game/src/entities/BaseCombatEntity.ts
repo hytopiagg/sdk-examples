@@ -238,7 +238,7 @@ export default class BaseCombatEntity extends BaseEntity {
     this._aggroActiveTarget = null;
 
     if (this._aggroPotentialTargets.size === 0) {
-      if (this._aggroReturnToStart && this._aggroStartPosition) {
+      if (this.moveSpeed > 0 && this._aggroReturnToStart && this._aggroStartPosition) {
         this.pathfindTo(this._aggroStartPosition, this.moveSpeed);
       } else {
         this.stopMoving();
@@ -268,30 +268,36 @@ export default class BaseCombatEntity extends BaseEntity {
       if (targetDistanceSquared <= attackRangeSquared && this._attackAccumulatorMs >= this._attackCooldownMs) {
         this._attackAccumulatorMs = 0;
         this.attack();
+      } else if (targetDistanceSquared > attackRangeSquared) {
+        // Target is out of current attack range, try to find a better attack, optimize later to prevent many repicks
+        this._attackAccumulatorMs -= 500; // Prevent too-frequent repicking every tick
+        this._nextAttack = this._pickRandomAttack(); // we could optimize this further by only considering attacks that work for the target range
       }
 
       // Update movement strategy
-      if (this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
+      if (this.moveSpeed > 0 && this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
         this._updateMovementStrategy(targetDistanceSquared);
       }
 
       if (!this._aggroPathfinding) {
-        // Only move if not within attack range, but always face the target
-        if (targetDistanceSquared > attackRangeSquared) {
+        // Only move if not within attack range and can move, but always face the target
+        if (this.moveSpeed > 0 && targetDistanceSquared > attackRangeSquared) {
           this.moveTo(this._aggroActiveTarget.position);
         }
         
-        this.faceTowards(this._aggroActiveTarget.position, this.moveSpeed * 2);
+        this.faceTowards(this._aggroActiveTarget.position, this.faceSpeed);
       }
     } else {
       // No attacks - just follow the target
-      if (this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
+      if (this.moveSpeed > 0 && this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
         this._updateMovementStrategy(targetDistanceSquared);
       }
 
       if (!this._aggroPathfinding) {
-        this.moveTo(this._aggroActiveTarget.position);
-        this.faceTowards(this._aggroActiveTarget.position, this.moveSpeed * 2);
+        if (this.moveSpeed > 0) {
+          this.moveTo(this._aggroActiveTarget.position);
+        }
+        this.faceTowards(this._aggroActiveTarget.position, this.faceSpeed);
       }
     }
   }

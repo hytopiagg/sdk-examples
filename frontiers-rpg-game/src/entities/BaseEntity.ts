@@ -64,6 +64,7 @@ export type BaseEntityOptions = {
   deathItemDrops?: BaseEntityItemDrop[];
   deathItemMaxDrops?: number;
   dialogue?: BaseEntityDialogueRoot;
+  faceSpeed?: number;
   facingAngle?: number;
   facingPosition?: Vector3Like;
   idleAnimations?: string[];
@@ -95,6 +96,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _deathItemMaxDrops: number;
   private _dialogueRoot: BaseEntityDialogueRoot | undefined;
   private _dying: boolean = false;
+  private _faceSpeed: number;
   private _health: number;
   private _interactActionText: string | undefined;
   private _maxHealth: number;
@@ -132,6 +134,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._maxHealth = this._health;
     this._moveOptions = options.moveOptions;
     this._moveSpeed = options.moveSpeed ?? 2;
+    this._faceSpeed = options.faceSpeed ?? this._moveSpeed * 2;
     this._nameplateViewDistance = options.nameplateViewDistnace;
     this._pathfindingOptions = options.pathfindingOptions;
     this._pushable = options.pushable ?? false;
@@ -152,6 +155,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   }
 
   public get dialogueRoot(): BaseEntityDialogueRoot | undefined { return this._dialogueRoot; }
+  public get faceSpeed(): number { return this._faceSpeed; }
   public get idleAnimations(): string[] { return this.pathfindingController.idleLoopedAnimations; }
   public get idleAnimationsSpeed(): number | undefined { return this.pathfindingController.idleLoopedAnimationsSpeed; }
   public get interactActionText(): string | undefined { return this._interactActionText; }
@@ -337,7 +341,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
         z: this.position.z + offsetZ,
       };
 
-      this.faceTowards(target, this._moveSpeed * 2);
+      this.faceTowards(target, this._faceSpeed);
       this.moveTo(target, speed, moveOptions);
 
       const travelTimeMs = Math.max(500, ((offsetX + offsetZ) / speed) * 1000);
