@@ -285,6 +285,7 @@ export default class GamePlayer {
     const newSkillLevel = Levels.getLevelFromExperience(this.getSkillExperience(skillId));
     
     if (newMainLevel > oldMainLevel) {
+      this._currentEntity?.setNameplateLevel(newMainLevel);
       this.showNotification(`Level up! You are now level ${newMainLevel}!`, 'success');
     }
     

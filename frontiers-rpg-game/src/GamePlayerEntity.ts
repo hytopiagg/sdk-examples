@@ -154,6 +154,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this._isMovementDisabled = isDisabled;
   }
 
+  public setNameplateLevel(level: number): void {
+    this._nameplateSceneUI.setState({ level });
+  }
+
   public showNotification(message: string, notificationType: NotificationType): void {
     this._gamePlayer.showNotification(message, notificationType);
   }

@@ -205,7 +205,7 @@ export default class ChitterForestRegion extends GameRegion {
 
     const ratkinNestPortal = new PortalEntity({
       destinationRegionId: 'ratkin-nest',
-      destinationRegionPosition: { x: -30, y: 23, z: -62 },
+      destinationRegionPosition: { x: -31, y: 23, z: -67 },
       destinationRegionFacingAngle: 180,
     });
 

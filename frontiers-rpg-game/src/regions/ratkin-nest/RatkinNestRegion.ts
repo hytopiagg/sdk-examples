@@ -3,6 +3,9 @@ import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
 import type { WanderOptions } from '../../entities/BaseEntity';
 
+// NPCs
+import ScoutMorelEntity from './npcs/ScoutMorelEntity';
+
 // Spawner Enemies
 import RatkinBruteEntity from '../../entities/enemies/RatkinBruteEntity';
 import RatkinRangerEntity from '../../entities/enemies/RatkinRangerEntity';
@@ -40,6 +43,7 @@ export default class RatkinNestRegion extends GameRegion {
 
     this._setupEnemySpawners();
     this._setupForageableSpawners();
+    this._setupNPCs();
     this._setupPortals();
   }
   private _setupEnemySpawners(): void {
@@ -136,6 +140,12 @@ export default class RatkinNestRegion extends GameRegion {
     });
 
     ratkinNestSpawner.start(true);
+  }
+
+  private _setupNPCs(): void {
+    // Scout Morel
+    const scoutMorel = new ScoutMorelEntity({ facingAngle: -45 });
+    scoutMorel.spawn(this.world, { x: -32.5, y: 24, z: -63.5 });
   }
 
   private _setupPortals(): void {

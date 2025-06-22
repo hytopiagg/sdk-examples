@@ -3,6 +3,8 @@ import CaptainChanterelionEntity from '../../regions/chitter-forest/npcs/Captain
 import { SkillId } from '../../config';
 import type GamePlayerEntity from '../../GamePlayerEntity';
 
+import ClearingCampsQuest from './ClearingCampsQuest';
+
 export default class StalkhavensOutpostQuest extends BaseQuest {
   static readonly id = 'stalkhavens-outpost';
   static readonly name = `Stalkhaven's Outpost`;
@@ -50,7 +52,7 @@ export default class StalkhavensOutpostQuest extends BaseQuest {
         onSelect: (interactor: GamePlayerEntity) => {
           interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-chanterelion', 1);
           interactor.gamePlayer.questLog.completeQuest(this.id);
-          // start encampmment clearing quest.
+          interactor.gamePlayer.questLog.startQuest(ClearingCampsQuest);
         }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
