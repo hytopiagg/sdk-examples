@@ -2,6 +2,7 @@ import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import BaseProjectileEntity from "../BaseProjectileEntity";
 import type { Vector3Like } from 'hytopia';
 
+// Drops
 import CommonMushroomItem from "../../items/consumables/CommonMushroomItem";
 import CommonSeedsItem from "../../items/seeds/CommonSeedsItem";
 import GoldItem from "../../items/general/GoldItem";
@@ -9,7 +10,6 @@ import RatkinBonesItem from "../../items/materials/RatkinBonesItem";
 import RatkinEyesItem from "../../items/materials/RatkinEyesItem.ts";
 import RatkinTailItem from "../../items/materials/RatkinTailItem";
 import RatkinToothItem from "../../items/materials/RatkinToothItem.ts";
-
 
 export type RatkinRangerEntityOptions = {
 

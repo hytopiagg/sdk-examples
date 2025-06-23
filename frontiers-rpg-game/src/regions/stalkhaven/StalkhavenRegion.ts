@@ -1,6 +1,6 @@
 import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
-import stalkhavenMap from '../../../assets/maps/stalkhaven.json';
+import PortalEntity from '../../entities/PortalEntity';
 
 import CapfolkVillagerEntity from '../../entities/npcs/CapfolkVillagerEntity';
 import CaptainSpornEntity from './npcs/CaptainSpornEntity';
@@ -8,7 +8,8 @@ import CommanderMarkEntity from './npcs/CommanderMarkEntity';
 import BankerJohnEntity from './npcs/BankerJohnEntity';
 import HealerMycelisEntity from './npcs/HealerMycelisEntity';
 import MerchantFinnEntity from './npcs/MerchantFinnEntity';
-import PortalEntity from '../../entities/PortalEntity';
+
+import stalkhavenMap from '../../../assets/maps/stalkhaven.json';
 
 export default class StalkhavenRegion extends GameRegion {
   public constructor() {
@@ -25,22 +26,11 @@ export default class StalkhavenRegion extends GameRegion {
   protected override setup(): void {
     super.setup();
     
-    const chitterForestPortal = new PortalEntity({
-      destinationRegionId: 'chitter-forest',
-      destinationRegionFacingAngle: 0,
-      destinationRegionPosition: { x: -7, y: 2, z: 76 },
-      modelScale: 2,
-    });
-    chitterForestPortal.spawn(this.world, { x: 1, y: 3.5, z: 46 });
+    this._setupNPCs();
+    this._setupPortals();
+  }
 
-    const stalkhavenPortPortal = new PortalEntity({
-      destinationRegionId: 'stalkhaven-port',
-      destinationRegionFacingAngle: 180,
-      destinationRegionPosition: { x: -6, y: 8, z: -28 },
-      modelScale: 2,
-    });
-    stalkhavenPortPortal.spawn(this.world, { x: 35.5, y: 3.5, z: 1 }, Quaternion.fromEuler(0, 90, 0));
-
+  private _setupNPCs(): void {
     (new BankerJohnEntity({ facingAngle: 90 })).spawn(this.world, { x: 12, y: 3, z: 41 });
     (new CaptainSpornEntity({ facingAngle: 315 })).spawn(this.world, { x: -2, y: 3, z: 43 });
     (new CommanderMarkEntity({ facingAngle: 180 })).spawn(this.world, { x: 3, y: 3, z: 12 });
@@ -70,5 +60,23 @@ export default class StalkhavenRegion extends GameRegion {
         }
       });
     }
+  }
+
+  private _setupPortals(): void {
+    const chitterForestPortal = new PortalEntity({
+      destinationRegionId: 'chitter-forest',
+      destinationRegionFacingAngle: 0,
+      destinationRegionPosition: { x: -7, y: 2, z: 76 },
+      modelScale: 2,
+    });
+    chitterForestPortal.spawn(this.world, { x: 1, y: 3.5, z: 46 });
+
+    const stalkhavenPortPortal = new PortalEntity({
+      destinationRegionId: 'stalkhaven-port',
+      destinationRegionFacingAngle: 180,
+      destinationRegionPosition: { x: -6, y: 8, z: -28 },
+      modelScale: 2,
+    });
+    stalkhavenPortPortal.spawn(this.world, { x: 35.5, y: 3.5, z: 1 }, Quaternion.fromEuler(0, 90, 0));
   }
 }

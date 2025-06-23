@@ -1,15 +1,18 @@
 import BaseQuest, { QuestObjective, QuestNpcDialogueInteraction } from '../BaseQuest';
-import { BaseForageableEntityPlayerEvent } from '../../entities/BaseForageableEntity';
-import { BaseItemPlayerEvent } from '../../items/BaseItem';
-import GoldItem from '../../items/general/GoldItem';
 import { SkillId } from '../../config';
-import MerchantFinnEntity from '../../regions/stalkhaven/npcs/MerchantFinnEntity';
-import ExploringStalkhavenQuest from '../main/ExploringStalkhavenQuest';
-import type { BaseForageableEntityPlayerEventPayloads } from '../../entities/BaseForageableEntity';
-import type { BaseItemPlayerEventPayloads } from '../../items/BaseItem';
 import type GamePlayer from '../../GamePlayer';
 import type GamePlayerEntity from '../../GamePlayerEntity';
+
+import { BaseForageableEntityPlayerEvent } from '../../entities/BaseForageableEntity';
+import { BaseItemPlayerEvent } from '../../items/BaseItem';
+import type { BaseForageableEntityPlayerEventPayloads } from '../../entities/BaseForageableEntity';
+import type { BaseItemPlayerEventPayloads } from '../../items/BaseItem';
+
+import MerchantFinnEntity from '../../regions/stalkhaven/npcs/MerchantFinnEntity';
+import ExploringStalkhavenQuest from '../main/ExploringStalkhavenQuest';
+
 import CommonMushroomItem from '../../items/consumables/CommonMushroomItem';
+import GoldItem from '../../items/general/GoldItem';
 
 export default class FungalForagingQuest extends BaseQuest {
   static readonly id = 'fungal-foraging';
@@ -149,7 +152,7 @@ export default class FungalForagingQuest extends BaseQuest {
     };
 
     const itemPickupListener = (payload: BaseItemPlayerEventPayloads[BaseItemPlayerEvent.PICKED_UP]) => {
-      if (payload.item.name === 'Common Mushroom') {
+      if (payload.item.id === CommonMushroomItem.id) {
         gamePlayer.questLog.adjustObjectiveProgress(this.id, 'pick-mushrooms', payload.item.quantity);
       }
     };

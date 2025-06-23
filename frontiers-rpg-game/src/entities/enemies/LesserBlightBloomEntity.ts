@@ -3,6 +3,10 @@ import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import BaseProjectileEntity from '../BaseProjectileEntity';
 import { isDamageable } from '../../interfaces/IDamageable';
 
+// Drops
+import BlightedRootItem from '../../items/materials/BlightedRootItem';
+import GoldItem from '../../items/general/GoldItem';
+
 export type LesserBlightBloomEntityOptions = {
 
 } & BaseCombatEntityOptions;
@@ -42,15 +46,17 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 5000,
       deathItemDrops: [
-        
+        { itemClass: GoldItem, minQuantity: 25, maxQuantity: 50, weight: 1 },
+        { itemClass: BlightedRootItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
+      deathItemMaxDrops: 3,
       faceSpeed: 0.75,
-      health: 140,
+      health: 250,
       idleAnimations: [ 'waiting' ],
       modelUri: 'models/enemies/blight-bloom.gltf',
       modelScale: 0.5,
       moveAnimations: [ 'waiting' ],
-      moveSpeed: 0,
+      moveSpeed: 0, // stationary, doesn't move.
       name: 'Lesser Blight Bloom',
       pathfindingOptions: {
         maxJump: 2,

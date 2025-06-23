@@ -2,6 +2,7 @@ import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import BaseProjectileEntity from "../BaseProjectileEntity";
 import type { Vector3Like } from 'hytopia';
 
+// Drops
 import CommonMushroomItem from "../../items/consumables/CommonMushroomItem";
 import CommonSeedsItem from "../../items/seeds/CommonSeedsItem";
 import GoldItem from "../../items/general/GoldItem";

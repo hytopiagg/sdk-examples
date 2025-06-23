@@ -1,14 +1,17 @@
 import BaseQuest, { QuestObjective, QuestNpcDialogueInteraction } from '../BaseQuest';
-import { BaseEntityPlayerEvent } from '../../entities/BaseEntity';
-import CommanderMarkEntity from '../../regions/stalkhaven/npcs/CommanderMarkEntity';
-import { GamePlayerEntityPlayerEvent } from '../../GamePlayerEntity';
-import GoldItem from '../../items/general/GoldItem';
 import { SkillId } from '../../config';
-import StalkhavensOutpostQuest from './StalkhavensOutpostQuest';
-import type { BaseEntityPlayerEventPayloads } from '../../entities/BaseEntity';
 import type GamePlayer from '../../GamePlayer';
 import type GamePlayerEntity from '../../GamePlayerEntity';
+
+import { BaseEntityPlayerEvent } from '../../entities/BaseEntity';
+import { GamePlayerEntityPlayerEvent } from '../../GamePlayerEntity';
+import type { BaseEntityPlayerEventPayloads } from '../../entities/BaseEntity';
 import type { GamePlayerEntityPlayerEventPayloads } from '../../GamePlayerEntity';
+
+import CommanderMarkEntity from '../../regions/stalkhaven/npcs/CommanderMarkEntity';
+import StalkhavensOutpostQuest from './StalkhavensOutpostQuest';
+
+import GoldItem from '../../items/general/GoldItem';
 
 export default class TestedMettleQuest extends BaseQuest {
   static readonly id = 'tested-mettle';

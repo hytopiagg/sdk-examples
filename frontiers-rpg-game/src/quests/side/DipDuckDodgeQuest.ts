@@ -1,10 +1,13 @@
 import BaseQuest, { QuestObjective, QuestNpcDialogueInteraction } from '../BaseQuest';
-import CaptainSpornEntity from '../../regions/stalkhaven/npcs/CaptainSpornEntity';
-import { GamePlayerEntityPlayerEvent, GamePlayerEntityPlayerEventPayloads } from '../../GamePlayerEntity';
 import { SkillId } from '../../config';
-import ExploringStalkhavenQuest from '../main/ExploringStalkhavenQuest';
 import type GamePlayer from '../../GamePlayer';
 import type GamePlayerEntity from '../../GamePlayerEntity';
+
+import { GamePlayerEntityPlayerEvent } from '../../GamePlayerEntity';
+import type { GamePlayerEntityPlayerEventPayloads } from '../../GamePlayerEntity';
+
+import CaptainSpornEntity from '../../regions/stalkhaven/npcs/CaptainSpornEntity';
+import ExploringStalkhavenQuest from '../main/ExploringStalkhavenQuest';
 
 export default class DipDuckDodgeQuest extends BaseQuest {
   static readonly id = 'dip-duck-dodge';

@@ -1,12 +1,12 @@
 {
   "health": 81,
   "maxHealth": 100,
-  "currentRegionId": "chitter-forest",
-  "currentRegionSpawnFacingAngle": 0,
+  "currentRegionId": "ratkin-nest",
+  "currentRegionSpawnFacingAngle": 180,
   "currentRegionSpawnPoint": {
-    "x": -7,
-    "y": 2,
-    "z": 76
+    "x": -31,
+    "y": 23,
+    "z": -67
   },
   "skillExperience": [
     [

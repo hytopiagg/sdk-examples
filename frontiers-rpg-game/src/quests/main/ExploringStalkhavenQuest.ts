@@ -1,13 +1,13 @@
 import BaseQuest, { QuestObjective, QuestNpcDialogueInteraction } from '../BaseQuest';
+import { SkillId } from '../../config';
+import type GamePlayerEntity from '../../GamePlayerEntity';
+
 import HealerMycelisEntity from '../../regions/stalkhaven/npcs/HealerMycelisEntity';
 import CaptainSpornEntity from '../../regions/stalkhaven/npcs/CaptainSpornEntity';
 import CommanderMarkEntity from '../../regions/stalkhaven/npcs/CommanderMarkEntity';
 import MerchantFinnEntity from '../../regions/stalkhaven/npcs/MerchantFinnEntity';
-import { SkillId } from '../../config';
 import TestedMettleQuest from './TestedMettleQuest';
-import type GamePlayerEntity from '../../GamePlayerEntity';
 
-// Rewards
 import DullSwordItem from '../../items/weapons/DullSwordItem';
 import GoldItem from '../../items/general/GoldItem';
 

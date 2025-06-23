@@ -1,10 +1,10 @@
 import BaseQuest, { QuestObjective, QuestReward, QuestNpcDialogueInteraction } from '../BaseQuest';
-import BoatRepairmanSidEntity from '../../regions/stalkhaven-port/npcs/BoatRepairmanSidEntity';
-import ExploringStalkhavenQuest from './ExploringStalkhavenQuest';
-import CommanderMarkEntity from '../../regions/stalkhaven/npcs/CommanderMarkEntity';
-import GoldItem from '../../items/general/GoldItem';
 import { SkillId } from '../../config';
 import type GamePlayerEntity from '../../GamePlayerEntity';
+
+import BoatRepairmanSidEntity from '../../regions/stalkhaven-port/npcs/BoatRepairmanSidEntity';
+import CommanderMarkEntity from '../../regions/stalkhaven/npcs/CommanderMarkEntity';
+import ExploringStalkhavenQuest from './ExploringStalkhavenQuest';
 
 export default class WelcomeToStalkhavenQuest extends BaseQuest {
   static readonly id = 'welcome-to-stalkhaven';

@@ -1,11 +1,12 @@
 import BaseQuest, { QuestObjective, QuestNpcDialogueInteraction } from '../BaseQuest';
-import { BaseEntityPlayerEvent } from '../../entities/BaseEntity';
-import CaptainChanterelionEntity from '../../regions/chitter-forest/npcs/CaptainChanterelionEntity';
 import { SkillId } from '../../config';
-import type { BaseEntityPlayerEventPayloads } from '../../entities/BaseEntity';
 import type GamePlayer from '../../GamePlayer';
 import type GamePlayerEntity from '../../GamePlayerEntity';
 
+import { BaseEntityPlayerEvent } from '../../entities/BaseEntity';
+import type { BaseEntityPlayerEventPayloads } from '../../entities/BaseEntity';
+
+import CaptainChanterelionEntity from '../../regions/chitter-forest/npcs/CaptainChanterelionEntity';
 import IntoTheNestQuest from './IntoTheNestQuest';
 
 // Bounding boxes we check when a kill happens to determine if it was in an objective area.

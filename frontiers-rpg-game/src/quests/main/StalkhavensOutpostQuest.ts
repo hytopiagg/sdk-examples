@@ -1,8 +1,8 @@
 import BaseQuest, { QuestObjective, QuestNpcDialogueInteraction } from '../BaseQuest';
-import CaptainChanterelionEntity from '../../regions/chitter-forest/npcs/CaptainChanterelionEntity';
 import { SkillId } from '../../config';
 import type GamePlayerEntity from '../../GamePlayerEntity';
 
+import CaptainChanterelionEntity from '../../regions/chitter-forest/npcs/CaptainChanterelionEntity';
 import ClearingCampsQuest from './ClearingCampsQuest';
 
 export default class StalkhavensOutpostQuest extends BaseQuest {
