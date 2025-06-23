@@ -1,4 +1,7 @@
+import { ColliderShape, Entity, RigidBodyType } from 'hytopia';
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
+import BaseProjectileEntity from '../BaseProjectileEntity';
+import { isDamageable } from '../../interfaces/IDamageable';
 
 export type LesserBlightBloomEntityOptions = {
 
@@ -12,32 +15,26 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
       attacks: [
         { // Eat
           animations: [ 'eat' ],
+          complexAttack: () => this._eatTarget(),
+          complexAttackDelayMs: 750,
           cooldownMs: 4000,
-          range: 3,
-          simpleAttackDamage: 2,
-          simpleAttackDamageVariance: 0.6, // ±60% damage
-          simpleAttackDamageDelayMs: 750, // Deal damage 1000ms into animation
-          simpleAttackReach: 3.5,
-          weight: 1,
+          range: 4,
+          weight: 4,
         },
         { // AoEGas
           animations: [ 'gas_explode' ],
-          complexAttack: (params) => {
-            console.log('gas_explode');
-          },
-          complexAttackDelayMs: 700,
+          complexAttack: () => this._emitGasAoE(25, 4),
+          complexAttackDelayMs: 2500,
           cooldownMs: 4000,
-          range: 8,
-          weight: 1,
+          range: 10,
+          weight: 2,
         },
-        {
+        { // Spray 3 wide gas projectiles
           animations: [ 'spore_splash' ],
-          complexAttack: (params) => {
-            console.log('spore_splash');
-          },
+          complexAttack: () => this._sprayGas(18),
           complexAttackDelayMs: 700,
           cooldownMs: 4000,
-          range: 8,
+          range: 10,
           weight: 2,
         },
       ],
@@ -47,7 +44,7 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
       deathItemDrops: [
         
       ],
-      faceSpeed: 4,
+      faceSpeed: 0.75,
       health: 140,
       idleAnimations: [ 'waiting' ],
       modelUri: 'models/enemies/blight-bloom.gltf',
@@ -60,7 +57,93 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
         maxFall: 2,
       },
       pushable: false,
+      tintColor: { r: 128, g: 255, b: 128 },
       ...options,
     });
+  }
+
+  private _eatTarget() {
+    if (!this.world) return;
+
+    const currentDirection = this.directionFromRotation;
+    const raycastDirection = {
+      x: currentDirection.x,
+      y: currentDirection.y - 0.5, // aim down
+      z: currentDirection.z,
+    }
+
+    const raycastResult = this.world.simulation.raycast(this.position, raycastDirection, 4, {
+      filterExcludeRigidBody: this.rawRigidBody,
+      filterFlags: 8, // Rapier flag to exclude sensor colliders
+    });
+
+    if (isDamageable(raycastResult?.hitEntity)) {
+      raycastResult.hitEntity.takeDamage(this.calculateDamageWithVariance(80, 0.3));
+    }
+  }
+  
+  private _emitGasAoE(baseDamage: number, aoeRadius: number) {
+    if (!this.world) return;
+
+    const gas = new Entity({
+      modelUri: 'models/vfx/gas-explode.gltf',
+      modelLoopedAnimations: [ 'actived' ],
+      rigidBodyOptions: {
+        type: RigidBodyType.FIXED,
+        colliders: [
+          {
+            shape: ColliderShape.BALL,
+            radius: aoeRadius,
+            isSensor: true,
+            onCollision: (other, started) => {
+              if (started && other !== this && isDamageable(other)) {
+                other.takeDamage(this.calculateDamageWithVariance(baseDamage, 0.3));
+              }
+            }
+          }
+        ]
+      },
+      tintColor: { r: 0, g: 255, b: 0 },
+    });
+
+    gas.spawn(this.world, this.position);
+
+    setTimeout(() => {
+      gas.despawn();
+    }, 1800);
+  }
+
+  private _sprayGas(baseDamage: number) {
+    const spray = () => {
+      if (!this.world) return;
+
+      const direction = this.directionFromRotation;
+      const gasSpray = new BaseProjectileEntity({
+        damage: this.calculateDamageWithVariance(baseDamage, 0.3),
+        despawnAfterMs: 2000,
+        direction,
+        gravityScale: 0.15,
+        modelUri: 'models/projectiles/wide-spinning-fireball.gltf',
+        modelLoopedAnimations: [ 'idle' ],
+        modelScale: 0.75,
+        speed: 4, 
+        source: this,
+        tintColor: { r: 0, g: 255, b: 128 },
+      });
+
+      const sourcePosition = this.position;
+      const offsetSpawnPosition = {
+        x: sourcePosition.x + direction.x * 2,
+        y: sourcePosition.y + direction.y * 2,
+        z: sourcePosition.z + direction.z * 2,
+      }
+
+      gasSpray.spawn(this.world, offsetSpawnPosition, this.rotation);
+    }
+
+    // 3 sprays
+    spray();
+    setTimeout(spray, 600);
+    setTimeout(spray, 1200);
   }
 }

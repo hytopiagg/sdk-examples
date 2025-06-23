@@ -9,7 +9,7 @@ export default class DullSwordItem extends BaseWeaponItem {
   static readonly attack: BaseWeaponItemAttack = {
     animations: ['sword-attack-upper'],
     cooldownMs: 500,
-    damage: 10,
+    damage: 90, //10,
     damageDelayMs: 200,
     damageVariance: 0.2,
     knockbackForce: 5,

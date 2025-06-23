@@ -1,14 +1,27 @@
 {
-  "health": 100,
+  "health": 81,
   "maxHealth": 100,
-  "currentRegionId": "ratkin-nest",
-  "currentRegionSpawnFacingAngle": 180,
+  "currentRegionId": "chitter-forest",
+  "currentRegionSpawnFacingAngle": 0,
   "currentRegionSpawnPoint": {
-    "x": -30,
-    "y": 23,
-    "z": -62
+    "x": -7,
+    "y": 2,
+    "z": 76
   },
-  "skillExperience": [],
+  "skillExperience": [
+    [
+      "exploration",
+      500
+    ],
+    [
+      "agility",
+      152
+    ],
+    [
+      "combat",
+      5250
+    ]
+  ],
   "backpack": {
     "items": []
   },
@@ -17,11 +30,84 @@
       {
         "position": 0,
         "itemId": "toy_sword"
+      },
+      {
+        "position": 1,
+        "itemId": "dull_sword"
+      },
+      {
+        "position": 2,
+        "itemId": "gold",
+        "quantity": 260
+      },
+      {
+        "position": 3,
+        "itemId": "ratkin_eyes"
       }
     ]
   },
   "questLog": {
-    "quests": []
+    "quests": [
+      {
+        "questId": "welcome-to-stalkhaven",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-mark": 1
+        }
+      },
+      {
+        "questId": "exploring-stalkhaven",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-mycelis": 1,
+          "talk-to-finn": 1,
+          "talk-to-sporn": 1,
+          "talk-to-mark": 1
+        }
+      },
+      {
+        "questId": "tested-mettle",
+        "state": "completed",
+        "objectiveProgress": {
+          "kill-5-ratkin": 5,
+          "dodge-3-times": 3,
+          "talk-to-mark": 1
+        }
+      },
+      {
+        "questId": "stalkhavens-outpost",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-chanterelion": 1
+        }
+      },
+      {
+        "questId": "clearing-camps",
+        "state": "completed",
+        "objectiveProgress": {
+          "kill-main-camp": 3,
+          "kill-secondary-camp": 3,
+          "kill-lake-camp": 3,
+          "kill-corridor-camp": 3,
+          "talk-to-chanterelion": 1
+        }
+      },
+      {
+        "questId": "dip-duck-dodge",
+        "state": "active",
+        "objectiveProgress": {
+          "dodge": 2,
+          "talk-to-sporn": 0
+        }
+      },
+      {
+        "questId": "into-the-nest",
+        "state": "active",
+        "objectiveProgress": {
+          "talk-to-scout-morel": 0
+        }
+      }
+    ]
   },
   "storage": {
     "items": []

@@ -17,6 +17,8 @@ import TaintedRatkinRangerEntity from '../../entities/enemies/TaintedRatkinRange
 import TaintedRatkinSpellcasterEntity from '../../entities/enemies/TaintedRatkinSpellcasterEntity';
 import TaintedRatkinWarriorEntity from '../../entities/enemies/TaintedRatkinWarriorEntity';
 
+import LesserBlightBloomEntity from '../../entities/enemies/LesserBlightBloomEntity';
+
 // Spawner Forageables
 import DecayingPileEntity from '../../entities/forageables/DecayingPileEntity';
 
@@ -56,7 +58,7 @@ export default class RatkinNestRegion extends GameRegion {
 
     const upperNestSpawner = new Spawner({
       groundCheckDistance: 6,
-      maxSpawns: 20,
+      maxSpawns: 15,
       spawnables: [
         { entityConstructor: RatkinBruteEntity, weight: 2, wanders: true, wanderOptions },
         { entityConstructor: RatkinRangerEntity, weight: 2, wanders: true, wanderOptions },
@@ -85,7 +87,7 @@ export default class RatkinNestRegion extends GameRegion {
 
     const lowerNestSpawner = new Spawner({
       groundCheckDistance: 4,
-      maxSpawns: 20,
+      maxSpawns: 12,
       spawnables: [
         { entityConstructor: RatkinBruteEntity, weight: 1, wanders: true, wanderOptions },
         { entityConstructor: RatkinRangerEntity, weight: 1, wanders: true, wanderOptions },
@@ -107,8 +109,26 @@ export default class RatkinNestRegion extends GameRegion {
       world: this.world,
     });
 
+    const lowerNestLesserBlightBloomSpawner = new Spawner({
+      groundCheckDistance: 4,
+      maxSpawns: 7,
+      spawnables: [
+        { entityConstructor: LesserBlightBloomEntity, weight: 1 },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -3, y: 1, z: -47 },
+          max: { x: 69, y: 3, z: 42 },
+          weight: 1,
+        }
+      ],
+      spawnIntervalMs: 60000,
+      world: this.world,
+    })
+
     upperNestSpawner.start(true);
     lowerNestSpawner.start(true);
+    lowerNestLesserBlightBloomSpawner.start(true);
   }
 
   private _setupForageableSpawners(): void {

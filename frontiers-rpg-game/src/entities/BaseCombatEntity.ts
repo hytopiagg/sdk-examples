@@ -246,6 +246,16 @@ export default class BaseCombatEntity extends BaseEntity {
     }
   }
 
+  private _hasAttackInRange(targetDistanceSquared: number): boolean {
+    for (const attack of this._attacks) {
+      if (targetDistanceSquared <= attack.range ** 2) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+
   private _onTick = (payload: EventPayloads[EntityEvent.TICK]): void => {
     const { tickDeltaMs } = payload;
 
@@ -269,9 +279,11 @@ export default class BaseCombatEntity extends BaseEntity {
         this._attackAccumulatorMs = 0;
         this.attack();
       } else if (targetDistanceSquared > attackRangeSquared) {
-        // Target is out of current attack range, try to find a better attack, optimize later to prevent many repicks
-        this._attackAccumulatorMs -= 500; // Prevent too-frequent repicking every tick
-        this._nextAttack = this._pickRandomAttack(); // we could optimize this further by only considering attacks that work for the target range
+        // Target is out of current attack range, only repick if there's an attack that can reach the target
+        if (this._hasAttackInRange(targetDistanceSquared)) {
+          this._attackAccumulatorMs = Math.max(0, this._attackAccumulatorMs - 500); // Prevent too-frequent repicking every tick
+          this._nextAttack = this._pickRandomAttack();
+        }
       }
 
       // Update movement strategy
