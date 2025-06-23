@@ -40,7 +40,6 @@ export type NotificationType = 'success' | 'error' | 'warning' | 'complete' | 'n
 
 type SerializedGamePlayerData = {
   health: number;
-  maxHealth: number;
   currentRegionId: string | undefined;
   currentRegionSpawnFacingAngle: number | undefined;
   currentRegionSpawnPoint: Vector3Like | undefined;
@@ -73,7 +72,6 @@ export default class GamePlayer {
   private _globalExperience: number = 0;
   private _health: number = 100;
   private _isDead: boolean = false;
-  private _maxHealth: number = 100;
   private _skillExperience: Map<SkillId, number> = new Map();
 
   private constructor(player: Player) {
@@ -168,7 +166,8 @@ export default class GamePlayer {
   }
   
   public get maxHealth(): number {
-    return this._maxHealth;
+    const level = Levels.getLevelFromExperience(this._globalExperience);
+    return 100 + (level - 1) * 10;
   }
 
   public get respawnFacingAngle(): number {
@@ -193,7 +192,7 @@ export default class GamePlayer {
   // Game state methods
   public adjustHealth(amount: number): void {
     const willDie = this._health > 0 && this._health + amount <= 0;
-    this._health = Math.max(0, Math.min(this._maxHealth, this._health + amount));
+    this._health = Math.max(0, Math.min(this.maxHealth, this._health + amount));
     this._isDead = this._health <= 0;
     this._updateHudHealthUI();
     this._updateEntityHealthSceneUI();
@@ -289,9 +288,13 @@ export default class GamePlayer {
     const newMainLevel = Levels.getLevelFromExperience(this._globalExperience);
     const newSkillLevel = Levels.getLevelFromExperience(this.getSkillExperience(skillId));
     
-    if (newMainLevel > oldMainLevel) {
+    if (newMainLevel > oldMainLevel) {      
+      // Full heal on level up!
+      this._health = this.maxHealth;
+      
       this._currentEntity?.setNameplateLevel(newMainLevel);
       this.showNotification(`Level up! You are now level ${newMainLevel}!`, 'success');
+      this._updateHudHealthUI();
     }
     
     if (newSkillLevel > oldSkillLevel) {
@@ -342,7 +345,7 @@ export default class GamePlayer {
     if (!this._isDead || !this._currentEntity) return;
 
     // Restore health
-    this.adjustHealth(this._maxHealth);
+    this.adjustHealth(this.maxHealth);
 
     // Teleport to spawn point if available
     this._currentEntity.setPosition(this.respawnPoint);
@@ -423,7 +426,6 @@ export default class GamePlayer {
       this._globalExperience = playerData.skillExperience.reduce((acc, [, experience]) => acc + experience, 0);
       this._health = playerData.health;
       this._isDead = this._health <= 0;
-      this._maxHealth = playerData.maxHealth;
       
       // Restore current region if available
       if (playerData.currentRegionId) {
@@ -595,7 +597,6 @@ export default class GamePlayer {
   private _serialize(): SerializedGamePlayerData {    
     const playerData = {
       health: this._health,
-      maxHealth: this._maxHealth,
       currentRegionId: this._currentRegion?.id,
       currentRegionSpawnFacingAngle: this._currentRegionSpawnFacingAngle,
       currentRegionSpawnPoint: this._currentRegionSpawnPoint,
@@ -645,7 +646,7 @@ export default class GamePlayer {
     this.player.ui.sendData({
       type: 'syncHealth',
       health: this._health,
-      maxHealth: this._maxHealth,
+      maxHealth: this.maxHealth,
     });
   }
 
