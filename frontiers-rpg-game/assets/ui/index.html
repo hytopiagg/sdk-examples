@@ -178,12 +178,22 @@
 
     // Helper function to check if slot has content
     function hasContent(slot) {
+      // For wearable slots, check if there's an item icon
+      if (slot.classList.contains('backpack-wearable-slot')) {
+        return slot.querySelector('.backpack-item-icon') !== null;
+      }
+      // For backpack and hotbar slots, check content containers
       const content = slot.querySelector('.backpack-slot-content, .backpack-hotbar-slot-content');
       return content && content.children.length > 0;
     }
 
     // Helper function to get slot content
     function getSlotContent(slot) {
+      // For wearable slots, the slot itself is the content container
+      if (slot.classList.contains('backpack-wearable-slot')) {
+        return slot;
+      }
+      // For backpack and hotbar slots, get the content container
       return slot.querySelector('.backpack-slot-content, .backpack-hotbar-slot-content');
     }
 
@@ -210,15 +220,24 @@
       const content = getSlotContent(slot);
       const tooltip = slot.querySelector('.backpack-item-tooltip');
       
+      // For wearable slots, we need to capture just the item content, not the whole slot
+      let contentHTML;
+      if (slot.classList.contains('backpack-wearable-slot')) {
+        const icon = slot.querySelector('.backpack-item-icon');
+        contentHTML = icon ? icon.outerHTML : '';
+      } else {
+        contentHTML = content.innerHTML;
+      }
+      
       heldItem = {
         sourceSlot: slot,
         sourceType: slotInfo.type,
         sourceIndex: slotInfo.index,
-        content: content.innerHTML
+        content: contentHTML
       };
       
       // Copy content to mouse follower
-      mouseFollower.innerHTML = content.innerHTML;
+      mouseFollower.innerHTML = contentHTML;
       
       // Copy tooltip if it exists
       if (tooltip) {
@@ -477,14 +496,19 @@
     // Clear existing content
     removeTooltip(slot);
     const existingIcon = slot.querySelector('.backpack-item-icon');
+    const existingLabel = slot.querySelector('.backpack-wearable-slot-label');
     if (existingIcon) existingIcon.remove();
+    if (existingLabel) existingLabel.remove();
     
     if (itemData.removed) {
       // Show label for empty slot
       const label = slotName.charAt(0).toUpperCase() + slotName.slice(1);
-      slot.innerHTML = `<div class="backpack-wearable-slot-label">${label}</div>`;
+      const labelElement = document.createElement('div');
+      labelElement.className = 'backpack-wearable-slot-label';
+      labelElement.textContent = label;
+      slot.appendChild(labelElement);
     } else {
-      // Show item
+      // Show item (label is hidden when item is present)
       const icon = document.createElement('img');
       icon.src = `{{CDN_ASSETS_URL}}/${itemData.iconImageUri}`;
       icon.alt = itemData.name;
@@ -1011,7 +1035,8 @@
   }
 
   .backpack-slot:hover .backpack-item-tooltip,
-  .backpack-hotbar-slot:hover .backpack-item-tooltip {
+  .backpack-hotbar-slot:hover .backpack-item-tooltip,
+  .backpack-wearable-slot:hover .backpack-item-tooltip {
     opacity: 1;
     visibility: visible;
     transform: translateY(-8px);
