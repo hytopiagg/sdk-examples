@@ -9,5 +9,7 @@ export default class AdventurerTunicItem extends BaseWearableItem {
   static readonly buyPrice = 20;
   static readonly sellPrice = 5;
 
+  static readonly damageReduction = 3;
+
   static readonly slot: WearableSlot = 'armor';
 }

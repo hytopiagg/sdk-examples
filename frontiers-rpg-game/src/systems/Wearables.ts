@@ -4,6 +4,7 @@ import ItemInventory from './ItemInventory';
 import type GamePlayer from '../GamePlayer';
 import type { WearableSlot } from '../items/BaseWearableItem';
 import type { SerializedItemInventoryData } from './ItemInventory';
+import type { Player } from 'hytopia';
 
 export type SerializedWearablesData = SerializedItemInventoryData;
 

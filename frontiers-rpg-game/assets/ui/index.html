@@ -25,7 +25,7 @@
 <div class="backpack-overlay">
   <div class="backpack-container">
     <div class="backpack-header">
-      <h2 class="backpack-title">Backpack & Equipment</h2>
+      <h2 class="backpack-title">Backpack</h2>
       <button class="backpack-close">×</button>
     </div>
     
@@ -436,7 +436,13 @@
   }
 
   function hasTooltipData(itemData) {
-    return itemData.name || itemData.description || itemData.sellPrice !== undefined;
+    return itemData.name || 
+           itemData.description || 
+           itemData.sellPrice !== undefined ||
+           itemData.damageBonus !== undefined ||
+           itemData.damageBonusPercent !== undefined ||
+           itemData.damageReduction !== undefined ||
+           itemData.damageReductionPercent !== undefined;
   }
 
   // Parse color formatting in text: [HEXCODE]text[/] -> <span style="color: #HEXCODE">text</span>
@@ -465,12 +471,36 @@
     content.className = 'backpack-item-tooltip-content';
     
     const sections = [];
+    
+    // Item name
     if (itemData.name) sections.push(`<div class="backpack-tooltip-name">${itemData.name}</div>`);
+    
+    // Wearable stats (between name and description)
+    const stats = [];
+    if (itemData.damageBonus && itemData.damageBonus !== 0) {
+      stats.push(`+${itemData.damageBonus} damage dealt`);
+    }
+    if (itemData.damageBonusPercent && itemData.damageBonusPercent !== 0) {
+      stats.push(`+${itemData.damageBonusPercent}% damage dealt`);
+    }
+    if (itemData.damageReduction && itemData.damageReduction !== 0) {
+      stats.push(`-${itemData.damageReduction} damage taken`);
+    }
+    if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
+      stats.push(`-${itemData.damageReductionPercent}% damage taken`);
+    }
+    
+    if (stats.length > 0) {
+      sections.push(`<div class="backpack-tooltip-stats"><div class="backpack-tooltip-stats-header">When equipped:</div>${stats.join('<br>')}</div>`);
+    }
+    
+    // Item description
     if (itemData.description) {
       const parsedDescription = parseText(itemData.description);
       sections.push(`<div class="backpack-tooltip-description">${parsedDescription}</div>`);
     }
     
+    // Sell price
     const sellPrice = itemData.sellPrice || 0;
     if (sellPrice > 0) sections.push(`<div class="backpack-tooltip-value">Sells For: ${sellPrice.toLocaleString()} gold</div>`);
     
@@ -1087,19 +1117,36 @@
   .backpack-tooltip-name {
     font-weight: 600;
     color: #ffffff;
+    font-size: 12px;
+  }
+
+  .backpack-tooltip-stats {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #7dd87d;
+    font-weight: 500;
+  }
+
+  .backpack-tooltip-stats-header {
+    color: #999999;
+    font-weight: 500;
+    margin-bottom: 3px;
+    font-size: 11px;
   }
 
   .backpack-tooltip-description {
     color: #cccccc;
-    margin-top: 4px;
-    font-size: 10px;
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
   }
 
   .backpack-tooltip-value {
     color: #ffd700;
-    margin-top: 4px;
-    font-weight: 600;
-    font-size: 10px;
+    margin-top: 6px;
+    font-weight: 500;
+    font-size: 11px;
   }
 
   /* Mouse Follower Tooltip */
