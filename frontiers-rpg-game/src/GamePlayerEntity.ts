@@ -194,7 +194,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
       return;
     } 
-
+// calculate modified damage relative to wearables
     this._gamePlayer.adjustHealth(-damage);
 
     this._gamePlayer.eventRouter.emit(GamePlayerEntityPlayerEvent.DAMAGED, { damage });

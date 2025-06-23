@@ -14,13 +14,15 @@ import Hotbar from './systems/Hotbar';
 import Levels from './systems/Levels';
 import QuestLog from './systems/QuestLog';
 import Storage from './systems/Storage';
+import Wearables from './systems/Wearables';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseMerchantEntity from './entities/BaseMerchantEntity';
 import type BaseItem from './items/BaseItem';
 import type GamePlayerEntity from './GamePlayerEntity';
 import type GameRegion from './GameRegion';
-import type { SerializedItemInventoryData } from './systems/ItemInventory';
+import ItemInventory, { SerializedItemInventoryData } from './systems/ItemInventory';
 import type { SerializedQuestLogData } from './systems/QuestLog';
+import type { SerializedWearablesData } from './systems/Wearables';
 
 import TrainingSwordItem from './items/weapons/TrainingSwordItem';
 
@@ -47,6 +49,7 @@ type SerializedGamePlayerData = {
   hotbar: SerializedItemInventoryData;
   questLog: SerializedQuestLogData;
   storage: SerializedItemInventoryData;
+  wearables: SerializedWearablesData;
 }
 
 export default class GamePlayer {
@@ -58,6 +61,7 @@ export default class GamePlayer {
   public readonly hotbar: Hotbar;
   public readonly questLog: QuestLog;
   public readonly storage: Storage;
+  public readonly wearables: Wearables
   
   private _currentDialogueEntity: BaseEntity | undefined;
   private _currentMerchantEntity: BaseMerchantEntity | undefined;
@@ -79,6 +83,7 @@ export default class GamePlayer {
     this.hotbar = new Hotbar(this);
     this.storage = new Storage(this);
     this.questLog = new QuestLog(this);
+    this.wearables = new Wearables(this);
     
     // Setup hotbar item handling
     this.hotbar.onSelectedItemChanged = this._onHotbarSelectedItemChanged;
@@ -441,11 +446,12 @@ export default class GamePlayer {
       const backpackSuccess = this.backpack.loadFromSerializedData(playerData.backpack);
       const hotbarSuccess = this.hotbar.loadFromSerializedData(playerData.hotbar);
       const storageSuccess = this.storage.loadFromSerializedData(playerData.storage);
+      const wearablesSuccess = this.wearables.loadFromSerializedData(playerData.wearables);
       
       // Restore quest log
       const questLogSuccess = this.questLog.loadFromSerializedData(playerData.questLog);
 
-      return backpackSuccess && hotbarSuccess && storageSuccess && questLogSuccess;
+      return backpackSuccess && hotbarSuccess && storageSuccess && wearablesSuccess && questLogSuccess;
     } catch (error) {
       console.error('Failed to deserialize GamePlayer data:', error);
       return false;
@@ -506,17 +512,27 @@ export default class GamePlayer {
       }
 
       if (fromType === 'backpack' && toType === 'hotbar') {
-        const item = this.backpack.removeItem(fromIndex);
-        if (item) {
-          this.hotbar.addItem(item, toIndex);
-        }
+        this._moveInventoryItem(this.backpack, this.hotbar, fromIndex, toIndex);
+      }
+
+      if (fromType === 'backpack' && toType === 'wearables') {
+        this._moveInventoryItem(this.backpack, this.wearables, fromIndex, 0);
       }
 
       if (fromType === 'hotbar' && toType === 'backpack') {
-        const item = this.hotbar.removeItem(fromIndex);
-        if (item) {
-          this.backpack.addItem(item, toIndex);
-        }
+        this._moveInventoryItem(this.hotbar, this.backpack, fromIndex, toIndex);
+      }
+
+      if (fromType === 'hotbar' && toType === 'wearables') {
+        this._moveInventoryItem(this.hotbar, this.wearables, fromIndex, 0);
+      }
+
+      if (fromType === 'wearables' && toType === 'backpack') {
+        this._moveInventoryItem(this.wearables, this.backpack, fromIndex, toIndex);
+      }
+
+      if (fromType === 'wearables' && toType === 'hotbar') {
+        this._moveInventoryItem(this.wearables, this.hotbar, fromIndex, toIndex);
       }
     }
 
@@ -561,11 +577,19 @@ export default class GamePlayer {
     this._updateEntityAlertsSceneUIs();
     this.backpack.syncUI(this.player);
     this.hotbar.syncUI(this.player);
+    this.wearables.syncUI(this.player);
     this.questLog.syncUI();
 
     // Setup UI event listener (remove existing to prevent duplicates)
     this.player.ui.off(PlayerUIEvent.DATA, this._onPlayerUIData);
     this.player.ui.on(PlayerUIEvent.DATA, this._onPlayerUIData);
+  }
+
+  private _moveInventoryItem(source: ItemInventory, dest: ItemInventory, fromIndex: number, toIndex: number): void {
+    const item = source.removeItem(fromIndex);
+    if (item && !dest.addItem(item, toIndex)) {
+      source.addItem(item, fromIndex); // Put back where it was if failed
+    }
   }
 
   private _serialize(): SerializedGamePlayerData {    
@@ -580,6 +604,7 @@ export default class GamePlayer {
       hotbar: this.hotbar.serialize(),
       questLog: this.questLog.serialize(),
       storage: this.storage.serialize(),
+      wearables: this.wearables.serialize(),
     };
     
     return playerData;

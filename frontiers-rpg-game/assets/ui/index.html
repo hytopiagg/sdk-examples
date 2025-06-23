@@ -25,45 +25,45 @@
 <div class="backpack-overlay">
   <div class="backpack-container">
     <div class="backpack-header">
-      <h2 class="backpack-title">Backpack</h2>
+      <h2 class="backpack-title">Backpack & Equipment</h2>
       <button class="backpack-close">×</button>
     </div>
     
     <div class="backpack-content">
-      <!-- Character Equipment Panel -->
-      <div class="backpack-equipment-panel">
-        <div class="backpack-equipment-slots">
+      <!-- Character Wearables Panel -->
+      <div class="backpack-wearables-panel">
+        <div class="backpack-wearables-slots">
           <!-- Top row: Helmet -->
-          <div class="backpack-equipment-slot-spacer"></div>
-          <div class="backpack-equipment-slot" data-slot="helmet">
-            <div class="backpack-slot-icon backpack-helmet-icon"></div>
+          <div class="backpack-wearable-slot-spacer"></div>
+          <div class="backpack-wearable-slot" data-slot="helmet">
+            <div class="backpack-wearable-slot-label">Helmet</div>
           </div>
-          <div class="backpack-equipment-slot-spacer"></div>
+          <div class="backpack-wearable-slot-spacer"></div>
           
           <!-- Middle row: Gloves, Armor, Accessory -->
-          <div class="backpack-equipment-slot" data-slot="gloves">
-            <div class="backpack-slot-icon backpack-gloves-icon"></div>
+          <div class="backpack-wearable-slot" data-slot="gloves">
+            <div class="backpack-wearable-slot-label">Gloves</div>
           </div>
-          <div class="backpack-equipment-slot" data-slot="armor">
-            <div class="backpack-slot-icon backpack-armor-icon"></div>
+          <div class="backpack-wearable-slot" data-slot="armor">
+            <div class="backpack-wearable-slot-label">Armor</div>
           </div>
-          <div class="backpack-equipment-slot" data-slot="accessory">
-            <div class="backpack-slot-icon backpack-accessory-icon"></div>
+          <div class="backpack-wearable-slot" data-slot="accessory">
+            <div class="backpack-wearable-slot-label">Accessory</div>
           </div>
           
           <!-- Bottom row: Leggings -->
-          <div class="backpack-equipment-slot-spacer"></div>
-          <div class="backpack-equipment-slot" data-slot="leggings">
-            <div class="backpack-slot-icon backpack-leggings-icon"></div>
+          <div class="backpack-wearable-slot-spacer"></div>
+          <div class="backpack-wearable-slot" data-slot="leggings">
+            <div class="backpack-wearable-slot-label">Leggings</div>
           </div>
-          <div class="backpack-equipment-slot-spacer"></div>
+          <div class="backpack-wearable-slot-spacer"></div>
           
           <!-- Bottom row: Boots -->
-          <div class="backpack-equipment-slot-spacer"></div>
-          <div class="backpack-equipment-slot" data-slot="boots">
-            <div class="backpack-slot-icon backpack-boots-icon"></div>
+          <div class="backpack-wearable-slot-spacer"></div>
+          <div class="backpack-wearable-slot" data-slot="boots">
+            <div class="backpack-wearable-slot-label">Boots</div>
           </div>
-          <div class="backpack-equipment-slot-spacer"></div>
+          <div class="backpack-wearable-slot-spacer"></div>
         </div>
       </div>
       
@@ -95,6 +95,16 @@
     hotbarSlots: 8
   };
 
+  // Wearable slot to position mapping (matches Wearables.ts)
+  const WEARABLE_SLOT_POSITIONS = {
+    helmet: 0,
+    armor: 1,
+    gloves: 2,
+    leggings: 3,
+    boots: 4,
+    accessory: 5
+  };
+
   // Setup hytopia data handlers
   hytopia.onData(data => {
     if (data.type === 'toggleBackpack') {
@@ -107,6 +117,10 @@
     
     if (data.type === 'backpackUpdate') {
       updateBackpackSlot(data.position, data);
+    }
+    
+    if (data.type === 'wearablesUpdate') {
+      updateWearablesSlot(data.position, data);
     }
   });
 
@@ -152,11 +166,14 @@
 
     // Helper function to get slot info
     function getSlotInfo(slot) {
-      const index = slot.dataset.slotIndex || slot.dataset.slot || slot.dataset.hotbarIndex;
-      const type = slot.dataset.slotIndex ? 'backpack' : 
-                   slot.dataset.slot ? 'equipment' : 
-                   slot.dataset.hotbarIndex ? 'hotbar' : 'unknown';
-      return { type, index };
+      if (slot.dataset.slotIndex) {
+        return { type: 'backpack', index: slot.dataset.slotIndex };
+      } else if (slot.dataset.slot) {
+        return { type: 'wearables', index: WEARABLE_SLOT_POSITIONS[slot.dataset.slot] };
+      } else if (slot.dataset.hotbarIndex) {
+        return { type: 'hotbar', index: slot.dataset.hotbarIndex };
+      }
+      return { type: 'unknown', index: null };
     }
 
     // Helper function to check if slot has content
@@ -255,7 +272,7 @@
     }
 
     // Setup slot click handlers
-    document.querySelectorAll('.backpack-slot, .backpack-equipment-slot, .backpack-hotbar-slot')
+    document.querySelectorAll('.backpack-slot, .backpack-wearable-slot, .backpack-hotbar-slot')
       .forEach(slot => {
         slot.addEventListener('click', e => {
           e.preventDefault();
@@ -343,6 +360,14 @@
       iconClass: 'backpack-item-icon',
       quantityClass: 'backpack-slot-quantity',
       maxSlots: BACKPACK_CONFIG.slots,
+      showEmptyNumber: false
+    },
+    wearables: {
+      selector: '.backpack-wearable-slot',
+      contentSelector: '.backpack-wearable-slot',
+      iconClass: 'backpack-item-icon',
+      quantityClass: 'backpack-slot-quantity',
+      maxSlots: 6,
       showEmptyNumber: false
     }
   };
@@ -438,6 +463,35 @@
   function removeTooltip(slot) {
     const existingTooltip = slot.querySelector('.backpack-item-tooltip');
     if (existingTooltip) existingTooltip.remove();
+  }
+
+  // Custom wearables slot update function
+  function updateWearablesSlot(position, itemData) {
+    // Find slot by position
+    const slotName = Object.keys(WEARABLE_SLOT_POSITIONS).find(name => WEARABLE_SLOT_POSITIONS[name] === position);
+    if (!slotName) return;
+    
+    const slot = document.querySelector(`[data-slot="${slotName}"]`);
+    if (!slot) return;
+    
+    // Clear existing content
+    removeTooltip(slot);
+    const existingIcon = slot.querySelector('.backpack-item-icon');
+    if (existingIcon) existingIcon.remove();
+    
+    if (itemData.removed) {
+      // Show label for empty slot
+      const label = slotName.charAt(0).toUpperCase() + slotName.slice(1);
+      slot.innerHTML = `<div class="backpack-wearable-slot-label">${label}</div>`;
+    } else {
+      // Show item
+      const icon = document.createElement('img');
+      icon.src = `{{CDN_ASSETS_URL}}/${itemData.iconImageUri}`;
+      icon.alt = itemData.name;
+      icon.className = 'backpack-item-icon';
+      slot.appendChild(icon);
+      createTooltip(slot, itemData);
+    }
   }
 
   // Specific update functions
@@ -543,7 +597,7 @@
     gap: 20px;
   }
 
-  .backpack-equipment-panel {
+  .backpack-wearables-panel {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -551,7 +605,7 @@
   }
 
   /* Grid Styles */
-  .backpack-equipment-slots {
+  .backpack-wearables-slots {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
@@ -586,7 +640,7 @@
   }
 
   /* Slot Styles */
-  .backpack-equipment-slot,
+  .backpack-wearable-slot,
   .backpack-slot {
     width: var(--backpack-slot-size);
     height: var(--backpack-slot-size);
@@ -624,7 +678,7 @@
   }
 
   /* Slot Hover & Highlight States */
-  .backpack-equipment-slot:hover,
+  .backpack-wearable-slot:hover,
   .backpack-slot:hover,
   .backpack-hotbar-slot:hover {
     border-color: #666;
@@ -632,7 +686,7 @@
     transform: translateY(-1px);
   }
 
-  .backpack-equipment-slot:hover {
+  .backpack-wearable-slot:hover {
     border-color: #666;
   }
 
@@ -669,10 +723,6 @@
     background-position: center;
     opacity: 0.3;
     transition: opacity 0.2s ease;
-  }
-
-  .backpack-equipment-slot:hover .backpack-slot-icon {
-    opacity: 0.5;
   }
 
   .backpack-slot-content,
@@ -742,31 +792,19 @@
     text-align: center;
   }
 
-  /* Equipment Icons */
-  .backpack-helmet-icon {
-    background: radial-gradient(circle, #666 30%, transparent 30%);
-    border-radius: 50% 50% 0 0;
+  /* Wearable Slot Labels */
+  .backpack-wearable-slot-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: #888;
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    transition: color 0.2s ease;
+    pointer-events: none;
   }
 
-  .backpack-armor-icon {
-    background: linear-gradient(45deg, #666 25%, transparent 25%, transparent 75%, #666 75%);
-  }
-
-  .backpack-gloves-icon {
-    background: radial-gradient(ellipse 60% 40%, #666 30%, transparent 30%);
-  }
-
-  .backpack-leggings-icon {
-    background: linear-gradient(0deg, #666 60%, transparent 60%);
-  }
-
-  .backpack-boots-icon {
-    background: linear-gradient(180deg, transparent 50%, #666 50%);
-    border-radius: 0 0 50% 50%;
-  }
-
-  .backpack-accessory-icon {
-    background: radial-gradient(circle, #666 20%, transparent 20%, transparent 40%, #666 40%, #666 50%, transparent 50%);
+  .backpack-wearable-slot:hover .backpack-wearable-slot-label {
+    color: #cccccc;
   }
 
   /* Item Rarity Colors */
@@ -823,16 +861,16 @@
     gap: 6px;
   }
 
-  body.mobile .backpack-equipment-panel {
+  body.mobile .backpack-wearables-panel {
     flex-direction: row;
     min-width: auto;
   }
 
-  body.mobile .backpack-equipment-slots {
+  body.mobile .backpack-wearables-slots {
     justify-items: center;
   }
 
-  body.mobile .backpack-equipment-slot,
+  body.mobile .backpack-wearable-slot,
   body.mobile .backpack-slot,
   body.mobile .backpack-hotbar-slot {
     box-sizing: border-box;
@@ -877,6 +915,10 @@
 
   body.mobile .backpack-item-tooltip {
     display: none;
+  }
+
+  body.mobile .backpack-wearable-slot-label {
+    font-size: 9px;
   }
 
   .backpack-mouse-follower {

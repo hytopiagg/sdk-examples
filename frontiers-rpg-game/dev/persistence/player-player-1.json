@@ -1,17 +1,17 @@
 {
   "health": 81,
   "maxHealth": 100,
-  "currentRegionId": "ratkin-nest",
-  "currentRegionSpawnFacingAngle": 180,
+  "currentRegionId": "stalkhaven",
+  "currentRegionSpawnFacingAngle": 0,
   "currentRegionSpawnPoint": {
-    "x": -31,
-    "y": 23,
-    "z": -67
+    "x": 1,
+    "y": 2,
+    "z": 40
   },
   "skillExperience": [
     [
       "exploration",
-      500
+      550
     ],
     [
       "agility",
@@ -102,9 +102,17 @@
       },
       {
         "questId": "into-the-nest",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-scout-morel": 1
+        }
+      },
+      {
+        "questId": "blighted-harvest",
         "state": "active",
         "objectiveProgress": {
-          "talk-to-scout-morel": 0
+          "collect-blighted-roots": 0,
+          "give-blighted-roots": 0
         }
       }
     ]
