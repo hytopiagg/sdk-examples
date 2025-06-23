@@ -19,7 +19,7 @@ export default class TrainingSwordItem extends BaseWeaponItem {
   // Optional static properties (overriding defaults)
   static readonly specialAttack: BaseWeaponItemAttack = {
     id: 'spin',
-    animations: ['sword-attack-2'],
+    animations: ['sword-attack-tornado'],
     cooldownMs: 1500,
     damage: 5,
     damageDelayMs: 200,

@@ -9,10 +9,6 @@ import BankerJohnEntity from './npcs/BankerJohnEntity';
 import HealerMycelisEntity from './npcs/HealerMycelisEntity';
 import MerchantFinnEntity from './npcs/MerchantFinnEntity';
 
-
-import AdventurerTunicItem from '../../items/wearables/AdventurerTunicItem';
-
-
 import stalkhavenMap from '../../../assets/maps/stalkhaven.json';
 
 export default class StalkhavenRegion extends GameRegion {
@@ -32,11 +28,6 @@ export default class StalkhavenRegion extends GameRegion {
     
     this._setupNPCs();
     this._setupPortals();
-
-
-
-    const adventurerTunic = AdventurerTunicItem.create();
-    adventurerTunic.spawnEntityAsEjectedDrop(this.world, { x: 1, y: 3, z: 37 });
   }
 
   private _setupNPCs(): void {
