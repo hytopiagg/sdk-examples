@@ -9,6 +9,7 @@ import MerchantFinnEntity from '../../regions/stalkhaven/npcs/MerchantFinnEntity
 import TestedMettleQuest from './TestedMettleQuest';
 
 import DullSwordItem from '../../items/weapons/DullSwordItem';
+import AdventurerTunicItem from '../../items/wearables/AdventurerTunicItem';
 import GoldItem from '../../items/general/GoldItem';
 
 export default class ExploringStalkhavenQuest extends BaseQuest {
@@ -18,6 +19,7 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
 
   static readonly reward = {
     items: [
+      { itemClass: AdventurerTunicItem, quantity: 1 },
       { itemClass: DullSwordItem, quantity: 1 },
       { itemClass: GoldItem, quantity: 75 },
     ],
@@ -133,7 +135,7 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
       dialogueOption: {
         text: `I've spoken with Healer Mycelis, Merchant Finn, and Captain Sporn as you suggested.`,
         nextDialogue: {
-          text: `Good work - now you understand what we're facing. The 7th Regiment needs help clearing corrupted Ratkin camps, but first I need to test your abilities. These aren't the peaceful traders we once knew - the fog twisted them under the "Whisker King." Take this blade and coin, head to Chitter Forest, and prove you can handle a few corrupted Ratkin.`,
+          text: `Good work - now you understand what we're facing. The 7th Regiment needs help clearing corrupted Ratkin camps, but first I need to test your abilities. These aren't the peaceful traders we once knew - the fog changed them. Take this blade, tunic and coin.. Head to Chitter Forest, and prove you can handle a few corrupted Ratkin.`,
           options: [
             {
               text: `Understood, Commander. I'll prove myself in Chitter Forest.`,

@@ -27,7 +27,7 @@ export default class DullSwordItem extends BaseWeaponItem {
     knockbackForce: 7,
     reach: 3,
   };
-  static readonly description = '[f44336]+10 damage[/][b]A dull metal sword. Better than nothing.';
+  static readonly description = 'A dull metal sword. Better than nothing.';
   static readonly heldModelUri = 'models/items/sword-stone.gltf';
   static readonly heldModelScale = 0.5;
   static readonly defaultRelativeRotationAsChild = Quaternion.fromEuler(-90, 0, 90);

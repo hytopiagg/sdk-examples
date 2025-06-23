@@ -27,7 +27,7 @@ export default class TrainingSwordItem extends BaseWeaponItem {
     knockbackForce: 7,
     reach: 3,
   };
-  static readonly description = '[f44336]+3 damage[/][b]A training sword made from wood. Useless for combat.';
+  static readonly description = 'A training sword made from wood. Useless for combat.';
   static readonly heldModelUri = 'models/items/sword-wooden.gltf';
   static readonly heldModelScale = 0.5;
   static readonly defaultRelativeRotationAsChild = Quaternion.fromEuler(-90, 0, 90);

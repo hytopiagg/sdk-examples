@@ -5,6 +5,10 @@ import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
 import type { QuaternionLike, RawShape, Vector3Like } from 'hytopia';
 
+export function isWeaponItem(item: BaseItem): item is BaseWeaponItem {
+  return item instanceof BaseWeaponItem;
+}
+
 export type BaseWeaponItemAttack = {
   id?: string;
   animations: string[];

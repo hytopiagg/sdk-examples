@@ -2,6 +2,7 @@ import type { Player } from 'hytopia';
 import BaseItem from '../items/BaseItem';
 import ItemRegistry from '../items/ItemRegistry';
 import { isWearableItem } from '../items/BaseWearableItem';
+import { isWeaponItem } from '../items/BaseWeaponItem';
 
 export type SerializedItem = {
   position: number;
@@ -271,6 +272,14 @@ export default class ItemInventory {
         if (item.damageReduction !== 0) updateData.damageReduction = item.damageReduction;
         if (item.damageReductionPercent !== 0) updateData.damageReductionPercent = item.damageReductionPercent;
       }
+
+      // Add weapon-specific properties if item is a weapon
+      if (isWeaponItem(item)) {
+        if (item.attack.damage !== 0) updateData.damage = item.attack.damage;
+        if (item.attack.damageVariance !== 0) updateData.damageVariance = item.attack.damageVariance;
+      }
+
+      
     } else {
       updateData.removed = true;
     }

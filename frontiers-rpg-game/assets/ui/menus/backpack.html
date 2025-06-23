@@ -419,7 +419,9 @@
            itemData.damageBonus !== undefined ||
            itemData.damageBonusPercent !== undefined ||
            itemData.damageReduction !== undefined ||
-           itemData.damageReductionPercent !== undefined;
+           itemData.damageReductionPercent !== undefined ||
+           itemData.damage !== undefined ||
+           itemData.damageVariance !== undefined;
   }
 
   // Parse color formatting in text: [HEXCODE]text[/] -> <span style="color: #HEXCODE">text</span>
@@ -452,23 +454,41 @@
     // Item name
     if (itemData.name) sections.push(`<div class="backpack-tooltip-name">${itemData.name}</div>`);
     
-    // Wearable stats (between name and description)
+    // Item stats (weapons and wearables)
     const stats = [];
+    
+    // Weapon damage (no "when equipped" needed since weapons are used directly)
+    if (itemData.damage && itemData.damage !== 0) {
+      if (itemData.damageVariance && itemData.damageVariance !== 0) {
+        const min = Math.floor(itemData.damage * (1 - itemData.damageVariance));
+        const max = Math.floor(itemData.damage * (1 + itemData.damageVariance));
+        stats.push(`${min}-${max} damage`);
+      } else {
+        stats.push(`${itemData.damage} damage`);
+      }
+    }
+    
+    // Wearable stats (only show "when equipped" for wearable stats)
+    const wearableStats = [];
     if (itemData.damageBonus && itemData.damageBonus !== 0) {
-      stats.push(`+${itemData.damageBonus} damage dealt`);
+      wearableStats.push(`+${itemData.damageBonus} damage dealt`);
     }
     if (itemData.damageBonusPercent && itemData.damageBonusPercent !== 0) {
-      stats.push(`+${itemData.damageBonusPercent}% damage dealt`);
+      wearableStats.push(`+${itemData.damageBonusPercent}% damage dealt`);
     }
     if (itemData.damageReduction && itemData.damageReduction !== 0) {
-      stats.push(`-${itemData.damageReduction} damage taken`);
+      wearableStats.push(`-${itemData.damageReduction} damage taken`);
     }
     if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
-      stats.push(`-${itemData.damageReductionPercent}% damage taken`);
+      wearableStats.push(`-${itemData.damageReductionPercent}% damage taken`);
+    }
+    
+    if (wearableStats.length > 0) {
+      stats.push(`<div class="backpack-tooltip-stats-header">When equipped:</div>${wearableStats.join('<br>')}`);
     }
     
     if (stats.length > 0) {
-      sections.push(`<div class="backpack-tooltip-stats"><div class="backpack-tooltip-stats-header">When equipped:</div>${stats.join('<br>')}</div>`);
+      sections.push(`<div class="backpack-tooltip-stats">${stats.join('<br>')}</div>`);
     }
     
     // Item description
