@@ -72,6 +72,7 @@ export default class GamePlayer {
   private _globalExperience: number = 0;
   private _health: number = 100;
   private _isDead: boolean = false;
+  private _saveTimeout: NodeJS.Timeout | undefined;
   private _skillExperience: Map<SkillId, number> = new Map();
 
   private constructor(player: Player) {
@@ -384,7 +385,10 @@ export default class GamePlayer {
   }
 
   public save(): void {
-    this.player.setPersistedData(this._serialize());
+    clearTimeout(this._saveTimeout);
+    this._saveTimeout = setTimeout(() => { // prevent spamming the server with save requests
+      this.player.setPersistedData(this._serialize());
+    }, 500);
   }
 
   public showNotification(message: string, notificationType: NotificationType): void {
