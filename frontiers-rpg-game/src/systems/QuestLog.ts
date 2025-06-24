@@ -44,6 +44,8 @@ export default class QuestLog {
     this.syncUIUpdate(questId);
     this.updateEntityAlerts();
 
+    this._owner.save();
+
     return true;
   }
 
@@ -64,6 +66,8 @@ export default class QuestLog {
 
     this.syncUIUpdate(questClass.id);
     this._owner.showNotification(`Started quest: ${questClass.name}. See quests for more details.`, 'new');
+
+    this._owner.save();
 
     this.updateEntityAlerts();
 

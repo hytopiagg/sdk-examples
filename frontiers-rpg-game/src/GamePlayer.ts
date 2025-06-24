@@ -296,6 +296,8 @@ export default class GamePlayer {
       this.showNotification(`Level up! You are now level ${newMainLevel}!`, 'success');
       this._updateHudHealthUI();
       this._updateEntityHealthSceneUI();
+
+      this.save();
     }
     
     if (newSkillLevel > oldSkillLevel) {
