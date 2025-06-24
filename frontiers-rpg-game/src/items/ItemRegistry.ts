@@ -12,38 +12,20 @@ export default class ItemRegistry {
   public static initializeItems(): void {
     console.log('Loading items...');
     
-    const itemFiles = this._findItemFiles(__dirname);
+    const ItemClasses = require('./ItemClasses').default; // lazy load to avoid circular dependencies
     let loadedCount = 0;
     
-    for (const filePath of itemFiles) {
+    for (const ItemClass of ItemClasses) {
       try {
-        const ItemClass = require(filePath).default;
-        
         if (ItemClass?.prototype instanceof BaseItem && ItemClass.id) {
           this.itemRegistry.set(ItemClass.id, ItemClass);
           loadedCount++;
         }
       } catch (error) {
-        console.warn(`Failed to load item: ${filePath}`);
+        console.warn(`Failed to load item: ${ItemClass.id}`);
       }
     }
 
     console.log(`Loaded ${loadedCount} items`);
-  }
-
-  private static _findItemFiles(dir: string): string[] {
-    const files: string[] = [];
-    
-    for (const item of readdirSync(dir)) {
-      const path = join(dir, item);
-      
-      if (statSync(path).isDirectory()) {
-        files.push(...this._findItemFiles(path));
-      } else if (!item.startsWith('Base')) {
-        files.push(path);
-      }
-    }
-
-    return files;
   }
 }

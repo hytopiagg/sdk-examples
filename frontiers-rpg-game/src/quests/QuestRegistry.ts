@@ -1,5 +1,3 @@
-import { readdirSync, statSync } from 'fs';
-import { join } from 'path';
 import BaseEntity from '../entities/BaseEntity';
 import BaseQuest from './BaseQuest';
 import type { BaseEntityDialogueOption } from '../entities/BaseEntity';
@@ -45,14 +43,12 @@ export default class QuestRegistry {
   public static initializeQuests(): void {
     console.log('Loading quests...');
     
-    const questFiles = this._findQuestFiles(__dirname);
+    const QuestClasses = require('./QuestClasses').default; // lazy load to avoid circular dependencies
     const npcIdCounters = new Map<typeof BaseEntity, number>();
     let loadedCount = 0;
     
-    for (const filePath of questFiles) {
+    for (const QuestClass of QuestClasses) {
       try {
-        const QuestClass = require(filePath).default;
-        
         if (QuestClass?.prototype instanceof BaseQuest && QuestClass.id) {
           this._quests.set(QuestClass.id, QuestClass);
           
@@ -88,31 +84,11 @@ export default class QuestRegistry {
           loadedCount++;
         }
       } catch (error) {
-        console.warn(`Failed to load quest: ${filePath}`);
+        console.warn(`Failed to load quest: ${QuestClass.id}`);
       }
     }
 
     console.log(`Loaded ${loadedCount} quests`);
-  }
-  
-  private static _findQuestFiles(dir: string): string[] {
-    const files: string[] = [];
-    
-    try {
-      for (const item of readdirSync(dir)) {
-        const path = join(dir, item);
-        
-        if (statSync(path).isDirectory()) {
-          files.push(...this._findQuestFiles(path));
-        } else if (!item.startsWith('Base') && (item.endsWith('.ts') || item.endsWith('.js'))) {
-          files.push(path);
-        }
-      }
-    } catch (error) {
-      console.warn(`Failed to read directory: ${dir}`);
-    }
-  
-    return files;
   }
 }
 
