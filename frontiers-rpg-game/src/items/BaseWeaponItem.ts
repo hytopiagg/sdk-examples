@@ -124,7 +124,7 @@ export default abstract class BaseWeaponItem extends BaseItem {
       attack.reach,
     );
 
-    if (target) {
+    if (target && !(target instanceof GamePlayerEntity)) { // change this for PVP support later.
       const damage = this.calculateDamageWithVariance(attack.damage, attack.damageVariance);
       this.dealDamage(target, damage, attackDirection, attack.knockbackForce);
     }
