@@ -24,7 +24,7 @@ export default class ExploringStalkhavenQuest extends BaseQuest {
       { itemClass: GoldItem, quantity: 75 },
     ],
     skillExperience: [
-      { skillId: SkillId.EXPLORATION, amount: 100 },
+      { skillId: SkillId.EXPLORATION, amount: 125 },
     ],
   }
 

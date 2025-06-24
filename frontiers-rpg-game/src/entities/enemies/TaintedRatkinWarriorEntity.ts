@@ -40,7 +40,7 @@ export default class TaintedRatkinWarriorEntity extends BaseCombatEntity {
           weight: 2,
         },
       ],
-      combatExperienceReward: 375,
+      combatExperienceReward: 25,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [

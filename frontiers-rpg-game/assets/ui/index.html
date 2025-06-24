@@ -20,6 +20,314 @@
   }
 </style>
 
+<!-- Included from: ./shared/item-tooltips.html -->
+<!-- Shared Item Tooltip System -->
+<script>
+/**
+ * Centralized Item Tooltip System
+ * Provides consistent tooltip functionality across all UI components
+ */
+window.ItemTooltips = (function() {
+  'use strict';
+
+  // Parse color formatting in text: [HEXCODE]text[/] -> <span style="color: #HEXCODE">text</span>
+  // Parse line breaks: [b] -> <br>
+  function parseText(text) {
+    if (!text) return text;
+    
+    // First, replace [b] with <br> for line breaks
+    text = text.replace(/\[b\]/g, '<br>');
+    
+    // Then, handle color formatting [HEXCODE]text[/] pattern
+    const colorPattern = /\[([A-Fa-f0-9]{6})\](.*?)\[\/\]/g;
+    
+    return text.replace(colorPattern, (match, hexCode, content) => {
+      return `<span style="color: #${hexCode}">${content}</span>`;
+    });
+  }
+
+  function hasTooltipData(itemData) {
+    return itemData.name || 
+           itemData.description || 
+           itemData.sellPrice !== undefined ||
+           itemData.buyPrice !== undefined ||
+           itemData.damageBonus !== undefined ||
+           itemData.damageBonusPercent !== undefined ||
+           itemData.damageReduction !== undefined ||
+           itemData.damageReductionPercent !== undefined ||
+           itemData.damage !== undefined ||
+           itemData.damageVariance !== undefined ||
+           (itemData.statTexts && itemData.statTexts.length > 0) ||
+           itemData.statsHeader;
+  }
+
+  function createTooltip(slot, itemData, options = {}) {
+    if (!hasTooltipData(itemData)) return;
+
+    // Default options
+    const config = {
+      tooltipClass: 'item-tooltip',
+      contentClass: 'item-tooltip-content',
+      showBuyPrice: false,
+      showSellPrice: true,
+      buyPriceLabel: 'Price: ',
+      sellPriceLabel: 'Sells For: ',
+      notBuyableLabel: 'Not Buyable',
+      notSellableLabel: 'Not Sellable',
+      ...options
+    };
+
+    const tooltip = document.createElement('div');
+    tooltip.className = config.tooltipClass;
+    
+    const content = document.createElement('div');
+    content.className = config.contentClass;
+    
+    const sections = [];
+    
+    // Item name
+    if (itemData.name) {
+      sections.push(`<div class="tooltip-name">${itemData.name}</div>`);
+    }
+    
+    // Item stats (weapons and wearables)
+    const stats = [];
+    
+    // Weapon damage (no "when equipped" needed since weapons are used directly)
+    if (itemData.damage && itemData.damage !== 0) {
+      if (itemData.damageVariance && itemData.damageVariance !== 0) {
+        const min = Math.floor(itemData.damage * (1 - itemData.damageVariance));
+        const max = Math.floor(itemData.damage * (1 + itemData.damageVariance));
+        stats.push(`${min}-${max} damage`);
+      } else {
+        stats.push(`${itemData.damage} damage`);
+      }
+    }
+    
+    // Wearable stats
+    const wearableStats = [];
+    if (itemData.damageBonus && itemData.damageBonus !== 0) {
+      wearableStats.push(`+${itemData.damageBonus} damage dealt`);
+    }
+    if (itemData.damageBonusPercent && itemData.damageBonusPercent !== 0) {
+      wearableStats.push(`+${itemData.damageBonusPercent}% damage dealt`);
+    }
+    if (itemData.damageReduction && itemData.damageReduction !== 0) {
+      wearableStats.push(`-${itemData.damageReduction} damage taken`);
+    }
+    if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
+      wearableStats.push(`-${itemData.damageReductionPercent}% damage taken`);
+    }
+    
+    // Collect all stat lines first
+    const allStatLines = [];
+    
+    // Add wearable stats
+    if (wearableStats.length > 0) {
+      allStatLines.push(...wearableStats);
+    }
+    
+    // Add custom stat texts
+    if (itemData.statTexts && itemData.statTexts.length > 0) {
+      for (const statText of itemData.statTexts) {
+        const parsedStatText = parseText(statText);
+        allStatLines.push(parsedStatText);
+      }
+    }
+    
+    // Add header and stats together if we have stats
+    if (allStatLines.length > 0) {
+      if (itemData.statsHeader) {
+        const headerText = parseText(itemData.statsHeader);
+        stats.push(`<div class="tooltip-stats-header">${headerText}</div>${allStatLines.join('<br>')}`);
+      } else {
+        stats.push(allStatLines.join('<br>'));
+      }
+    }
+    
+    if (stats.length > 0) {
+      sections.push(`<div class="tooltip-stats">${stats.join('<br>')}</div>`);
+    }
+    
+    // Item description
+    if (itemData.description) {
+      const parsedDescription = parseText(itemData.description);
+      sections.push(`<div class="tooltip-description">${parsedDescription}</div>`);
+    }
+    
+    // Price information
+    if (config.showBuyPrice && itemData.buyPrice !== undefined) {
+      const price = itemData.buyPrice || 0;
+      if (price > 0) {
+        sections.push(`<div class="tooltip-value">${config.buyPriceLabel}${price.toLocaleString()} gold</div>`);
+      } else {
+        sections.push(`<div class="tooltip-value">${config.notBuyableLabel}</div>`);
+      }
+    }
+    
+    if (config.showSellPrice && itemData.sellPrice !== undefined) {
+      const price = itemData.sellPrice || 0;
+      if (price > 0) {
+        sections.push(`<div class="tooltip-value">${config.sellPriceLabel}${price.toLocaleString()} gold</div>`);
+      } else {
+        sections.push(`<div class="tooltip-value">${config.notSellableLabel}</div>`);
+      }
+    }
+    
+    content.innerHTML = sections.join('');
+    tooltip.appendChild(content);
+    slot.appendChild(tooltip);
+  }
+
+  function removeTooltip(slot, tooltipClass = 'item-tooltip') {
+    const existingTooltip = slot.querySelector(`.${tooltipClass}`);
+    if (existingTooltip) existingTooltip.remove();
+  }
+
+  // Public API
+  return {
+    parseText: parseText,
+    hasTooltipData: hasTooltipData,
+    createTooltip: createTooltip,
+    removeTooltip: removeTooltip
+  };
+})();
+</script>
+
+<style>
+  /* Shared Item Tooltip Styles */
+  .item-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-bottom: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    pointer-events: none;
+  }
+
+  /* Tooltip visibility on hover - Generic classes */
+  .backpack-slot:hover .item-tooltip,
+  .backpack-hotbar-slot:hover .item-tooltip,
+  .backpack-wearable-slot:hover .item-tooltip,
+  .merchant-slot:hover .item-tooltip,
+  .merchant-hotbar-slot:hover .item-tooltip,
+  /* Tooltip visibility on hover - Specific classes */
+  .backpack-slot:hover .backpack-item-tooltip,
+  .backpack-hotbar-slot:hover .backpack-item-tooltip,
+  .backpack-wearable-slot:hover .backpack-item-tooltip,
+  .merchant-slot:hover .merchant-item-tooltip,
+  .merchant-hotbar-slot:hover .merchant-item-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-8px);
+  }
+
+  .item-tooltip-content,
+  .backpack-item-tooltip-content,
+  .merchant-item-tooltip-content {
+    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    font-size: 12px;
+    font-weight: 500;
+    color: #cccccc;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+    white-space: normal;
+    min-width: 150px;
+    max-width: 300px;
+    line-height: 1.4;
+    position: relative;
+    text-align: left;
+    transform: translateX(-50%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  /* Tooltip Caret */
+  .item-tooltip-content::after,
+  .backpack-item-tooltip-content::after,
+  .merchant-item-tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: #444;
+  }
+
+  .item-tooltip-content::before,
+  .backpack-item-tooltip-content::before,
+  .merchant-item-tooltip-content::before {
+    content: '';
+    position: absolute;
+    top: calc(100% - 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #2a2a2a;
+    z-index: 1;
+  }
+
+  /* Tooltip Content Sections */
+  .tooltip-name,
+  .backpack-tooltip-name,
+  .merchant-tooltip-name {
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .tooltip-stats,
+  .backpack-tooltip-stats {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #7dd87d;
+    font-weight: 500;
+  }
+
+  .tooltip-stats-header,
+  .backpack-tooltip-stats-header {
+    color: #999999;
+    font-weight: 500;
+    margin-bottom: 3px;
+    font-size: 11px;
+  }
+
+  .tooltip-description,
+  .backpack-tooltip-description,
+  .merchant-tooltip-description {
+    color: #cccccc;
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .tooltip-value,
+  .backpack-tooltip-value,
+  .merchant-tooltip-value {
+    color: #ffd700;
+    margin-top: 6px;
+    font-weight: 500;
+    font-size: 11px;
+  }
+
+  /* Mobile - Hide tooltips on mobile devices */
+  body.mobile .item-tooltip {
+    display: none;
+  }
+
+  /* Mouse Follower Tooltip (for backpack drag system) */
+  .backpack-mouse-follower .item-tooltip {
+    z-index: 2001;
+  }
+</style> 
+
 <!-- Included from: ./menus/backpack.html -->
 <!-- Backpack UI -->
 <div class="backpack-overlay">
@@ -435,103 +743,16 @@
     }
   }
 
-  function hasTooltipData(itemData) {
-    return itemData.name || 
-           itemData.description || 
-           itemData.sellPrice !== undefined ||
-           itemData.damageBonus !== undefined ||
-           itemData.damageBonusPercent !== undefined ||
-           itemData.damageReduction !== undefined ||
-           itemData.damageReductionPercent !== undefined ||
-           itemData.damage !== undefined ||
-           itemData.damageVariance !== undefined;
-  }
-
-  // Parse color formatting in text: [HEXCODE]text[/] -> <span style="color: #HEXCODE">text</span>
-  // Parse line breaks: [b] -> <br>
-  function parseText(text) {
-    if (!text) return text;
-    
-    // First, replace [b] with <br> for line breaks
-    text = text.replace(/\[b\]/g, '<br>');
-    
-    // Then, handle color formatting [HEXCODE]text[/] pattern
-    const colorPattern = /\[([A-Fa-f0-9]{6})\](.*?)\[\/\]/g;
-    
-    return text.replace(colorPattern, (match, hexCode, content) => {
-      return `<span style="color: #${hexCode}">${content}</span>`;
+  // Use shared tooltip system
+  function createTooltip(slot, itemData) {
+    ItemTooltips.createTooltip(slot, itemData, {
+      tooltipClass: 'backpack-item-tooltip',
+      contentClass: 'backpack-item-tooltip-content'
     });
   }
 
-  function createTooltip(slot, itemData) {
-    if (!hasTooltipData(itemData)) return;
-
-    const tooltip = document.createElement('div');
-    tooltip.className = 'backpack-item-tooltip';
-    
-    const content = document.createElement('div');
-    content.className = 'backpack-item-tooltip-content';
-    
-    const sections = [];
-    
-    // Item name
-    if (itemData.name) sections.push(`<div class="backpack-tooltip-name">${itemData.name}</div>`);
-    
-    // Item stats (weapons and wearables)
-    const stats = [];
-    
-    // Weapon damage (no "when equipped" needed since weapons are used directly)
-    if (itemData.damage && itemData.damage !== 0) {
-      if (itemData.damageVariance && itemData.damageVariance !== 0) {
-        const min = Math.floor(itemData.damage * (1 - itemData.damageVariance));
-        const max = Math.floor(itemData.damage * (1 + itemData.damageVariance));
-        stats.push(`${min}-${max} damage`);
-      } else {
-        stats.push(`${itemData.damage} damage`);
-      }
-    }
-    
-    // Wearable stats (only show "when equipped" for wearable stats)
-    const wearableStats = [];
-    if (itemData.damageBonus && itemData.damageBonus !== 0) {
-      wearableStats.push(`+${itemData.damageBonus} damage dealt`);
-    }
-    if (itemData.damageBonusPercent && itemData.damageBonusPercent !== 0) {
-      wearableStats.push(`+${itemData.damageBonusPercent}% damage dealt`);
-    }
-    if (itemData.damageReduction && itemData.damageReduction !== 0) {
-      wearableStats.push(`-${itemData.damageReduction} damage taken`);
-    }
-    if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
-      wearableStats.push(`-${itemData.damageReductionPercent}% damage taken`);
-    }
-    
-    if (wearableStats.length > 0) {
-      stats.push(`<div class="backpack-tooltip-stats-header">When equipped:</div>${wearableStats.join('<br>')}`);
-    }
-    
-    if (stats.length > 0) {
-      sections.push(`<div class="backpack-tooltip-stats">${stats.join('<br>')}</div>`);
-    }
-    
-    // Item description
-    if (itemData.description) {
-      const parsedDescription = parseText(itemData.description);
-      sections.push(`<div class="backpack-tooltip-description">${parsedDescription}</div>`);
-    }
-    
-    // Sell price
-    const sellPrice = itemData.sellPrice || 0;
-    if (sellPrice > 0) sections.push(`<div class="backpack-tooltip-value">Sells For: ${sellPrice.toLocaleString()} gold</div>`);
-    
-    content.innerHTML = sections.join('');
-    tooltip.appendChild(content);
-    slot.appendChild(tooltip);
-  }
-
   function removeTooltip(slot) {
-    const existingTooltip = slot.querySelector('.backpack-item-tooltip');
-    if (existingTooltip) existingTooltip.remove();
+    ItemTooltips.removeTooltip(slot, 'backpack-item-tooltip');
   }
 
   // Custom wearables slot update function
@@ -1071,7 +1292,7 @@
     }
   }
 
-  /* Item Tooltip Styles */
+  /* Backpack-specific tooltip positioning (content handled by shared system) */
   .backpack-item-tooltip {
     position: absolute;
     bottom: 100%;
@@ -1082,91 +1303,6 @@
     transition: all 0.3s ease;
     z-index: 2000;
     pointer-events: none;
-  }
-
-  .backpack-slot:hover .backpack-item-tooltip,
-  .backpack-hotbar-slot:hover .backpack-item-tooltip,
-  .backpack-wearable-slot:hover .backpack-item-tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-8px);
-  }
-
-  .backpack-item-tooltip-content {
-    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
-    border: 2px solid #444;
-    border-radius: 8px;
-    padding: 10px 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    font-size: 12px;
-    font-weight: 500;
-    color: #cccccc;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
-    white-space: normal;
-    min-width: 150px;
-    max-width: 300px;
-    line-height: 1.4;
-    position: relative;
-    text-align: left;
-    transform: translateX(-50%);
-  }
-
-  /* Tooltip Caret */
-  .backpack-item-tooltip-content::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: #444;
-  }
-
-  .backpack-item-tooltip-content::before {
-    content: '';
-    position: absolute;
-    top: calc(100% - 2px);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #2a2a2a;
-    z-index: 1;
-  }
-
-  /* Tooltip Content Sections */
-  .backpack-tooltip-name {
-    font-weight: 600;
-    color: #ffffff;
-    font-size: 12px;
-  }
-
-  .backpack-tooltip-stats {
-    margin-top: 6px;
-    font-size: 11px;
-    line-height: 1.4;
-    color: #7dd87d;
-    font-weight: 500;
-  }
-
-  .backpack-tooltip-stats-header {
-    color: #999999;
-    font-weight: 500;
-    margin-bottom: 3px;
-    font-size: 11px;
-  }
-
-  .backpack-tooltip-description {
-    color: #cccccc;
-    margin-top: 6px;
-    font-size: 11px;
-    line-height: 1.4;
-  }
-
-  .backpack-tooltip-value {
-    color: #ffd700;
-    margin-top: 6px;
-    font-weight: 500;
-    font-size: 11px;
   }
 
   /* Mouse Follower Tooltip */
@@ -3245,41 +3381,31 @@
     }
   }
 
-  // Tooltip management functions
+  // Use shared tooltip system
   function createTooltip(slot, itemData) {
-    if (!hasTooltipData(itemData)) return;
-
-    const tooltip = document.createElement('div');
-    tooltip.className = 'merchant-item-tooltip';
+    const options = {
+      tooltipClass: 'merchant-item-tooltip',
+      contentClass: 'merchant-item-tooltip-content'
+    };
     
-    const content = document.createElement('div');
-    content.className = 'merchant-item-tooltip-content';
-    
-    const sections = [];
-    if (itemData.name) sections.push(`<div class="merchant-tooltip-name">${itemData.name}</div>`);
-    if (itemData.description) sections.push(`<div class="merchant-tooltip-description">${itemData.description}</div>`);
-    
-    const sellPrice = itemData.sellPrice || 0;
-    if (sellPrice > 0) {
-      const label = merchantState.currentMode === 'buy' ? 'Price: ' : 'Sells For: ';
-      sections.push(`<div class="merchant-tooltip-value">${label}${sellPrice.toLocaleString()} gold</div>`);
+    // Configure price display based on merchant mode
+    if (merchantState.currentMode === 'buy') {
+      options.showBuyPrice = true;
+      options.showSellPrice = false;
+      // Use sellPrice as buyPrice for display (sellPrice contains the buy price data)
+      if (itemData.sellPrice !== undefined) {
+        itemData.buyPrice = itemData.sellPrice;
+      }
     } else {
-      const notTradeableLabel = merchantState.currentMode === 'buy' ? 'Not Buyable' : 'Not Sellable';
-      sections.push(`<div class="merchant-tooltip-value">${notTradeableLabel}</div>`);
+      options.showBuyPrice = false;
+      options.showSellPrice = true;
     }
     
-    content.innerHTML = sections.join('');
-    tooltip.appendChild(content);
-    slot.appendChild(tooltip);
+    ItemTooltips.createTooltip(slot, itemData, options);
   }
 
   function removeTooltip(slot) {
-    const existingTooltip = slot.querySelector('.merchant-item-tooltip');
-    if (existingTooltip) existingTooltip.remove();
-  }
-
-  function hasTooltipData(itemData) {
-    return itemData.name || itemData.description || itemData.sellPrice !== undefined;
+    ItemTooltips.removeTooltip(slot, 'merchant-item-tooltip');
   }
 
   function createItemContent(content, itemData, config) {
@@ -4011,7 +4137,7 @@
     min-width: 12px;
   }
 
-  /* Tooltips */
+  /* Merchant-specific tooltip positioning (content handled by shared system) */
   .merchant-item-tooltip {
     position: absolute;
     bottom: 100%;
@@ -4022,73 +4148,6 @@
     transition: all 0.3s ease;
     z-index: 2000;
     pointer-events: none;
-  }
-
-  .merchant-slot:hover .merchant-item-tooltip,
-  .merchant-hotbar-slot:hover .merchant-item-tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-8px);
-  }
-
-  .merchant-item-tooltip-content {
-    background: var(--merchant-bg-primary);
-    border: 2px solid var(--merchant-border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--merchant-text-muted);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
-    white-space: normal;
-    min-width: 150px;
-    max-width: 300px;
-    line-height: 1.4;
-    position: relative;
-    text-align: left;
-    transform: translateX(-50%);
-  }
-
-  /* Tooltip caret */
-  .merchant-item-tooltip-content::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: var(--merchant-border);
-  }
-
-  .merchant-item-tooltip-content::before {
-    content: '';
-    position: absolute;
-    top: calc(100% - 2px);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #2a2a2a;
-    z-index: 1;
-  }
-
-  /* Tooltip content sections */
-  .merchant-tooltip-name {
-    font-weight: 600;
-    color: var(--merchant-text);
-  }
-
-  .merchant-tooltip-description {
-    color: var(--merchant-text-muted);
-    margin-top: 4px;
-    font-size: 10px;
-  }
-
-  .merchant-tooltip-value {
-    color: #ffd700;
-    margin-top: 4px;
-    font-weight: 600;
-    font-size: 10px;
   }
 
   /* Item rarity colors */

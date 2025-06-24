@@ -412,103 +412,16 @@
     }
   }
 
-  function hasTooltipData(itemData) {
-    return itemData.name || 
-           itemData.description || 
-           itemData.sellPrice !== undefined ||
-           itemData.damageBonus !== undefined ||
-           itemData.damageBonusPercent !== undefined ||
-           itemData.damageReduction !== undefined ||
-           itemData.damageReductionPercent !== undefined ||
-           itemData.damage !== undefined ||
-           itemData.damageVariance !== undefined;
-  }
-
-  // Parse color formatting in text: [HEXCODE]text[/] -> <span style="color: #HEXCODE">text</span>
-  // Parse line breaks: [b] -> <br>
-  function parseText(text) {
-    if (!text) return text;
-    
-    // First, replace [b] with <br> for line breaks
-    text = text.replace(/\[b\]/g, '<br>');
-    
-    // Then, handle color formatting [HEXCODE]text[/] pattern
-    const colorPattern = /\[([A-Fa-f0-9]{6})\](.*?)\[\/\]/g;
-    
-    return text.replace(colorPattern, (match, hexCode, content) => {
-      return `<span style="color: #${hexCode}">${content}</span>`;
+  // Use shared tooltip system
+  function createTooltip(slot, itemData) {
+    ItemTooltips.createTooltip(slot, itemData, {
+      tooltipClass: 'backpack-item-tooltip',
+      contentClass: 'backpack-item-tooltip-content'
     });
   }
 
-  function createTooltip(slot, itemData) {
-    if (!hasTooltipData(itemData)) return;
-
-    const tooltip = document.createElement('div');
-    tooltip.className = 'backpack-item-tooltip';
-    
-    const content = document.createElement('div');
-    content.className = 'backpack-item-tooltip-content';
-    
-    const sections = [];
-    
-    // Item name
-    if (itemData.name) sections.push(`<div class="backpack-tooltip-name">${itemData.name}</div>`);
-    
-    // Item stats (weapons and wearables)
-    const stats = [];
-    
-    // Weapon damage (no "when equipped" needed since weapons are used directly)
-    if (itemData.damage && itemData.damage !== 0) {
-      if (itemData.damageVariance && itemData.damageVariance !== 0) {
-        const min = Math.floor(itemData.damage * (1 - itemData.damageVariance));
-        const max = Math.floor(itemData.damage * (1 + itemData.damageVariance));
-        stats.push(`${min}-${max} damage`);
-      } else {
-        stats.push(`${itemData.damage} damage`);
-      }
-    }
-    
-    // Wearable stats (only show "when equipped" for wearable stats)
-    const wearableStats = [];
-    if (itemData.damageBonus && itemData.damageBonus !== 0) {
-      wearableStats.push(`+${itemData.damageBonus} damage dealt`);
-    }
-    if (itemData.damageBonusPercent && itemData.damageBonusPercent !== 0) {
-      wearableStats.push(`+${itemData.damageBonusPercent}% damage dealt`);
-    }
-    if (itemData.damageReduction && itemData.damageReduction !== 0) {
-      wearableStats.push(`-${itemData.damageReduction} damage taken`);
-    }
-    if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
-      wearableStats.push(`-${itemData.damageReductionPercent}% damage taken`);
-    }
-    
-    if (wearableStats.length > 0) {
-      stats.push(`<div class="backpack-tooltip-stats-header">When equipped:</div>${wearableStats.join('<br>')}`);
-    }
-    
-    if (stats.length > 0) {
-      sections.push(`<div class="backpack-tooltip-stats">${stats.join('<br>')}</div>`);
-    }
-    
-    // Item description
-    if (itemData.description) {
-      const parsedDescription = parseText(itemData.description);
-      sections.push(`<div class="backpack-tooltip-description">${parsedDescription}</div>`);
-    }
-    
-    // Sell price
-    const sellPrice = itemData.sellPrice || 0;
-    if (sellPrice > 0) sections.push(`<div class="backpack-tooltip-value">Sells For: ${sellPrice.toLocaleString()} gold</div>`);
-    
-    content.innerHTML = sections.join('');
-    tooltip.appendChild(content);
-    slot.appendChild(tooltip);
-  }
-
   function removeTooltip(slot) {
-    const existingTooltip = slot.querySelector('.backpack-item-tooltip');
-    if (existingTooltip) existingTooltip.remove();
+    ItemTooltips.removeTooltip(slot, 'backpack-item-tooltip');
   }
 
   // Custom wearables slot update function
@@ -1048,7 +961,7 @@
     }
   }
 
-  /* Item Tooltip Styles */
+  /* Backpack-specific tooltip positioning (content handled by shared system) */
   .backpack-item-tooltip {
     position: absolute;
     bottom: 100%;
@@ -1059,91 +972,6 @@
     transition: all 0.3s ease;
     z-index: 2000;
     pointer-events: none;
-  }
-
-  .backpack-slot:hover .backpack-item-tooltip,
-  .backpack-hotbar-slot:hover .backpack-item-tooltip,
-  .backpack-wearable-slot:hover .backpack-item-tooltip {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-8px);
-  }
-
-  .backpack-item-tooltip-content {
-    background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
-    border: 2px solid #444;
-    border-radius: 8px;
-    padding: 10px 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    font-size: 12px;
-    font-weight: 500;
-    color: #cccccc;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
-    white-space: normal;
-    min-width: 150px;
-    max-width: 300px;
-    line-height: 1.4;
-    position: relative;
-    text-align: left;
-    transform: translateX(-50%);
-  }
-
-  /* Tooltip Caret */
-  .backpack-item-tooltip-content::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: #444;
-  }
-
-  .backpack-item-tooltip-content::before {
-    content: '';
-    position: absolute;
-    top: calc(100% - 2px);
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: #2a2a2a;
-    z-index: 1;
-  }
-
-  /* Tooltip Content Sections */
-  .backpack-tooltip-name {
-    font-weight: 600;
-    color: #ffffff;
-    font-size: 12px;
-  }
-
-  .backpack-tooltip-stats {
-    margin-top: 6px;
-    font-size: 11px;
-    line-height: 1.4;
-    color: #7dd87d;
-    font-weight: 500;
-  }
-
-  .backpack-tooltip-stats-header {
-    color: #999999;
-    font-weight: 500;
-    margin-bottom: 3px;
-    font-size: 11px;
-  }
-
-  .backpack-tooltip-description {
-    color: #cccccc;
-    margin-top: 6px;
-    font-size: 11px;
-    line-height: 1.4;
-  }
-
-  .backpack-tooltip-value {
-    color: #ffd700;
-    margin-top: 6px;
-    font-weight: 500;
-    font-size: 11px;
   }
 
   /* Mouse Follower Tooltip */

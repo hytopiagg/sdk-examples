@@ -14,6 +14,8 @@ export default abstract class BaseConsumableItem extends BaseItem {
   // Optional static properties with defaults
   static readonly consumeAnimations: string[] = ['consume-upper'];
   static readonly consumeRequiresDamaged: boolean = false;
+  
+  static readonly statsHeader: string = 'When consumed:';
 
   // Simple factory method
   static create(overrides?: ConsumableOverrides): BaseConsumableItem {

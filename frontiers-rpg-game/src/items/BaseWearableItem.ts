@@ -24,6 +24,8 @@ export default abstract class BaseWearableItem extends BaseItem {
   static readonly damageReduction: number = 0;
   static readonly damageReductionPercent: number = 0;
 
+  static readonly statsHeader: string = 'When equipped:';
+
   // Simple factory method
   static create(overrides?: WearableOverrides): BaseWearableItem {
     const ItemClass = this as any;

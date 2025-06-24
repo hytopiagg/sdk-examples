@@ -32,7 +32,7 @@ export default class TaintedRatkinSpellcasterEntity extends BaseCombatEntity {
           weight: 2,
         },
       ],
-      combatExperienceReward: 375,
+      combatExperienceReward: 30,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [

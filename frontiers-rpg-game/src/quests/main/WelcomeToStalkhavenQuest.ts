@@ -13,7 +13,7 @@ export default class WelcomeToStalkhavenQuest extends BaseQuest {
 
   static readonly reward = {
     skillExperience: [
-      { skillId: SkillId.EXPLORATION, amount: 50 },
+      { skillId: SkillId.EXPLORATION, amount: 100 },
     ],
   }
 

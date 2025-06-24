@@ -32,7 +32,7 @@ export default class RatkinSpellcasterEntity extends BaseCombatEntity {
           weight: 2,
         },
       ],
-      combatExperienceReward: 250,
+      combatExperienceReward: 20,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [

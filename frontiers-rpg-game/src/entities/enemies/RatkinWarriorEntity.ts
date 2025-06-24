@@ -40,7 +40,7 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
           weight: 2,
         },
       ],
-      combatExperienceReward: 250,
+      combatExperienceReward: 15,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [

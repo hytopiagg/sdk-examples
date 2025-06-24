@@ -25,6 +25,7 @@ function includeContent(filePath) {
 
 // Include content for the output - Add our modules here!
 includeContent('./root.html');
+includeContent('./shared/item-tooltips.html');
 includeContent('./menus/backpack.html');
 includeContent('./menus/skills.html');
 includeContent('./menus/dialogue.html');
