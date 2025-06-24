@@ -11,6 +11,7 @@ import type { BaseItemPlayerEventPayloads } from '../../items/BaseItem';
 import MerchantFinnEntity from '../../regions/stalkhaven/npcs/MerchantFinnEntity';
 import ExploringStalkhavenQuest from '../main/ExploringStalkhavenQuest';
 
+import AdventurerGlovesItem from '../../items/wearables/AdventurerGlovesItem';
 import CommonMushroomItem from '../../items/consumables/CommonMushroomItem';
 import GoldItem from '../../items/general/GoldItem';
 
@@ -21,6 +22,7 @@ export default class FungalForagingQuest extends BaseQuest {
 
   static readonly reward = {
     items: [
+      { itemClass: AdventurerGlovesItem, quantity: 1 },
       { itemClass: GoldItem, quantity: 125 },
     ],
     skillExperience: [

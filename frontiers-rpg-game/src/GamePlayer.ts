@@ -295,6 +295,7 @@ export default class GamePlayer {
       this._currentEntity?.setNameplateLevel(newMainLevel);
       this.showNotification(`Level up! You are now level ${newMainLevel}!`, 'success');
       this._updateHudHealthUI();
+      this._updateEntityHealthSceneUI();
     }
     
     if (newSkillLevel > oldSkillLevel) {

@@ -9,12 +9,17 @@ import type { GamePlayerEntityPlayerEventPayloads } from '../../GamePlayerEntity
 import CaptainSpornEntity from '../../regions/stalkhaven/npcs/CaptainSpornEntity';
 import ExploringStalkhavenQuest from '../main/ExploringStalkhavenQuest';
 
+import AdventurerLeggingsItem from '../../items/wearables/AdventurerLeggingsItem';
+
 export default class DipDuckDodgeQuest extends BaseQuest {
   static readonly id = 'dip-duck-dodge';
   static readonly name = 'Dip, Duck, Dodge!';
   static readonly description = `Captain Sporn wants to sharpen up your survival skills. Improving your dodge timing is critical to surviving in the Frontier.`;
 
   static readonly reward = {
+    items: [
+      { itemClass: AdventurerLeggingsItem, quantity: 1 },
+    ],
     skillExperience: [
       { skillId: SkillId.AGILITY, amount: 750 },
       { skillId: SkillId.COMBAT, amount: 250 },

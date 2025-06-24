@@ -186,7 +186,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     if (this._gamePlayer.health <= 0) return; // dead, don't take more damage
     
     if (this.isDodging) { // in dodge state, don't take damage
-      this.adjustSkillExperience(SkillId.AGILITY, damage);
+      this.adjustSkillExperience(SkillId.AGILITY, Math.floor(damage * 0.5));
       
       this._nameplateSceneUI.setState({ dodged: true });
 
@@ -194,8 +194,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
       return;
     } 
-// calculate modified damage relative to wearables
-    this._gamePlayer.adjustHealth(-damage);
+
+    const reducedDamage = this._gamePlayer.wearables.getReducedDamage(damage);
+    this._gamePlayer.adjustHealth(-reducedDamage);
 
     this._gamePlayer.eventRouter.emit(GamePlayerEntityPlayerEvent.DAMAGED, { damage });
   }

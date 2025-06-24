@@ -7,7 +7,7 @@ export default class EmbercapMushroomItem extends BaseConsumableItem {
   static readonly iconImageUri = 'icons/items/embercap-mushroom.png';
   static readonly consumeCooldownMs = 400;
   static readonly description = `A fiery-colored mushroom that grows in the charred remains of forest fires.`;
-  static readonly buyPrice = 10;
+  static readonly buyPrice = 150;
   static readonly rarity = 'unusual';
   static readonly sellPrice = 15;
   static readonly stackable = true;

@@ -7,7 +7,6 @@ import { BaseItemPlayerEvent } from '../../items/BaseItem';
 import type { BaseItemPlayerEventPayloads } from '../../items/BaseItem';
 
 import BlightedRootItem from '../../items/materials/BlightedRootItem';
-import GoldItem from '../../items/general/GoldItem';
 
 export default class BlightedHarvestQuest extends BaseQuest {
   static readonly id = 'blighted-harvest';
@@ -15,9 +14,6 @@ export default class BlightedHarvestQuest extends BaseQuest {
   static readonly description = `Scout Morel has discovered corrupted flowers spewing concentrated green vapor deep in the Ratkin Nest. He calls them Blight Blooms. These Blight Blooms are tainting the Ratkin. He needs you to destroy them and take their salvaged remains to Healer Mycelis.`;
 
   static readonly reward = {
-    items: [
-      { itemClass: GoldItem, quantity: 125 },
-    ],
     skillExperience: [
       { skillId: SkillId.COMBAT, amount: 300 },
       { skillId: SkillId.EXPLORATION, amount: 300 },

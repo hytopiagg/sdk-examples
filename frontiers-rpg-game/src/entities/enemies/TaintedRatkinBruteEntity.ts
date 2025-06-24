@@ -23,7 +23,7 @@ export default class TaintedRatkinBruteEntity extends BaseCombatEntity {
           animations: [ 'atk1' ],
           cooldownMs: 3500,
           range: 2,
-          simpleAttackDamage: 35,
+          simpleAttackDamage: 30,
           simpleAttackDamageVariance: 0.6, // ±60% damage
           simpleAttackDamageDelayMs: 1000, // Deal damage 1000ms into animation
           simpleAttackReach: 3,
@@ -54,38 +54,13 @@ export default class TaintedRatkinBruteEntity extends BaseCombatEntity {
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
-        {
-          itemClass: GoldItem,
-          minQuantity: 30,
-          maxQuantity: 70,
-          weight: 2,
-        },
-        {
-          itemClass: CommonMushroomItem,
-          minQuantity: 1,
-          maxQuantity: 3,
-          weight: 1,
-        },
-        {
-          itemClass: CommonSeedsItem,
-          weight: 0.5,
-        },
-        {
-          itemClass: RatkinBonesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinEyesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinToothItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinTailItem,
-          weight: 0.8,
-        },
+        { itemClass: RatkinBonesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinEyesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinToothItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinTailItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: GoldItem, minQuantity: 11, maxQuantity: 20, weight: 2 },
+        { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
+        { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
       health: 210,
       idleAnimations: [ 'idle' ],

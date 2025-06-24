@@ -6,4 +6,6 @@ export default class CommonSeedsItem extends BaseItem {
   static readonly iconImageUri = 'icons/items/common-seeds.png';
   static readonly description = `[4CAF50]Plantable[/][b]A handful of seeds common to the Frontier. It's unclear what they are. Plant them at your farm to see what grows!`;
   static readonly stackable = true;
+  static readonly buyPrice = 150;
+  static readonly sellPrice = 10;
 }

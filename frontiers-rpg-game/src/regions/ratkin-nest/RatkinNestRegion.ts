@@ -134,7 +134,7 @@ export default class RatkinNestRegion extends GameRegion {
   private _setupForageableSpawners(): void {
     const ratkinNestSpawner = new Spawner({
       groundCheckDistance: 6,
-      maxSpawns: 20,
+      maxSpawns: 15,
       spawnables: [
         { entityConstructor: DecayingPileEntity, weight: 1 },
       ],

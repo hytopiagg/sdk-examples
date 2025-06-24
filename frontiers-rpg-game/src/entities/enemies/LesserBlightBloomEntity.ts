@@ -5,6 +5,9 @@ import { isDamageable } from '../../interfaces/IDamageable';
 
 // Drops
 import BlightedRootItem from '../../items/materials/BlightedRootItem';
+import CommonMushroomItem from '../../items/consumables/CommonMushroomItem';
+import CommonSeedsItem from '../../items/seeds/CommonSeedsItem';
+import UnusualSeedsItem from '../../items/seeds/UnusualSeedsItem';
 import GoldItem from '../../items/general/GoldItem';
 
 export type LesserBlightBloomEntityOptions = {
@@ -42,12 +45,15 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
           weight: 2,
         },
       ],
-      combatExperienceReward: 250,
+      combatExperienceReward: 60,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 5000,
       deathItemDrops: [
-        { itemClass: GoldItem, minQuantity: 25, maxQuantity: 50, weight: 1 },
-        { itemClass: BlightedRootItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
+        { itemClass: BlightedRootItem, minQuantity: 1, maxQuantity: 3, weight: 30 },
+        { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 15 },
+        { itemClass: GoldItem, minQuantity: 12, maxQuantity: 23, weight: 9 },
+        { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 6 },
+        { itemClass: UnusualSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
       deathItemMaxDrops: 3,
       faceSpeed: 0.75,

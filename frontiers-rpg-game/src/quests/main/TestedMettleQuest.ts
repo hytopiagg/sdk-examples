@@ -20,11 +20,11 @@ export default class TestedMettleQuest extends BaseQuest {
 
   static readonly reward = {
     items: [
-      { itemClass: GoldItem, quantity: 150 },
+      { itemClass: GoldItem, quantity: 50},
     ],
     skillExperience: [
-      { skillId: SkillId.COMBAT, amount: 250 },
-      { skillId: SkillId.EXPLORATION, amount: 250 },
+      { skillId: SkillId.COMBAT, amount: 150 },
+      { skillId: SkillId.EXPLORATION, amount: 150 },
     ],
   }
 

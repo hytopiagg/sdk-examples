@@ -32,8 +32,8 @@ export default class DullSwordItem extends BaseWeaponItem {
   static readonly heldModelScale = 0.5;
   static readonly defaultRelativeRotationAsChild = Quaternion.fromEuler(-90, 0, 90);
   static readonly defaultRelativePositionAsChild = { x: 0, y: 0.1, z: 0.15 };
-  static readonly buyPrice = 25;
-  static readonly sellPrice = 10;
+  static readonly buyPrice = 175;
+  static readonly sellPrice = 18;
 
   protected override processAttackDamageTargets(attack: BaseWeaponItemAttack): void {
     if (!this.entity?.parent) return;

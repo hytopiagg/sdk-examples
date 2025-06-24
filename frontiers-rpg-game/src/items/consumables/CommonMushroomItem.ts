@@ -7,8 +7,8 @@ export default class CommonMushroomItem extends BaseConsumableItem {
   static readonly iconImageUri = 'icons/items/common-mushroom.png';
   static readonly consumeCooldownMs = 400;
   static readonly description = `A normal looking mushroom. It's probably safe to eat.`;
-  static readonly buyPrice = 10;
-  static readonly sellPrice = 4;
+  static readonly buyPrice = 35;
+  static readonly sellPrice = 3;
   static readonly stackable = true;
   static readonly consumeRequiresDamaged = true;
 

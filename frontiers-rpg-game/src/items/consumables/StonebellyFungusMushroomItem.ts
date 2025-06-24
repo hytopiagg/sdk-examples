@@ -7,9 +7,9 @@ export default class StonebellyFungusMushroomItem extends BaseConsumableItem {
   static readonly iconImageUri = 'icons/items/stonebelly-fungus-mushroom.png';
   static readonly consumeCooldownMs = 400;
   static readonly description = `This mushroom is a favorite among Capfolk. Known for its bitter taste and thick stalk.`;
-  static readonly buyPrice = 10;
+  static readonly buyPrice = 200;
   static readonly rarity = 'unusual';
-  static readonly sellPrice = 15;
+  static readonly sellPrice = 20;
   static readonly stackable = true;
   static readonly consumeRequiresDamaged = true;
 

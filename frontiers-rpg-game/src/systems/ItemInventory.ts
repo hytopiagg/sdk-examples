@@ -31,7 +31,7 @@ export default class ItemInventory {
   }
 
   public get gridWidth(): number { return this._gridWidth; }
-  public get items(): BaseItem[] { return Array.from(this._itemPositions.keys()); }
+  public get items(): MapIterator<BaseItem> { return this._positionItems.values(); }
   public get isFull(): boolean { return this._itemPositions.size >= this._size; }
   public get rows(): number { return Math.ceil(this._size / this._gridWidth); }
   public get size(): number { return this._size; }

@@ -12,7 +12,7 @@ export default class IntoTheNestQuest extends BaseQuest {
 
   static readonly reward = {
     skillExperience: [
-      { skillId: SkillId.EXPLORATION, amount: 50 },
+      { skillId: SkillId.EXPLORATION, amount: 75 },
     ],
   }
 

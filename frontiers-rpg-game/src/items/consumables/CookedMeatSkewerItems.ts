@@ -7,8 +7,8 @@ export default class CookedMeatSkewerItem extends BaseConsumableItem {
   static readonly iconImageUri = 'icons/items/cooked-meat-skewer.png';
   static readonly consumeCooldownMs = 1500;
   static readonly description = `Tender chunks of meat on a wooden skewer. A portable meal for adventurers.`;
-  static readonly buyPrice = 20;
-  static readonly sellPrice = 10;
+  static readonly buyPrice = 75;
+  static readonly sellPrice = 7;
   static readonly stackable = true;
   static readonly consumeRequiresDamaged = true;
 

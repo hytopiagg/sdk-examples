@@ -24,7 +24,7 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
         { // Fast bow attack
           animations: [ 'atk1' ],
           complexAttack: (params) => {
-            this._shootArrow(params.target.position, this.calculateDamageWithVariance(10, 0.5));
+            this._shootArrow(params.target.position, this.calculateDamageWithVariance(11, 0.5));
           },
           complexAttackDelayMs: 700,
           cooldownMs: 2000,
@@ -34,7 +34,7 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
         { // Slow heavy bow attack
           animations: [ 'atk2' ],
           complexAttack: (params) => {
-            this._shootArrow(params.target.position, this.calculateDamageWithVariance(20, 0.5));
+            this._shootArrow(params.target.position, this.calculateDamageWithVariance(16, 0.5));
           },
           complexAttackDelayMs: 1600,
           cooldownMs: 3000,
@@ -46,38 +46,13 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
-        {
-          itemClass: GoldItem,
-          minQuantity: 30,
-          maxQuantity: 70,
-          weight: 2,
-        },
-        {
-          itemClass: CommonMushroomItem,
-          minQuantity: 1,
-          maxQuantity: 3,
-          weight: 1,
-        },
-        {
-          itemClass: CommonSeedsItem,
-          weight: 0.5,
-        },
-        {
-          itemClass: RatkinBonesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinEyesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinToothItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinTailItem,
-          weight: 0.8,
-        },
+        { itemClass: RatkinBonesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinEyesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinToothItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinTailItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: GoldItem, minQuantity: 6, maxQuantity: 15, weight: 2 },
+        { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
+        { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
       health: 100,
       idleAnimations: [ 'idle' ],

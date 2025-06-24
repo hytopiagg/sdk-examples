@@ -455,14 +455,14 @@
       const requiredRows = calculateRequiredRows(buyableItems);
       updateMerchantGrid(requiredRows);
       populateBuyableItems(buyableItems);
-      hytopia.lockPointer(false);
+      hytopia.lockPointer(false, true);
     } else if (mode === 'sell') {
       setHotbarVisibility(true);
       
       updateMerchantGrid(3); // 3 rows for sell mode (18 slots total)
       populateSlots(merchantState.backpackItems, MERCHANT_CONFIG.slots, updateMerchantSlot);
       populateSlots(merchantState.hotbarItems, MERCHANT_CONFIG.hotbarSlots, updateHotbarSlot);
-      hytopia.lockPointer(false);
+      hytopia.lockPointer(false, true);
     }
   }
 

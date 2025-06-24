@@ -3,10 +3,10 @@ import BaseForageableEntity, { BaseForageableEntityOptions } from '../BaseForage
 // Forageable Items
 import CommonMushroomItem from '../../items/consumables/CommonMushroomItem';
 import CommonSeedsItem from '../../items/seeds/CommonSeedsItem';
-import EmbercapMushroomItem from '../../items/consumables/EmbercapMushroomItem';
 import GoldItem from '../../items/general/GoldItem';
 import MinorHealingPotionItem from '../../items/consumables/MinorHealingPotionItem';
 import MonsterHideItem from '../../items/materials/MonsterHideItem';
+import StonebellyFungusMushroomItem from '../../items/consumables/StonebellyFungusMushroomItem';
 import UnusualSeedsItem from '../../items/seeds/UnusualSeedsItem';
 
 export type DecayingPileEntityOptions = {
@@ -18,10 +18,16 @@ export default class DecayingPileEntity extends BaseForageableEntity {
     super({
       forageDurationMs: 2000,
       itemDrops: [
-        { itemClass: GoldItem, weight: 15, minQuantity: 6, maxQuantity: 17 },
+        { itemClass: CommonMushroomItem, weight: 100, minQuantity: 1, maxQuantity: 3 },
+        { itemClass: CommonSeedsItem, weight: 35 },
+        { itemClass: GoldItem, weight: 15, minQuantity: 9, maxQuantity: 20 },
+        { itemClass: MinorHealingPotionItem, weight: 25 },
+        { itemClass: MonsterHideItem, weight: 12 },
+        { itemClass: StonebellyFungusMushroomItem, weight: 5, minQuantity: 1, maxQuantity: 3 },
+        { itemClass: UnusualSeedsItem, weight: 3 },
       ],
       maxDropsPerForage: 3,
-      experienceReward: 50,
+      experienceReward: 15,
       modelUri: 'models/forageables/decaying-pile.gltf',
       modelLoopedAnimations: [ 'idle' ],
       modelScale: 1.2,

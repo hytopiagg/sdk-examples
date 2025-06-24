@@ -155,7 +155,7 @@ export default class ChitterForestRegion extends GameRegion {
 
   private _setupForageableSpawners(): void {
     const forestAreaSpawner = new Spawner({
-      maxSpawns: 10,
+      maxSpawns: 15,
       spawnables: [
         { entityConstructor: RottenLogEntity, weight: 1 },
       ],

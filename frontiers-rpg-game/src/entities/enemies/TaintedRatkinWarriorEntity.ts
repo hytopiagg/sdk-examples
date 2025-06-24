@@ -44,38 +44,13 @@ export default class TaintedRatkinWarriorEntity extends BaseCombatEntity {
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
-        {
-          itemClass: GoldItem,
-          minQuantity: 30,
-          maxQuantity: 70,
-          weight: 2,
-        },
-        {
-          itemClass: CommonMushroomItem,
-          minQuantity: 1,
-          maxQuantity: 3,
-          weight: 1,
-        },
-        {
-          itemClass: CommonSeedsItem,
-          weight: 0.5,
-        },
-        {
-          itemClass: RatkinBonesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinEyesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinToothItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinTailItem,
-          weight: 0.8,
-        },
+        { itemClass: RatkinBonesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinEyesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinToothItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinTailItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: GoldItem, minQuantity: 9, maxQuantity: 17, weight: 2 },
+        { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
+        { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
       health: 150,
       idleAnimations: [ 'idle' ],

@@ -12,7 +12,7 @@ export default class StalkhavensOutpostQuest extends BaseQuest {
 
   static readonly reward = {
     skillExperience: [
-      { skillId: SkillId.EXPLORATION, amount: 50 },
+      { skillId: SkillId.EXPLORATION, amount: 75 },
     ],
   }
 
@@ -46,14 +46,14 @@ export default class StalkhavensOutpostQuest extends BaseQuest {
                   }
                 ],
               },
+              onSelect: (interactor: GamePlayerEntity) => {
+                interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-chanterelion', 1);
+                interactor.gamePlayer.questLog.completeQuest(this.id);
+                interactor.gamePlayer.questLog.startQuest(ClearingCampsQuest);
+              }
             }
           ],
         },
-        onSelect: (interactor: GamePlayerEntity) => {
-          interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'talk-to-chanterelion', 1);
-          interactor.gamePlayer.questLog.completeQuest(this.id);
-          interactor.gamePlayer.questLog.startQuest(ClearingCampsQuest);
-        }
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
         return interactor.gamePlayer.questLog.isQuestActive(this.id);

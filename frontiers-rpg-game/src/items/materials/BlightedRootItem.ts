@@ -6,5 +6,5 @@ export default class BlightedRootItem extends BaseItem {
   static readonly iconImageUri = 'icons/items/blighted-root.png';
   static readonly description = 'A twisted root from a Blight Bloom. It pulses as if its still alive...';
   static readonly stackable = true;
-  static readonly sellPrice = 45;
+  static readonly sellPrice = 25;
 }

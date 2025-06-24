@@ -7,7 +7,7 @@ export default class CookedMeatItem extends BaseConsumableItem {
   static readonly iconImageUri = 'icons/items/cooked-meat.png';
   static readonly consumeCooldownMs = 1500;
   static readonly description = `A hefty piece of seared meat cut from a Frontier animal.`;
-  static readonly buyPrice = 20;
+  static readonly buyPrice = 100;
   static readonly sellPrice = 10;
   static readonly stackable = true;
   static readonly consumeRequiresDamaged = true;

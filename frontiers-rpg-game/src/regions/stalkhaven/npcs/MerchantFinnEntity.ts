@@ -1,13 +1,26 @@
 import BaseMerchantEntity, { BaseMerchantEntityOptions } from '../../../entities/BaseMerchantEntity';
+
+import AdventurerBootsItem from '../../../items/wearables/AdventurerBootsItem';
+import AdventurerGlovesItem from '../../../items/wearables/AdventurerGlovesItem';
+import AdventurerHoodItem from '../../../items/wearables/AdventurerHoodItem';
+import AdventurerLeggingsItem from '../../../items/wearables/AdventurerLeggingsItem';
+import AdventurerTunicItem from '../../../items/wearables/AdventurerTunicItem';
+import DullSwordItem from '../../../items/weapons/DullSwordItem';
+import CommonMushroomItem from '../../../items/consumables/CommonMushroomItem';
 import MinorHealingPotionItem from '../../../items/consumables/MinorHealingPotionItem';
-import RatkinTailItem from '../../../items/materials/RatkinTailItem';
 
 export default class MerchantFinnEntity extends BaseMerchantEntity {
   public constructor(options?: Partial<BaseMerchantEntityOptions>) {
     super({
       buyableItemClasses: [
+        AdventurerHoodItem,
+        AdventurerTunicItem,
+        AdventurerGlovesItem,
+        AdventurerLeggingsItem,
+        AdventurerBootsItem,
+        DullSwordItem,
         MinorHealingPotionItem,
-        RatkinTailItem,
+        CommonMushroomItem,
       ],
       dialogueAvatarImageUri: 'avatars/merchant.png',
       dialogueTitle: 'Goods Vendor',

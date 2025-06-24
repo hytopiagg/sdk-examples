@@ -24,7 +24,7 @@ export default class RatkinSpellcasterEntity extends BaseCombatEntity {
         { // Fireball attack
           animations: [ 'atk1' ],
           complexAttack: (params) => {
-            this._shootFireball(params.target.position, this.calculateDamageWithVariance(30, 0.5));
+            this._shootFireball(params.target.position, this.calculateDamageWithVariance(22, 0.5));
           },
           complexAttackDelayMs: 1000,
           cooldownMs: 5000,
@@ -36,38 +36,13 @@ export default class RatkinSpellcasterEntity extends BaseCombatEntity {
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
-        {
-          itemClass: GoldItem,
-          minQuantity: 30,
-          maxQuantity: 70,
-          weight: 2,
-        },
-        {
-          itemClass: CommonMushroomItem,
-          minQuantity: 1,
-          maxQuantity: 3,
-          weight: 1,
-        },
-        {
-          itemClass: CommonSeedsItem,
-          weight: 0.5,
-        },
-        {
-          itemClass: RatkinBonesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinEyesItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinToothItem,
-          weight: 0.8,
-        },
-        {
-          itemClass: RatkinTailItem,
-          weight: 0.8,
-        },
+        { itemClass: RatkinBonesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinEyesItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinToothItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: RatkinTailItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
+        { itemClass: GoldItem, minQuantity: 6, maxQuantity: 15, weight: 2 },
+        { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
+        { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
       health: 100,
       idleAnimations: [ 'idle' ],

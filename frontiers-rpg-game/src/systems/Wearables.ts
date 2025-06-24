@@ -4,7 +4,6 @@ import ItemInventory from './ItemInventory';
 import type GamePlayer from '../GamePlayer';
 import type { WearableSlot } from '../items/BaseWearableItem';
 import type { SerializedItemInventoryData } from './ItemInventory';
-import type { Player } from 'hytopia';
 
 export type SerializedWearablesData = SerializedItemInventoryData;
 
@@ -29,6 +28,20 @@ export default class Wearables extends ItemInventory {
     const position = this._getPositionForSlot(slot);
     const item = this.getItemAt(position);
     return item && BaseWearableItem.isWearableItem(item) ? item : null;
+  }
+
+  public getReducedDamage(damage: number): number {
+    for (const item of this.items as MapIterator<BaseWearableItem>) {
+      if (item.damageReduction) {
+        damage -= item.damageReduction;
+      }
+
+      if (item.damageReductionPercent) {
+        damage -= damage * item.damageReductionPercent;
+      }
+    }
+
+    return Math.max(1, damage);
   }
 
   public override addItem(item: BaseItem): boolean {

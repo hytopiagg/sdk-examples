@@ -9,6 +9,8 @@ import type { BaseEntityPlayerEventPayloads } from '../../entities/BaseEntity';
 import CaptainChanterelionEntity from '../../regions/chitter-forest/npcs/CaptainChanterelionEntity';
 import IntoTheNestQuest from './IntoTheNestQuest';
 
+import GoldItem from '../../items/general/GoldItem';
+
 // Bounding boxes we check when a kill happens to determine if it was in an objective area.
 const CAMP_KILL_BOUNDING_BOXES = [
   { // Main camp
@@ -23,7 +25,7 @@ const CAMP_KILL_BOUNDING_BOXES = [
   },
   { // Lake camp
     objectiveId: 'kill-lake-camp',
-    min: { x: -105, y: 1, z: 13},
+    min: { x: -115, y: 1, z: 13},
     max: { x: -65, y: 6, z: 70 },
   },
   { // Corridor camp
@@ -39,8 +41,13 @@ export default class ClearingCampsQuest extends BaseQuest {
   static readonly description = 'The Ratkin have established four major encampments that threaten Stalkhaven. We need to thin out these camps before they can launch a full on assault on Stalkhaven.';
 
   static readonly reward = {
+    items: [
+      { itemClass: GoldItem, quantity: 100 },
+    ],
     skillExperience: [
-      { skillId: SkillId.EXPLORATION, amount: 50 },
+      { skillId: SkillId.AGILITY, amount: 50 },
+      { skillId: SkillId.COMBAT, amount: 200 },
+      { skillId: SkillId.EXPLORATION, amount: 175 },
     ],
   }
 
