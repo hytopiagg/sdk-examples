@@ -279,7 +279,13 @@ export default class ItemInventory {
         if (item.attack.damageVariance !== 0) updateData.damageVariance = item.attack.damageVariance;
       }
 
-      
+      if (item.statsHeader) {
+        updateData.statsHeader = item.statsHeader;
+      }
+
+      if (item.statTexts.length > 0) {
+        updateData.statTexts = item.statTexts;
+      }
     } else {
       updateData.removed = true;
     }

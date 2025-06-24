@@ -66,6 +66,8 @@ export default abstract class BaseItem implements IInteractable {
   static readonly defaultRelativeRotationAsChild?: QuaternionLike = undefined;
   static readonly rarity: ItemRarity = 'common';
   static readonly sellPrice: number = 1;
+  static readonly statsHeader: string = '';
+  static readonly statTexts: string[] = [];
   static readonly stackable: boolean = false;
 
   // Simple factory method
@@ -90,6 +92,8 @@ export default abstract class BaseItem implements IInteractable {
   public get defaultRelativeRotationAsChild(): QuaternionLike | undefined { return (this.constructor as typeof BaseItem).defaultRelativeRotationAsChild; }
   public get rarity(): ItemRarity { return (this.constructor as typeof BaseItem).rarity; }
   public get sellPrice(): number { return (this.constructor as typeof BaseItem).sellPrice; }
+  public get statsHeader(): string { return (this.constructor as typeof BaseItem).statsHeader; }
+  public get statTexts(): string[] { return (this.constructor as typeof BaseItem).statTexts; }
   public get stackable(): boolean { return (this.constructor as typeof BaseItem).stackable; }
 
   // Instance-specific properties that can be overridden
