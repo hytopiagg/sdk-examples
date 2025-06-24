@@ -49,8 +49,7 @@ export default class GameManager {
     const ratkinNestRegion = new RatkinNestRegion();
     this._regions.set(ratkinNestRegion.id, ratkinNestRegion);
     GameClock.instance.addRegionClockCycle(ratkinNestRegion);
-    this._startRegion = ratkinNestRegion;    
-
+    
     // Stalkhaven
     const stalkhavenRegion = new StalkhavenRegion();
     this._regions.set(stalkhavenRegion.id, stalkhavenRegion);
