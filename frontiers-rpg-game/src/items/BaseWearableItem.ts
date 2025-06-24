@@ -2,10 +2,6 @@ import BaseItem, { ItemOverrides } from './BaseItem';
 
 export const WEARABLE_SLOTS = ['helmet', 'armor', 'gloves', 'leggings', 'boots', 'accessory'] as const;
 export type WearableSlot = typeof WEARABLE_SLOTS[number];
-
-export function isWearableItem(item: BaseItem): item is BaseWearableItem {
-  return item instanceof BaseWearableItem;
-}
   
 export type WearableOverrides = {
   damageBonus?: number;              // +5 flat outgoing damage
@@ -25,6 +21,14 @@ export default abstract class BaseWearableItem extends BaseItem {
   static readonly damageReductionPercent: number = 0;
 
   static readonly statsHeader: string = 'When equipped:';
+
+  static isWearableItem(item: BaseItem | typeof BaseItem): item is BaseWearableItem {
+    if (typeof item === 'function') {
+      return BaseWearableItem.prototype.isPrototypeOf(item.prototype);
+    }
+  
+    return item instanceof BaseWearableItem;
+  }
 
   // Simple factory method
   static create(overrides?: WearableOverrides): BaseWearableItem {

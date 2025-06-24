@@ -1,4 +1,5 @@
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
+import { ItemUIDataHelper } from '../items/ItemUIDataHelper';
 import { SkillId } from '../config';
 import type { ItemClass } from '../items/BaseItem';
 import type { BaseEntityDialogueOption } from './BaseEntity';
@@ -90,13 +91,12 @@ export default class BaseMerchantEntity extends BaseEntity {
       merchantName: this.name,
       merchantTitle: this.dialogueRoot?.title,
       merchantAvatarUri: this.dialogueRoot?.avatarImageUri,
-      buyableItems: this.buyableItemClasses.map((itemClass, index) => ({
-        name: itemClass.name,
-        description: itemClass.description,
-        iconImageUri: itemClass.iconImageUri,
-        position: index,
-        buyPrice: itemClass.buyPrice,
-      })),
+      buyableItems: this.buyableItemClasses.map((itemClass, index) => {
+        return ItemUIDataHelper.getUIData(itemClass, {
+          position: index,
+          buyPrice: itemClass.buyPrice,
+        });
+      }),
     })
   }
 

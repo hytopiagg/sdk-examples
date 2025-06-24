@@ -1,4 +1,4 @@
-import BaseWearableItem, { isWearableItem } from '../items/BaseWearableItem';
+import BaseWearableItem from '../items/BaseWearableItem';
 import BaseItem from '../items/BaseItem';
 import ItemInventory from './ItemInventory';
 import type GamePlayer from '../GamePlayer';
@@ -28,11 +28,11 @@ export default class Wearables extends ItemInventory {
   public getWearableItem(slot: WearableSlot): BaseWearableItem | null {
     const position = this._getPositionForSlot(slot);
     const item = this.getItemAt(position);
-    return item && isWearableItem(item) ? item : null;
+    return item && BaseWearableItem.isWearableItem(item) ? item : null;
   }
 
   public override addItem(item: BaseItem): boolean {
-    if (!isWearableItem(item)) return false;
+    if (!BaseWearableItem.isWearableItem(item)) return false;
     
     const targetPosition = this._getPositionForSlot(item.slot);
     return super.addItem(item, targetPosition);

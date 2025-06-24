@@ -5,10 +5,6 @@ import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
 import type { QuaternionLike, RawShape, Vector3Like } from 'hytopia';
 
-export function isWeaponItem(item: BaseItem): item is BaseWeaponItem {
-  return item instanceof BaseWeaponItem;
-}
-
 export type BaseWeaponItemAttack = {
   id?: string;
   animations: string[];
@@ -36,6 +32,14 @@ export default abstract class BaseWeaponItem extends BaseItem {
   static create(overrides?: WeaponOverrides): BaseWeaponItem {
     const ItemClass = this as any;
     return new ItemClass(overrides);
+  }
+
+  static isWeaponItem(item: BaseItem | typeof BaseItem): item is BaseWeaponItem {
+    if (typeof item === 'function') {
+      return BaseWeaponItem.prototype.isPrototypeOf(item.prototype);
+    }
+
+    return item instanceof BaseWeaponItem;
   }
 
   // Instance properties (delegate to static or use overrides)

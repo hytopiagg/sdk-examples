@@ -1,8 +1,7 @@
 import type { Player } from 'hytopia';
 import BaseItem from '../items/BaseItem';
 import ItemRegistry from '../items/ItemRegistry';
-import { isWearableItem } from '../items/BaseWearableItem';
-import { isWeaponItem } from '../items/BaseWeaponItem';
+import { ItemUIDataHelper } from '../items/ItemUIDataHelper';
 
 export type SerializedItem = {
   position: number;
@@ -252,45 +251,22 @@ export default class ItemInventory {
   }
 
   public syncUIUpdate(player: Player, position: number, item: BaseItem | null): void {
-    const updateData: any = {
-      type: `${this._tag}Update`,
-      position,
-    };
+    const type = `${this._tag}Update`;
 
     if (item) {
-      // Basic item properties
-      updateData.name = item.name;
-      updateData.iconImageUri = item.iconImageUri;
-      updateData.description = item.description;
-      updateData.quantity = item.quantity;
-      updateData.sellPrice = item.sellPrice;
-
-      // Add wearable-specific properties if item is a wearable
-      if (isWearableItem(item)) {
-        if (item.damageBonus !== 0) updateData.damageBonus = item.damageBonus;
-        if (item.damageBonusPercent !== 0) updateData.damageBonusPercent = item.damageBonusPercent;
-        if (item.damageReduction !== 0) updateData.damageReduction = item.damageReduction;
-        if (item.damageReductionPercent !== 0) updateData.damageReductionPercent = item.damageReductionPercent;
-      }
-
-      // Add weapon-specific properties if item is a weapon
-      if (isWeaponItem(item)) {
-        if (item.attack.damage !== 0) updateData.damage = item.attack.damage;
-        if (item.attack.damageVariance !== 0) updateData.damageVariance = item.attack.damageVariance;
-      }
-
-      if (item.statsHeader) {
-        updateData.statsHeader = item.statsHeader;
-      }
-
-      if (item.statTexts.length > 0) {
-        updateData.statTexts = item.statTexts;
-      }
+      player.ui.sendData(ItemUIDataHelper.getUIData(item, {
+        position,
+        sellPrice: item.sellPrice,
+        quantity: item.quantity,
+        type,
+      }));
     } else {
-      updateData.removed = true;
+      player.ui.sendData({
+        position,
+        type,
+        removed: true,
+      });
     }
-
-    player.ui.sendData(updateData);
   }
 
 

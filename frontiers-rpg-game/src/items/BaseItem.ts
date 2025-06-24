@@ -76,6 +76,8 @@ export default abstract class BaseItem implements IInteractable {
     return new ItemClass(overrides);
   }
 
+
+
   // Instance properties (mostly delegate to static)
   public get id(): string { return (this.constructor as typeof BaseItem).id; }
   public get name(): string { return (this.constructor as typeof BaseItem).name; }
