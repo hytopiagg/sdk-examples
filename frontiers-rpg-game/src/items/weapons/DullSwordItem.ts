@@ -7,7 +7,7 @@ export default class DullSwordItem extends BaseWeaponItem {
   static readonly name = 'Dull Sword';
   static readonly iconImageUri = 'icons/items/dull-sword.png';
   static readonly attack: BaseWeaponItemAttack = {
-    animations: ['sword-attack-upper'],
+    animations: ['sword-attack-upper', 'sword-attack-1'],
     cooldownMs: 500,
     damage: 10,
     damageDelayMs: 200,
@@ -32,8 +32,8 @@ export default class DullSwordItem extends BaseWeaponItem {
   static readonly heldModelScale = 0.5;
   static readonly defaultRelativeRotationAsChild = Quaternion.fromEuler(-90, 0, 90);
   static readonly defaultRelativePositionAsChild = { x: 0, y: 0.1, z: 0.15 };
-  static readonly buyPrice = 175;
-  static readonly sellPrice = 18;
+  static readonly buyPrice = 400;
+  static readonly sellPrice = 40;
 
   protected override processAttackDamageTargets(attack: BaseWeaponItemAttack): void {
     if (!this.entity?.parent) return;

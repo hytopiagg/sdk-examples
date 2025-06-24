@@ -7,6 +7,8 @@ import AdventurerLeggingsItem from '../../../items/wearables/AdventurerLeggingsI
 import AdventurerTunicItem from '../../../items/wearables/AdventurerTunicItem';
 import DullSwordItem from '../../../items/weapons/DullSwordItem';
 import CommonMushroomItem from '../../../items/consumables/CommonMushroomItem';
+import IronDaggerItem from '../../../items/weapons/IronDaggerItem';
+import IronLongSwordItem from '../../../items/weapons/IronLongSwordItem';
 import MinorHealingPotionItem from '../../../items/consumables/MinorHealingPotionItem';
 
 export default class MerchantFinnEntity extends BaseMerchantEntity {
@@ -19,6 +21,8 @@ export default class MerchantFinnEntity extends BaseMerchantEntity {
         AdventurerLeggingsItem,
         AdventurerBootsItem,
         DullSwordItem,
+        IronDaggerItem,
+        IronLongSwordItem,
         MinorHealingPotionItem,
         CommonMushroomItem,
       ],

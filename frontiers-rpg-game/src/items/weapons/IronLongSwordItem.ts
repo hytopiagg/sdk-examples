@@ -1,19 +1,19 @@
 import { Collider, ColliderShape, Quaternion } from 'hytopia';
 import BaseWeaponItem, { BaseWeaponItemAttack } from '../BaseWeaponItem';
 
-export default class TrainingSwordItem extends BaseWeaponItem {
+export default class IronLongSwordItem extends BaseWeaponItem {
   // Required static properties
-  static readonly id = 'toy_sword';
-  static readonly name = 'Training Sword';
-  static readonly iconImageUri = 'icons/items/wooden-sword.png';
+  static readonly id = 'iron_long_sword';
+  static readonly name = 'Iron Long Sword';
+  static readonly iconImageUri = 'icons/items/iron-long-sword.png';
   static readonly attack: BaseWeaponItemAttack = {
     animations: ['sword-attack-upper', 'sword-attack-1'],
-    cooldownMs: 500,
-    damage: 3,
+    cooldownMs: 750,
+    damage: 18,
     damageDelayMs: 200,
     damageVariance: 0.2,
     knockbackForce: 5,
-    reach: 2,
+    reach: 2.5,
   };
   
   // Optional static properties (overriding defaults)
@@ -21,19 +21,19 @@ export default class TrainingSwordItem extends BaseWeaponItem {
     id: 'spin',
     animations: ['sword-attack-tornado'],
     cooldownMs: 1500,
-    damage: 5,
+    damage: 20,
     damageDelayMs: 200,
     damageVariance: 0.2,
     knockbackForce: 7,
-    reach: 3,
+    reach: 3.5,
   };
-  static readonly description = 'A training sword made from wood. Useless for combat.';
-  static readonly heldModelUri = 'models/items/sword-wooden.gltf';
+  static readonly description = `A long iron sword. It's heavy and slow, but hits harder than a normal sword.`;
+  static readonly heldModelUri = 'models/weapons/iron-long-sword.gltf';
   static readonly heldModelScale = 0.5;
   static readonly defaultRelativeRotationAsChild = Quaternion.fromEuler(-90, 0, 90);
-  static readonly defaultRelativePositionAsChild = { x: 0, y: 0.1, z: 0.15 };
-  static readonly buyPrice = 5;
-  static readonly sellPrice = 1;
+  static readonly defaultRelativePositionAsChild = { x: 0.25, y: -0.1, z: -0.1 };
+  static readonly buyPrice = 600;
+  static readonly sellPrice = 60;
 
   protected override processAttackDamageTargets(attack: BaseWeaponItemAttack): void {
     if (!this.entity?.parent) return;
