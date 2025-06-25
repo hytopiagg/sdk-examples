@@ -18,7 +18,6 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
   constructor(options?: LesserBlightBloomEntityOptions) {
     super({
       aggroRadius: 8,
-      aggroSensorForwardOffset: 0,
       attacks: [
         { // Eat
           animations: [ 'eat' ],

@@ -363,6 +363,7 @@ export default class BaseCombatEntity extends BaseEntity {
       if (shouldPathfind && this._aggroActiveTarget) {
         this.pathfindTo(this._aggroActiveTarget.position, this.moveSpeed, {
           ...this.pathfindingOptions,
+          pathfindAbortCallback: () => this._aggroPathfinding = false,
           pathfindCompleteCallback: () => this._aggroPathfinding = false,
         });
       }

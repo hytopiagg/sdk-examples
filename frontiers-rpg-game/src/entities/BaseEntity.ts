@@ -166,6 +166,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public get moveAnimations(): string[] { return this.pathfindingController.moveLoopedAnimations; }
   public get moveAnimationsSpeed(): number | undefined { return this.pathfindingController.moveLoopedAnimationsSpeed; }
   public get moveSpeed(): number { return this._moveSpeed; }
+  public get pathfindingOptions(): PathfindingOptions | undefined { return this._pathfindingOptions; }
   public get pathfindingController(): PathfindingEntityController { return this.controller as PathfindingEntityController; }
   public get pushable(): boolean { return this._pushable; }
 
