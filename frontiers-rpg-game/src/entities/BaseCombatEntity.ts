@@ -17,6 +17,7 @@ const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 3;
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
+import TaintedRatkinRangerEntity from './enemies/TaintedRatkinRangerEntity';
 
 export type ComplexAttack = (params: {
   attacker: BaseCombatEntity;
@@ -360,7 +361,10 @@ export default class BaseCombatEntity extends BaseEntity {
     if (shouldPathfind !== this._aggroPathfinding) {
       this._aggroPathfinding = shouldPathfind;
       if (shouldPathfind && this._aggroActiveTarget) {
-        this.pathfindTo(this._aggroActiveTarget.position, this.moveSpeed);
+        this.pathfindTo(this._aggroActiveTarget.position, this.moveSpeed, {
+          ...this.pathfindingOptions,
+          pathfindCompleteCallback: () => this._aggroPathfinding = false,
+        });
       }
     }
     

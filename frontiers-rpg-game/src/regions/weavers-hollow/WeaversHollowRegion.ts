@@ -6,6 +6,7 @@ import type { WanderOptions } from '../../entities/BaseEntity';
 import weaversHollowMap from '../../../assets/maps/weavers-hollow.json';
 
 import SpiderWebEntity from '../../entities/environmental/SpiderWebEntity';
+import QueenWeaverEntity from '../../entities/enemies/QueenWeaverEntity';
 
 export default class WeaversHollowRegion extends GameRegion {
   public constructor() {
@@ -14,9 +15,9 @@ export default class WeaversHollowRegion extends GameRegion {
       name: `Weaver's Hollow`,
       map: weaversHollowMap,
       maxAmbientLightIntensity: 0.075,
-      maxDirectionalLightIntensity: 0.4,
+      maxDirectionalLightIntensity: 0.8,
       minAmbientLightIntensity: 0.055,
-      minDirectionalLightIntensity: 0.2,
+      minDirectionalLightIntensity: 0.4,
       skyboxUri: 'skyboxes/black',
       spawnPoint: { x: 10, y: 2, z: 13 },
       ambientAudioUri: 'audio/music/cave-theme-looping.mp3',
@@ -27,12 +28,49 @@ export default class WeaversHollowRegion extends GameRegion {
     super.setup();
 
     this._setupEnemySpawners();
+    this._setupEnvironmentSpawners();
     this._setupPortals();
   }
 
   private _setupEnemySpawners(): void {
-    const spiderWeb = new SpiderWebEntity();
-    spiderWeb.spawn(this.world, { x: 6, y: 5, z: 8 });
+    const queenWeaverSpawner = new Spawner({
+      maxSpawns: 1,
+      spawnables: [
+        { entityConstructor: QueenWeaverEntity, weight: 1 },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -1, y: 16, z: 6 },
+          max: { x: 0, y: 16, z: 7 },
+          weight: 1,
+        }
+      ],
+      spawnIntervalMs: 120000,
+      world: this.world,
+    });
+
+    queenWeaverSpawner.start(true);
+  }
+
+  private _setupEnvironmentSpawners(): void {
+    const spiderWebSpawner = new Spawner({
+      groundCheckDistance: 8,
+      maxSpawns: 15,
+      spawnables: [
+        { entityConstructor: SpiderWebEntity, weight: 1 },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -15, y: 5, z: -11 },
+          max: { x: 16, y: 8, z: 13 },
+          weight: 1,
+        }
+      ],
+      spawnIntervalMs: 10000,
+      world: this.world,
+    });
+
+    spiderWebSpawner.start(true);
   }
 
   private _setupPortals(): void {

@@ -48,6 +48,7 @@ export default class RatkinNestRegion extends GameRegion {
     this._setupNPCs();
     this._setupPortals();
   }
+  
   private _setupEnemySpawners(): void {
     const wanderOptions: WanderOptions = {
       idleMinMs: 8000,

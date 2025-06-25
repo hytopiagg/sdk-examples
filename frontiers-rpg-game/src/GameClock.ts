@@ -29,6 +29,7 @@ export default class GameClock {
 
   public addRegionClockCycle(region: GameRegion): void {
     this._regions.add(region);
+    this._updateRegionClockCycle(region);
   }
 
   public removeRegionClockCycle(region: GameRegion): void {

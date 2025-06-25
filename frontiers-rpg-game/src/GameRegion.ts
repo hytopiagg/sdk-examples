@@ -51,6 +51,7 @@ export default class GameRegion {
   private _minAmbientLightIntensity: number;
   private _minDirectionalLightIntensity: number;
   private _outOfWorldCollider: Collider | undefined;
+  private _playerCount: number = 0;
   private _spawnFacingAngle: number;
   private _spawnPoint: Vector3Like;
 
@@ -74,6 +75,7 @@ export default class GameRegion {
     this._spawnPoint = regionOptions.spawnPoint ?? { x: 0, y: 10, z: 0 };
 
     this._world = WorldManager.instance.createWorld(regionOptions);
+    this._world.stop(); // Keep it in stopped state, when a player joins the world, we'll start it.
     this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this.onPlayerJoin(player));
     this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this.onPlayerLeave(player));
 
@@ -157,14 +159,25 @@ export default class GameRegion {
 
     // Emit the reached event to the player's event router.
     gamePlayer.eventRouter.emit(GameRegionPlayerEvent.REACHED, { regionId: this._id });
+
+    this._playerCount++;
+
+    // Only run the region physics & ticking if a player is in the region.
+    if (this._playerCount === 1) {
+      this._world.start();
+    }
   }
 
   protected onPlayerLeave(player: Player) {
     this._world.entityManager.getPlayerEntitiesByPlayer(player).forEach(entity => {
       entity.despawn();
     });
-    
-    // Note: We don't remove the GamePlayer instance here since the player
-    // might move to another region and we want to preserve their state
+
+    this._playerCount--;
+
+    // Stop the region physics & ticking if no players are in the region.
+    if (this._playerCount <= 0) {
+      this._world.stop();
+    }
   }
 }

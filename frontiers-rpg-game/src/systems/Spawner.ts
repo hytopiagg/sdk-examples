@@ -22,7 +22,7 @@ export type SpawnRegion = BoundingBox & {
 };
 
 export type EntitySpawnable = {
-  entityConstructor: new () => BaseEntity;
+  entityConstructor: new () => Entity;
   weight: number;
   wanders?: boolean;
   wanderOptions?: WanderOptions;
@@ -139,7 +139,7 @@ export default class Spawner {
       instance.spawn(this._world, spawnPoint, rotation);
 
       // Apply wandering behavior if configured
-      if (spawnable.wanders && spawnable.wanderOptions) {
+      if (spawnable.wanders && spawnable.wanderOptions && instance instanceof BaseEntity) {
         instance.wander(instance.moveSpeed, spawnable.wanderOptions);
       }
 
