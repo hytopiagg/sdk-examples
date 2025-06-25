@@ -29,7 +29,7 @@ export default class WeaversHollowRegion extends GameRegion {
     super.setup();
 
     this._setupEnemySpawners();
-    // this._setupEnvironmentSpawners();
+    this._setupEnvironmentSpawners();
     this._setupPortals();
   }
 
@@ -72,8 +72,8 @@ export default class WeaversHollowRegion extends GameRegion {
       ],
       spawnRegions: [
         {
-          min: { x: -15, y: 5, z: -11 },
-          max: { x: 16, y: 8, z: 13 },
+          min: { x: -13, y: 5, z: -9 },
+          max: { x: 13, y: 8, z: 11 },
           weight: 1,
         }
       ],
