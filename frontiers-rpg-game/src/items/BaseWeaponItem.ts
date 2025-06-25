@@ -146,7 +146,7 @@ export default abstract class BaseWeaponItem extends BaseItem {
     }
   }
 
-  protected getTargetsByRawShapeIntersection(rawShape: RawShape, position: Vector3Like, rotation: QuaternionLike, reach: number): Entity[] {
+  protected getTargetsByRawShapeIntersection(rawShape: RawShape, position: Vector3Like, rotation: QuaternionLike): Entity[] {
     if (!this.entity?.parent || !this.entity.parent.world) {
       return [];
     }

@@ -13,7 +13,7 @@ import RatkinToothItem from "../../items/materials/RatkinToothItem.ts";
 
 export type RatkinSpellcasterEntityOptions = {
 
-} & BaseCombatEntityOptions;
+} & Partial<BaseCombatEntityOptions>;
 
 export default class RatkinSpellcasterEntity extends BaseCombatEntity {
   constructor(options?: RatkinSpellcasterEntityOptions) {

@@ -12,7 +12,7 @@ import GoldItem from '../../items/general/GoldItem';
 
 export type LesserBlightBloomEntityOptions = {
 
-} & BaseCombatEntityOptions;
+} & Partial<BaseCombatEntityOptions>;
 
 export default class LesserBlightBloomEntity extends BaseCombatEntity {
   constructor(options?: LesserBlightBloomEntityOptions) {

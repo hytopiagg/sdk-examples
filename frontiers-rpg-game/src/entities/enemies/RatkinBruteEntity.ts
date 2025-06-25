@@ -11,7 +11,7 @@ import RatkinToothItem from "../../items/materials/RatkinToothItem.ts";
 
 export type RatkinBruteEntityOptions = {
 
-} & BaseCombatEntityOptions;
+} & Partial<BaseCombatEntityOptions>;
 
 export default class RatkinBruteEntity extends BaseCombatEntity {
   constructor(options?: RatkinBruteEntityOptions) {

@@ -49,7 +49,6 @@ export default class IronLongSwordItem extends BaseWeaponItem {
         spinCollider.rawShape,
         this.entity.parent.position,
         this.entity.parent.rotation,
-        attack.reach,
       );
 
       for (const target of targets) {

@@ -7,6 +7,7 @@ import {
   ErrorHandler,
   EventPayloads,
   QuaternionLike,
+  RawShape,
   Vector3,
   Vector3Like,
   World,
@@ -17,7 +18,6 @@ const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 3;
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import GamePlayerEntity from '../GamePlayerEntity';
 import { isDamageable } from '../interfaces/IDamageable';
-import TaintedRatkinRangerEntity from './enemies/TaintedRatkinRangerEntity';
 
 export type ComplexAttack = (params: {
   attacker: BaseCombatEntity;
@@ -34,6 +34,7 @@ export type BaseCombatEntityAttack = {
   simpleAttackDamageVariance?: number; // Percentage variance (0-1), e.g., 0.2 = ±20% damage
   simpleAttackDamageDelayMs?: number; // When during animation to deal damage (if projectile, delay after hit)
   simpleAttackReach?: number; // Applies damage if target is < reach after delay
+  stopMovingDuringDelay?: boolean;
   weight: number;
   onHit?: (target: BaseEntity | GamePlayerEntity, attacker: BaseCombatEntity) => void;
 }
@@ -70,7 +71,9 @@ export default class BaseCombatEntity extends BaseEntity {
   private _attackAccumulatorMs: number = 0;
   private _attackCooldownMs: number = 0;
   private _attackTotalWeight: number = 0;
+  private _diameterSquared: number = 0;
   private _nextAttack: BaseCombatEntityAttack | null = null;
+  private _stopMoving: boolean = false;
 
   constructor(options: BaseCombatEntityOptions) {
     super({
@@ -85,7 +88,7 @@ export default class BaseCombatEntity extends BaseEntity {
     this._aggroSensorForwardOffset = options.aggroSensorForwardOffset ?? 0;
     this._attacks = options.attacks ?? [];
     this._attackTotalWeight = this._attacks.reduce((sum, attack) => sum + attack.weight, 0);
-    
+    this._diameterSquared = this.width > this.depth ? this.width ** 2 : this.depth ** 2;
     this._nextAttack = this._pickRandomAttack();
     
     // Set accumulator to interval to trigger immediate target check on first tick
@@ -107,6 +110,8 @@ export default class BaseCombatEntity extends BaseEntity {
     this.on(EntityEvent.TICK, this._onTick);
   }
 
+  public get diameterSquared(): number { return this._diameterSquared; }
+
   public attack() {
     if (!this._nextAttack || !this._aggroActiveTarget) return;
     
@@ -114,19 +119,24 @@ export default class BaseCombatEntity extends BaseEntity {
     const target = this._aggroActiveTarget;
     
     this.startModelOneshotAnimations(attack.animations);
+
+    if (attack.stopMovingDuringDelay) {
+      this.stopMoving();
+      this._stopMoving = true;
+    }
     
     if (!attack.complexAttack) { // Simple attack, animation + damage
       setTimeout(() => {
-        if (!target || !this._aggroPotentialTargets.has(target) || this.isDying) return;
+        if (!target || !this._aggroPotentialTargets.has(target) || this.isDead) return;
         
         if (!attack.simpleAttackDamage) {
           return ErrorHandler.warning(`BaseCombatEntity.attack(): Simple attack has no simple attack damage!`);
         };
         
-        const distanceSquared = this._distanceSquaredToTarget(target);
+        const distanceSquared = this.calculateDistanceSquaredToTarget(target);
         const reachSquared = attack.simpleAttackReach ? attack.simpleAttackReach ** 2 : attack.range ** 2;
         
-        if (distanceSquared <= reachSquared) { // make sure target is in reach still
+        if (distanceSquared <= reachSquared + this._diameterSquared) { // make sure target is in reach still
           if (isDamageable(target)) {
             const damage = this.calculateDamageWithVariance(attack.simpleAttackDamage, attack.simpleAttackDamageVariance);
             target.takeDamage(damage, this);
@@ -136,15 +146,19 @@ export default class BaseCombatEntity extends BaseEntity {
             attack.onHit(target, this);
           }
         }
+        
+        this._stopMoving = false;
       }, attack.simpleAttackDamageDelayMs ?? 0);
     } else { // Complex attack, such as projectile, spell, AoE, etc
       setTimeout(() => {
-        if (this.isDying || !attack.complexAttack || !this.world) return;
+        if (this.isDead || !attack.complexAttack || !this.world) return;
 
         attack.complexAttack({
           attacker: this,
           target: target,
         });
+
+        this._stopMoving = false;
       }, attack.complexAttackDelayMs ?? 0);
     }
 
@@ -167,6 +181,26 @@ export default class BaseCombatEntity extends BaseEntity {
     target.subtract(source).normalize();
     
     return { x: target.x, y: target.y, z: target.z };
+  }
+
+  public calculateDistanceSquaredToTarget(target: BaseEntity | GamePlayerEntity): number {
+    return this._distanceSquaredBetweenPositions(this.position, target.position);
+  }
+
+  public getTargetsByRawShapeIntersection(rawShape: RawShape, position: Vector3Like, rotation: QuaternionLike): Entity[] {
+    if (!this.world) return [];
+
+    const intersectionsResults = this.world.simulation.intersectionsWithRawShape(
+      rawShape,
+      position,
+      rotation,
+      {
+        filterExcludeRigidBody: this.rawRigidBody, // ignore self (parent/player)
+        filterFlags: 8, // Rapier flag to exclude sensor colliders
+      },
+    );
+
+    return intersectionsResults.map(result => result.intersectedEntity).filter(Boolean) as Entity[];
   }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
@@ -215,16 +249,14 @@ export default class BaseCombatEntity extends BaseEntity {
     return dx * dx + dy * dy + dz * dz;
   }
 
-  private _distanceSquaredToTarget(target: BaseEntity | GamePlayerEntity): number {
-    return this._distanceSquaredBetweenPositions(this.position, target.position);
-  }
-
   private _findClosestAggroTarget(): BaseEntity | GamePlayerEntity | null {
     let closestTarget: BaseEntity | GamePlayerEntity | null = null;
     let closestDistanceSquared = Infinity;
 
     for (const target of this._aggroPotentialTargets) {
-      const distanceSquared = this._distanceSquaredToTarget(target);
+      if (target.isDead) continue;
+
+      const distanceSquared = this.calculateDistanceSquaredToTarget(target);
 
       if (distanceSquared < closestDistanceSquared) {
         closestDistanceSquared = distanceSquared;
@@ -249,7 +281,7 @@ export default class BaseCombatEntity extends BaseEntity {
 
   private _hasAttackInRange(targetDistanceSquared: number): boolean {
     for (const attack of this._attacks) {
-      if (targetDistanceSquared <= attack.range ** 2) {
+      if (targetDistanceSquared <= attack.range ** 2 + this._diameterSquared) {
         return true;
       }
     }
@@ -270,21 +302,29 @@ export default class BaseCombatEntity extends BaseEntity {
 
     if (!this._aggroActiveTarget) return;
 
-    const targetDistanceSquared = this._distanceSquaredToTarget(this._aggroActiveTarget);
+    const targetDistanceSquared = this.calculateDistanceSquaredToTarget(this._aggroActiveTarget);
+
+    if (targetDistanceSquared < this._diameterSquared) {
+      this.stopMoving(); // Don't push into target when in contact range.
+    }
 
     // Handle attacks if available
     if (this._nextAttack) {
       const attackRangeSquared = this._nextAttack.range ** 2;
 
-      if (targetDistanceSquared <= attackRangeSquared && this._attackAccumulatorMs >= this._attackCooldownMs) {
+      if (targetDistanceSquared <= attackRangeSquared + this._diameterSquared && this._attackAccumulatorMs >= this._attackCooldownMs) {
         this._attackAccumulatorMs = 0;
         this.attack();
-      } else if (targetDistanceSquared > attackRangeSquared) {
+      } else if (targetDistanceSquared > attackRangeSquared + this._diameterSquared) {
         // Target is out of current attack range, only repick if there's an attack that can reach the target
         if (this._hasAttackInRange(targetDistanceSquared)) {
           this._attackAccumulatorMs = Math.max(0, this._attackAccumulatorMs - 500); // Prevent too-frequent repicking every tick
           this._nextAttack = this._pickRandomAttack();
         }
+      }
+
+      if (this._stopMoving) {
+        return;
       }
 
       // Update movement strategy
@@ -293,14 +333,14 @@ export default class BaseCombatEntity extends BaseEntity {
       }
 
       if (!this._aggroPathfinding) {
-        // Only move if not within attack range and can move, but always face the target
-        if (this.moveSpeed > 0 && targetDistanceSquared > attackRangeSquared) {
+        // Only move if not within contact range and can move, but always face the target
+        if (this.moveSpeed > 0 && targetDistanceSquared > this._diameterSquared + 2) {
           this.moveTo(this._aggroActiveTarget.position);
         }
         
         this.faceTowards(this._aggroActiveTarget.position, this.faceSpeed);
       }
-    } else {
+    } else if (!this._stopMoving) {
       // No attacks - just follow the target
       if (this.moveSpeed > 0 && this._aggroPathfindAccumulatorMs >= this._aggroPathfindIntervalMs) {
         this._updateMovementStrategy(targetDistanceSquared);
@@ -341,7 +381,7 @@ export default class BaseCombatEntity extends BaseEntity {
     if (!this._aggroActiveTarget) return true;
     if (!this._aggroPathfinding) return true; // Always switch when using simple movement
     
-    return this._distanceSquaredToTarget(newTarget) * 2 < this._distanceSquaredToTarget(this._aggroActiveTarget);
+    return this.calculateDistanceSquaredToTarget(newTarget) * 2 < this.calculateDistanceSquaredToTarget(this._aggroActiveTarget);
   }
 
   private _updateMovementStrategy(targetDistanceSquared: number): void {
@@ -355,7 +395,7 @@ export default class BaseCombatEntity extends BaseEntity {
     
     const distanceMovedSquared = this._distanceSquaredBetweenPositions(this._aggroPathfindLastPosition, this.position);
     const isStuck = distanceMovedSquared < MOVEMENT_NOT_STUCK_DISTANCE_SQUARED;
-    const notAtDestination = this._nextAttack ? targetDistanceSquared > this._nextAttack.range ** 2 : false;
+    const notAtDestination = this._nextAttack ? targetDistanceSquared > this._nextAttack.range ** 2 + this._diameterSquared : false;
     const shouldPathfind = isStuck && notAtDestination;
 
     if (shouldPathfind !== this._aggroPathfinding) {
@@ -377,9 +417,9 @@ export default class BaseCombatEntity extends BaseEntity {
     if (this._aggroPotentialTargets.size > 0) {
       this._aggroRetargetAccumulatorMs = 0;
     }
-    
+
     // Handle lost target
-    if (this._aggroActiveTarget && !this._aggroPotentialTargets.has(this._aggroActiveTarget)) {
+    if (this._aggroActiveTarget && (!this._aggroPotentialTargets.has(this._aggroActiveTarget) || this._aggroActiveTarget.isDead)) {
       this._handleLostTarget();
     }
     

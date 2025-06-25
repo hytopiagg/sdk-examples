@@ -7,6 +7,7 @@ import weaversHollowMap from '../../../assets/maps/weavers-hollow.json';
 
 import SpiderWebEntity from '../../entities/environmental/SpiderWebEntity';
 import QueenWeaverEntity from '../../entities/enemies/QueenWeaverEntity';
+import WeaverBroodlingEntity from '../../entities/enemies/WeaverBroodlingEntity';
 
 export default class WeaversHollowRegion extends GameRegion {
   public constructor() {
@@ -28,7 +29,7 @@ export default class WeaversHollowRegion extends GameRegion {
     super.setup();
 
     this._setupEnemySpawners();
-    this._setupEnvironmentSpawners();
+    // this._setupEnvironmentSpawners();
     this._setupPortals();
   }
 
@@ -50,12 +51,22 @@ export default class WeaversHollowRegion extends GameRegion {
     });
 
     queenWeaverSpawner.start(true);
+
+    // Spawn lure broodlings
+    for (let i = 0; i < 3; i++) {
+      const weaverBroodling = new WeaverBroodlingEntity({ facingAngle: Math.random() * 360 });
+      weaverBroodling.spawn(this.world, {
+        x: Math.random() * 8 - 4,
+        y: 2,
+        z: Math.random() * 8 - 4,
+      });
+    }
   }
 
   private _setupEnvironmentSpawners(): void {
     const spiderWebSpawner = new Spawner({
       groundCheckDistance: 8,
-      maxSpawns: 15,
+      maxSpawns: 20,
       spawnables: [
         { entityConstructor: SpiderWebEntity, weight: 1 },
       ],

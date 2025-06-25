@@ -159,7 +159,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public get idleAnimations(): string[] { return this.pathfindingController.idleLoopedAnimations; }
   public get idleAnimationsSpeed(): number | undefined { return this.pathfindingController.idleLoopedAnimationsSpeed; }
   public get interactActionText(): string | undefined { return this._interactActionText; }
-  public get isDying(): boolean { return this._dying; }
+  public get isDead(): boolean { return this._dying; }
   public get isInteractable(): boolean { return !!this._dialogueRoot || !!this._interactActionText; }
   public get health(): number { return this._health; }
   public get maxHealth(): number { return this._maxHealth; }
@@ -176,6 +176,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._dying = true;
 
     this.startModelOneshotAnimations(this._deathAnimations);
+    this.stopFacing();
     this.stopMoving();
     this.dropItems();
 
@@ -286,8 +287,11 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     });
   }
 
-  public stopMoving() {
+  public stopFacing() {
     this.pathfindingController.stopFace();
+  }
+
+  public stopMoving() {
     this.pathfindingController.stopMove();
   }
 
