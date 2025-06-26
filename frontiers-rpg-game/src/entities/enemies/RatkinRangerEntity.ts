@@ -28,7 +28,7 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
           },
           complexAttackDelayMs: 700,
           cooldownMs: 2000,
-          range: 10,
+          range: 9,
           weight: 2,
         },
         { // Slow heavy bow attack
@@ -38,7 +38,7 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
           },
           complexAttackDelayMs: 1600,
           cooldownMs: 3000,
-          range: 10,
+          range: 9,
           weight: 3,
         },
       ],

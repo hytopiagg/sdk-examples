@@ -22,7 +22,7 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
         { // Heavy attack
           animations: [ 'atk1' ],
           cooldownMs: 4000,
-          range: 2,
+          range: 1.5,
           simpleAttackDamage: 16,
           simpleAttackDamageVariance: 0.4, // ±40% damage (12-20)
           simpleAttackDamageDelayMs: 1000, // Deal damage 1000ms into animation
@@ -32,7 +32,7 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
         { // Light attack
           animations: [ 'atk2' ],
           cooldownMs: 2000,
-          range: 2,
+          range: 1.5,
           simpleAttackDamage: 9,
           simpleAttackDamageVariance: 0.1, // ±10% damage (6-8) 
           simpleAttackDamageDelayMs: 400, // Deal damage 400ms into animation

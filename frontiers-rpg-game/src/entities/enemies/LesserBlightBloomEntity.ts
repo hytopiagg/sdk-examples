@@ -24,7 +24,7 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
           complexAttack: () => this._eatTarget(),
           complexAttackDelayMs: 750,
           cooldownMs: 4000,
-          range: 4,
+          range: 2.5,
           weight: 4,
         },
         { // AoEGas
@@ -32,7 +32,7 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
           complexAttack: () => this._emitGasAoE(25, 4),
           complexAttackDelayMs: 2500,
           cooldownMs: 4000,
-          range: 10,
+          range: 8,
           weight: 2,
         },
         { // Spray 3 wide gas projectiles

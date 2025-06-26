@@ -22,7 +22,7 @@ export default class TaintedRatkinWarriorEntity extends BaseCombatEntity {
         { // Heavy attack
           animations: [ 'atk1' ],
           cooldownMs: 3500,
-          range: 2,
+          range: 1.5,
           simpleAttackDamage: 35,
           simpleAttackDamageVariance: 0.4, // ±40% damage (15-35)
           simpleAttackDamageDelayMs: 1000, // Deal damage 1000ms into animation
@@ -32,7 +32,7 @@ export default class TaintedRatkinWarriorEntity extends BaseCombatEntity {
         { // Light attack
           animations: [ 'atk2' ],
           cooldownMs: 1500,
-          range: 2,
+          range: 1.5,
           simpleAttackDamage: 15,
           simpleAttackDamageVariance: 0.1, // ±10% damage (9-11) 
           simpleAttackDamageDelayMs: 400, // Deal damage 400ms into animation
