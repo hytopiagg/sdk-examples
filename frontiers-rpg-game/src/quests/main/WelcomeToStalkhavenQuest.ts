@@ -81,7 +81,8 @@ export default class WelcomeToStalkhavenQuest extends BaseQuest {
         },
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
-        return interactor.gamePlayer.questLog.isQuestActive(this.id);
+        // This || may be unecessary but a bug was found in testing with persistence that broke quest state..
+        return interactor.gamePlayer.questLog.isQuestActive(this.id) || !interactor.gamePlayer.questLog.hasQuest(ExploringStalkhavenQuest.id);
       }
     }
   ];
