@@ -10,6 +10,7 @@ import BlightedHarvestQuest from './main/BlightedHarvestQuest';
 // Side Quests, Alphabetical
 import DipDuckDodgeQuest from './side/DipDuckDodgeQuest';
 import FungalForagingQuest from './side/FungalForagingQuest';
+import HammersAndCraftingQuest from './side/HammersAndCraftingQuest';
 
 export default [
   // Main, Alphabetical
@@ -24,4 +25,5 @@ export default [
   // Side, Alphabetical
   DipDuckDodgeQuest,
   FungalForagingQuest,
+  HammersAndCraftingQuest,
 ];
