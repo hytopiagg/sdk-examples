@@ -30,6 +30,12 @@ export type GameRegionPlayerEventPayloads = {
   [GameRegionPlayerEvent.REACHED]: { regionId: string };
 }
 
+export type GameRegionRespawnOverride = {
+  regionId: string,
+  facingAngle: number,
+  spawnPoint: Vector3Like,
+}
+
 export type GameRegionOptions = {
   id: string,
   ambientAudioUri?: string,
@@ -38,6 +44,7 @@ export type GameRegionOptions = {
   maxDirectionalLightIntensity?: number,
   minAmbientLightIntensity?: number,
   minDirectionalLightIntensity?: number,
+  respawnOverride?: GameRegionRespawnOverride,
   spawnFacingAngle?: number,
   spawnPoint?: Vector3Like,
 } & Omit<WorldOptions, 'id'>;
@@ -50,8 +57,8 @@ export default class GameRegion {
   private _maxDirectionalLightIntensity: number;
   private _minAmbientLightIntensity: number;
   private _minDirectionalLightIntensity: number;
-  private _outOfWorldCollider: Collider | undefined;
   private _playerCount: number = 0;
+  private _respawnOverride: GameRegionRespawnOverride | undefined;
   private _spawnFacingAngle: number;
   private _spawnPoint: Vector3Like;
 
@@ -71,6 +78,7 @@ export default class GameRegion {
     this._maxDirectionalLightIntensity = regionOptions.maxDirectionalLightIntensity ?? DEFAULT_MAX_DIRECTIONAL_LIGHT_INTENSITY;
     this._minAmbientLightIntensity = regionOptions.minAmbientLightIntensity ?? DEFAULT_MIN_AMBIENT_LIGHT_INTENSITY;
     this._minDirectionalLightIntensity = regionOptions.minDirectionalLightIntensity ?? DEFAULT_MIN_DIRECTIONAL_LIGHT_INTENSITY;
+    this._respawnOverride = regionOptions.respawnOverride;
     this._spawnFacingAngle = regionOptions.spawnFacingAngle ?? 0;
     this._spawnPoint = regionOptions.spawnPoint ?? { x: 0, y: 10, z: 0 };
 
@@ -92,6 +100,7 @@ export default class GameRegion {
   public get minAmbientLightIntensity(): number { return this._minAmbientLightIntensity; }
   public get minDirectionalLightIntensity(): number { return this._minDirectionalLightIntensity; }
   public get name(): string { return this._world.name; }
+  public get respawnOverride(): GameRegionRespawnOverride | undefined { return this._respawnOverride; }
   public get spawnFacingAngle(): number { return this._spawnFacingAngle; }
   public get spawnPoint(): Vector3Like { return this._spawnPoint; }
   public get world(): World { return this._world; }
@@ -105,13 +114,13 @@ export default class GameRegion {
       this._ambientAudio.play(this._world);
     }
 
-    this._outOfWorldCollider = new Collider({
+    new Collider({ // Out of world collider
       shape: ColliderShape.BLOCK,
       halfExtents: { x: 500, y : 32, z: 500 },
       isSensor: true,
       relativePosition: { x: 0, y: -64, z: 0 },
       onCollision: this.onEntityOutOfWorld,
-      simulation: this._world.simulation, // setting this auto adds collider to simulation upon creation.
+      simulation: this._world.simulation, // setting this auto adds collider to simulation upon instantiation.
     });
 
     this._isSetup = true;

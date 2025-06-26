@@ -146,6 +146,10 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     return this._gamePlayer.getSkillExperience(skillId);
   }
 
+  public joinRegion(region: GameRegion, facingAngle: number, spawnPoint: Vector3Like): void {
+    this._gamePlayer.joinRegion(region, facingAngle, spawnPoint);
+  }
+
   public setCurrentDialogueEntity(entity: any): void {
     this._gamePlayer.setCurrentDialogueEntity(entity);
   }

@@ -20,6 +20,8 @@ import TaintedRatkinWarriorEntity from '../../entities/enemies/TaintedRatkinWarr
 
 import LesserBlightBloomEntity from '../../entities/enemies/LesserBlightBloomEntity';
 
+import WeaverBroodlingEntity from '../../entities/enemies/WeaverBroodlingEntity';
+
 // Spawner Forageables
 import DecayingPileEntity from '../../entities/forageables/DecayingPileEntity';
 
@@ -126,11 +128,29 @@ export default class RatkinNestRegion extends GameRegion {
       ],
       spawnIntervalMs: 60000,
       world: this.world,
+    });
+
+    const weaverBroodlingSpawner = new Spawner({
+      groundCheckDistance: 4,
+      maxSpawns: 6,
+      spawnables: [
+        { entityConstructor: WeaverBroodlingEntity, weight: 1 },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -4, y: 2, z: -112 },
+          max: { x: 45, y: 5, z: -64 },
+          weight: 1,
+        }
+      ],
+      spawnIntervalMs: 15000,
+      world: this.world,
     })
 
     upperNestSpawner.start(true);
     lowerNestSpawner.start(true);
     lowerNestLesserBlightBloomSpawner.start(true);
+    weaverBroodlingSpawner.start(true);
   }
 
   private _setupForageableSpawners(): void {

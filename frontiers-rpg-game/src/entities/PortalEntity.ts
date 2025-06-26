@@ -87,10 +87,7 @@ export default class PortalEntity extends Entity {
       return;
     }
 
-    player.gamePlayer.setCurrentRegion(destinationRegion);
-    player.gamePlayer.setCurrentRegionSpawnFacingAngle(this.destinationRegionFacingAngle);
-    player.gamePlayer.setCurrentRegionSpawnPoint(this.destinationRegionPosition);              
-    player.player.joinWorld(destinationRegion.world);
+    player.joinRegion(destinationRegion, this.destinationRegionFacingAngle, this.destinationRegionPosition);
 
     this._playerTimeouts.delete(player);
   }

@@ -28,12 +28,10 @@ import TrainingSwordItem from './items/weapons/TrainingSwordItem';
 
 export enum GamePlayerPlayerEvent {
   DIED = 'GamePlayer.DIED',
-  RESPAWNED = 'GamePlayer.RESPAWNED',
 }
 
 export type GamePlayerPlayerEventPayloads = {
   [GamePlayerPlayerEvent.DIED]: null;
-  [GamePlayerPlayerEvent.RESPAWNED]: null;
 }
 
 export type NotificationType = 'success' | 'error' | 'warning' | 'complete' | 'new';
@@ -317,6 +315,13 @@ export default class GamePlayer {
     return this._skillExperience.get(skillId) ?? 0;
   }
 
+  public joinRegion(region: GameRegion, facingAngle: number, spawnPoint: Vector3Like): void {
+    this.setCurrentRegion(region);
+    this.setCurrentRegionSpawnFacingAngle(facingAngle);
+    this.setCurrentRegionSpawnPoint(spawnPoint);              
+    this.player.joinWorld(region.world);
+  }
+
   public async load(): Promise<void> {
     const serializedGamePlayerData = await this.player.getPersistedData();
 
@@ -351,17 +356,17 @@ export default class GamePlayer {
     // Restore health
     this.adjustHealth(this.maxHealth);
 
-    // Teleport to spawn point if available
-    this._currentEntity.setPosition(this.respawnPoint);
+    if (this._currentRegion?.respawnOverride) {
+      const region = GameManager.instance.getRegion(this._currentRegion.respawnOverride.regionId);
 
-    // Re enable movement if it was disabled
-    this._currentEntity.setIsMovementDisabled(false);
-
-    // Show respawn notification
-    this.showNotification('You have respawned!', 'success');
-
-    // Emit event to GamePlayer to handle respawn
-    this.eventRouter.emit(GamePlayerPlayerEvent.RESPAWNED, null);
+      if (region) {
+        this.joinRegion(region, this._currentRegion.respawnOverride.facingAngle, this._currentRegion.respawnOverride.spawnPoint);
+      }
+    } else { // Same region respawn, 
+      this._currentEntity.setPosition(this.respawnPoint);
+      this._currentEntity.setIsMovementDisabled(false);
+      this.showNotification('You have respawned!', 'success');
+    }
   }
 
   public setCurrentDialogueEntity(entity: BaseEntity): void {

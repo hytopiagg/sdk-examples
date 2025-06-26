@@ -19,6 +19,11 @@ export default class WeaversHollowRegion extends GameRegion {
       maxDirectionalLightIntensity: 0.8,
       minAmbientLightIntensity: 0.055,
       minDirectionalLightIntensity: 0.4,
+      respawnOverride: {
+        regionId: 'ratkin-nest',
+        facingAngle: 135,
+        spawnPoint: { x: -1, y: 10, z: -67 },
+      },
       skyboxUri: 'skyboxes/black',
       spawnPoint: { x: 10, y: 2, z: 13 },
       ambientAudioUri: 'audio/music/cave-theme-looping.mp3',
