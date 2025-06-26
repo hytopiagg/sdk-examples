@@ -1,9 +1,14 @@
-import { Collider, ColliderShape, RigidBodyType, Vector3Like } from 'hytopia';
+import { Collider, ColliderShape, RigidBodyType } from 'hytopia';
 import BaseCombatEntity, { BaseCombatEntityOptions } from '../BaseCombatEntity';
 import GamePlayerEntity from '../../GamePlayerEntity';
 import type BaseEntity from '../BaseEntity';
 
 import WeaverBroodlingEntity from './WeaverBroodlingEntity';
+
+// Drops
+import GoldItem from "../../items/general/GoldItem";
+import RareSeedsItem from '../../items/seeds/RareSeedsItem';
+import UnusualSeedsItem from '../../items/seeds/UnusualSeedsItem';
 
 export type QueenWeaverEntityOptions = {
   
@@ -50,10 +55,14 @@ export default class QueenWeaverEntity extends BaseCombatEntity {
           weight: 4,
         }
       ],
-      combatExperienceReward: 600,
+      combatExperienceReward: 650,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1500,
-      deathItemDrops: [],
+      deathItemDrops: [
+        { itemClass: GoldItem, minQuantity: 93, maxQuantity: 186, weight: 40 },
+        { itemClass: UnusualSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 20 },
+        { itemClass: RareSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
+      ],
       deathItemMaxDrops: 5,
       faceSpeed: 4,
       health: 1000,

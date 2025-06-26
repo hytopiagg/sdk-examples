@@ -1,5 +1,8 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 
+// Drops
+import GoldItem from "../../items/general/GoldItem";
+
 export type WeaverBroodlingEntityOptions = {
 
 } & Partial<BaseCombatEntityOptions>;
@@ -20,13 +23,13 @@ export default class WeaverBroodlingEntity extends BaseCombatEntity {
           weight: 1,
         }
       ],
-      combatExperienceReward: 15,
+      combatExperienceReward: 30,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
-        
+        { itemClass: GoldItem, minQuantity: 16, maxQuantity: 24, weight: 2 },
       ],
-      health: 100,
+      health: 140,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/weaver-broodling.gltf',
       modelScale: 0.8,
