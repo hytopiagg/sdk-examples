@@ -25,7 +25,7 @@ export default class IronLongSwordItem extends BaseWeaponItem {
     damageDelayMs: 200,
     damageVariance: 0.2,
     knockbackForce: 7,
-    reach: 3.5,
+    reach: 2,
   };
   static readonly description = `A long iron sword. It's heavy and slow, but hits harder than a normal sword.`;
   static readonly heldModelUri = 'models/weapons/iron-long-sword.gltf';
@@ -52,13 +52,14 @@ export default class IronLongSwordItem extends BaseWeaponItem {
       );
 
       for (const target of targets) {
+        const targetDirection = target.directionFromRotation;
         this.dealDamage(
           target,
           this.calculateDamageWithVariance(attack.damage, attack.damageVariance),
           {
-            x: -target.directionFromRotation.x,
-            y: target.directionFromRotation.y,
-            z: -target.directionFromRotation.z,
+            x: -targetDirection.x,
+            y: targetDirection.y,
+            z: -targetDirection.z,
           },
           attack.knockbackForce
         );

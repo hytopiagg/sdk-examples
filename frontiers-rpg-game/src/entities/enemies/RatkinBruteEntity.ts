@@ -8,6 +8,7 @@ import RatkinBonesItem from "../../items/materials/RatkinBonesItem";
 import RatkinEyesItem from "../../items/materials/RatkinEyesItem.ts";
 import RatkinTailItem from "../../items/materials/RatkinTailItem";
 import RatkinToothItem from "../../items/materials/RatkinToothItem.ts";
+import RawHideItem from "../../items/materials/RawHideItem.ts";
 
 export type RatkinBruteEntityOptions = {
 
@@ -59,6 +60,7 @@ export default class RatkinBruteEntity extends BaseCombatEntity {
         { itemClass: RatkinToothItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
         { itemClass: RatkinTailItem, minQuantity: 1, maxQuantity: 3, weight: 4 },
         { itemClass: GoldItem, minQuantity: 6, maxQuantity: 15, weight: 2 },
+        { itemClass: RawHideItem, minQuantity: 1, maxQuantity: 2, weight: 1 },
         { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
         { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],

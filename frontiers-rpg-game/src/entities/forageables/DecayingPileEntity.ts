@@ -5,7 +5,7 @@ import CommonMushroomItem from '../../items/consumables/CommonMushroomItem';
 import CommonSeedsItem from '../../items/seeds/CommonSeedsItem';
 import GoldItem from '../../items/general/GoldItem';
 import MinorHealingPotionItem from '../../items/consumables/MinorHealingPotionItem';
-import MonsterHideItem from '../../items/materials/MonsterHideItem';
+import RawHideItem from '../../items/materials/RawHideItem';
 import StonebellyFungusMushroomItem from '../../items/consumables/StonebellyFungusMushroomItem';
 import UnusualSeedsItem from '../../items/seeds/UnusualSeedsItem';
 
@@ -22,7 +22,7 @@ export default class DecayingPileEntity extends BaseForageableEntity {
         { itemClass: CommonSeedsItem, weight: 35 },
         { itemClass: GoldItem, weight: 15, minQuantity: 9, maxQuantity: 20 },
         { itemClass: MinorHealingPotionItem, weight: 25 },
-        { itemClass: MonsterHideItem, weight: 12 },
+        { itemClass: RawHideItem, weight: 12 },
         { itemClass: StonebellyFungusMushroomItem, weight: 5, minQuantity: 1, maxQuantity: 3 },
         { itemClass: UnusualSeedsItem, weight: 3 },
       ],

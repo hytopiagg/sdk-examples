@@ -13,7 +13,7 @@ import GoldItem from './general/GoldItem';
 
 // Materials
 import BlightedRootItem from './materials/BlightedRootItem';
-import MonsterHideItem from './materials/MonsterHideItem';
+import RawHideItem from './materials/RawHideItem';
 import RatkinBonesItem from './materials/RatkinBonesItem';
 import RatkinEyesItem from './materials/RatkinEyesItem';
 import RatkinTailItem from './materials/RatkinTailItem';
@@ -28,6 +28,7 @@ import UnusualSeedsItem from './seeds/UnusualSeedsItem';
 import DullSwordItem from './weapons/DullSwordItem';
 import IronDaggerItem from './weapons/IronDaggerItem';
 import IronLongSwordItem from './weapons/IronLongSwordItem';
+import SpikedClubItem from './weapons/SpikedClubItem';
 import TrainingSwordItem from './weapons/TrainingSwordItem';
 
 // Wearables
@@ -36,6 +37,11 @@ import AdventurerGlovesItem from './wearables/AdventurerGlovesItem';
 import AdventurerHoodItem from './wearables/AdventurerHoodItem';
 import AdventurerLeggingsItem from './wearables/AdventurerLeggingsItem';
 import AdventurerTunicItem from './wearables/AdventurerTunicItem';
+import LeatherBootsItem from './wearables/LeatherBootsItem';
+import LeatherBracersItem from './wearables/LeatherBracersItem';
+import LeatherHelmetItem from './wearables/LeatherHelmetItem';
+import LeatherLeggingsItem from './wearables/LeatherLeggingsItem';
+import LeatherVestItem from './wearables/LeatherVestItem';
 
 export default [
   // Consumables
@@ -53,7 +59,7 @@ export default [
 
   // Materials
   BlightedRootItem,
-  MonsterHideItem,
+  RawHideItem,
   RatkinBonesItem,
   RatkinEyesItem,
   RatkinTailItem,
@@ -68,6 +74,7 @@ export default [
   DullSwordItem,
   IronDaggerItem,
   IronLongSwordItem,
+  SpikedClubItem,
   TrainingSwordItem,
 
   // Wearables
@@ -76,4 +83,9 @@ export default [
   AdventurerHoodItem,
   AdventurerLeggingsItem,
   AdventurerTunicItem,
+  LeatherBootsItem,
+  LeatherBracersItem,
+  LeatherHelmetItem,
+  LeatherLeggingsItem,
+  LeatherVestItem,
 ];

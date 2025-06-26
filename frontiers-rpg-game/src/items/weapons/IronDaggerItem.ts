@@ -13,7 +13,7 @@ export default class IronDaggerItem extends BaseWeaponItem {
     damageDelayMs: 50,
     damageVariance: 0.4,
     knockbackForce: 3,
-    reach: 1.5,
+    reach: 1.25,
   };
   
   static readonly description = `A sharp iron dagger. It doesn't have much reach, but it's good for quick strikes.`;

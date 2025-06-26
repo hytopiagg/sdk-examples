@@ -25,7 +25,7 @@ export default class DullSwordItem extends BaseWeaponItem {
     damageDelayMs: 200,
     damageVariance: 0.2,
     knockbackForce: 7,
-    reach: 3,
+    reach: 1.5,
   };
   static readonly description = 'A dull metal sword. Better than nothing.';
   static readonly heldModelUri = 'models/items/sword-stone.gltf';
@@ -52,13 +52,14 @@ export default class DullSwordItem extends BaseWeaponItem {
       );
 
       for (const target of targets) {
+        const targetDirection = target.directionFromRotation;
         this.dealDamage(
           target,
           this.calculateDamageWithVariance(attack.damage, attack.damageVariance),
           {
-            x: -target.directionFromRotation.x,
-            y: target.directionFromRotation.y,
-            z: -target.directionFromRotation.z,
+            x: -targetDirection.x,
+            y: targetDirection.y,
+            z: -targetDirection.z,
           },
           attack.knockbackForce
         );
