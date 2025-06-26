@@ -15,6 +15,7 @@ import Levels from './systems/Levels';
 import QuestLog from './systems/QuestLog';
 import Storage from './systems/Storage';
 import Wearables from './systems/Wearables';
+import type BaseCraftingEntity from './entities/BaseCraftingEntity';
 import type BaseEntity from './entities/BaseEntity';
 import type BaseMerchantEntity from './entities/BaseMerchantEntity';
 import type BaseItem from './items/BaseItem';
@@ -60,6 +61,7 @@ export default class GamePlayer {
   public readonly storage: Storage;
   public readonly wearables: Wearables
   
+  private _currentCraftingEntity: BaseCraftingEntity | undefined;
   private _currentDialogueEntity: BaseEntity | undefined;
   private _currentMerchantEntity: BaseMerchantEntity | undefined;
   private _currentEntity: GamePlayerEntity | undefined;
@@ -124,6 +126,10 @@ export default class GamePlayer {
   }
 
   // Getters
+  public get currentCraftingEntity(): BaseCraftingEntity | undefined {
+    return this._currentCraftingEntity;
+  }
+
   public get currentDialogueEntity(): BaseEntity | undefined {
     return this._currentDialogueEntity;
   }
@@ -368,6 +374,10 @@ export default class GamePlayer {
       this._currentEntity.setIsMovementDisabled(false);
       this.showNotification('You have respawned!', 'success');
     }
+  }
+
+  public setCurrentCraftingEntity(entity: BaseCraftingEntity): void {
+    this._currentCraftingEntity = entity;
   }
 
   public setCurrentDialogueEntity(entity: BaseEntity): void {

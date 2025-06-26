@@ -1,0 +1,224 @@
+<!-- Shared Item Stats System -->
+<script>
+/**
+ * Centralized Item Stats System
+ * Provides consistent stat formatting across all UI components
+ */
+window.ItemStats = (function() {
+  'use strict';
+
+  // Parse color formatting in text: [HEXCODE]text[/] -> <span style="color: #HEXCODE">text</span>
+  // Parse line breaks: [b] -> <br>
+  function parseText(text) {
+    if (!text) return text;
+    
+    // First, replace [b] with <br> for line breaks
+    text = text.replace(/\[b\]/g, '<br>');
+    
+    // Then, handle color formatting [HEXCODE]text[/] pattern
+    const colorPattern = /\[([A-Fa-f0-9]{6})\](.*?)\[\/\]/g;
+    
+    return text.replace(colorPattern, (match, hexCode, content) => {
+      return `<span style="color: #${hexCode}">${content}</span>`;
+    });
+  }
+
+  function generateItemStats(itemData, options = {}) {
+    const config = {
+      includeDescription: true,
+      includePricing: false,
+      showBuyPrice: false,
+      showSellPrice: false,
+      buyPriceLabel: 'Price: ',
+      sellPriceLabel: 'Sells For: ',
+      notBuyableLabel: 'Not Buyable',
+      notSellableLabel: 'Not Sellable',
+      statsClass: 'item-stats',
+      descriptionClass: 'item-description',
+      priceClass: 'item-price',
+      ...options
+    };
+
+    const sections = [];
+    
+    // Item stats (weapons and wearables)
+    const stats = [];
+    
+    // Weapon damage (no "when equipped" needed since weapons are used directly)
+    if (itemData.damage && itemData.damage !== 0) {
+      if (itemData.damageVariance && itemData.damageVariance !== 0) {
+        const min = Math.floor(itemData.damage * (1 - itemData.damageVariance));
+        const max = Math.floor(itemData.damage * (1 + itemData.damageVariance));
+        stats.push(`${min}-${max} damage`);
+      } else {
+        stats.push(`${itemData.damage} damage`);
+      }
+    }
+    
+    // Wearable stats
+    const wearableStats = [];
+    if (itemData.damageBonus && itemData.damageBonus !== 0) {
+      wearableStats.push(`+${itemData.damageBonus} damage dealt`);
+    }
+    if (itemData.damageBonusPercent && itemData.damageBonusPercent !== 0) {
+      wearableStats.push(`+${itemData.damageBonusPercent}% damage dealt`);
+    }
+    if (itemData.damageReduction && itemData.damageReduction !== 0) {
+      wearableStats.push(`-${itemData.damageReduction} damage taken`);
+    }
+    if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
+      wearableStats.push(`-${itemData.damageReductionPercent}% damage taken`);
+    }
+    
+    // Collect all stat lines first
+    const allStatLines = [];
+    
+    // Add wearable stats
+    if (wearableStats.length > 0) {
+      allStatLines.push(...wearableStats);
+    }
+    
+    // Add custom stat texts
+    if (itemData.statTexts && itemData.statTexts.length > 0) {
+      for (const statText of itemData.statTexts) {
+        const parsedStatText = parseText(statText);
+        allStatLines.push(parsedStatText);
+      }
+    }
+    
+    // Add header and stats together if we have stats
+    if (allStatLines.length > 0) {
+      if (itemData.statsHeader) {
+        const headerText = parseText(itemData.statsHeader);
+        stats.push(`<div class="stats-header">${headerText}</div>${allStatLines.join('<br>')}`);
+      } else {
+        stats.push(allStatLines.join('<br>'));
+      }
+    }
+    
+    if (stats.length > 0) {
+      sections.push(`<div class="${config.statsClass}">${stats.join('<br>')}</div>`);
+    }
+    
+    // Item description
+    if (config.includeDescription && itemData.description) {
+      const parsedDescription = parseText(itemData.description);
+      sections.push(`<div class="${config.descriptionClass}">${parsedDescription}</div>`);
+    }
+    
+    // Price information
+    if (config.includePricing) {
+      if (config.showBuyPrice && itemData.buyPrice !== undefined) {
+        const price = itemData.buyPrice || 0;
+        if (price > 0) {
+          sections.push(`<div class="${config.priceClass}">${config.buyPriceLabel}${price.toLocaleString()} gold</div>`);
+        } else {
+          sections.push(`<div class="${config.priceClass}">${config.notBuyableLabel}</div>`);
+        }
+      }
+      
+      if (config.showSellPrice && itemData.sellPrice !== undefined) {
+        const price = itemData.sellPrice || 0;
+        if (price > 0) {
+          sections.push(`<div class="${config.priceClass}">${config.sellPriceLabel}${price.toLocaleString()} gold</div>`);
+        } else {
+          sections.push(`<div class="${config.priceClass}">${config.notSellableLabel}</div>`);
+        }
+      }
+    }
+    
+    return sections.join('');
+  }
+
+  function hasItemStats(itemData) {
+    return itemData.description || 
+           itemData.sellPrice !== undefined ||
+           itemData.buyPrice !== undefined ||
+           itemData.damageBonus !== undefined ||
+           itemData.damageBonusPercent !== undefined ||
+           itemData.damageReduction !== undefined ||
+           itemData.damageReductionPercent !== undefined ||
+           itemData.damage !== undefined ||
+           itemData.damageVariance !== undefined ||
+           (itemData.statTexts && itemData.statTexts.length > 0) ||
+           itemData.statsHeader;
+  }
+
+  // Public API
+  return {
+    parseText: parseText,
+    generateItemStats: generateItemStats,
+    hasItemStats: hasItemStats
+  };
+})();
+</script>
+
+<style>
+  /* Shared Item Stats Styles */
+  .item-stats {
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #7dd87d;
+    font-weight: 500;
+  }
+
+  .stats-header {
+    color: #999999;
+    font-weight: 500;
+    margin-bottom: 3px;
+    font-size: 11px;
+  }
+
+  .item-description {
+    color: #cccccc;
+    margin-top: 6px;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .item-price {
+    color: #ffd700;
+    margin-top: 6px;
+    font-weight: 500;
+    font-size: 11px;
+  }
+
+  /* Crafting-specific stat styles */
+  .crafting-item-stats {
+    margin-top: 4px;
+    font-size: 9px;
+    line-height: 1.3;
+    color: #7dd87d;
+    font-weight: 500;
+  }
+
+  .crafting-item-stats .stats-header {
+    color: #999999;
+    font-weight: 500;
+    margin-bottom: 2px;
+    font-size: 9px;
+  }
+
+  .crafting-item-description {
+    margin-top: 4px;
+    font-size: 9px;
+    line-height: 1.3;
+    color: var(--crafting-text-muted, #cccccc);
+  }
+
+  /* Mobile styles */
+  body.mobile .crafting-item-stats {
+    font-size: 8px;
+    margin-top: 3px;
+  }
+
+  body.mobile .crafting-item-stats .stats-header {
+    font-size: 8px;
+  }
+
+  body.mobile .crafting-item-description {
+    font-size: 8px;
+    margin-top: 3px;
+  }
+</style> 

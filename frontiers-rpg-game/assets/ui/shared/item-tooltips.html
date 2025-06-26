@@ -24,6 +24,12 @@ window.ItemTooltips = (function() {
   }
 
   function hasTooltipData(itemData) {
+    // Use shared ItemStats system if available, otherwise use basic check
+    if (window.ItemStats) {
+      return itemData.name || window.ItemStats.hasItemStats(itemData);
+    }
+    
+    // Fallback check if ItemStats not available
     return itemData.name || 
            itemData.description || 
            itemData.sellPrice !== undefined ||
@@ -67,69 +73,25 @@ window.ItemTooltips = (function() {
       sections.push(`<div class="tooltip-name">${itemData.name}</div>`);
     }
     
-    // Item stats (weapons and wearables)
-    const stats = [];
-    
-    // Weapon damage (no "when equipped" needed since weapons are used directly)
-    if (itemData.damage && itemData.damage !== 0) {
-      if (itemData.damageVariance && itemData.damageVariance !== 0) {
-        const min = Math.floor(itemData.damage * (1 - itemData.damageVariance));
-        const max = Math.floor(itemData.damage * (1 + itemData.damageVariance));
-        stats.push(`${min}-${max} damage`);
-      } else {
-        stats.push(`${itemData.damage} damage`);
+    // Use shared ItemStats system for consistent stat generation
+    if (window.ItemStats) {
+      const itemStatsHTML = window.ItemStats.generateItemStats(itemData, {
+        includeDescription: true,
+        includePricing: false,
+        statsClass: 'tooltip-stats',
+        descriptionClass: 'tooltip-description',
+        priceClass: 'tooltip-value'
+      });
+      
+      if (itemStatsHTML) {
+        sections.push(itemStatsHTML);
       }
-    }
-    
-    // Wearable stats
-    const wearableStats = [];
-    if (itemData.damageBonus && itemData.damageBonus !== 0) {
-      wearableStats.push(`+${itemData.damageBonus} damage dealt`);
-    }
-    if (itemData.damageBonusPercent && itemData.damageBonusPercent !== 0) {
-      wearableStats.push(`+${itemData.damageBonusPercent}% damage dealt`);
-    }
-    if (itemData.damageReduction && itemData.damageReduction !== 0) {
-      wearableStats.push(`-${itemData.damageReduction} damage taken`);
-    }
-    if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
-      wearableStats.push(`-${itemData.damageReductionPercent}% damage taken`);
-    }
-    
-    // Collect all stat lines first
-    const allStatLines = [];
-    
-    // Add wearable stats
-    if (wearableStats.length > 0) {
-      allStatLines.push(...wearableStats);
-    }
-    
-    // Add custom stat texts
-    if (itemData.statTexts && itemData.statTexts.length > 0) {
-      for (const statText of itemData.statTexts) {
-        const parsedStatText = parseText(statText);
-        allStatLines.push(parsedStatText);
+    } else {
+      // Fallback: Item description only if ItemStats not available
+      if (itemData.description) {
+        const parsedDescription = parseText(itemData.description);
+        sections.push(`<div class="tooltip-description">${parsedDescription}</div>`);
       }
-    }
-    
-    // Add header and stats together if we have stats
-    if (allStatLines.length > 0) {
-      if (itemData.statsHeader) {
-        const headerText = parseText(itemData.statsHeader);
-        stats.push(`<div class="tooltip-stats-header">${headerText}</div>${allStatLines.join('<br>')}`);
-      } else {
-        stats.push(allStatLines.join('<br>'));
-      }
-    }
-    
-    if (stats.length > 0) {
-      sections.push(`<div class="tooltip-stats">${stats.join('<br>')}</div>`);
-    }
-    
-    // Item description
-    if (itemData.description) {
-      const parsedDescription = parseText(itemData.description);
-      sections.push(`<div class="tooltip-description">${parsedDescription}</div>`);
     }
     
     // Price information
@@ -189,22 +151,31 @@ window.ItemTooltips = (function() {
   .backpack-slot:hover .item-tooltip,
   .backpack-hotbar-slot:hover .item-tooltip,
   .backpack-wearable-slot:hover .item-tooltip,
-  .merchant-slot:hover .item-tooltip,
-  .merchant-hotbar-slot:hover .item-tooltip,
-  /* Tooltip visibility on hover - Specific classes */
-  .backpack-slot:hover .backpack-item-tooltip,
-  .backpack-hotbar-slot:hover .backpack-item-tooltip,
-  .backpack-wearable-slot:hover .backpack-item-tooltip,
-  .merchant-slot:hover .merchant-item-tooltip,
-  .merchant-hotbar-slot:hover .merchant-item-tooltip {
+      .merchant-slot:hover .item-tooltip,
+    .merchant-hotbar-slot:hover .item-tooltip,
+    .crafting-slot:hover .item-tooltip,
+    .crafting-requirement-item:hover .item-tooltip,
+    .quests-reward-item:hover .item-tooltip,
+    /* Tooltip visibility on hover - Specific classes */
+    .backpack-slot:hover .backpack-item-tooltip,
+    .backpack-hotbar-slot:hover .backpack-item-tooltip,
+    .backpack-wearable-slot:hover .backpack-item-tooltip,
+    .merchant-slot:hover .merchant-item-tooltip,
+    .merchant-hotbar-slot:hover .merchant-item-tooltip,
+    .crafting-slot:hover .crafting-item-tooltip,
+    .crafting-requirement-item:hover .crafting-requirement-tooltip,
+    .quests-reward-item:hover .quests-reward-item-tooltip {
     opacity: 1;
     visibility: visible;
     transform: translateY(-8px);
   }
 
-  .item-tooltip-content,
-  .backpack-item-tooltip-content,
-  .merchant-item-tooltip-content {
+      .item-tooltip-content,
+    .backpack-item-tooltip-content,
+    .merchant-item-tooltip-content,
+    .crafting-item-tooltip-content,
+    .crafting-requirement-tooltip-content,
+    .quests-reward-item-tooltip-content {
     background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
     border: 2px solid #444;
     border-radius: 8px;
@@ -225,9 +196,12 @@ window.ItemTooltips = (function() {
   }
 
   /* Tooltip Caret */
-  .item-tooltip-content::after,
-  .backpack-item-tooltip-content::after,
-  .merchant-item-tooltip-content::after {
+      .item-tooltip-content::after,
+    .backpack-item-tooltip-content::after,
+    .merchant-item-tooltip-content::after,
+    .crafting-item-tooltip-content::after,
+    .crafting-requirement-tooltip-content::after,
+    .quests-reward-item-tooltip-content::after {
     content: '';
     position: absolute;
     top: 100%;
@@ -237,9 +211,12 @@ window.ItemTooltips = (function() {
     border-top-color: #444;
   }
 
-  .item-tooltip-content::before,
-  .backpack-item-tooltip-content::before,
-  .merchant-item-tooltip-content::before {
+      .item-tooltip-content::before,
+    .backpack-item-tooltip-content::before,
+    .merchant-item-tooltip-content::before,
+    .crafting-item-tooltip-content::before,
+    .crafting-requirement-tooltip-content::before,
+    .quests-reward-item-tooltip-content::before {
     content: '';
     position: absolute;
     top: calc(100% - 2px);
@@ -247,8 +224,17 @@ window.ItemTooltips = (function() {
     transform: translateX(-50%);
     border: 6px solid transparent;
     border-top-color: #2a2a2a;
-    z-index: 1;
-  }
+          z-index: 1;
+    }
+
+    /* Tooltip Content Sections */
+    .tooltip-name,
+    .backpack-tooltip-name,
+    .merchant-tooltip-name {
+      font-weight: 600;
+      color: #ffffff;
+      font-size: 12px;
+    }
 
   /* Tooltip Content Sections */
   .tooltip-name,
@@ -295,7 +281,12 @@ window.ItemTooltips = (function() {
   }
 
   /* Mobile - Hide tooltips on mobile devices */
-  body.mobile .item-tooltip {
+  body.mobile .item-tooltip,
+  body.mobile .backpack-item-tooltip,
+  body.mobile .merchant-item-tooltip,
+  body.mobile .crafting-item-tooltip,
+  body.mobile .crafting-requirement-tooltip,
+  body.mobile .quests-reward-item-tooltip {
     display: none;
   }
 

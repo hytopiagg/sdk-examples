@@ -294,6 +294,40 @@
         </div>
       </div>
     `;
+    
+    // Add tooltips to reward items after rendering
+    addRewardTooltips(quest.reward);
+  }
+
+  function addRewardTooltips(reward) {
+    // Clear any existing tooltips first
+    const existingTooltipItems = document.querySelectorAll('.quests-reward-item-tooltip-enabled');
+    existingTooltipItems.forEach(item => removeRewardTooltip(item));
+    
+    // Add tooltips to item rewards
+    if (reward.items) {
+      reward.items.forEach((itemReward, index) => {
+        const rewardItem = document.querySelector(`[data-reward-item-index="${index}"]`);
+        if (rewardItem && window.ItemTooltips) {
+          createRewardTooltip(rewardItem, itemReward);
+        }
+      });
+    }
+  }
+
+  function createRewardTooltip(item, itemData) {
+    const options = {
+      tooltipClass: 'quests-reward-item-tooltip',
+      contentClass: 'quests-reward-item-tooltip-content',
+      showBuyPrice: false,
+      showSellPrice: false
+    };
+    
+    ItemTooltips.createTooltip(item, itemData, options);
+  }
+
+  function removeRewardTooltip(item) {
+    ItemTooltips.removeTooltip(item, 'quests-reward-item-tooltip');
   }
 
   function generateObjectivesHTML(quest) {
@@ -330,11 +364,11 @@
     });
     
     // Handle item rewards
-    reward.items?.forEach(itemReward => {
+    reward.items?.forEach((itemReward, index) => {
       const quantity = itemReward.quantity > 1 ? `x${itemReward.quantity.toLocaleString()}` : 'x1';
       const iconSrc = itemReward.iconImageUri ? `{{CDN_ASSETS_URL}}/${itemReward.iconImageUri}` : '{{CDN_ASSETS_URL}}/icons/items/gold.png';
       rewards.push(`
-        <div class="quests-reward-item">
+        <div class="quests-reward-item quests-reward-item-tooltip-enabled" data-reward-item-index="${index}">
           <img src="${iconSrc}" alt="Item" class="quests-reward-icon">
           <span class="quests-reward-text">${sanitizeText(itemReward.name)} (${quantity})</span>
         </div>
@@ -752,6 +786,40 @@
     font-weight: 500;
     color: #cccccc;
     line-height: 1.3;
+  }
+
+  /* Quest reward tooltip positioning - left-aligned for full-width items */
+  .quests-reward-item-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 2000;
+    pointer-events: none;
+  }
+
+  .quests-reward-item-tooltip-enabled {
+    position: relative;
+    cursor: pointer;
+  }
+
+  /* Override center positioning for quest reward tooltips */
+  .quests-reward-item-tooltip-content {
+    transform: translateX(0) !important;
+  }
+
+  /* Position caret over the reward icon */
+  .quests-reward-item-tooltip-content::after {
+    left: 20px !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .quests-reward-item-tooltip-content::before {
+    left: 20px !important;
+    transform: translateX(-50%) !important;
   }
 
   /* Empty State */

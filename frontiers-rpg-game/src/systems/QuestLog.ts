@@ -3,6 +3,7 @@ import type BaseQuest from '../quests/BaseQuest';
 import type GamePlayer from '../GamePlayer';
 import type BaseEntity from '../entities/BaseEntity';
 import type { PlayerQuestState } from '../quests/BaseQuest';
+import { ItemUIDataHelper } from '../items/ItemUIDataHelper';
 
 export type SerializedQuestLogData = {
   quests: PlayerQuestState[];
@@ -181,11 +182,7 @@ export default class QuestLog {
       description: questClass.description,
       objectives: questClass.objectives,
       reward: {
-        items: questClass.reward.items?.map(item => ({
-          name: item.itemClass.name,
-          iconImageUri: item.itemClass.iconImageUri,
-          quantity: item.quantity,
-        })),
+        items: questClass.reward.items?.map(item => ItemUIDataHelper.getUIData(item.itemClass, { quantity: item.quantity })),
         skillExperience: questClass.reward.skillExperience,
       },
       state: questState

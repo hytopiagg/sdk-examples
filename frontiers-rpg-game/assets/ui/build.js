@@ -25,12 +25,14 @@ function includeContent(filePath) {
 
 // Include content for the output - Add our modules here!
 includeContent('./root.html');
+includeContent('./shared/item-stats.html');
 includeContent('./shared/item-tooltips.html');
 includeContent('./menus/backpack.html');
 includeContent('./menus/skills.html');
 includeContent('./menus/dialogue.html');
 includeContent('./menus/quests.html');
 includeContent('./menus/merchant.html');
+includeContent('./menus/crafting.html');
 includeContent('./menus/help.html');
 includeContent('./scene-ui-templates/entity-nameplate.html');
 includeContent('./scene-ui-templates/item-nameplate.html');

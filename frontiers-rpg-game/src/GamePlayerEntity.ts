@@ -16,6 +16,9 @@ import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
 import GamePlayer from './GamePlayer';
 import Levels from './systems/Levels';
+import type BaseCraftingEntity from './entities/BaseCraftingEntity';
+import type BaseEntity from './entities/BaseEntity';
+import type BaseMerchantEntity from './entities/BaseMerchantEntity';
 import type GameRegion from './GameRegion';
 import type IDamageable from './interfaces/IDamageable';
 import type { NotificationType } from './GamePlayer';
@@ -150,11 +153,15 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     this._gamePlayer.joinRegion(region, facingAngle, spawnPoint);
   }
 
-  public setCurrentDialogueEntity(entity: any): void {
+  public setCurrentCraftingEntity(entity: BaseCraftingEntity): void {
+    this._gamePlayer.setCurrentCraftingEntity(entity);
+  }
+
+  public setCurrentDialogueEntity(entity: BaseEntity): void {
     this._gamePlayer.setCurrentDialogueEntity(entity);
   }
 
-  public setCurrentMerchantEntity(entity: any): void {
+  public setCurrentMerchantEntity(entity: BaseMerchantEntity): void {
     this._gamePlayer.setCurrentMerchantEntity(entity);
   }
 
