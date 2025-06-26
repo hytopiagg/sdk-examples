@@ -319,6 +319,7 @@ export default class GamePlayer {
     this.setCurrentRegion(region);
     this.setCurrentRegionSpawnFacingAngle(facingAngle);
     this.setCurrentRegionSpawnPoint(spawnPoint);              
+    this.save();
     this.player.joinWorld(region.world);
   }
 
