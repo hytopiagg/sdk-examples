@@ -1,3 +1,4 @@
+import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
 import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
@@ -177,5 +178,14 @@ export default class RatkinNestRegion extends GameRegion {
     });
 
     chitterForestPortal.spawn(this.world, { x: -31, y: 23.5, z: -71 }); 
+
+    const weaversHollowPortal = new PortalEntity({
+      destinationRegionId: 'weavers-hollow',
+      destinationRegionPosition: { x: 10, y: 2, z: 13 },
+      destinationRegionFacingAngle: 45,
+      type: 'boss',
+    });
+
+    weaversHollowPortal.spawn(this.world, { x: 31, y: 3.5, z: -123 }, Quaternion.fromEuler(0, 45, 0));
   }
 }

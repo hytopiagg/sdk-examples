@@ -436,8 +436,8 @@ export default class GamePlayer {
       
       // Restore current region if available
       if (playerData.currentRegionId) {
-        
         const region = GameManager.instance.getRegion(playerData.currentRegionId);
+        
         if (region) {
           this._currentRegion = region;
         }

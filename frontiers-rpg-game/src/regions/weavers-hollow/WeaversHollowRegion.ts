@@ -1,7 +1,7 @@
+import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
 import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
-import type { WanderOptions } from '../../entities/BaseEntity';
 
 import weaversHollowMap from '../../../assets/maps/weavers-hollow.json';
 
@@ -85,6 +85,13 @@ export default class WeaversHollowRegion extends GameRegion {
   }
 
   private _setupPortals(): void {
-    
+    const ratkinNestPortal = new PortalEntity({
+      delayS: 10,
+      destinationRegionId: 'ratkin-nest',
+      destinationRegionPosition: { x: 35, y: 2, z: -118 },
+      destinationRegionFacingAngle: 240,
+    });
+
+    ratkinNestPortal.spawn(this.world, { x: 13.5, y: 3.5, z: 18 }, Quaternion.fromEuler(0, 45, 0));
   }
 }

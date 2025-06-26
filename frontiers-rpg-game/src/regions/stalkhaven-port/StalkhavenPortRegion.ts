@@ -37,6 +37,7 @@ export default class StalkhavenRegion extends GameRegion {
       destinationRegionFacingAngle: 90,
       modelScale: 2,
     });
+    
     stalkhavenPortal.spawn(this.world, { x: -6, y: 9.5, z: -31 });
   }
 }
