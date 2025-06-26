@@ -15,10 +15,10 @@ export default class WeaversHollowRegion extends GameRegion {
       id: 'weavers-hollow',
       name: `Weaver's Hollow`,
       map: weaversHollowMap,
-      maxAmbientLightIntensity: 0.075,
+      maxAmbientLightIntensity: 0.095,
       maxDirectionalLightIntensity: 0.8,
-      minAmbientLightIntensity: 0.055,
-      minDirectionalLightIntensity: 0.4,
+      minAmbientLightIntensity: 0.075,
+      minDirectionalLightIntensity: 0.5,
       respawnOverride: {
         regionId: 'ratkin-nest',
         facingAngle: 135,
