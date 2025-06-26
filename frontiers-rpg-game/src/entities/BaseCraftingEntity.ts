@@ -5,6 +5,14 @@ import type { ItemClass } from '../items/BaseItem';
 import type { BaseEntityDialogueOption } from './BaseEntity';
 import type GamePlayerEntity from '../GamePlayerEntity';
 
+export enum BaseCraftingEntityPlayerEvent {
+  CRAFT_ITEM = 'BaseCraftingEntity.CRAFT_ITEM',
+}
+
+export type BaseCraftingEntityPlayerEventPayloads = {
+  [BaseCraftingEntityPlayerEvent.CRAFT_ITEM]: { crafter: BaseCraftingEntity, craftingRecipeIndex: number }
+}
+
 export type CraftingRecipe = {
   craftedItemClass: ItemClass;
   requirements: {
@@ -81,6 +89,8 @@ export default class BaseCraftingEntity extends BaseEntity {
     interactor.gamePlayer.addHeldItem(craftingRecipe.craftedItemClass);
     this._awardCraftingSkillExperience(interactor, craftingRecipe.craftedItemClass);
     interactor.showNotification(`You crafted a ${craftingRecipe.craftedItemClass.name}.`, 'success');
+
+    interactor.gamePlayer.eventRouter.emit(BaseCraftingEntityPlayerEvent.CRAFT_ITEM, { crafter: this, craftingRecipeIndex });
   }
 
   public openCraftMenu(interactor: GamePlayerEntity): void {
