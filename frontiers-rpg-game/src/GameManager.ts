@@ -10,7 +10,7 @@ import ChitterForestRegion from './regions/chitter-forest/ChitterForestRegion';
 import RatkinNestRegion from './regions/ratkin-nest/RatkinNestRegion';
 import StalkhavenRegion from './regions/stalkhaven/StalkhavenRegion';
 import StalkhavenPortRegion from './regions/stalkhaven-port/StalkhavenPortRegion';
-// import WeaversHollowRegion from './regions/weavers-hollow/WeaversHollowRegion';
+import WeaversHollowRegion from './regions/weavers-hollow/WeaversHollowRegion';
 
 // Since globalEventRouter isn't exported in the main index, we'll handle cleanup differently
 // We can rely on the GamePlayer.remove() method being called manually when needed
@@ -63,10 +63,9 @@ export default class GameManager {
     this._startRegion = stalkhavenPortRegion;
 
     // Weaver's Hollow
-    // const weaversHollowRegion = new WeaversHollowRegion();
-    // this._regions.set(weaversHollowRegion.id, weaversHollowRegion);
-    // // GameClock.instance.addRegionClockCycle(weaversHollowRegion);
-    // this._startRegion = weaversHollowRegion;
+    const weaversHollowRegion = new WeaversHollowRegion();
+    this._regions.set(weaversHollowRegion.id, weaversHollowRegion);
+    GameClock.instance.addRegionClockCycle(weaversHollowRegion);
   }
 
   private _selectWorldForPlayer = async (player: Player): Promise<World | undefined> => {
