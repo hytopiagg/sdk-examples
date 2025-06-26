@@ -57,7 +57,7 @@ export default class StalkhavenRegion extends GameRegion {
 
     const capfolkVillagerSpawner = new Spawner({
       groundCheckDistance: 10,
-      maxSpawns: 15,
+      maxSpawns: 10,
       spawnables: [
         { entityConstructor: CapfolkVillagerEntity, weight: 1, wanders: true, wanderOptions },
       ],
