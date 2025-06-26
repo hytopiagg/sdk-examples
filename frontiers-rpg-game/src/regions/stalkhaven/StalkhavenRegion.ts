@@ -1,7 +1,10 @@
 import { Quaternion } from 'hytopia';
 import GameRegion from '../../GameRegion';
+import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
+import type { WanderOptions } from '../../entities/BaseEntity';
 
+// NPCs
 import CapfolkVillagerEntity from '../../entities/npcs/CapfolkVillagerEntity';
 import CaptainSpornEntity from './npcs/CaptainSpornEntity';
 import CommanderMarkEntity from './npcs/CommanderMarkEntity';
@@ -28,6 +31,7 @@ export default class StalkhavenRegion extends GameRegion {
     super.setup();
     
     this._setupNPCs();
+    this._setupNPCSpawners();
     this._setupPortals();
   }
 
@@ -38,31 +42,38 @@ export default class StalkhavenRegion extends GameRegion {
     (new CommanderMarkEntity({ facingAngle: 180 })).spawn(this.world, { x: 3, y: 3, z: 12 });
     (new HealerMycelisEntity({ facingAngle: 180 })).spawn(this.world, { x: -13.5, y: 3, z: -30 });
     (new MerchantFinnEntity({ facingAngle: 90 })).spawn(this.world, { x: 13, y: 3, z: 26.5 });
-
-    // Wandering Villagers 
-    const villagerStartPositions = [
-      { x: -6, y: 3, z: 13 }, // town center
-      { x: 14, y: 3, z: 4 }, // town center
-      { x: -2, y: 3, z: -15 }, // town center
-      { x: 23, y: 3, z: 41 }, // well
-      { x: 26, y: 3, z: -22 }, // market
-      { x: 15, y: 3, z: -30 }, // market
-    ];
-
-    for (const position of villagerStartPositions) {
-      const villager = new CapfolkVillagerEntity({ facingAngle: Math.random() * 360 });
-      villager.spawn(this.world, position);
-      villager.wander(villager.moveSpeed, {
-        idleMinMs: 5000,
-        idleMaxMs: 15000,
-        maxWanderRadius: 12,
-        moveOptions: {
-          moveCompletesWhenStuck: true,
-          moveStoppingDistance: 1,
-        }
-      });
-    }
   }
+
+  private _setupNPCSpawners(): void {
+    const wanderOptions: WanderOptions = {
+      idleMinMs: 5000,
+      idleMaxMs: 15000,
+      maxWanderRadius: 12,
+      moveOptions: {
+        moveCompletesWhenStuck: true,
+        moveStoppingDistance: 1,
+      }
+    }
+
+    const capfolkVillagerSpawner = new Spawner({
+      groundCheckDistance: 10,
+      maxSpawns: 15,
+      spawnables: [
+        { entityConstructor: CapfolkVillagerEntity, weight: 1, wanders: true, wanderOptions },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -24, y: 2, z: -29 },
+          max: { x: 29, y: 12, z: 38 },
+          weight: 1,
+        }
+      ],
+      spawnIntervalMs: 60000,
+      world: this.world,
+    });
+
+    capfolkVillagerSpawner.start(true);
+  } 
 
   private _setupPortals(): void {
     const chitterForestPortal = new PortalEntity({
