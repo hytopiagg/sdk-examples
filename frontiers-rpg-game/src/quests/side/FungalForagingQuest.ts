@@ -107,30 +107,8 @@ export default class FungalForagingQuest extends BaseQuest {
           ],
         },
         onSelect: (interactor: GamePlayerEntity) => {
-          const totalBackpackMushrooms = interactor.gamePlayer.backpack.getItemQuantityByClass(CommonMushroomItem);
-          const totalHotbarMushrooms = interactor.gamePlayer.hotbar.getItemQuantityByClass(CommonMushroomItem);
-
-          if (totalHotbarMushrooms + totalBackpackMushrooms < 25) {
+          if (!interactor.gamePlayer.removeHeldItem(CommonMushroomItem, 25)) {
             return interactor.showNotification(`Merchant Finn is looking for 25 Common Mushrooms - seems you're a bit short!`, 'error');
-          }
-
-          // Remove 25 mushrooms from backpack and hotbar
-          let remaining = 25;
-          
-          // Remove from backpack first
-          for (const item of interactor.gamePlayer.backpack.getItemsByClass(CommonMushroomItem)) {
-            if (remaining <= 0) break;
-            const toRemove = Math.min(item.quantity, remaining);
-            interactor.gamePlayer.backpack.adjustItemQuantityByReference(item, -toRemove);
-            remaining -= toRemove;
-          }
-          
-          // Remove from hotbar if needed
-          for (const item of interactor.gamePlayer.hotbar.getItemsByClass(CommonMushroomItem)) {
-            if (remaining <= 0) break;
-            const toRemove = Math.min(item.quantity, remaining);
-            interactor.gamePlayer.hotbar.adjustItemQuantityByReference(item, -toRemove);
-            remaining -= toRemove;
           }
 
           interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'give-mushrooms', 1);

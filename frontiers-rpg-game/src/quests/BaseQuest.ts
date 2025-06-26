@@ -67,8 +67,7 @@ export default abstract class BaseQuest {
       }
 
       for (const itemReward of this.reward.items) {
-        const item = itemReward.itemClass.create({ quantity: itemReward.quantity });
-        gamePlayer.hotbar.addItem(item) || gamePlayer.backpack.addItem(item);
+        gamePlayer.addHeldItem(itemReward.itemClass, itemReward.quantity);
       }
     }
 

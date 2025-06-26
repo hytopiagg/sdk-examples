@@ -194,6 +194,10 @@ export default class GamePlayer {
     });
   }
 
+  public addHeldItem(itemClass: typeof BaseItem, quantity: number = 1): boolean {
+    return this.hotbar.addItem(itemClass.create({ quantity })) || this.backpack.addItem(itemClass.create({ quantity }));
+  }
+
   // Game state methods
   public adjustHealth(amount: number): void {
     const willDie = this._health > 0 && this._health + amount <= 0;
@@ -321,6 +325,15 @@ export default class GamePlayer {
     return this._skillExperience.get(skillId) ?? 0;
   }
 
+  public hasHeldItem(itemClass: typeof BaseItem, quantity: number = 1): boolean {
+    const totalBackpackItems = this.backpack.getItemQuantityByClass(itemClass);
+    const totalHotbarItems = this.hotbar.getItemQuantityByClass(itemClass);
+
+    return totalBackpackItems + totalHotbarItems >= quantity;
+  }
+
+
+
   public joinRegion(region: GameRegion, facingAngle: number, spawnPoint: Vector3Like): void {
     this.setCurrentRegion(region);
     this.setCurrentRegionSpawnFacingAngle(facingAngle);
@@ -355,6 +368,28 @@ export default class GamePlayer {
       type: 'removeEntityAlert',
       className: entityClass.name,
     });
+  }
+
+  public removeHeldItem(itemClass: typeof BaseItem, quantity: number = 1): boolean {
+    if (!this.hasHeldItem(itemClass, quantity)) return false;
+
+    // Remove from backpack first
+    for (const item of this.backpack.getItemsByClass(itemClass)) {
+      if (quantity <= 0) break;
+      const toRemove = Math.min(item.quantity, quantity);
+      this.adjustInventoryItemQuantityByReference(this.backpack, item, -toRemove);
+      quantity -= toRemove;
+    }
+
+    // Remove from hotbar last
+    for (const item of this.hotbar.getItemsByClass(itemClass)) {
+      if (quantity <= 0) break;
+      const toRemove = Math.min(item.quantity, quantity);
+      this.adjustInventoryItemQuantityByReference(this.hotbar, item, -toRemove);
+      quantity -= toRemove;
+    }
+
+    return true;
   }
 
   public respawn(): void {
@@ -504,6 +539,14 @@ export default class GamePlayer {
 
       if (this._currentMerchantEntity && this._currentEntity) {
         this._currentMerchantEntity.buyItem(this._currentEntity, sourceIndex, quantity);
+      }
+    }
+
+    if (data.type === 'craftItem') {
+      const { recipeIndex } = data;
+
+      if (this._currentCraftingEntity && this._currentEntity) {
+        this._currentCraftingEntity.craftItem(this._currentEntity, recipeIndex);
       }
     }
 

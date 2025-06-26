@@ -52,8 +52,35 @@ export default class BaseCraftingEntity extends BaseEntity {
   }
 
 
-  public craftItem(interactor: GamePlayerEntity): void {
+  public craftItem(interactor: GamePlayerEntity, craftingRecipeIndex: number): void {
+    const craftingRecipe = this.craftingRecipes[craftingRecipeIndex];
 
+    if (!craftingRecipe) {
+      return;
+    }
+
+    // Check if the player has the required items to craft the item
+    let hasRequirements = true;
+
+    for (const requirement of craftingRecipe.requirements) {
+      if (!interactor.gamePlayer.hasHeldItem(requirement.itemClass, requirement.quantity)) {
+        hasRequirements = false;
+        break;
+      }
+    }
+
+    if (!hasRequirements) {
+      return interactor.showNotification(`You don't have the required items to craft this item.`, 'error');
+    }
+
+    // Remove the required items from the player's inventory and give the crafted item
+    for (const requirement of craftingRecipe.requirements) {
+      interactor.gamePlayer.removeHeldItem(requirement.itemClass, requirement.quantity);
+    }
+
+    interactor.gamePlayer.addHeldItem(craftingRecipe.craftedItemClass);
+    this._awardCraftingSkillExperience(interactor, craftingRecipe.craftedItemClass);
+    interactor.showNotification(`You crafted a ${craftingRecipe.craftedItemClass.name}.`, 'success');
   }
 
   public openCraftMenu(interactor: GamePlayerEntity): void {
@@ -71,7 +98,8 @@ export default class BaseCraftingEntity extends BaseEntity {
     })
   }
 
-  private _awardCraftingSkillExperience(interactor: GamePlayerEntity) {
-
+  private _awardCraftingSkillExperience(interactor: GamePlayerEntity, craftedItemClass: ItemClass) {
+    const craftingSkillExperience = Math.max(10, Math.floor(craftedItemClass.sellPrice / 2));
+    interactor.gamePlayer.adjustSkillExperience(SkillId.CRAFTING, craftingSkillExperience);
   }
 }

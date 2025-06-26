@@ -13,6 +13,7 @@ export enum SkillId {
   AGILITY = 'agility',
   BARTERING = 'bartering',
   COMBAT = 'combat',
+  CRAFTING = 'crafting',
   EXPLORATION = 'exploration',
   FARMING = 'farming',
   FORAGING = 'foraging',
@@ -36,6 +37,12 @@ export const skills: Skill[] = [
     name: 'Bartering',
     description: 'Purchase and sell items with merchants to gain XP.<br/><br/>Increases merchant discount and unlocks new merchant items.',
     iconAssetUri: 'icons/skills/bartering.png'
+  },
+  {
+    id: SkillId.CRAFTING,
+    name: 'Crafting',
+    description: 'Craft items from to gain XP.<br/><br/>Unlocks new craftable items and perks.',
+    iconAssetUri: 'icons/skills/crafting.png'
   },
   {
     id: SkillId.COMBAT,
