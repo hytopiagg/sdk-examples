@@ -3112,12 +3112,13 @@ window.ItemTooltips = (function() {
 
   .quests-section:first-child {
     flex: 1;
-    min-height: 0;
+    min-height: 50%;
   }
 
-  /* When active quests section has only placeholder, don't expand */
+  /* When active quests section has only placeholder, still maintain minimum height */
   .quests-section:first-child:has(.quests-empty-section:only-child) {
-    flex: none;
+    flex: 1;
+    min-height: 50%;
   }
 
   .quests-section-title {
