@@ -76,6 +76,20 @@ export default class ItemInventory {
     return true;
   }
 
+  // Check if the inventory has an item of the same type and name and is stackable
+  public hasStackableItem(item: BaseItem): boolean {
+    for (const existingItem of this._itemPositions.keys()) {
+      if (
+        existingItem.constructor === item.constructor && 
+        existingItem.name === item.name && 
+        existingItem.stackable
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   // Adjust quantity of item in inventory with UI update
   // Use this instead of item.adjustQuantity() for items in inventory to trigger UI updates
   public adjustItemQuantity(position: number, quantity: number): boolean {

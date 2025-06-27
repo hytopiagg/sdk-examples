@@ -137,6 +137,17 @@ export default abstract class BaseItem implements IInteractable {
   }
 
   public interact(playerEntity: GamePlayerEntity): void {
+
+    const inHotbar = playerEntity.gamePlayer.hotbar.hasStackableItem(this);
+    const inBackpack = playerEntity.gamePlayer.backpack.hasStackableItem(this);
+
+    // If the items is stackable, not in the hotbar and in the backpack, add it to the backpack
+    if(this.stackable && !inHotbar && inBackpack && playerEntity.gamePlayer.backpack.addItem(this)) {
+      this.despawnEntity();
+      playerEntity.gamePlayer.eventRouter.emit(BaseItemPlayerEvent.PICKED_UP, { item: this });
+      return;
+    }
+
     const wouldAddToSelectedIndex = playerEntity.gamePlayer.hotbar.wouldAddAtSelectedIndex(this);
     
     if (wouldAddToSelectedIndex) {
