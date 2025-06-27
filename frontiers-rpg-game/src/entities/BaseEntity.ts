@@ -56,6 +56,8 @@ export type BaseEntityItemDrop = {
   quantity?: number;
 }
 
+export type BaseEntityNameplateType = 'normal' | 'boss';
+
 export type BaseEntityOptions = {
   combatExperienceReward?: number;
   controller?: PathfindingEntityController;
@@ -75,6 +77,7 @@ export type BaseEntityOptions = {
   moveAnimationSpeed?: number;
   moveOptions?: MoveOptions;
   moveSpeed?: number;
+  nameplateType?: BaseEntityNameplateType;
   nameplateViewDistnace?: number;
   pathfindingOptions?: PathfindingOptions;
   pushable?: boolean;
@@ -103,6 +106,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _moveOptions: MoveOptions | undefined;
   private _moveSpeed: number; 
   private _nameplateSceneUI: SceneUI;
+  private _nameplateType: BaseEntityNameplateType | undefined; 
   private _nameplateViewDistance: number | undefined;
   private _optionMap: Map<number, BaseEntityDialogueOption> = new Map();
   private _pathfindingOptions: PathfindingOptions | undefined;
@@ -135,6 +139,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._moveOptions = options.moveOptions;
     this._moveSpeed = options.moveSpeed ?? 2;
     this._faceSpeed = options.faceSpeed ?? this._moveSpeed * 2;
+    this._nameplateType = options.nameplateType;
     this._nameplateViewDistance = options.nameplateViewDistnace;
     this._pathfindingOptions = options.pathfindingOptions;
     this._pushable = options.pushable ?? false;
@@ -367,6 +372,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
         interactable: this.isInteractable,
         interactActionText: this.interactActionText,
         maxHealth: this.maxHealth,
+        type: this._nameplateType,
       },
     });
   }

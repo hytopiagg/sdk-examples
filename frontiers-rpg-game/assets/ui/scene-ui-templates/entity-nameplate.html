@@ -129,6 +129,16 @@
         else if (healthPercent > 0.33) healthBarFill.classList.add('health-medium');
         else healthBarFill.classList.add('health-low');
       }
+
+      if (state.type) {
+        // Remove any existing type classes
+        nameplate.classList.remove('boss');
+        
+        // Apply boss class if entity type is boss
+        if (state.type === 'boss') {
+          nameplate.classList.add('boss');
+        }
+      }
     });
 
     function showDamageNumber(amount, type) {
@@ -337,13 +347,7 @@
   .entity-nameplate-health-bar-fill.health-medium { background-color: #FFC107; }
   .entity-nameplate-health-bar-fill.health-low { background-color: #f44336; }
 
-  .entity-nameplate.elite .entity-nameplate-name {
-    font-size: 12px;
-    font-weight: 700;
-    background: linear-gradient(45deg, #ffd700, #ffed4e);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    filter: drop-shadow(0 0 8px rgba(255,215,0,0.5)) drop-shadow(0 1px 3px rgba(0,0,0,0.9));
+  .entity-nameplate.boss .entity-nameplate-name {
+    color: #ef4444;
   }
 </style>

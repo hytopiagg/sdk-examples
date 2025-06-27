@@ -67,6 +67,7 @@ export default class QueenWeaverEntity extends BaseCombatEntity {
       faceSpeed: 4,
       health: 1000,
       idleAnimations: [ 'waiting' ],
+      nameplateType: 'boss',
       modelUri: 'models/enemies/weaver.gltf',
       modelScale: 1.3,
       moveAnimations: [ 'walking' ],
