@@ -7,6 +7,7 @@ import type GameRegion from './GameRegion';
 
 // Regions
 import ChitterForestRegion from './regions/chitter-forest/ChitterForestRegion';
+import HearthwildsRegion from './regions/hearthwilds/HearthwildsRegion';
 import RatkinNestRegion from './regions/ratkin-nest/RatkinNestRegion';
 import StalkhavenRegion from './regions/stalkhaven/StalkhavenRegion';
 import StalkhavenPortRegion from './regions/stalkhaven-port/StalkhavenPortRegion';
@@ -45,6 +46,11 @@ export default class GameManager {
     const chitterForestRegion = new ChitterForestRegion();
     this._regions.set(chitterForestRegion.id, chitterForestRegion);
     GameClock.instance.addRegionClockCycle(chitterForestRegion);
+
+    // Hearthwilds
+    // const hearthwildsRegion = new HearthwildsRegion();
+    // this._regions.set(hearthwildsRegion.id, hearthwildsRegion);
+    // GameClock.instance.addRegionClockCycle(hearthwildsRegion);
 
     // Ratkin Nest
     const ratkinNestRegion = new RatkinNestRegion();

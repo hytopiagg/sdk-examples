@@ -86,6 +86,7 @@ export default class GameRegion {
     this._world.stop(); // Keep it in stopped state, when a player joins the world, we'll start it.
     this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this.onPlayerJoin(player));
     this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this.onPlayerLeave(player));
+    this._world.on(PlayerEvent.RECONNECTED_WORLD, ({ player }) => this.onPlayerReconnected(player));
 
     // temp
     // this._world.simulation.enableDebugRendering(true);
@@ -140,6 +141,7 @@ export default class GameRegion {
   }
 
   protected async onPlayerJoin(player: Player) {
+    console.log('onPlayerJoin', this.name);
     const gamePlayer = await GamePlayer.getOrCreate(player);
     
     // Set the current region for the player
@@ -188,5 +190,18 @@ export default class GameRegion {
     if (this._playerCount <= 0) {
       this._world.stop();
     }
+  }
+
+  // The RECONNECTED_WORLD even is only emitted by the engine when the player disconnects and
+  // reconnects to the game with a known connectionId before the close connection timeout finishes
+  // which gives them 5 second window to reconnect after disconnecting. This event will fire such
+  // as if a player unintentionally refreshes the page, if their browser crashes but restarts quickly
+  // with the same connectionId in the URL, etc.
+  // The HYTOPIA SDK handles resynchronization of all persisted state back to the player client such as
+  // their entity, scene ui states, etc, but anything that uses ephemeral state (Such as UI) we need
+  // to handle reloading for them manually here.
+  protected async onPlayerReconnected(player: Player) { 
+    const gamePlayer = await GamePlayer.getOrCreate(player);
+    gamePlayer.onPlayerReconnected();
   }
 }

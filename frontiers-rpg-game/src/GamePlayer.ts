@@ -359,6 +359,10 @@ export default class GamePlayer {
     this._spawnHeldItem();
   }
 
+  public onPlayerReconnected(): void {
+    this._loadUI();
+  }
+
   public removeEntityAlert(entityClass: typeof BaseEntity): void {
     if (!this._entityAlertClassNames.has(entityClass.name)) return;
 
