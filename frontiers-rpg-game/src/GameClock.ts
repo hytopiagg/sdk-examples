@@ -1,9 +1,9 @@
 import type GameRegion from './GameRegion';
 
-const CYCLE_CLOCK_INTERVAL_MS = 5000; // Update clock every 1 second
+const CYCLE_CLOCK_INTERVAL_MS = 1000; //5000; // Update clock every 1 second
 const CYCLE_CLOCK_OFFSET_HOURS = 7;
 const CYCLE_DAY_MAX_SKYBOX_INTENSITY = 1.2;
-const CYCLE_DURATION_MS = 24 * 60 * 1000; // Day/Night Cycle Every 24 minutes
+const CYCLE_DURATION_MS = 24 * 1000; // Day/Night Cycle Every 24 minutes
 const CYCLE_NIGHT_MIN_SKYBOX_INTENSITY = 0.005;
 
 export default class GameClock {
@@ -49,9 +49,19 @@ export default class GameClock {
   private _updateRegionClockCycle(region: GameRegion): void {
     const world = region.world;
     
-    // Calculate sun position in circular path
+    // Calculate sun position with asymmetric day/night cycle (75% day, 25% night)
     const timeProgress = this._timeMs / CYCLE_DURATION_MS;
-    const sunAngle = timeProgress * 2 * Math.PI;
+    
+    // Create asymmetric sun angle: 75% of time for day, 25% for night
+    let sunAngle: number;
+    if (timeProgress < 0.75) {
+      // Day period: map first 75% of cycle to first half of sine wave (0 to π)
+      sunAngle = (timeProgress / 0.75) * Math.PI;
+    } else {
+      // Night period: map last 25% of cycle to second half of sine wave (π to 2π)
+      sunAngle = Math.PI + ((timeProgress - 0.75) / 0.25) * Math.PI;
+    }
+    
     const sunRadius = 300;
     const sunHeight = 100 + Math.sin(sunAngle) * 150;
     
