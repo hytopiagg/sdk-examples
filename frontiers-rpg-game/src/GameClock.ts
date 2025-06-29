@@ -1,9 +1,9 @@
 import type GameRegion from './GameRegion';
 
-const CYCLE_CLOCK_INTERVAL_MS = 1000; //5000; // Update clock every 1 second
+const CYCLE_CLOCK_INTERVAL_MS = 5000; // Update clock every 5 second
 const CYCLE_CLOCK_OFFSET_HOURS = 7;
 const CYCLE_DAY_MAX_SKYBOX_INTENSITY = 1.2;
-const CYCLE_DURATION_MS = 24 * 1000; // Day/Night Cycle Every 24 minutes
+const CYCLE_DURATION_MS = 24 * 60 * 1000; // Day/Night Cycle Every 24 minutes
 const CYCLE_NIGHT_MIN_SKYBOX_INTENSITY = 0.005;
 
 export default class GameClock {
