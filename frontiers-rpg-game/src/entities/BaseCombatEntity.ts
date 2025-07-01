@@ -14,6 +14,9 @@ import {
 } from 'hytopia';
 
 const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 3;
+const COMBAT_REGEN_DEFAULT_DELAY_MS = 7000; // 7 seconds
+const COMBAT_REGEN_DEFAULT_RATE = 0.03; // 3% per second
+const COMBAT_REGEN_INTERVAL_MS = 3000; // 3 seconds
 
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
 import GamePlayerEntity from '../GamePlayerEntity';
@@ -47,6 +50,8 @@ export type BaseCombatEntityOptions = {
   aggroTargetTypes?: (typeof BaseEntity | typeof GamePlayerEntity)[];
   attacks?: BaseCombatEntityAttack[];
   health: number;
+  outOfCombatRegenDelayMs?: number;
+  outOfCombatRegenPerSecondRate?: number; // rate per second as a percent, ie 0.03 is 3% per second
 } & BaseEntityOptions;
 
 export default class BaseCombatEntity extends BaseEntity {
@@ -73,6 +78,10 @@ export default class BaseCombatEntity extends BaseEntity {
   private _attackTotalWeight: number = 0;
   private _diameterSquared: number = 0;
   private _nextAttack: BaseCombatEntityAttack | null = null;
+  private _outOfCombatRegenAccumulatorMs: number = 0;
+  private _outOfCombatRegenDelayAccumulatorMs: number = 0;
+  private _outOfCombatRegenDelayMs: number;
+  private _outOfCombatRegenPerSecondRate: number;
   private _stopMoving: boolean = false;
 
   constructor(options: BaseCombatEntityOptions) {
@@ -90,6 +99,8 @@ export default class BaseCombatEntity extends BaseEntity {
     this._attackTotalWeight = this._attacks.reduce((sum, attack) => sum + attack.weight, 0);
     this._diameterSquared = this.width > this.depth ? this.width ** 2 : this.depth ** 2;
     this._nextAttack = this._pickRandomAttack();
+    this._outOfCombatRegenDelayMs = options.outOfCombatRegenDelayMs ?? COMBAT_REGEN_DEFAULT_DELAY_MS;
+    this._outOfCombatRegenPerSecondRate = options.outOfCombatRegenPerSecondRate ?? COMBAT_REGEN_DEFAULT_RATE;
     
     // Set accumulator to interval to trigger immediate target check on first tick
     this._aggroRetargetAccumulatorMs = this._aggroRetargetIntervalMs;
@@ -300,7 +311,28 @@ export default class BaseCombatEntity extends BaseEntity {
       this._updateTargeting();
     }
 
-    if (!this._aggroActiveTarget) return;
+    if (this._aggroActiveTarget) {
+      this._outOfCombatRegenAccumulatorMs = 0;
+      this._outOfCombatRegenDelayAccumulatorMs = 0;
+    } else {
+      if (this.health === this.maxHealth || !this._outOfCombatRegenPerSecondRate) return;
+
+      // Delay regen until we hit the delay threshold if set.
+      if (this._outOfCombatRegenDelayMs && this._outOfCombatRegenDelayAccumulatorMs < this._outOfCombatRegenDelayMs) {
+        this._outOfCombatRegenDelayAccumulatorMs += tickDeltaMs;
+        return;
+      }
+
+      // Regen every interval if set.
+      if (this._outOfCombatRegenPerSecondRate && this._outOfCombatRegenAccumulatorMs >= COMBAT_REGEN_INTERVAL_MS) {
+        this._outOfCombatRegenAccumulatorMs = 0;
+        this.adjustHealth(Math.ceil(this.maxHealth * this._outOfCombatRegenPerSecondRate * (COMBAT_REGEN_INTERVAL_MS / 1000)));
+      } else {
+        this._outOfCombatRegenAccumulatorMs += tickDeltaMs;
+      }
+
+      return;
+    }
 
     const targetDistanceSquared = this.calculateDistanceSquaredToTarget(this._aggroActiveTarget);
 

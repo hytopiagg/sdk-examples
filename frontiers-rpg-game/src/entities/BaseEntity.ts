@@ -175,6 +175,21 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public get pathfindingController(): PathfindingEntityController { return this.controller as PathfindingEntityController; }
   public get pushable(): boolean { return this._pushable; }
 
+  public adjustHealth(amount: number, attacker?: Entity): void {
+    // ignore if maHealth is 0 (infinite), or full health and positive amount, or dead and negative amount
+    if (this._maxHealth === 0 || (amount > 0 && this._health === this.maxHealth) || (amount < 0 && this._health === 0)) return;
+
+    this._health = Math.max(0, Math.min(this.maxHealth, this._health + amount));
+
+    this._nameplateSceneUI.setState({
+      health: this._health
+    });
+
+    if (this._health <= 0) {
+      this.die(attacker);
+    }
+  }
+
   public die(killer?: Entity): void {
     if (this._dying) return;
 
@@ -308,19 +323,8 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   }
 
   public takeDamage(damage: number, attacker?: Entity): void {
-    // Infinite health, doesn't take damage if max health is 0
-    if (this._maxHealth === 0) return; 
-
-    this._health = Math.max(0, this._health - damage);
-
-    this._nameplateSceneUI.setState({
-      damage,
-      health: this._health
-    });
-
-    if (this._health <= 0) {
-      this.die(attacker);
-    }
+    console.log(damage);
+    this.adjustHealth(-damage, attacker);
   }
 
   public wander(speed: number = this._moveSpeed, options: WanderOptions): void {
