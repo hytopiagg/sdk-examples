@@ -15,7 +15,7 @@ import {
 
 const MOVEMENT_NOT_STUCK_DISTANCE_SQUARED = 3;
 const COMBAT_REGEN_DEFAULT_DELAY_MS = 7000; // 7 seconds
-const COMBAT_REGEN_DEFAULT_RATE = 0.03; // 3% per second
+const COMBAT_REGEN_DEFAULT_RATE = 0.05; // 5% per interval
 const COMBAT_REGEN_INTERVAL_MS = 3000; // 3 seconds
 
 import BaseEntity, { BaseEntityOptions } from './BaseEntity';
