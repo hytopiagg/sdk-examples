@@ -175,7 +175,7 @@ export default abstract class BaseItem implements IInteractable {
       rigidBodyOptions: {
         type: RigidBodyType.DYNAMIC,
         colliders: [
-          Collider.optionsFromModelUri(modelUri, this.dropModelScale * 4, ColliderShape.BLOCK)
+          Collider.optionsFromModelUri(modelUri, this.dropModelScale * 6, ColliderShape.BLOCK)
         ],
       },
     });

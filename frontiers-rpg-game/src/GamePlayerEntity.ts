@@ -71,16 +71,53 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   }
 
   public get adjustedFacingDirection(): Vector3Like {
-    const shoulderAngleRad = -this.player.camera.shoulderAngle * Math.PI / 180;
+    // This implementation is a bit of a hack to get the right "tuned" facing
+    // direction based on the center crosshair of the player relative to the shoulder
+    // angle offset. We should probabaly find a better way to handle screen center relative
+    // to shoulder angle offset & taking zoom into account in the future..
+    const shoulderAngleRad = -this.player.camera.shoulderAngle * 0.017453292519943295;
     const facingDirection = this.player.camera.facingDirection;
-    const cos = Math.cos(shoulderAngleRad);
-    const sin = Math.sin(shoulderAngleRad);
-
-    return {
-      x: facingDirection.x * cos + facingDirection.z * sin,
-      y: facingDirection.y,
-      z: -facingDirection.x * sin + facingDirection.z * cos
-    } 
+    
+    // Pre-calculate trigonometric values
+    const shoulderCos = Math.cos(shoulderAngleRad);
+    const shoulderSin = Math.sin(shoulderAngleRad);
+    const adjustedX = facingDirection.x * shoulderCos + facingDirection.z * shoulderSin;
+    const adjustedZ = -facingDirection.x * shoulderSin + facingDirection.z * shoulderCos;
+    
+    // Optimized pitch calculations - single pass
+    const pitch = this.player.camera.orientation.pitch;
+    const isNegativePitch = pitch < 0;
+    const absPitch = isNegativePitch ? -pitch : pitch;
+    const maxPitch = isNegativePitch ? 1.2 : 1.8;
+    const pitchRatio = absPitch > maxPitch ? 1.0 : absPitch / maxPitch;
+    const pitchRatioSquared = pitchRatio * pitchRatio; // Calculate once, use twice
+    
+    // Combined offset calculations
+    const rightOffsetFactor = pitchRatioSquared * 0.5236;
+    const upwardAdjustment = isNegativePitch ? pitchRatioSquared * 0.08727 : -pitchRatioSquared * 0.08727;
+    
+    // Fast right vector calculation and normalization
+    const rightX = -adjustedZ;
+    const rightZ = adjustedX;
+    const lengthSq = rightX * rightX + rightZ * rightZ;
+    
+    if (lengthSq > 0) {
+      const invLength = 1.0 / Math.sqrt(lengthSq);
+      const rightOffsetX = rightX * invLength * rightOffsetFactor;
+      const rightOffsetZ = rightZ * invLength * rightOffsetFactor;
+      
+      return {
+        x: adjustedX + rightOffsetX,
+        y: facingDirection.y + upwardAdjustment,
+        z: adjustedZ + rightOffsetZ
+      };
+    }
+    
+    return { 
+      x: adjustedX, 
+      y: facingDirection.y + upwardAdjustment, 
+      z: adjustedZ 
+    };
   }
 
   public get canDodge(): boolean {
