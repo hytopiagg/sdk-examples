@@ -51,7 +51,7 @@ export default class RatkinBruteEntity extends BaseCombatEntity {
           weight: 2,
         },
       ],
-      combatExperienceReward: 30,
+      combatExperienceReward: 25,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
@@ -64,7 +64,7 @@ export default class RatkinBruteEntity extends BaseCombatEntity {
         { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
         { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
-      health: 140,
+      health: 70,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/ratkin-brute.gltf',
       modelScale: 0.6,

@@ -43,7 +43,7 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
           weight: 3,
         },
       ],
-      combatExperienceReward: 20,
+      combatExperienceReward: 18,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
@@ -56,7 +56,7 @@ export default class RatkinRangerEntity extends BaseCombatEntity {
         { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
         { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
-      health: 100,
+      health: 50,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/ratkin-ranger.gltf',
       modelScale: 0.8,

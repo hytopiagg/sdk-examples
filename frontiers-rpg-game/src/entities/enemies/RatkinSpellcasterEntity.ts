@@ -33,7 +33,7 @@ export default class RatkinSpellcasterEntity extends BaseCombatEntity {
           weight: 2,
         },
       ],
-      combatExperienceReward: 20,
+      combatExperienceReward: 18,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
@@ -46,7 +46,7 @@ export default class RatkinSpellcasterEntity extends BaseCombatEntity {
         { itemClass: CommonMushroomItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
         { itemClass: CommonSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
-      health: 100,
+      health: 50,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/ratkin-spellcaster.gltf',
       modelScale: 0.8,
