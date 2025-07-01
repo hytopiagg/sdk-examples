@@ -375,93 +375,71 @@
     flex: 1;
   }
 
-  /* Mobile and Small Screen Responsive */
-  @media (max-width: 768px) {
-    .dialogue-panel {
-      bottom: max(16px, env(safe-area-inset-bottom, 16px));
-      right: max(12px, env(safe-area-inset-right, 12px));
-      width: min(100vw - 24px, calc(100vw - 2 * max(12px, env(safe-area-inset-right, 12px))));
-      max-width: 340px;
-      max-height: min(70vh, calc(100vh - 32px));
-    }
-
-    .dialogue-header {
-      padding: 8px 12px;
-    }
-
-    .dialogue-npc-avatar {
-      width: 28px;
-      height: 28px;
-    }
-
-    .dialogue-npc-name {
-      font-size: 11px;
-    }
-
-    .dialogue-npc-title {
-      font-size: 9px;
-    }
-
-    .dialogue-close {
-      width: 18px;
-      height: 18px;
-      font-size: 10px;
-    }
-
-    .dialogue-content {
-      padding: 10px;
-      max-height: calc(min(60vh, calc(100vh - 80px)) - 50px);
-    }
-
-    .dialogue-message {
-      padding: 8px;
-      font-size: 11px;
-      margin-bottom: 8px;
-    }
-
-    .dialogue-option {
-      padding: 6px 8px;
-      font-size: 10px;
-    }
-
-    .dialogue-quest-icon {
-      width: 14px;
-      height: 14px;
-    }
+  /* Mobile Responsive */
+  body.mobile .dialogue-panel {
+    bottom: 20px;
+    right: 20px;
+    width: auto;
+    max-width: 340px;
+    min-width: 280px;
+    max-height: calc(100vh - 40px);
   }
 
-  /* Very small screens (landscape phones, small devices) */
-  @media (max-width: 480px) {
-    .dialogue-panel {
-      max-height: min(60vh, calc(100vh - 20px));
-      max-width: 300px;
-    }
-
-    .dialogue-content {
-      max-height: calc(min(50vh, calc(100vh - 60px)) - 45px);
-      padding: 8px;
-    }
-
-    .dialogue-message {
-      padding: 6px;
-      font-size: 10px;
-    }
-
-    .dialogue-option {
-      padding: 5px 6px;
-      font-size: 9px;
-    }
-
-    .dialogue-quest-icon {
-      width: 12px;
-      height: 12px;
-    }
+  body.mobile .dialogue-header {
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
-  /* Ultra-wide screens - prevent dialogue from being too far left */
-  @media (min-width: 1920px) {
-    .dialogue-panel {
-      right: max(20px, calc((100vw - 1200px) / 4));
-    }
+  body.mobile .dialogue-container {
+    border-radius: 8px;
+  }
+
+  body.mobile .dialogue-npc-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-npc-name {
+    font-size: 12px;
+  }
+
+  body.mobile .dialogue-npc-title {
+    font-size: 10px;
+  }
+
+  body.mobile .dialogue-close {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-content {
+    padding: 12px;
+    max-height: calc(100vh - 140px);
+  }
+
+  body.mobile .dialogue-content * {
+    overflow-y: scroll;
+    touch-action: pan-y !important;
+  }
+
+  body.mobile .dialogue-message {
+    padding: 8px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-option {
+    padding: 8px 10px;
+    font-size: 11px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-quest-icon {
+    width: 14px;
+    height: 14px;
   }
 </style> 

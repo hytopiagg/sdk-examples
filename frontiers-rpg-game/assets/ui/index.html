@@ -2777,94 +2777,72 @@ window.ItemTooltips = (function() {
     flex: 1;
   }
 
-  /* Mobile and Small Screen Responsive */
-  @media (max-width: 768px) {
-    .dialogue-panel {
-      bottom: max(16px, env(safe-area-inset-bottom, 16px));
-      right: max(12px, env(safe-area-inset-right, 12px));
-      width: min(100vw - 24px, calc(100vw - 2 * max(12px, env(safe-area-inset-right, 12px))));
-      max-width: 340px;
-      max-height: min(70vh, calc(100vh - 32px));
-    }
-
-    .dialogue-header {
-      padding: 8px 12px;
-    }
-
-    .dialogue-npc-avatar {
-      width: 28px;
-      height: 28px;
-    }
-
-    .dialogue-npc-name {
-      font-size: 11px;
-    }
-
-    .dialogue-npc-title {
-      font-size: 9px;
-    }
-
-    .dialogue-close {
-      width: 18px;
-      height: 18px;
-      font-size: 10px;
-    }
-
-    .dialogue-content {
-      padding: 10px;
-      max-height: calc(min(60vh, calc(100vh - 80px)) - 50px);
-    }
-
-    .dialogue-message {
-      padding: 8px;
-      font-size: 11px;
-      margin-bottom: 8px;
-    }
-
-    .dialogue-option {
-      padding: 6px 8px;
-      font-size: 10px;
-    }
-
-    .dialogue-quest-icon {
-      width: 14px;
-      height: 14px;
-    }
+  /* Mobile Responsive */
+  body.mobile .dialogue-panel {
+    bottom: 20px;
+    right: 20px;
+    width: auto;
+    max-width: 340px;
+    min-width: 280px;
+    max-height: calc(100vh - 40px);
   }
 
-  /* Very small screens (landscape phones, small devices) */
-  @media (max-width: 480px) {
-    .dialogue-panel {
-      max-height: min(60vh, calc(100vh - 20px));
-      max-width: 300px;
-    }
-
-    .dialogue-content {
-      max-height: calc(min(50vh, calc(100vh - 60px)) - 45px);
-      padding: 8px;
-    }
-
-    .dialogue-message {
-      padding: 6px;
-      font-size: 10px;
-    }
-
-    .dialogue-option {
-      padding: 5px 6px;
-      font-size: 9px;
-    }
-
-    .dialogue-quest-icon {
-      width: 12px;
-      height: 12px;
-    }
+  body.mobile .dialogue-header {
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
-  /* Ultra-wide screens - prevent dialogue from being too far left */
-  @media (min-width: 1920px) {
-    .dialogue-panel {
-      right: max(20px, calc((100vw - 1200px) / 4));
-    }
+  body.mobile .dialogue-container {
+    border-radius: 8px;
+  }
+
+  body.mobile .dialogue-npc-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-npc-name {
+    font-size: 12px;
+  }
+
+  body.mobile .dialogue-npc-title {
+    font-size: 10px;
+  }
+
+  body.mobile .dialogue-close {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-content {
+    padding: 12px;
+    max-height: calc(100vh - 140px);
+  }
+
+  body.mobile .dialogue-content * {
+    overflow-y: scroll;
+    touch-action: pan-y !important;
+  }
+
+  body.mobile .dialogue-message {
+    padding: 8px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-option {
+    padding: 8px 10px;
+    font-size: 11px;
+    border-radius: 4px;
+  }
+
+  body.mobile .dialogue-quest-icon {
+    width: 14px;
+    height: 14px;
   }
 </style> 
 
@@ -7056,6 +7034,20 @@ window.ItemTooltips = (function() {
     <div class="hud-crosshair-vertical"></div>
   </div>
 
+  <!-- Mobile Control Buttons -->
+  <button class="hud-mobile-button" id="hud-attack-btn">
+    <img src="{{CDN_ASSETS_URL}}/icons/skills/combat.png" alt="Attack" class="hud-mobile-button-icon">
+  </button>
+  <button class="hud-mobile-button" id="hud-dodge-btn">
+    <img src="{{CDN_ASSETS_URL}}/icons/skills/agility.png" alt="Dodge" class="hud-mobile-button-icon">
+  </button>
+  <button class="hud-mobile-button" id="hud-jump-btn">
+    <img src="{{CDN_ASSETS_URL}}/icons/buttons/jump.png" alt="Jump" class="hud-mobile-button-icon">
+  </button>
+  <button class="hud-mobile-button" id="hud-interact-btn">
+    <img src="{{CDN_ASSETS_URL}}/icons/buttons/e-mobile.png" alt="Interact" class="hud-mobile-button-icon">
+  </button>
+
   <!-- Hotbar -->
   <div class="hud-hotbar-container">
     <div class="hud-hotbar-grid">
@@ -7187,6 +7179,17 @@ window.ItemTooltips = (function() {
 
     // Setup death overlay respawn button
     document.getElementById('hud-death-respawn-btn').addEventListener('click', handleRespawn);
+    
+    // Setup mobile buttons
+    document.getElementById('hud-attack-btn').addEventListener('touchstart', handleAttackTap);
+    document.getElementById('hud-attack-btn').addEventListener('touchend', stopAutoAttack);
+    document.getElementById('hud-attack-btn').addEventListener('touchcancel', stopAutoAttack);
+    document.getElementById('hud-dodge-btn').addEventListener('touchstart', () => hytopia.pressInput('q', true));
+    document.getElementById('hud-dodge-btn').addEventListener('touchend', () => hytopia.pressInput('q', false));
+    document.getElementById('hud-jump-btn').addEventListener('touchstart', () => hytopia.pressInput('sp', true));
+    document.getElementById('hud-jump-btn').addEventListener('touchend', () => hytopia.pressInput('sp', false));
+    document.getElementById('hud-interact-btn').addEventListener('touchstart', () => hytopia.pressInput('e', true));
+    document.getElementById('hud-interact-btn').addEventListener('touchend', () => hytopia.pressInput('e', false));
   }
 
   function updateHudQuestCount(activeCount, completedCount) {
@@ -7442,6 +7445,49 @@ window.ItemTooltips = (function() {
     } finally {
       respawnBtn.disabled = false;
       respawnBtn.style.opacity = '';
+    }
+  }
+
+  // Auto-attack system
+  let autoAttackInterval = null;
+  let lastTapTime = 0;
+
+
+  function handleAttackTap() {
+    const currentTime = Date.now();
+    
+    // Double tap detected (within 300ms)
+    if (currentTime - lastTapTime < 300 && lastTapTime > 0) {
+      stopAutoAttack();
+      hytopia.pressInput('mr', true);
+      setTimeout(() => hytopia.pressInput('mr', false), 100);
+      lastTapTime = 0;
+      return;
+    }
+    
+    // Single tap - start auto attack
+    lastTapTime = currentTime;
+    startAutoAttack();
+  }
+
+  function startAutoAttack() {
+    if (autoAttackInterval) return;
+    
+    // Immediate first attack
+    hytopia.pressInput('ml', true);
+    setTimeout(() => hytopia.pressInput('ml', false), 100);
+    
+    // Repeat every 500ms
+    autoAttackInterval = setInterval(() => {
+      hytopia.pressInput('ml', true);
+      setTimeout(() => hytopia.pressInput('ml', false), 100);
+    }, 500);
+  }
+
+  function stopAutoAttack() {
+    if (autoAttackInterval) {
+      clearInterval(autoAttackInterval);
+      autoAttackInterval = null;
     }
   }
 
@@ -8371,6 +8417,77 @@ window.ItemTooltips = (function() {
   }
 
   /* ============================================
+     MOBILE CONTROL BUTTONS
+     ============================================ */
+
+  .hud-mobile-button {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(145deg, var(--hud-primary), var(--hud-secondary));
+    border: 2px solid var(--hud-border);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    overflow: hidden;
+    transition: all var(--hud-transition);
+    box-shadow: var(--hud-box-shadow), var(--hud-inset-shadow);
+    pointer-events: auto;
+    
+    /* Mobile optimizations */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    outline: none;
+  }
+
+  /* Individual button positioning */
+  #hud-attack-btn {
+    bottom: 50px;
+    right: 70px;
+    height: 70px;
+    width: 70px;
+  }
+
+  #hud-dodge-btn {
+    bottom: 50px;
+    right: 155px;
+  }
+
+  #hud-jump-btn {
+    bottom: 130px;
+    right: 50px;
+  }
+
+  #hud-interact-btn {
+    bottom: 120px;
+    right: 130px;
+  }
+
+  .hud-mobile-button:active {
+    transform: scale(0.95);
+    box-shadow: var(--hud-box-shadow);
+  }
+
+  .hud-mobile-button-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: contain;
+    opacity: 0.85;
+    transition: opacity var(--hud-transition);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  }
+
+  .hud-mobile-button:active .hud-mobile-button-icon {
+    opacity: 1;
+  }
+
+
+
+  /* ============================================
      MOBILE RESPONSIVE
      ============================================ */
 
@@ -8382,6 +8499,11 @@ window.ItemTooltips = (function() {
     --hud-status-gap: 10px;
     --hud-clock-size: 10px;
     --hud-actions-gap: 10px;
+  }
+
+  /* Show mobile buttons only on mobile */
+  body.mobile .hud-mobile-button {
+    display: flex;
   }
 
   body.mobile .hud-hotbar-container {
