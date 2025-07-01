@@ -20,11 +20,11 @@ export default class IronLongSwordItem extends BaseWeaponItem {
   static readonly specialAttack: BaseWeaponItemAttack = {
     id: 'spin',
     animations: ['sword-attack-tornado'],
-    cooldownMs: 1500,
-    damage: 20,
+    cooldownMs: 2500,
+    damage: 28,
     damageDelayMs: 200,
     damageVariance: 0.2,
-    knockbackForce: 7,
+    knockbackForce: 9,
     reach: 2,
   };
   static readonly description = `A long iron sword. It's heavy and slow, but hits harder than a normal sword.`;

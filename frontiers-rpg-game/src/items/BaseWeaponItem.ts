@@ -54,6 +54,7 @@ export default abstract class BaseWeaponItem extends BaseItem {
   private readonly _attack?: BaseWeaponItemAttack;
   private readonly _specialAttack?: BaseWeaponItemAttack;
   private _attackCooledDownAtMs: number = 0;
+  private _specialAttackCooledDownAtMs: number = 0;
 
   public constructor(overrides?: WeaponOverrides) {
     super(overrides);
@@ -63,6 +64,7 @@ export default abstract class BaseWeaponItem extends BaseItem {
   }
 
   public get canAttack(): boolean { return performance.now() >= this._attackCooledDownAtMs; }
+  public get canSpecialAttack(): boolean { return performance.now() >= this._specialAttackCooledDownAtMs; }
 
   public override clone(overrides?: WeaponOverrides): BaseWeaponItem {
     const WeaponClass = this.constructor as any;
@@ -93,12 +95,13 @@ export default abstract class BaseWeaponItem extends BaseItem {
   }
 
   public performSpecialAttack(): void {
-    if (!this.entity?.parent || !this.canAttack) {
+    if (!this.entity?.parent || !this.canSpecialAttack) {
       return;
     }
 
     this.entity.parent.startModelOneshotAnimations(this.specialAttack.animations);
-    this.updateAttackCooldown(this.specialAttack.cooldownMs);
+    this.updateAttackCooldown(this.specialAttack.damageDelayMs); // prevents spamming regular attack mid-special attack
+    this.updateSpecialAttackCooldown(this.specialAttack.cooldownMs);
     setTimeout(() => this.processAttackDamageTargets(this.specialAttack), this.specialAttack.damageDelayMs);
   }
 
@@ -180,5 +183,9 @@ export default abstract class BaseWeaponItem extends BaseItem {
 
   protected updateAttackCooldown(attackCooldownMs: number): void {
     this._attackCooledDownAtMs = performance.now() + attackCooldownMs;
+  }
+
+  protected updateSpecialAttackCooldown(specialAttackCooldownMs: number): void {
+    this._specialAttackCooledDownAtMs = performance.now() + specialAttackCooldownMs;
   }
 }

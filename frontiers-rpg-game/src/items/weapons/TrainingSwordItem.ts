@@ -20,11 +20,11 @@ export default class TrainingSwordItem extends BaseWeaponItem {
   static readonly specialAttack: BaseWeaponItemAttack = {
     id: 'spin',
     animations: ['sword-attack-tornado'],
-    cooldownMs: 1500,
-    damage: 5,
+    cooldownMs: 2500,
+    damage: 8,
     damageDelayMs: 200,
     damageVariance: 0.2,
-    knockbackForce: 7,
+    knockbackForce: 9,
     reach: 1.5,
   };
   static readonly description = 'A training sword made from wood. Useless for combat.';

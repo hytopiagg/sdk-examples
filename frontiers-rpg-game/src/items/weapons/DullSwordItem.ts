@@ -20,11 +20,11 @@ export default class DullSwordItem extends BaseWeaponItem {
   static readonly specialAttack: BaseWeaponItemAttack = {
     id: 'spin',
     animations: ['sword-attack-tornado'],
-    cooldownMs: 1500,
-    damage: 15,
+    cooldownMs: 2500,
+    damage: 20,
     damageDelayMs: 200,
     damageVariance: 0.2,
-    knockbackForce: 7,
+    knockbackForce: 9,
     reach: 1.5,
   };
   static readonly description = 'A dull metal sword. Better than nothing.';
