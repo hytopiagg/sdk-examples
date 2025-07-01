@@ -123,12 +123,75 @@ window.ItemTooltips = (function() {
     if (existingTooltip) existingTooltip.remove();
   }
 
+  // Mobile tooltip handling
+  let mobileTooltipActive = false;
+  
+  function initializeMobileTooltips() {
+    // Check if we're on mobile
+    const isMobile = document.body.classList.contains('mobile');
+    if (!isMobile) return;
+    
+    // Add click handler to document for event delegation
+    document.addEventListener('click', handleMobileTooltipClick, true);
+  }
+  
+  function handleMobileTooltipClick(e) {
+    // List of tooltip container selectors - include quest reward enabled class
+    const tooltipContainers = [
+      '.backpack-slot', '.backpack-hotbar-slot', '.backpack-wearable-slot',
+      '.hud-hotbar-slot', '.merchant-slot', '.merchant-hotbar-slot', 
+      '.crafting-slot', '.crafting-requirement-item', 
+      '.quests-reward-item', '.quests-reward-item-tooltip-enabled'
+    ];
+    
+    // Check if click is on a tooltip container
+    const container = e.target.closest(tooltipContainers.join(', '));
+    
+    if (container) {
+      // Find tooltip in this container
+      const tooltip = container.querySelector([
+        '.item-tooltip', '.backpack-item-tooltip', '.merchant-item-tooltip',
+        '.crafting-item-tooltip', '.crafting-requirement-tooltip', '.quests-reward-item-tooltip'
+      ].join(', '));
+      
+      if (tooltip) {
+        // Close any other open tooltips
+        closeAllMobileTooltips();
+        
+        // Show this tooltip
+        tooltip.classList.add('mobile-tooltip-visible');
+        mobileTooltipActive = true;
+      }
+    } else {
+      // Click outside any container - close all tooltips
+      closeAllMobileTooltips();
+    }
+  }
+  
+  function closeAllMobileTooltips() {
+    const visibleTooltips = document.querySelectorAll('.mobile-tooltip-visible');
+    if (visibleTooltips.length > 0) {
+      visibleTooltips.forEach(tooltip => {
+        tooltip.classList.remove('mobile-tooltip-visible');
+      });
+      mobileTooltipActive = false;
+    }
+  }
+  
+  // Initialize mobile tooltips when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeMobileTooltips);
+  } else {
+    initializeMobileTooltips();
+  }
+
   // Public API
   return {
     parseText: parseText,
     hasTooltipData: hasTooltipData,
     createTooltip: createTooltip,
-    removeTooltip: removeTooltip
+    removeTooltip: removeTooltip,
+    closeAllMobileTooltips: closeAllMobileTooltips
   };
 })();
 </script>
@@ -156,8 +219,7 @@ window.ItemTooltips = (function() {
     .merchant-hotbar-slot:hover .item-tooltip,
     .crafting-slot:hover .item-tooltip,
     .crafting-requirement-item:hover .item-tooltip,
-    .quests-reward-item:hover .item-tooltip,
-    /* Tooltip visibility on hover - Specific classes */
+
     .backpack-slot:hover .backpack-item-tooltip,
     .backpack-hotbar-slot:hover .backpack-item-tooltip,
     .backpack-wearable-slot:hover .backpack-item-tooltip,
@@ -281,14 +343,72 @@ window.ItemTooltips = (function() {
     font-size: 11px;
   }
 
-  /* Mobile - Hide tooltips on mobile devices */
+  /* Mobile - Control tooltip visibility on mobile devices */
   body.mobile .item-tooltip,
   body.mobile .backpack-item-tooltip,
   body.mobile .merchant-item-tooltip,
   body.mobile .crafting-item-tooltip,
   body.mobile .crafting-requirement-tooltip,
   body.mobile .quests-reward-item-tooltip {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+  }
+
+  /* Mobile tooltip visibility when tapped */
+  body.mobile .mobile-tooltip-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-8px) !important;
+  }
+
+  /* Improve mobile tooltip positioning and touch targets */
+  body.mobile .backpack-slot,
+  body.mobile .backpack-hotbar-slot,
+  body.mobile .backpack-wearable-slot,
+  body.mobile .hud-hotbar-slot,
+  body.mobile .merchant-slot,
+  body.mobile .merchant-hotbar-slot,
+  body.mobile .crafting-slot,
+  body.mobile .crafting-requirement-item,
+  body.mobile .quests-reward-item,
+  body.mobile .quests-reward-item-tooltip-enabled {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Center carets on mobile tooltips */
+  body.mobile .item-tooltip-content::after,
+  body.mobile .backpack-item-tooltip-content::after,
+  body.mobile .merchant-item-tooltip-content::after,
+  body.mobile .crafting-item-tooltip-content::after,
+  body.mobile .crafting-requirement-tooltip-content::after,
+  body.mobile .quests-reward-item-tooltip-content::after {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  body.mobile .item-tooltip-content::before,
+  body.mobile .backpack-item-tooltip-content::before,
+  body.mobile .merchant-item-tooltip-content::before,
+  body.mobile .crafting-item-tooltip-content::before,
+  body.mobile .crafting-requirement-tooltip-content::before,
+  body.mobile .quests-reward-item-tooltip-content::before {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  /* Mobile tooltip content sizing */
+  body.mobile .item-tooltip-content,
+  body.mobile .backpack-item-tooltip-content,
+  body.mobile .merchant-item-tooltip-content,
+  body.mobile .crafting-item-tooltip-content,
+  body.mobile .crafting-requirement-tooltip-content,
+  body.mobile .quests-reward-item-tooltip-content {
+    max-width: 220px;
+    font-size: 11px;
+    padding: 8px 10px;
   }
 
   /* Mouse Follower Tooltip (for backpack drag system) */

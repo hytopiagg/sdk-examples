@@ -82,6 +82,9 @@
     accessory: 5
   };
 
+  const mouseFollower = createMouseFollower();
+  let heldItem = null;
+
   // Setup hytopia data handlers
   hytopia.onData(data => {
     if (data.type === 'toggleBackpack') {
@@ -134,15 +137,8 @@
     }
   }
 
-  function setupEventListeners() {
-    const closeButton = document.querySelector('.backpack-close');
-    closeButton.addEventListener('click', closeBackpack);
-
-    let heldItem = null;
-    const mouseFollower = createMouseFollower();
-
-    // Helper function to get slot info
-    function getSlotInfo(slot) {
+  // Helper function to get slot info
+  function getSlotInfo(slot) {
       if (slot.dataset.slotIndex) {
         return { type: 'backpack', index: slot.dataset.slotIndex };
       } else if (slot.dataset.slot) {
@@ -216,8 +212,14 @@
       // Copy content to mouse follower
       mouseFollower.innerHTML = contentHTML;
       
-      // Copy tooltip if it exists
+      // Copy tooltip if it exists and store reference for later restoration
       if (tooltip) {
+        // Store tooltip data for restoration
+        heldItem.tooltipData = {
+          element: tooltip.cloneNode(true),
+          parentSlot: slot
+        };
+        
         const tooltipClone = tooltip.cloneNode(true);
         tooltipClone.style.opacity = '1';
         tooltipClone.style.visibility = 'visible';
@@ -225,15 +227,26 @@
         tooltipClone.style.position = 'absolute';
         tooltipClone.style.bottom = 'auto';
         tooltipClone.style.top = '-8px';
+        
+        // Remove mobile tooltip classes that might interfere
+        tooltipClone.classList.remove('mobile-tooltip-visible');
+        
         mouseFollower.appendChild(tooltipClone);
+        
+        // Completely remove original tooltip to prevent ghosting
+        tooltip.remove();
       }
+    
+      // Position mouse follower at center of slot
+      const slotRect = slot.getBoundingClientRect();
+      const centerX = slotRect.left + slotRect.width / 2;
+      const centerY = slotRect.top + slotRect.height / 2;
       
-      mouseFollower.style.left = mouseX + 'px';
-      mouseFollower.style.top = mouseY + 'px';
+      mouseFollower.style.left = centerX + 15 + 'px';
+      mouseFollower.style.top = centerY - 15 + 'px';
       mouseFollower.classList.add('active');
       slot.classList.add('backpack-slot-empty');
       
-      console.log(`Picked up from ${slotInfo.type}: ${slotInfo.index}`);
       return true;
     }
 
@@ -252,8 +265,15 @@
     // Reset held item state
     function resetHeldItem() {
       if (!heldItem) return;
-      
+
       heldItem.sourceSlot.classList.remove('backpack-slot-empty');
+      
+      // Restore original tooltip by recreating it
+      if (heldItem.tooltipData) {
+        const restoredTooltip = heldItem.tooltipData.element.cloneNode(true);
+        heldItem.tooltipData.parentSlot.appendChild(restoredTooltip);
+      }
+      
       mouseFollower.classList.remove('active');
       mouseFollower.innerHTML = '';
       heldItem = null;
@@ -263,9 +283,12 @@
     function cancelHeldItem() {
       if (!heldItem) return;
       
-      console.log(`Cancelled pickup from ${heldItem.sourceType}: ${heldItem.sourceIndex}`);
       resetHeldItem();
     }
+
+  function setupEventListeners() {
+    const closeButton = document.querySelector('.backpack-close');
+    closeButton.addEventListener('click', closeBackpack);
 
     // Setup slot click handlers
     document.querySelectorAll('.backpack-slot, .backpack-wearable-slot, .backpack-hotbar-slot')
@@ -321,6 +344,16 @@
   function closeBackpack() {
     document.querySelector('.backpack-overlay').style.display = 'none';
     hytopia.lockPointer(true);
+    
+    // Close any open mobile tooltips
+    if (window.ItemTooltips) {
+      window.ItemTooltips.closeAllMobileTooltips();
+    }
+
+    // Cancel any picked up item
+    if (heldItem) {
+      cancelHeldItem();
+    }
   }
 
   function openBackpack() {
@@ -785,66 +818,80 @@
 
   /* Mobile Styles */
   body.mobile {
-    --backpack-slot-size: 40px;
-    --backpack-hotbar-size: 40px;
-    --backpack-icon-size: 20px;
-    --backpack-gap: 3px;
-    --backpack-padding: 6px;
+    --backpack-slot-size: 44px;
+    --backpack-hotbar-size: 44px;
+    --backpack-icon-size: 32px;
+    --backpack-gap: 4px;
+    --backpack-padding: 8px;
   }
 
   body.mobile .backpack-overlay {
-    gap: 8px;
-    padding: 4px;
+    gap: 12px;
+    padding: 8px;
   }
 
   body.mobile .backpack-container,
   body.mobile .backpack-hotbar-container {
     width: auto;
-    max-width: 500px;
-    min-width: 320px;
+    max-width: 520px;
+    min-width: 340px;
+    border-radius: 8px;
   }
 
   body.mobile .backpack-header,
   body.mobile .backpack-hotbar-header {
-    padding: 4px 8px;
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
   body.mobile .backpack-title,
   body.mobile .backpack-hotbar-title {
-    font-size: 12px;
-  }
-
-  body.mobile .backpack-close {
-    width: 20px;
-    height: 20px;
     font-size: 14px;
   }
 
+  body.mobile .backpack-close {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    border-radius: 6px;
+  }
+
   body.mobile .backpack-content {
-    padding: 6px;
-    gap: 6px;
+    padding: 12px;
+    gap: 12px;
   }
 
   body.mobile .backpack-wearables-panel {
-    flex-direction: row;
+    flex-direction: column;
     min-width: auto;
+    gap: 12px;
   }
 
   body.mobile .backpack-wearables-slots {
     justify-items: center;
+    padding: 8px;
+    border-radius: 6px;
+  }
+
+  body.mobile .backpack-grid {
+    padding: 8px;
+    border-radius: 6px;
+  }
+
+  body.mobile .backpack-hotbar-grid {
+    justify-items: center;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 12px;
+    border-radius: 0 0 6px 6px;
   }
 
   body.mobile .backpack-wearable-slot,
   body.mobile .backpack-slot,
   body.mobile .backpack-hotbar-slot {
     box-sizing: border-box;
-  }
-
-  body.mobile .backpack-grid,
-  body.mobile .backpack-hotbar-grid {
-    justify-items: center;
-    width: fit-content;
-    margin: 0 auto;
+    border-radius: 6px;
+    border-width: 2px;
   }
 
   body.mobile .backpack-slot-content,
@@ -853,36 +900,58 @@
   }
 
   body.mobile .backpack-item-icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
   body.mobile .backpack-hotbar-slot-icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
   body.mobile .backpack-slot-quantity {
-    font-size: 7px;
-    padding: 1px 2px;
-    bottom: 1px;
-    right: 1px;
-    min-width: 8px;
+    font-size: 8px;
+    padding: 1px 3px;
+    bottom: 2px;
+    right: 2px;
+    min-width: 10px;
+    border-radius: 3px;
   }
 
   body.mobile .backpack-hotbar-slot-quantity {
     font-size: 8px;
     padding: 1px 3px;
-    bottom: 1px;
-    right: 1px;
+    bottom: 2px;
+    right: 2px;
+    min-width: 12px;
+    border-radius: 3px;
   }
 
-  body.mobile .backpack-item-tooltip {
-    display: none;
-  }
+
 
   body.mobile .backpack-wearable-slot-label {
-    font-size: 9px;
+    font-size: 7px;
+    font-weight: 500;
+  }
+
+  body.mobile .backpack-mouse-follower {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+  }
+
+  body.mobile .backpack-mouse-follower img {
+    width: 36px;
+    height: 36px;
+  }
+
+  body.mobile .backpack-mouse-follower .backpack-hotbar-slot-quantity {
+    font-size: 8px;
+    padding: 1px 3px;
+    bottom: 2px;
+    right: 2px;
+    min-width: 10px;
+    border-radius: 3px;
   }
 
   .backpack-mouse-follower {

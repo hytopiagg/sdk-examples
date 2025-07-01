@@ -77,6 +77,9 @@
   function closeSkills() {
     document.querySelector('.skills-overlay').style.display = 'none';
     hytopia.lockPointer(true);
+    
+    // Close any open mobile tooltips
+    closeAllMobileTooltips();
   }
 
   // Update Functions
@@ -107,6 +110,9 @@
       const skillItem = createSkillItem(skill);
       skillsGrid.appendChild(skillItem);
     });
+    
+    // Close any open mobile tooltips after updating skills
+    closeAllMobileTooltips();
   }
 
   function updateSkillsExp(data) {
@@ -174,6 +180,54 @@
   // Event Listeners
   function setupEventListeners() {
     document.querySelector('.skills-close').addEventListener('click', closeSkills);
+    
+    // Setup mobile tooltip handling
+    setupMobileTooltips();
+  }
+
+  // Mobile tooltip handling
+  function setupMobileTooltips() {
+    // Check if we're on mobile
+    const isMobile = document.body.classList.contains('mobile');
+    if (!isMobile) return;
+    
+    // Add click handler to skills container for event delegation
+    document.querySelector('.skills-skills-grid').addEventListener('click', handleMobileTooltipClick);
+    
+    // Add click handler to document to close tooltips when clicking outside
+    document.addEventListener('click', handleDocumentClick);
+  }
+  
+  function handleMobileTooltipClick(e) {
+    const skillItem = e.target.closest('.skills-skill-item');
+    if (!skillItem) return;
+    
+    e.stopPropagation();
+    
+    const tooltip = skillItem.querySelector('.skills-skill-tooltip');
+    if (!tooltip) return;
+    
+    // Close any other open tooltips
+    closeAllMobileTooltips();
+    
+    // Toggle this tooltip
+    tooltip.classList.add('skills-mobile-tooltip-visible');
+  }
+  
+  function handleDocumentClick(e) {
+    // Close tooltips when clicking outside
+    if (!e.target.closest('.skills-skill-item')) {
+      closeAllMobileTooltips();
+    }
+  }
+  
+  function closeAllMobileTooltips() {
+    const visibleTooltips = document.querySelectorAll('.skills-mobile-tooltip-visible');
+    if (visibleTooltips.length > 0) {
+      visibleTooltips.forEach(tooltip => {
+        tooltip.classList.remove('skills-mobile-tooltip-visible');
+      });
+    }
   }
 
   // Initialize
@@ -490,96 +544,135 @@
   /* Mobile Styles */
   body.mobile .skills-container {
     width: auto;
-    max-width: 98vw;
-    min-width: 300px;
+    max-width: 680px;
+    min-width: 475px;
+    border-radius: 8px;
   }
 
   body.mobile .skills-header {
-    padding: 6px 8px;
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
   body.mobile .skills-title {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   body.mobile .skills-close {
-    width: 18px;
-    height: 18px;
-    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-content {
-    padding: 6px;
+    padding: 12px;
   }
 
   body.mobile .skills-player-section,
   body.mobile .skills-skills-section {
-    margin-bottom: 8px;
-    padding: 6px;
+    padding: 10px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-section-title {
-    font-size: 10px;
-    margin-bottom: 6px;
+    font-size: 12px;
+    margin-bottom: 8px;
   }
 
   body.mobile .skills-level-display {
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
 
   body.mobile .skills-level-number {
-    font-size: 12px;
+    font-size: 16px;
   }
 
   body.mobile .skills-exp-bar {
-    height: 14px;
+    height: 16px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-exp-text {
-    font-size: 8px;
+    font-size: 10px;
   }
 
   body.mobile .skills-skills-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
   }
 
   body.mobile .skills-skill-item {
-    gap: 8px;
-    padding: 3px;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    min-height: 40px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
   }
 
   body.mobile .skills-skill-icon {
     width: 28px;
     height: 28px;
-  }
-
-  body.mobile .skills-skill-icon-img {
-    width: 100%;
-    height: 100%;
+    border-radius: 6px;
   }
 
   body.mobile .skills-skill-header {
-    margin-bottom: 3px;
+    margin-bottom: 4px;
   }
 
   body.mobile .skills-skill-name {
-    font-size: 9px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   body.mobile .skills-skill-level {
-    font-size: 8px;
+    font-size: 9px;
+    flex-shrink: 0;
   }
 
   body.mobile .skills-skill-exp-bar {
     height: 10px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-skill-exp-text {
-    font-size: 6px;
+    font-size: 7px;
   }
 
   body.mobile .skills-skill-tooltip {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+  }
+
+  body.mobile .skills-mobile-tooltip-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-8px) !important;
+  }
+
+  body.mobile .skills-skill-tooltip-content {
+    max-width: 180px;
+    font-size: 10px;
+  }
+
+  /* Center the caret on mobile */
+  body.mobile .skills-skill-tooltip-content::after {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  body.mobile .skills-skill-tooltip-content::before {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  /* Enable scrolling if needed */
+  body.mobile .skills-content * {
+    touch-action: pan-y !important;
   }
 </style>

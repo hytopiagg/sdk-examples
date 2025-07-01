@@ -875,13 +875,15 @@
   /* Mobile Styles */
   body.mobile .quests-container {
     width: auto;
-    max-width: 98vw;
-    min-width: 300px;
-    height: 90vh;
+    max-width: 600px;
+    min-width: 340px;
+    height: 85vh;
+    border-radius: 8px;
   }
 
   body.mobile .quests-header {
     padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
   body.mobile .quests-title {
@@ -889,72 +891,155 @@
   }
 
   body.mobile .quests-close {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-  }
-
-  body.mobile .quests-content {
-    flex-direction: column;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    border-radius: 6px;
   }
 
   body.mobile .quests-sidebar {
-    width: auto;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 1px solid #444;
-  }
-
-  body.mobile .quests-section {
-    flex: none;
+    width: 175px;
+    min-width: 175px;
   }
 
   body.mobile .quests-section-title {
-    padding: 8px 12px 6px;
-    font-size: 12px;
+    padding: 8px 10px 6px;
+    font-size: 11px;
   }
 
   body.mobile .quests-list {
     padding: 6px;
-    max-height: 120px;
+  }
+
+  body.mobile .quests-list * {
+    touch-action: pan-y !important;
+    overflow-y: scroll;
   }
 
   body.mobile .quests-item {
-    padding: 8px;
-    margin-bottom: 4px;
+    padding: 3px 8px;
+    margin-bottom: 3px;
+    border-radius: 6px;
+    min-height: 28px;
   }
 
   body.mobile .quests-item-name {
     font-size: 11px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   body.mobile .quests-item-progress {
-    font-size: 10px;
+    font-size: 9px;
+    font-weight: 600;
   }
 
   body.mobile .quests-details-content {
     padding: 12px;
   }
 
+  body.mobile .quests-details-content * {
+    touch-action: pan-y !important;
+    overflow-y: scroll;
+  }
+
+  body.mobile .quests-detail-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+
   body.mobile .quests-detail-name {
-    font-size: 16px;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  body.mobile .quests-detail-description {
+    margin-bottom: 16px;
   }
 
   body.mobile .quests-detail-description p {
     font-size: 11px;
+    line-height: 1.4;
   }
 
-  body.mobile .quests-objectives-title {
+  body.mobile .quests-detail-objectives {
+    margin-bottom: 12px;
+  }
+
+  body.mobile .quests-objectives-title,
+  body.mobile .quests-rewards-title {
     font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  body.mobile .quests-objectives-list {
+    margin-bottom: 6px;
+  }
+
+  body.mobile .quests-objective {
+    padding: 6px 0;
+    gap: 8px;
+  }
+
+  body.mobile .quests-objective-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
   }
 
   body.mobile .quests-objective-text {
-    font-size: 11px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  body.mobile .quests-reward-item {
+    padding: 3px 8px;
+    gap: 6px;
+    border-radius: 6px;
+    min-height: 24px;
+  }
+
+  body.mobile .quests-reward-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  body.mobile .quests-reward-exp-icon {
+    font-size: 12px;
+    width: 16px;
+  }
+
+  body.mobile .quests-reward-text {
+    font-size: 10px;
+    font-weight: 500;
   }
 
   body.mobile .quests-empty-section {
     padding: 12px 8px;
-    font-size: 12px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  body.mobile .quests-empty-content {
+    padding: 16px 12px;
+  }
+
+  body.mobile .quests-empty-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  body.mobile .quests-empty-text {
+    font-size: 11px;
+    line-height: 1.3;
+    padding: 0 6px;
+  }
+
+  /* Mobile tooltip adjustments */
+  body.mobile .quests-reward-item-tooltip {
+    display: none;
   }
 
 

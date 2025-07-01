@@ -372,12 +372,75 @@ window.ItemTooltips = (function() {
     if (existingTooltip) existingTooltip.remove();
   }
 
+  // Mobile tooltip handling
+  let mobileTooltipActive = false;
+  
+  function initializeMobileTooltips() {
+    // Check if we're on mobile
+    const isMobile = document.body.classList.contains('mobile');
+    if (!isMobile) return;
+    
+    // Add click handler to document for event delegation
+    document.addEventListener('click', handleMobileTooltipClick, true);
+  }
+  
+  function handleMobileTooltipClick(e) {
+    // List of tooltip container selectors - include quest reward enabled class
+    const tooltipContainers = [
+      '.backpack-slot', '.backpack-hotbar-slot', '.backpack-wearable-slot',
+      '.hud-hotbar-slot', '.merchant-slot', '.merchant-hotbar-slot', 
+      '.crafting-slot', '.crafting-requirement-item', 
+      '.quests-reward-item', '.quests-reward-item-tooltip-enabled'
+    ];
+    
+    // Check if click is on a tooltip container
+    const container = e.target.closest(tooltipContainers.join(', '));
+    
+    if (container) {
+      // Find tooltip in this container
+      const tooltip = container.querySelector([
+        '.item-tooltip', '.backpack-item-tooltip', '.merchant-item-tooltip',
+        '.crafting-item-tooltip', '.crafting-requirement-tooltip', '.quests-reward-item-tooltip'
+      ].join(', '));
+      
+      if (tooltip) {
+        // Close any other open tooltips
+        closeAllMobileTooltips();
+        
+        // Show this tooltip
+        tooltip.classList.add('mobile-tooltip-visible');
+        mobileTooltipActive = true;
+      }
+    } else {
+      // Click outside any container - close all tooltips
+      closeAllMobileTooltips();
+    }
+  }
+  
+  function closeAllMobileTooltips() {
+    const visibleTooltips = document.querySelectorAll('.mobile-tooltip-visible');
+    if (visibleTooltips.length > 0) {
+      visibleTooltips.forEach(tooltip => {
+        tooltip.classList.remove('mobile-tooltip-visible');
+      });
+      mobileTooltipActive = false;
+    }
+  }
+  
+  // Initialize mobile tooltips when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeMobileTooltips);
+  } else {
+    initializeMobileTooltips();
+  }
+
   // Public API
   return {
     parseText: parseText,
     hasTooltipData: hasTooltipData,
     createTooltip: createTooltip,
-    removeTooltip: removeTooltip
+    removeTooltip: removeTooltip,
+    closeAllMobileTooltips: closeAllMobileTooltips
   };
 })();
 </script>
@@ -405,8 +468,7 @@ window.ItemTooltips = (function() {
     .merchant-hotbar-slot:hover .item-tooltip,
     .crafting-slot:hover .item-tooltip,
     .crafting-requirement-item:hover .item-tooltip,
-    .quests-reward-item:hover .item-tooltip,
-    /* Tooltip visibility on hover - Specific classes */
+
     .backpack-slot:hover .backpack-item-tooltip,
     .backpack-hotbar-slot:hover .backpack-item-tooltip,
     .backpack-wearable-slot:hover .backpack-item-tooltip,
@@ -530,14 +592,72 @@ window.ItemTooltips = (function() {
     font-size: 11px;
   }
 
-  /* Mobile - Hide tooltips on mobile devices */
+  /* Mobile - Control tooltip visibility on mobile devices */
   body.mobile .item-tooltip,
   body.mobile .backpack-item-tooltip,
   body.mobile .merchant-item-tooltip,
   body.mobile .crafting-item-tooltip,
   body.mobile .crafting-requirement-tooltip,
   body.mobile .quests-reward-item-tooltip {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+  }
+
+  /* Mobile tooltip visibility when tapped */
+  body.mobile .mobile-tooltip-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-8px) !important;
+  }
+
+  /* Improve mobile tooltip positioning and touch targets */
+  body.mobile .backpack-slot,
+  body.mobile .backpack-hotbar-slot,
+  body.mobile .backpack-wearable-slot,
+  body.mobile .hud-hotbar-slot,
+  body.mobile .merchant-slot,
+  body.mobile .merchant-hotbar-slot,
+  body.mobile .crafting-slot,
+  body.mobile .crafting-requirement-item,
+  body.mobile .quests-reward-item,
+  body.mobile .quests-reward-item-tooltip-enabled {
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Center carets on mobile tooltips */
+  body.mobile .item-tooltip-content::after,
+  body.mobile .backpack-item-tooltip-content::after,
+  body.mobile .merchant-item-tooltip-content::after,
+  body.mobile .crafting-item-tooltip-content::after,
+  body.mobile .crafting-requirement-tooltip-content::after,
+  body.mobile .quests-reward-item-tooltip-content::after {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  body.mobile .item-tooltip-content::before,
+  body.mobile .backpack-item-tooltip-content::before,
+  body.mobile .merchant-item-tooltip-content::before,
+  body.mobile .crafting-item-tooltip-content::before,
+  body.mobile .crafting-requirement-tooltip-content::before,
+  body.mobile .quests-reward-item-tooltip-content::before {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  /* Mobile tooltip content sizing */
+  body.mobile .item-tooltip-content,
+  body.mobile .backpack-item-tooltip-content,
+  body.mobile .merchant-item-tooltip-content,
+  body.mobile .crafting-item-tooltip-content,
+  body.mobile .crafting-requirement-tooltip-content,
+  body.mobile .quests-reward-item-tooltip-content {
+    max-width: 220px;
+    font-size: 11px;
+    padding: 8px 10px;
   }
 
   /* Mouse Follower Tooltip (for backpack drag system) */
@@ -631,6 +751,9 @@ window.ItemTooltips = (function() {
     accessory: 5
   };
 
+  const mouseFollower = createMouseFollower();
+  let heldItem = null;
+
   // Setup hytopia data handlers
   hytopia.onData(data => {
     if (data.type === 'toggleBackpack') {
@@ -683,15 +806,8 @@ window.ItemTooltips = (function() {
     }
   }
 
-  function setupEventListeners() {
-    const closeButton = document.querySelector('.backpack-close');
-    closeButton.addEventListener('click', closeBackpack);
-
-    let heldItem = null;
-    const mouseFollower = createMouseFollower();
-
-    // Helper function to get slot info
-    function getSlotInfo(slot) {
+  // Helper function to get slot info
+  function getSlotInfo(slot) {
       if (slot.dataset.slotIndex) {
         return { type: 'backpack', index: slot.dataset.slotIndex };
       } else if (slot.dataset.slot) {
@@ -765,8 +881,14 @@ window.ItemTooltips = (function() {
       // Copy content to mouse follower
       mouseFollower.innerHTML = contentHTML;
       
-      // Copy tooltip if it exists
+      // Copy tooltip if it exists and store reference for later restoration
       if (tooltip) {
+        // Store tooltip data for restoration
+        heldItem.tooltipData = {
+          element: tooltip.cloneNode(true),
+          parentSlot: slot
+        };
+        
         const tooltipClone = tooltip.cloneNode(true);
         tooltipClone.style.opacity = '1';
         tooltipClone.style.visibility = 'visible';
@@ -774,15 +896,26 @@ window.ItemTooltips = (function() {
         tooltipClone.style.position = 'absolute';
         tooltipClone.style.bottom = 'auto';
         tooltipClone.style.top = '-8px';
+        
+        // Remove mobile tooltip classes that might interfere
+        tooltipClone.classList.remove('mobile-tooltip-visible');
+        
         mouseFollower.appendChild(tooltipClone);
+        
+        // Completely remove original tooltip to prevent ghosting
+        tooltip.remove();
       }
+    
+      // Position mouse follower at center of slot
+      const slotRect = slot.getBoundingClientRect();
+      const centerX = slotRect.left + slotRect.width / 2;
+      const centerY = slotRect.top + slotRect.height / 2;
       
-      mouseFollower.style.left = mouseX + 'px';
-      mouseFollower.style.top = mouseY + 'px';
+      mouseFollower.style.left = centerX + 15 + 'px';
+      mouseFollower.style.top = centerY - 15 + 'px';
       mouseFollower.classList.add('active');
       slot.classList.add('backpack-slot-empty');
       
-      console.log(`Picked up from ${slotInfo.type}: ${slotInfo.index}`);
       return true;
     }
 
@@ -801,8 +934,15 @@ window.ItemTooltips = (function() {
     // Reset held item state
     function resetHeldItem() {
       if (!heldItem) return;
-      
+
       heldItem.sourceSlot.classList.remove('backpack-slot-empty');
+      
+      // Restore original tooltip by recreating it
+      if (heldItem.tooltipData) {
+        const restoredTooltip = heldItem.tooltipData.element.cloneNode(true);
+        heldItem.tooltipData.parentSlot.appendChild(restoredTooltip);
+      }
+      
       mouseFollower.classList.remove('active');
       mouseFollower.innerHTML = '';
       heldItem = null;
@@ -812,9 +952,12 @@ window.ItemTooltips = (function() {
     function cancelHeldItem() {
       if (!heldItem) return;
       
-      console.log(`Cancelled pickup from ${heldItem.sourceType}: ${heldItem.sourceIndex}`);
       resetHeldItem();
     }
+
+  function setupEventListeners() {
+    const closeButton = document.querySelector('.backpack-close');
+    closeButton.addEventListener('click', closeBackpack);
 
     // Setup slot click handlers
     document.querySelectorAll('.backpack-slot, .backpack-wearable-slot, .backpack-hotbar-slot')
@@ -870,6 +1013,16 @@ window.ItemTooltips = (function() {
   function closeBackpack() {
     document.querySelector('.backpack-overlay').style.display = 'none';
     hytopia.lockPointer(true);
+    
+    // Close any open mobile tooltips
+    if (window.ItemTooltips) {
+      window.ItemTooltips.closeAllMobileTooltips();
+    }
+
+    // Cancel any picked up item
+    if (heldItem) {
+      cancelHeldItem();
+    }
   }
 
   function openBackpack() {
@@ -1334,66 +1487,80 @@ window.ItemTooltips = (function() {
 
   /* Mobile Styles */
   body.mobile {
-    --backpack-slot-size: 40px;
-    --backpack-hotbar-size: 40px;
-    --backpack-icon-size: 20px;
-    --backpack-gap: 3px;
-    --backpack-padding: 6px;
+    --backpack-slot-size: 44px;
+    --backpack-hotbar-size: 44px;
+    --backpack-icon-size: 32px;
+    --backpack-gap: 4px;
+    --backpack-padding: 8px;
   }
 
   body.mobile .backpack-overlay {
-    gap: 8px;
-    padding: 4px;
+    gap: 12px;
+    padding: 8px;
   }
 
   body.mobile .backpack-container,
   body.mobile .backpack-hotbar-container {
     width: auto;
-    max-width: 500px;
-    min-width: 320px;
+    max-width: 520px;
+    min-width: 340px;
+    border-radius: 8px;
   }
 
   body.mobile .backpack-header,
   body.mobile .backpack-hotbar-header {
-    padding: 4px 8px;
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
   body.mobile .backpack-title,
   body.mobile .backpack-hotbar-title {
-    font-size: 12px;
-  }
-
-  body.mobile .backpack-close {
-    width: 20px;
-    height: 20px;
     font-size: 14px;
   }
 
+  body.mobile .backpack-close {
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    border-radius: 6px;
+  }
+
   body.mobile .backpack-content {
-    padding: 6px;
-    gap: 6px;
+    padding: 12px;
+    gap: 12px;
   }
 
   body.mobile .backpack-wearables-panel {
-    flex-direction: row;
+    flex-direction: column;
     min-width: auto;
+    gap: 12px;
   }
 
   body.mobile .backpack-wearables-slots {
     justify-items: center;
+    padding: 8px;
+    border-radius: 6px;
+  }
+
+  body.mobile .backpack-grid {
+    padding: 8px;
+    border-radius: 6px;
+  }
+
+  body.mobile .backpack-hotbar-grid {
+    justify-items: center;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 12px;
+    border-radius: 0 0 6px 6px;
   }
 
   body.mobile .backpack-wearable-slot,
   body.mobile .backpack-slot,
   body.mobile .backpack-hotbar-slot {
     box-sizing: border-box;
-  }
-
-  body.mobile .backpack-grid,
-  body.mobile .backpack-hotbar-grid {
-    justify-items: center;
-    width: fit-content;
-    margin: 0 auto;
+    border-radius: 6px;
+    border-width: 2px;
   }
 
   body.mobile .backpack-slot-content,
@@ -1402,36 +1569,58 @@ window.ItemTooltips = (function() {
   }
 
   body.mobile .backpack-item-icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
   body.mobile .backpack-hotbar-slot-icon {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
   body.mobile .backpack-slot-quantity {
-    font-size: 7px;
-    padding: 1px 2px;
-    bottom: 1px;
-    right: 1px;
-    min-width: 8px;
+    font-size: 8px;
+    padding: 1px 3px;
+    bottom: 2px;
+    right: 2px;
+    min-width: 10px;
+    border-radius: 3px;
   }
 
   body.mobile .backpack-hotbar-slot-quantity {
     font-size: 8px;
     padding: 1px 3px;
-    bottom: 1px;
-    right: 1px;
+    bottom: 2px;
+    right: 2px;
+    min-width: 12px;
+    border-radius: 3px;
   }
 
-  body.mobile .backpack-item-tooltip {
-    display: none;
-  }
+
 
   body.mobile .backpack-wearable-slot-label {
-    font-size: 9px;
+    font-size: 7px;
+    font-weight: 500;
+  }
+
+  body.mobile .backpack-mouse-follower {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+  }
+
+  body.mobile .backpack-mouse-follower img {
+    width: 36px;
+    height: 36px;
+  }
+
+  body.mobile .backpack-mouse-follower .backpack-hotbar-slot-quantity {
+    font-size: 8px;
+    padding: 1px 3px;
+    bottom: 2px;
+    right: 2px;
+    min-width: 10px;
+    border-radius: 3px;
   }
 
   .backpack-mouse-follower {
@@ -1609,6 +1798,9 @@ window.ItemTooltips = (function() {
   function closeSkills() {
     document.querySelector('.skills-overlay').style.display = 'none';
     hytopia.lockPointer(true);
+    
+    // Close any open mobile tooltips
+    closeAllMobileTooltips();
   }
 
   // Update Functions
@@ -1639,6 +1831,9 @@ window.ItemTooltips = (function() {
       const skillItem = createSkillItem(skill);
       skillsGrid.appendChild(skillItem);
     });
+    
+    // Close any open mobile tooltips after updating skills
+    closeAllMobileTooltips();
   }
 
   function updateSkillsExp(data) {
@@ -1706,6 +1901,54 @@ window.ItemTooltips = (function() {
   // Event Listeners
   function setupEventListeners() {
     document.querySelector('.skills-close').addEventListener('click', closeSkills);
+    
+    // Setup mobile tooltip handling
+    setupMobileTooltips();
+  }
+
+  // Mobile tooltip handling
+  function setupMobileTooltips() {
+    // Check if we're on mobile
+    const isMobile = document.body.classList.contains('mobile');
+    if (!isMobile) return;
+    
+    // Add click handler to skills container for event delegation
+    document.querySelector('.skills-skills-grid').addEventListener('click', handleMobileTooltipClick);
+    
+    // Add click handler to document to close tooltips when clicking outside
+    document.addEventListener('click', handleDocumentClick);
+  }
+  
+  function handleMobileTooltipClick(e) {
+    const skillItem = e.target.closest('.skills-skill-item');
+    if (!skillItem) return;
+    
+    e.stopPropagation();
+    
+    const tooltip = skillItem.querySelector('.skills-skill-tooltip');
+    if (!tooltip) return;
+    
+    // Close any other open tooltips
+    closeAllMobileTooltips();
+    
+    // Toggle this tooltip
+    tooltip.classList.add('skills-mobile-tooltip-visible');
+  }
+  
+  function handleDocumentClick(e) {
+    // Close tooltips when clicking outside
+    if (!e.target.closest('.skills-skill-item')) {
+      closeAllMobileTooltips();
+    }
+  }
+  
+  function closeAllMobileTooltips() {
+    const visibleTooltips = document.querySelectorAll('.skills-mobile-tooltip-visible');
+    if (visibleTooltips.length > 0) {
+      visibleTooltips.forEach(tooltip => {
+        tooltip.classList.remove('skills-mobile-tooltip-visible');
+      });
+    }
   }
 
   // Initialize
@@ -2022,97 +2265,136 @@ window.ItemTooltips = (function() {
   /* Mobile Styles */
   body.mobile .skills-container {
     width: auto;
-    max-width: 98vw;
-    min-width: 300px;
+    max-width: 680px;
+    min-width: 475px;
+    border-radius: 8px;
   }
 
   body.mobile .skills-header {
-    padding: 6px 8px;
+    padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
   body.mobile .skills-title {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   body.mobile .skills-close {
-    width: 18px;
-    height: 18px;
-    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-content {
-    padding: 6px;
+    padding: 12px;
   }
 
   body.mobile .skills-player-section,
   body.mobile .skills-skills-section {
-    margin-bottom: 8px;
-    padding: 6px;
+    padding: 10px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-section-title {
-    font-size: 10px;
-    margin-bottom: 6px;
+    font-size: 12px;
+    margin-bottom: 8px;
   }
 
   body.mobile .skills-level-display {
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
 
   body.mobile .skills-level-number {
-    font-size: 12px;
+    font-size: 16px;
   }
 
   body.mobile .skills-exp-bar {
-    height: 14px;
+    height: 16px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-exp-text {
-    font-size: 8px;
+    font-size: 10px;
   }
 
   body.mobile .skills-skills-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
   }
 
   body.mobile .skills-skill-item {
-    gap: 8px;
-    padding: 3px;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    min-height: 40px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
   }
 
   body.mobile .skills-skill-icon {
     width: 28px;
     height: 28px;
-  }
-
-  body.mobile .skills-skill-icon-img {
-    width: 100%;
-    height: 100%;
+    border-radius: 6px;
   }
 
   body.mobile .skills-skill-header {
-    margin-bottom: 3px;
+    margin-bottom: 4px;
   }
 
   body.mobile .skills-skill-name {
-    font-size: 9px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   body.mobile .skills-skill-level {
-    font-size: 8px;
+    font-size: 9px;
+    flex-shrink: 0;
   }
 
   body.mobile .skills-skill-exp-bar {
     height: 10px;
+    border-radius: 6px;
   }
 
   body.mobile .skills-skill-exp-text {
-    font-size: 6px;
+    font-size: 7px;
   }
 
   body.mobile .skills-skill-tooltip {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: all 0.2s ease;
+  }
+
+  body.mobile .skills-mobile-tooltip-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-8px) !important;
+  }
+
+  body.mobile .skills-skill-tooltip-content {
+    max-width: 180px;
+    font-size: 10px;
+  }
+
+  /* Center the caret on mobile */
+  body.mobile .skills-skill-tooltip-content::after {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  body.mobile .skills-skill-tooltip-content::before {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  /* Enable scrolling if needed */
+  body.mobile .skills-content * {
+    touch-action: pan-y !important;
   }
 </style>
 
@@ -3464,13 +3746,15 @@ window.ItemTooltips = (function() {
   /* Mobile Styles */
   body.mobile .quests-container {
     width: auto;
-    max-width: 98vw;
-    min-width: 300px;
-    height: 90vh;
+    max-width: 600px;
+    min-width: 340px;
+    height: 85vh;
+    border-radius: 8px;
   }
 
   body.mobile .quests-header {
     padding: 8px 12px;
+    border-radius: 8px 8px 0 0;
   }
 
   body.mobile .quests-title {
@@ -3478,72 +3762,155 @@ window.ItemTooltips = (function() {
   }
 
   body.mobile .quests-close {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-  }
-
-  body.mobile .quests-content {
-    flex-direction: column;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    border-radius: 6px;
   }
 
   body.mobile .quests-sidebar {
-    width: auto;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 1px solid #444;
-  }
-
-  body.mobile .quests-section {
-    flex: none;
+    width: 175px;
+    min-width: 175px;
   }
 
   body.mobile .quests-section-title {
-    padding: 8px 12px 6px;
-    font-size: 12px;
+    padding: 8px 10px 6px;
+    font-size: 11px;
   }
 
   body.mobile .quests-list {
     padding: 6px;
-    max-height: 120px;
+  }
+
+  body.mobile .quests-list * {
+    touch-action: pan-y !important;
+    overflow-y: scroll;
   }
 
   body.mobile .quests-item {
-    padding: 8px;
-    margin-bottom: 4px;
+    padding: 3px 8px;
+    margin-bottom: 3px;
+    border-radius: 6px;
+    min-height: 28px;
   }
 
   body.mobile .quests-item-name {
     font-size: 11px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   body.mobile .quests-item-progress {
-    font-size: 10px;
+    font-size: 9px;
+    font-weight: 600;
   }
 
   body.mobile .quests-details-content {
     padding: 12px;
   }
 
+  body.mobile .quests-details-content * {
+    touch-action: pan-y !important;
+    overflow-y: scroll;
+  }
+
+  body.mobile .quests-detail-header {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+  }
+
   body.mobile .quests-detail-name {
-    font-size: 16px;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  body.mobile .quests-detail-description {
+    margin-bottom: 16px;
   }
 
   body.mobile .quests-detail-description p {
     font-size: 11px;
+    line-height: 1.4;
   }
 
-  body.mobile .quests-objectives-title {
+  body.mobile .quests-detail-objectives {
+    margin-bottom: 12px;
+  }
+
+  body.mobile .quests-objectives-title,
+  body.mobile .quests-rewards-title {
     font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  body.mobile .quests-objectives-list {
+    margin-bottom: 6px;
+  }
+
+  body.mobile .quests-objective {
+    padding: 6px 0;
+    gap: 8px;
+  }
+
+  body.mobile .quests-objective-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
   }
 
   body.mobile .quests-objective-text {
-    font-size: 11px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  body.mobile .quests-reward-item {
+    padding: 3px 8px;
+    gap: 6px;
+    border-radius: 6px;
+    min-height: 24px;
+  }
+
+  body.mobile .quests-reward-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  body.mobile .quests-reward-exp-icon {
+    font-size: 12px;
+    width: 16px;
+  }
+
+  body.mobile .quests-reward-text {
+    font-size: 10px;
+    font-weight: 500;
   }
 
   body.mobile .quests-empty-section {
     padding: 12px 8px;
-    font-size: 12px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  body.mobile .quests-empty-content {
+    padding: 16px 12px;
+  }
+
+  body.mobile .quests-empty-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  body.mobile .quests-empty-text {
+    font-size: 11px;
+    line-height: 1.3;
+    padding: 0 6px;
+  }
+
+  /* Mobile tooltip adjustments */
+  body.mobile .quests-reward-item-tooltip {
+    display: none;
   }
 
 
@@ -8007,175 +8374,230 @@ window.ItemTooltips = (function() {
      MOBILE RESPONSIVE
      ============================================ */
 
-  @media (max-width: 768px) {
-    :root {
-      --hud-hotbar-size: 40px;
-      --hud-bar-height: 16px;
-      --hud-bar-width: 180px;
-      --hud-hotbar-gap: 6px;
-      --hud-status-gap: 3px;
-      --hud-clock-size: 12px;
-    }
+  body.mobile {
+    --hud-hotbar-size: 44px;
+    --hud-bar-height: 16px;
+    --hud-bar-width: 160px;
+    --hud-hotbar-gap: 5px;
+    --hud-status-gap: 10px;
+    --hud-clock-size: 10px;
+    --hud-actions-gap: 10px;
+  }
 
-    .hud-hotbar-container {
-      bottom: 16px;
-    }
+  body.mobile .hud-hotbar-container {
+    bottom: 8px;
+  }
 
-    .hud-hotbar-grid {
-      padding: 8px;
-      border-radius: 8px;
-    }
+  body.mobile .hud-hotbar-grid {
+    padding: 8px;
+    border-radius: 8px;
+    gap: 4px;
+  }
 
-    .hud-status-container {
-      bottom: 70px;
-    }
+  body.mobile .hud-status-container {
+    bottom: 82px;
+    gap: 16px;
+  }
 
-    .hud-clock-container {
-      top: 16px;
-      right: 16px;
-    }
+  body.mobile .hud-clock-container {
+    top: 16px;
+    right: 16px;
+  }
 
-    .hud-clock {
-      padding: 8px;
-    }
+  body.mobile .hud-clock {
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
 
-    .hud-hotbar-slot-content {
-      font-size: 12px;
-    }
+  body.mobile .hud-hotbar-slot {
+    border-radius: 8px;
+    border-width: 2px;
+  }
 
-    .hud-hotbar-slot-icon {
-      width: 28px;
-      height: 28px;
-    }
+  body.mobile .hud-hotbar-slot-content {
+    font-size: 12px;
+  }
 
-    .hud-hotbar-slot-quantity {
-      font-size: 8px;
-      padding: 1px 3px;
-    }
+  body.mobile .hud-hotbar-slot-icon {
+    width: 32px;
+    height: 32px;
+  }
 
-    .hud-health-text,
-    .hud-exp-text {
-      font-size: 10px;
-    }
+  body.mobile .hud-hotbar-slot-quantity {
+    font-size: 8px;
+    padding: 1px 3px;
+    bottom: 2px;
+    right: 2px;
+  }
 
-    .hud-exp-gain {
-      font-size: 12px;
-      left: calc(var(--hud-bar-width) + var(--hud-status-gap) + var(--hud-bar-width) / 2);
-    }
+  body.mobile .hud-health-bar,
+  body.mobile .hud-exp-bar {
+    border-radius: 8px;
+  }
 
-    .hud-action-buttons {
-      top: 60px;
-      right: 16px;
-    }
+  body.mobile .hud-health-text,
+  body.mobile .hud-exp-text {
+    font-size: 10px;
+  }
 
-    .hud-action-button-icon {
-      width: 24px;
-      height: 24px;
-    }
+  body.mobile .hud-exp-gain {
+    font-size: 12px;
+    left: calc(var(--hud-bar-width) + var(--hud-status-gap) + var(--hud-bar-width) / 2);
+  }
 
-    .hud-action-tooltip {
-      display: none;
-    }
+  body.mobile .hud-action-buttons {
+    top: 55px;
+    right: 16px;
+    gap: 10px;
+  }
 
-    .hud-action-key-indicator {
-      width: 16px;
-      height: 16px;
-      top: -6px;
-      right: -6px;
-      font-size: 8px;
-    }
+  body.mobile .hud-action-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    border-width: 2px;
+  }
 
-    .hud-quest-count-indicator {
-      min-width: 14px;
-      height: 14px;
-      top: -6px;
-      left: -6px;
-      font-size: 8px;
-    }
+  body.mobile .hud-action-button-icon {
+    width: 44px;
+    height: 44px;
+  }
 
-    .hud-help-icon {
-      font-size: 18px;
-    }
+  body.mobile .hud-action-tooltip {
+    display: none;
+  }
 
-    /* Notification Mobile Adjustments */
-    .hud-notification-container {
-      top: 60px;
-      right: 66px;
-      gap: 8px;
-    }
+  body.mobile .hud-action-key-indicator {
+    width: 16px;
+    height: 16px;
+    top: -6px;
+    right: -6px;
+    font-size: 8px;
+    border-radius: 6px;
+  }
 
-    .hud-notification {
-      min-width: 160px;
-      max-width: 240px;
-      padding: 10px 12px;
-      font-size: 11px;
-    }
+  body.mobile .hud-quest-count-indicator {
+    width: 16px;
+    height: 16px;
+    top: -6px;
+    left: -6px;
+    font-size: 9px;
+  }
 
-    .hud-notification-content {
-      gap: 8px;
-    }
+  body.mobile .hud-help-notification-indicator {
+    width: 12px;
+    height: 12px;
+    top: -5px;
+    left: -5px;
+  }
 
-    .hud-notification-text {
-      font-size: 11px;
-    }
+  body.mobile .hud-help-icon {
+    font-size: 20px;
+  }
 
-    .hud-crosshair-horizontal {
-      width: 8px;
-      left: -4px;
-    }
+  /* Notification Mobile Adjustments */
+  body.mobile .hud-notification-container {
+    top: 55px;
+    right: 70px;
+    gap: 8px;
+  }
 
-    .hud-crosshair-vertical {
-      height: 8px;
-      top: -4px;
-    }
+  body.mobile .hud-notification {
+    min-width: 160px;
+    max-width: 240px;
+    padding: 10px 12px;
+    font-size: 10px;
+    border-radius: 8px;
+  }
 
-    /* Area Banner Mobile */
-    .hud-area-banner-text {
-      font-size: clamp(1.8rem, 10vw, 3rem);
-      letter-spacing: 0.05em;
-      margin: 0 0 4px 0;
-    }
+  body.mobile .hud-notification-content {
+    gap: 8px;
+  }
 
-    @keyframes underlineExpand {
-      to { 
-        width: min(300px, 85vw); 
-        opacity: 1; 
-      }
-    }
+  body.mobile .hud-notification-icon {
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
+  }
 
-    /* Death Overlay Mobile */
-    .hud-death-content {
-      margin: 0 16px;
-      max-width: 90vw;
-    }
+  body.mobile .hud-notification-text {
+    font-size: 10px;
+  }
 
-    .hud-death-title {
-      font-size: clamp(1.8rem, 10vw, 3.5rem);
-      margin: 0 0 4px 0;
-      letter-spacing: 0.05em;
-    }
+  body.mobile .hud-crosshair-horizontal {
+    width: 10px;
+    height: 2px;
+    left: -5px;
+    top: -1px;
+  }
 
-    .hud-death-subtitle {
-      font-size: clamp(0.8rem, 4vw, 1rem);
-      margin: 0 0 10px 0;
-    }
+  body.mobile .hud-crosshair-vertical {
+    width: 2px;
+    height: 10px;
+    top: -5px;
+    left: -1px;
+  }
 
-    .hud-death-underline {
-      margin: 0 auto 20px auto;
-    }
+  /* Area Banner Mobile */
+  body.mobile .hud-area-banner-text {
+    font-size: clamp(1.8rem, 9vw, 3rem);
+    letter-spacing: 0.05em;
+    margin: 0 0 4px 0;
+  }
 
-    @keyframes deathUnderlineExpand {
-      to { 
-        width: min(200px, 80vw); 
-        opacity: 1; 
-      }
-    }
+  body.mobile .hud-area-banner-underline {
+    height: 4px;
+  }
 
-    .hud-death-respawn-btn {
-      font-size: 12px;
-      padding: 10px 20px;
-      min-width: 100px;
+  body.mobile .hud-area-banner.show .hud-area-banner-underline {
+    animation: underlineExpandMobile 1.2s ease-out 0.8s forwards;
+  }
+
+  @keyframes underlineExpandMobile {
+    to { 
+      width: min(300px, 80vw); 
+      opacity: 1; 
     }
+  }
+
+  /* Death Overlay Mobile */
+  body.mobile .hud-death-content {
+    margin: 0 16px;
+    max-width: 90vw;
+  }
+
+  body.mobile .hud-death-title {
+    font-size: clamp(1.8rem, 9vw, 3.5rem);
+    margin: 0 0 4px 0;
+    letter-spacing: 0.05em;
+  }
+
+  body.mobile .hud-death-subtitle {
+    font-size: clamp(0.8rem, 4vw, 1rem);
+    margin: 0 0 10px 0;
+  }
+
+  body.mobile .hud-death-underline {
+    margin: 0 auto 18px auto;
+    height: 3px;
+  }
+
+  body.mobile .hud-death-overlay.show .hud-death-underline {
+    animation: deathUnderlineExpandMobile 1.2s ease-out 0.8s forwards;
+  }
+
+  @keyframes deathUnderlineExpandMobile {
+    to { 
+      width: min(220px, 75vw); 
+      opacity: 1; 
+    }
+  }
+
+  body.mobile .hud-death-respawn-btn {
+    font-size: 12px;
+    padding: 10px 20px;
+    min-width: 100px;
+    border-radius: 8px;
   }
 
   /* ============================================
