@@ -400,6 +400,7 @@ window.ItemTooltips = (function() {
   .backpack-slot:hover .item-tooltip,
   .backpack-hotbar-slot:hover .item-tooltip,
   .backpack-wearable-slot:hover .item-tooltip,
+  .hud-hotbar-slot:hover .item-tooltip,
       .merchant-slot:hover .item-tooltip,
     .merchant-hotbar-slot:hover .item-tooltip,
     .crafting-slot:hover .item-tooltip,
@@ -6861,6 +6862,23 @@ window.ItemTooltips = (function() {
     hytopia.sendData({ type: 'setSelectedHotbarIndex', index });
   }
 
+  // Use shared tooltip system (same as backpack)
+  function createTooltip(slot, itemData) {
+    if (window.ItemTooltips) {
+      ItemTooltips.createTooltip(slot, itemData, {
+        tooltipClass: 'item-tooltip',
+        contentClass: 'item-tooltip-content',
+        showSellPrice: true
+      });
+    }
+  }
+
+  function removeTooltip(slot) {
+    if (window.ItemTooltips) {
+      ItemTooltips.removeTooltip(slot, 'item-tooltip');
+    }
+  }
+
   // Update Functions
   function updateHealthBar(health, maxHealth) {
     const healthBar = document.querySelector('.hud-health-fill');
@@ -6924,6 +6942,9 @@ window.ItemTooltips = (function() {
     
     content.innerHTML = '';
     
+    // Clear existing tooltip
+    removeTooltip(slot);
+    
     if (itemData.removed) {
       content.textContent = position + 1;
     } else {
@@ -6939,6 +6960,9 @@ window.ItemTooltips = (function() {
         quantity.textContent = itemData.quantity.toLocaleString();
         content.appendChild(quantity);
       }
+      
+      // Create tooltip
+      createTooltip(slot, itemData);
     }
   }
 
@@ -7339,7 +7363,7 @@ window.ItemTooltips = (function() {
     justify-content: center;
     cursor: pointer;
     transition: all var(--hud-transition);
-    overflow: hidden;
+    overflow: visible;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
   }
 
@@ -8068,8 +8092,6 @@ window.ItemTooltips = (function() {
       left: -6px;
       font-size: 8px;
     }
-
-
 
     .hud-help-icon {
       font-size: 18px;
