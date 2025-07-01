@@ -5852,37 +5852,40 @@ window.ItemTooltips = (function() {
 
 
   /* Mobile responsive */
-  @media (max-width: 768px) {
+
     body.mobile {
-      --crafting-slot-size: 40px;
-      --crafting-icon-size: 20px;
-      --crafting-gap: 3px;
-      --crafting-padding: 6px;
+      --crafting-slot-size: 44px;
+      --crafting-icon-size: 32px;
+      --crafting-gap: 4px;
+      --crafting-padding: 8px;
     }
 
     body.mobile .crafting-container {
       width: auto;
-      max-width: 500px;
-      min-width: 320px;
+      max-width: 520px;
+      min-width: 340px;
+      border-radius: 8px;
     }
 
     body.mobile .crafting-content {
-      padding: 6px;
-      flex-direction: column;
-      gap: 8px;
+      padding: 12px;
+      gap: 12px;
     }
 
     body.mobile .crafting-grid {
       justify-items: center;
       width: fit-content;
       margin: 0 auto;
+      padding: 8px;
+      border-radius: 6px;
     }
 
     body.mobile .crafting-right-panel {
       width: auto;
       flex: 1;
-      min-height: 80px;
+      min-height: 120px;
       padding: var(--crafting-padding);
+      border-radius: 6px;
     }
 
     body.mobile .crafting-panel-content {
@@ -5895,10 +5898,9 @@ window.ItemTooltips = (function() {
       padding: 16px;
     }
 
-
-
     body.mobile .crafting-header {
-      padding: 4px 8px;
+      padding: 8px 12px;
+      border-radius: 8px 8px 0 0;
     }
 
     body.mobile .crafting-info {
@@ -5911,15 +5913,21 @@ window.ItemTooltips = (function() {
     }
 
     body.mobile .crafting-name {
-      font-size: 12px;
+      font-size: 14px;
     }
 
     body.mobile .crafting-title {
-      font-size: 10px;
+      font-size: 12px;
+    }
+
+    body.mobile .crafting-close {
+      width: 24px;
+      height: 24px;
+      font-size: 16px;
     }
 
     body.mobile .crafting-item-details {
-      gap: 6px;
+      gap: 8px;
     }
 
     body.mobile .crafting-item-header {
@@ -5929,71 +5937,85 @@ window.ItemTooltips = (function() {
     }
 
     body.mobile .crafting-item-header .crafting-item-icon {
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
     }
 
     body.mobile .crafting-item-name {
-      font-size: 10px;
+      font-size: 11px;
     }
 
     body.mobile .crafting-requirements-title {
-      font-size: 10px;
+      font-size: 11px;
     }
 
     body.mobile .crafting-requirements-list {
       grid-template-columns: repeat(2, 1fr);
-      gap: 3px;
-    }
-
-    body.mobile .crafting-requirement-item {
-      padding: 3px 4px;
-      min-height: 28px;
       gap: 4px;
     }
 
+    body.mobile .crafting-requirement-item {
+      padding: 4px 6px;
+      min-height: 32px;
+      gap: 6px;
+      border-radius: 6px;
+    }
+
     body.mobile .crafting-requirement-icon {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
 
     body.mobile .crafting-requirement-name {
-      font-size: 9px;
+      font-size: 10px;
     }
 
     body.mobile .crafting-requirement-quantity {
-      font-size: 8px;
-      padding: 1px 2px;
+      font-size: 9px;
+      padding: 1px 3px;
     }
 
     body.mobile .crafting-no-requirements {
-      font-size: 10px;
-      padding: 12px;
+      font-size: 11px;
+      padding: 14px;
     }
 
     body.mobile .crafting-item-actions {
-      padding-top: 6px;
+      padding-top: 8px;
     }
 
     body.mobile .crafting-action-btn {
-      padding: 6px 12px;
-      font-size: 10px;
+      padding: 8px 14px;
+      font-size: 11px;
+    }
+
+    body.mobile .crafting-slot-quantity {
+      font-size: 8px;
+      padding: 1px 3px;
+      bottom: 2px;
+      right: 2px;
+      min-width: 10px;
+      border-radius: 3px;
+    }
+
+    body.mobile .crafting-item-icon {
+      width: 36px;
+      height: 36px;
     }
 
     body.mobile .crafting-item-stats {
-      font-size: 8px;
-      margin-top: 3px;
+      font-size: 9px;
+      margin-top: 4px;
     }
 
     body.mobile .crafting-item-stats .stats-header {
-      font-size: 8px;
+      font-size: 9px;
     }
 
     body.mobile .crafting-item-description {
-      font-size: 8px;
-      margin-top: 3px;
+      font-size: 9px;
+      margin-top: 4px;
     }
-  }
 </style>
 
 
