@@ -3794,6 +3794,26 @@ window.ItemTooltips = (function() {
     overflow-y: scroll;
   }
 
+  /* Exception for reward items and tooltips - override the blanket overflow rule */
+  body.mobile .quests-reward-item,
+  body.mobile .quests-reward-item *,
+  body.mobile .quests-reward-item-tooltip,
+  body.mobile .quests-reward-item-tooltip * {
+    overflow: visible !important;
+  }
+
+  /* Ensure all parent containers allow tooltips to escape */
+  body.mobile .quests-rewards-list,
+  body.mobile .quests-detail-rewards,
+  body.mobile .quests-details-panel {
+    overflow: visible !important;
+  }
+
+  body.mobile .quests-rewards-list * {
+    overflow-y: scroll !important;
+    touch-action: pan-y !important;
+  }
+
   body.mobile .quests-detail-header {
     margin-bottom: 12px;
     padding-bottom: 8px;
@@ -3888,7 +3908,25 @@ window.ItemTooltips = (function() {
 
   /* Mobile tooltip adjustments */
   body.mobile .quests-reward-item-tooltip {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+  }
+
+  body.mobile .quests-reward-item-tooltip.mobile-tooltip-visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Override mobile caret centering - keep caret over reward icon */
+  body.mobile .quests-reward-item-tooltip-content::after {
+    left: 15px !important;
+    transform: translateX(-50%) !important;
+  }
+
+  body.mobile .quests-reward-item-tooltip-content::before {
+    left: 15px !important;
+    transform: translateX(-50%) !important;
   }
 
 
