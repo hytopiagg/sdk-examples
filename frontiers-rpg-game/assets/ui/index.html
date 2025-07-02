@@ -2824,7 +2824,7 @@ window.ItemTooltips = (function() {
 
   body.mobile .dialogue-content * {
     overflow-y: scroll;
-    touch-action: pan-y !important;
+    
   }
 
   body.mobile .dialogue-message {
@@ -2832,6 +2832,7 @@ window.ItemTooltips = (function() {
     font-size: 11px;
     margin-bottom: 8px;
     border-radius: 4px;
+    touch-action: pan-y;
   }
 
   body.mobile .dialogue-option {
@@ -2843,6 +2844,11 @@ window.ItemTooltips = (function() {
   body.mobile .dialogue-quest-icon {
     width: 14px;
     height: 14px;
+  }
+
+  body.mobile .dialogue-option,
+  body.mobile .dialogue-close {
+    touch-action: manipulation !important;
   }
 </style> 
 
@@ -3761,7 +3767,6 @@ window.ItemTooltips = (function() {
   }
 
   body.mobile .quests-list * {
-    touch-action: pan-y !important;
     overflow-y: scroll;
   }
 
@@ -3790,7 +3795,6 @@ window.ItemTooltips = (function() {
   }
 
   body.mobile .quests-details-content * {
-    touch-action: pan-y !important;
     overflow-y: scroll;
   }
 
