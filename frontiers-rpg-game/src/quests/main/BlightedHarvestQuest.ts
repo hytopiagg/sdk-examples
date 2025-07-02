@@ -1,12 +1,13 @@
 import BaseQuest, { QuestObjective, QuestNpcDialogueInteraction } from '../BaseQuest';
 import { SkillId } from '../../config';
-
 import type GamePlayer from '../../GamePlayer';
+import type GamePlayerEntity from '../../GamePlayerEntity';
 
 import { BaseItemPlayerEvent } from '../../items/BaseItem';
 import type { BaseItemPlayerEventPayloads } from '../../items/BaseItem';
 
 import BlightedRootItem from '../../items/materials/BlightedRootItem';
+import HealerMycelisEntity from '../../regions/stalkhaven/npcs/HealerMycelisEntity';
 
 export default class BlightedHarvestQuest extends BaseQuest {
   static readonly id = 'blighted-harvest';
@@ -36,7 +37,26 @@ export default class BlightedHarvestQuest extends BaseQuest {
   ];
 
   static readonly dialogueInteractions: QuestNpcDialogueInteraction[] = [
-    // add convo with healer mycelis
+    {
+      npcClass: HealerMycelisEntity,
+      dialogueOption: {
+        text: 'Scout Morel asked me to bring you these... things. What are they?',
+        nextDialogue: {
+          text: '[Frontiers Developers]: Well, this is embarrassing.. You reached the end of the v0.1.0 early alpha content! But have no fear, we will release a another big content update next week, with weekly content updates to follow. With the next update, you can come back and talk to Healer Mycelis and progress!',
+          options: [
+            {
+              text: `I see, I'll be back next week for the update!`,
+              dismiss: true,
+              pureExit: true,
+            }
+          ]
+        },
+      },
+      enabledForInteractor: (interactor: GamePlayerEntity) => {
+        return interactor.gamePlayer.questLog.isQuestActive(this.id) &&
+               interactor.gamePlayer.questLog.isQuestObjectiveCompleted(this.id, 'collect-blighted-roots');
+      }
+    }
   ];
 
   public static setupForPlayer(gamePlayer: GamePlayer): () => void {
