@@ -444,8 +444,30 @@
     height: 14px;
   }
 
+  /* Override global touch-action: none for dialogue interactions */
   body.mobile .dialogue-option,
-  body.mobile .dialogue-close {
+  body.mobile .dialogue-close,
+  body.mobile .dialogue-option *,
+  body.mobile .dialogue-close * {
     touch-action: manipulation !important;
+    pointer-events: auto !important;
+  }
+
+  /* Ensure dialogue containers allow touch events */
+  body.mobile .dialogue-panel,
+  body.mobile .dialogue-container,
+  body.mobile .dialogue-content,
+  body.mobile .dialogue-options {
+    touch-action: manipulation !important;
+  }
+
+  /* Override global mobile touch rules specifically for dialogue */
+  body.mobile .dialogue-panel *:not(.dialogue-message) {
+    touch-action: manipulation !important;
+  }
+
+  /* Allow scrolling only on message content */
+  body.mobile .dialogue-message {
+    touch-action: pan-y !important;
   }
 </style> 

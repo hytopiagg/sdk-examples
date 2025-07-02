@@ -2846,9 +2846,31 @@ window.ItemTooltips = (function() {
     height: 14px;
   }
 
+  /* Override global touch-action: none for dialogue interactions */
   body.mobile .dialogue-option,
-  body.mobile .dialogue-close {
+  body.mobile .dialogue-close,
+  body.mobile .dialogue-option *,
+  body.mobile .dialogue-close * {
     touch-action: manipulation !important;
+    pointer-events: auto !important;
+  }
+
+  /* Ensure dialogue containers allow touch events */
+  body.mobile .dialogue-panel,
+  body.mobile .dialogue-container,
+  body.mobile .dialogue-content,
+  body.mobile .dialogue-options {
+    touch-action: manipulation !important;
+  }
+
+  /* Override global mobile touch rules specifically for dialogue */
+  body.mobile .dialogue-panel *:not(.dialogue-message) {
+    touch-action: manipulation !important;
+  }
+
+  /* Allow scrolling only on message content */
+  body.mobile .dialogue-message {
+    touch-action: pan-y !important;
   }
 </style> 
 
@@ -3931,6 +3953,27 @@ window.ItemTooltips = (function() {
   body.mobile .quests-reward-item-tooltip-content::before {
     left: 15px !important;
     transform: translateX(-50%) !important;
+  }
+
+  /* Override global touch-action: none for quest interactions */
+  body.mobile .quests-close,
+  body.mobile .quests-item {
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
+  }
+
+  /* Ensure quest containers allow touch events */
+  body.mobile .quests-container,
+  body.mobile .quests-sidebar,
+  body.mobile .quests-details-panel,
+  body.mobile .quests-list,
+  body.mobile .quests-section {
+    touch-action: manipulation !important;
+  }
+
+  /* Override global mobile touch rules for interactive quest elements */
+  body.mobile .quests-sidebar *:not(.quests-section-title):not(.quests-empty-section) {
+    touch-action: manipulation !important;
   }
 
 

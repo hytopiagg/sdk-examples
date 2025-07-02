@@ -1078,5 +1078,26 @@
     transform: translateX(-50%) !important;
   }
 
+  /* Override global touch-action: none for quest interactions */
+  body.mobile .quests-close,
+  body.mobile .quests-item {
+    touch-action: manipulation !important;
+    pointer-events: auto !important;
+  }
+
+  /* Ensure quest containers allow touch events */
+  body.mobile .quests-container,
+  body.mobile .quests-sidebar,
+  body.mobile .quests-details-panel,
+  body.mobile .quests-list,
+  body.mobile .quests-section {
+    touch-action: manipulation !important;
+  }
+
+  /* Override global mobile touch rules for interactive quest elements */
+  body.mobile .quests-sidebar *:not(.quests-section-title):not(.quests-empty-section) {
+    touch-action: manipulation !important;
+  }
+
 
 </style>
