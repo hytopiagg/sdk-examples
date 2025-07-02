@@ -140,9 +140,8 @@ export default class GameRegion {
     }
   }
 
-  protected async onPlayerJoin(player: Player) {
-    console.log('onPlayerJoin', this.name);
-    const gamePlayer = await GamePlayer.getOrCreate(player);
+  protected onPlayerJoin(player: Player) {
+    const gamePlayer = GamePlayer.getOrCreate(player);
     
     // Set the current region for the player
     gamePlayer.setCurrentRegion(this);
@@ -153,11 +152,6 @@ export default class GameRegion {
     const gamePlayerEntity = new GamePlayerEntity(gamePlayer);
 
     gamePlayerEntity.spawn(this._world, spawnPoint, Quaternion.fromEuler(0, spawnFacingAngle, 0));
-
-    // Since we're using an async onPlayerJoin, we need to explicitly set the camera
-    // since the camera attachment logic as of SDK 0.6.7 only checks for an entity
-    // the first tick after a player joins a world in order to auto attach the camera.
-    player.camera.setAttachedToEntity(gamePlayerEntity);
     
     // Make the camera look at the correct spawn facing angle.
     // Calculate look direction based on facing angle (identity direction is -z, consistent with threejs)
@@ -200,8 +194,8 @@ export default class GameRegion {
   // The HYTOPIA SDK handles resynchronization of all persisted state back to the player client such as
   // their entity, scene ui states, etc, but anything that uses ephemeral state (Such as UI) we need
   // to handle reloading for them manually here.
-  protected async onPlayerReconnected(player: Player) { 
-    const gamePlayer = await GamePlayer.getOrCreate(player);
+  protected onPlayerReconnected(player: Player) { 
+    const gamePlayer = GamePlayer.getOrCreate(player);
     gamePlayer.onPlayerReconnected();
   }
 }

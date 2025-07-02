@@ -75,7 +75,7 @@ export default class GameManager {
   }
 
   private _selectWorldForPlayer = async (player: Player): Promise<World | undefined> => {
-    const gamePlayer = await GamePlayer.getOrCreate(player);
+    const gamePlayer = GamePlayer.getOrCreate(player);
     return gamePlayer.currentRegion?.world ?? this._startRegion.world;
   }
 }

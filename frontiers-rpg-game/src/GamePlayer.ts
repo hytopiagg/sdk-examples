@@ -88,13 +88,15 @@ export default class GamePlayer {
     this.hotbar.onSelectedItemChanged = this._onHotbarSelectedItemChanged;
   }
 
-  public static async getOrCreate(player: Player): Promise<GamePlayer> {
+  public static getOrCreate(player: Player): GamePlayer {
     let gamePlayer = this._instances.get(player.id);
+    
     if (!gamePlayer) {
       gamePlayer = new GamePlayer(player);
-      await gamePlayer.load();
+      gamePlayer.load();
       this._instances.set(player.id, gamePlayer);
     }
+
     return gamePlayer;
   }
 
@@ -342,8 +344,8 @@ export default class GamePlayer {
     this.player.joinWorld(region.world);
   }
 
-  public async load(): Promise<void> {
-    const serializedGamePlayerData = await this.player.getPersistedData();
+  public load(): void {
+    const serializedGamePlayerData = this.player.getPersistedData();
 
     if (serializedGamePlayerData) { // Existing player, load their state
       this._loadFromSerializedData(serializedGamePlayerData as SerializedGamePlayerData);
