@@ -174,9 +174,12 @@ export default class GameRegion {
   }
 
   protected onPlayerLeave(player: Player) {
-    this._world.entityManager.getPlayerEntitiesByPlayer(player).forEach(entity => {
-      entity.despawn();
-    });
+    // We assume the player left the game on region leave, we do all cleanup here.
+    // If they didn't, there's no downside and their player object will be reinitialized 
+    // when they rejoin this or another rejoin before their connection times out.
+    // If this causes issues in the future, we should move .remove to the actualy
+    // Player closed connection event.
+    GamePlayer.remove(player);
 
     this._playerCount--;
 

@@ -116,17 +116,6 @@ export default class GamePlayer {
     }
   }
 
-  public static cleanup(): void {
-    // Helper method to clean up all instances (useful for server shutdown)
-    for (const [playerId, gamePlayer] of this._instances) {
-      if (gamePlayer._currentEntity) {
-        gamePlayer._currentEntity.despawn();
-      }
-      gamePlayer.player.ui.off(PlayerUIEvent.DATA, gamePlayer._onPlayerUIData);
-    }
-    this._instances.clear();
-  }
-
   // Getters
   public get currentCraftingEntity(): BaseCraftingEntity | undefined {
     return this._currentCraftingEntity;
