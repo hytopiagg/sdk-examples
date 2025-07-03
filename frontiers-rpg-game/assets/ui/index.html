@@ -2820,11 +2820,7 @@ window.ItemTooltips = (function() {
   body.mobile .dialogue-content {
     padding: 12px;
     max-height: calc(100vh - 140px);
-  }
-
-  body.mobile .dialogue-content * {
-    overflow-y: scroll;
-    
+    overflow-y: auto;
   }
 
   body.mobile .dialogue-message {
@@ -2846,31 +2842,38 @@ window.ItemTooltips = (function() {
     height: 14px;
   }
 
-  /* Override global touch-action: none for dialogue interactions */
-  body.mobile .dialogue-option,
-  body.mobile .dialogue-close,
-  body.mobile .dialogue-option *,
-  body.mobile .dialogue-close * {
-    touch-action: manipulation !important;
-    pointer-events: auto !important;
-  }
-
-  /* Ensure dialogue containers allow touch events */
+  /* AGGRESSIVE override of global touch-action: none for dialogue */
+  body.mobile .dialogue-overlay,
   body.mobile .dialogue-panel,
   body.mobile .dialogue-container,
+  body.mobile .dialogue-header,
   body.mobile .dialogue-content,
-  body.mobile .dialogue-options {
+  body.mobile .dialogue-options,
+  body.mobile .dialogue-option,
+  body.mobile .dialogue-close {
     touch-action: manipulation !important;
+    pointer-events: auto !important;
+    -webkit-touch-callout: default !important;
+    -webkit-user-select: auto !important;
+    user-select: auto !important;
   }
 
-  /* Override global mobile touch rules specifically for dialogue */
-  body.mobile .dialogue-panel *:not(.dialogue-message) {
+  /* Force touch events on all dialogue interactive elements */
+  body.mobile .dialogue-option,
+  body.mobile .dialogue-option *,
+  body.mobile .dialogue-close,
+  body.mobile .dialogue-close *,
+  body.mobile .dialogue-quest-icon,
+  body.mobile .dialogue-option-text {
     touch-action: manipulation !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
   }
 
-  /* Allow scrolling only on message content */
+  /* Only allow scrolling on message content */
   body.mobile .dialogue-message {
     touch-action: pan-y !important;
+    overflow-y: auto;
   }
 </style> 
 
