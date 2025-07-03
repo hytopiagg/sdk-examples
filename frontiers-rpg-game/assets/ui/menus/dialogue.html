@@ -68,7 +68,7 @@
           optionEl.textContent = option.text;
         }
         
-        optionEl.addEventListener('pointerdown', () => {
+        optionEl.addEventListener('click', () => {
           if (option.dismiss) {
             closeDialogue(option.pureExit);
           }
@@ -118,7 +118,7 @@
   });
 
   // Setup close button
-  document.querySelector('.dialogue-close').addEventListener('pointerdown', closeDialogue);
+  document.querySelector('.dialogue-close').addEventListener('click', closeDialogue);
 </script>
 
 <style>

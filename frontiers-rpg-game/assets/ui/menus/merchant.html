@@ -85,7 +85,7 @@
     // Add close button handler
     const closeButton = document.querySelector('.merchant-close');
     if (closeButton) {
-      closeButton.addEventListener('pointerdown', () => toggleMerchant(null));
+      closeButton.addEventListener('click', () => toggleMerchant(null));
     }
   }
 
@@ -397,15 +397,15 @@
     const confirmBtn = placeholder.querySelector('.merchant-confirm-action');
 
     if (decreaseBtn) {
-      decreaseBtn.addEventListener('pointerdown', () => changeQuantity(-1));
+      decreaseBtn.addEventListener('click', () => changeQuantity(-1));
     }
     
     if (increaseBtn) {
-      increaseBtn.addEventListener('pointerdown', () => changeQuantity(1));
+      increaseBtn.addEventListener('click', () => changeQuantity(1));
     }
 
     if (confirmBtn && price > 0) {
-      confirmBtn.addEventListener('pointerdown', confirmAction);
+      confirmBtn.addEventListener('click', confirmAction);
     }
   }
 

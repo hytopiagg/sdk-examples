@@ -72,7 +72,7 @@
 
   function setupEventListeners() {
     const closeButton = document.querySelector('.quests-close');
-    closeButton.addEventListener('pointerdown', closeQuests);
+    closeButton.addEventListener('click', closeQuests);
   }
 
   function updateQuestData(questData) {
@@ -169,7 +169,7 @@
       <div class="quests-item-progress">${progress}</div>
     `;
     
-    questItem.addEventListener('pointerdown', () => selectQuest(questId));
+    questItem.addEventListener('click', () => selectQuest(questId));
     return questItem;
   }
 

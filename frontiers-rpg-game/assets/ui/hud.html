@@ -212,7 +212,7 @@
     
     // Setup click events
     hotbarSlots.forEach((slot, index) => {
-      slot.addEventListener('pointerdown', () => setActiveSlot(index));
+      slot.addEventListener('click', () => setActiveSlot(index));
     });
 
     // Setup keyboard events
@@ -233,7 +233,7 @@
     };
 
     Object.entries(buttons).forEach(([id, handler]) => {
-      document.getElementById(id).addEventListener('pointerdown', handler);
+      document.getElementById(id).addEventListener('click', handler);
     });
 
     // Setup death overlay respawn button

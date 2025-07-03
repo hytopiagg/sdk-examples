@@ -179,7 +179,7 @@
 
   // Event Listeners
   function setupEventListeners() {
-    document.querySelector('.skills-close').addEventListener('pointerdown', closeSkills);
+    document.querySelector('.skills-close').addEventListener('click', closeSkills);
     
     // Setup mobile tooltip handling
     setupMobileTooltips();
@@ -192,10 +192,10 @@
     if (!isMobile) return;
     
     // Add click handler to skills container for event delegation
-    document.querySelector('.skills-skills-grid').addEventListener('pointerdown', handleMobileTooltipClick);
+    document.querySelector('.skills-skills-grid').addEventListener('click', handleMobileTooltipClick);
     
     // Add click handler to document to close tooltips when clicking outside
-    document.addEventListener('pointerdown', handleDocumentClick);
+    document.addEventListener('click', handleDocumentClick);
   }
   
   function handleMobileTooltipClick(e) {
