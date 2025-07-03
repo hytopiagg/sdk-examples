@@ -957,12 +957,12 @@ window.ItemTooltips = (function() {
 
   function setupEventListeners() {
     const closeButton = document.querySelector('.backpack-close');
-    closeButton.addEventListener('click', closeBackpack);
+    closeButton.addEventListener('pointerdown', closeBackpack);
 
     // Setup slot click handlers
     document.querySelectorAll('.backpack-slot, .backpack-wearable-slot, .backpack-hotbar-slot')
       .forEach(slot => {
-        slot.addEventListener('click', e => {
+        slot.addEventListener('pointerdown', e => {
           e.preventDefault();
           e.stopPropagation();
           
@@ -991,7 +991,7 @@ window.ItemTooltips = (function() {
     });
 
     // Setup click outside containers handler for item dropping
-    document.addEventListener('click', e => {
+    document.addEventListener('pointerdown', e => {
       // Only handle if we have a held item
       if (!heldItem) return;
       
@@ -1900,7 +1900,7 @@ window.ItemTooltips = (function() {
 
   // Event Listeners
   function setupEventListeners() {
-    document.querySelector('.skills-close').addEventListener('click', closeSkills);
+    document.querySelector('.skills-close').addEventListener('pointerdown', closeSkills);
     
     // Setup mobile tooltip handling
     setupMobileTooltips();
@@ -1913,10 +1913,10 @@ window.ItemTooltips = (function() {
     if (!isMobile) return;
     
     // Add click handler to skills container for event delegation
-    document.querySelector('.skills-skills-grid').addEventListener('click', handleMobileTooltipClick);
+    document.querySelector('.skills-skills-grid').addEventListener('pointerdown', handleMobileTooltipClick);
     
     // Add click handler to document to close tooltips when clicking outside
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('pointerdown', handleDocumentClick);
   }
   
   function handleMobileTooltipClick(e) {
@@ -2470,7 +2470,7 @@ window.ItemTooltips = (function() {
           optionEl.textContent = option.text;
         }
         
-        optionEl.addEventListener('click', () => {
+        optionEl.addEventListener('pointerdown', () => {
           if (option.dismiss) {
             closeDialogue(option.pureExit);
           }
@@ -2520,7 +2520,7 @@ window.ItemTooltips = (function() {
   });
 
   // Setup close button
-  document.querySelector('.dialogue-close').addEventListener('click', closeDialogue);
+  document.querySelector('.dialogue-close').addEventListener('pointerdown', closeDialogue);
 </script>
 
 <style>
@@ -2952,7 +2952,7 @@ window.ItemTooltips = (function() {
 
   function setupEventListeners() {
     const closeButton = document.querySelector('.quests-close');
-    closeButton.addEventListener('click', closeQuests);
+    closeButton.addEventListener('pointerdown', closeQuests);
   }
 
   function updateQuestData(questData) {
@@ -3049,7 +3049,7 @@ window.ItemTooltips = (function() {
       <div class="quests-item-progress">${progress}</div>
     `;
     
-    questItem.addEventListener('click', () => selectQuest(questId));
+    questItem.addEventListener('pointerdown', () => selectQuest(questId));
     return questItem;
   }
 
@@ -4071,7 +4071,7 @@ window.ItemTooltips = (function() {
     // Add close button handler
     const closeButton = document.querySelector('.merchant-close');
     if (closeButton) {
-      closeButton.addEventListener('click', () => toggleMerchant(null));
+      closeButton.addEventListener('pointerdown', () => toggleMerchant(null));
     }
   }
 
@@ -4383,15 +4383,15 @@ window.ItemTooltips = (function() {
     const confirmBtn = placeholder.querySelector('.merchant-confirm-action');
 
     if (decreaseBtn) {
-      decreaseBtn.addEventListener('click', () => changeQuantity(-1));
+      decreaseBtn.addEventListener('pointerdown', () => changeQuantity(-1));
     }
     
     if (increaseBtn) {
-      increaseBtn.addEventListener('click', () => changeQuantity(1));
+      increaseBtn.addEventListener('pointerdown', () => changeQuantity(1));
     }
 
     if (confirmBtn && price > 0) {
-      confirmBtn.addEventListener('click', confirmAction);
+      confirmBtn.addEventListener('pointerdown', confirmAction);
     }
   }
 
@@ -5169,7 +5169,7 @@ window.ItemTooltips = (function() {
     // Add close button handler
     const closeButton = document.querySelector('.crafting-close');
     if (closeButton) {
-      closeButton.addEventListener('click', () => toggleCrafting(null));
+      closeButton.addEventListener('pointerdown', () => toggleCrafting(null));
     }
   }
 
@@ -5439,7 +5439,7 @@ window.ItemTooltips = (function() {
     const confirmBtn = placeholder.querySelector('.crafting-confirm-action');
 
     if (confirmBtn) {
-      confirmBtn.addEventListener('click', confirmCrafting);
+      confirmBtn.addEventListener('pointerdown', confirmCrafting);
     }
 
     // Add tooltips to requirement items
@@ -6265,7 +6265,7 @@ window.ItemTooltips = (function() {
 
   // Event Listeners
   function setupEventListeners() {
-    document.querySelector('.help-close').addEventListener('click', closeHelp);
+    document.querySelector('.help-close').addEventListener('pointerdown', closeHelp);
   }
 
   // Initialize
@@ -7257,7 +7257,7 @@ window.ItemTooltips = (function() {
     
     // Setup click events
     hotbarSlots.forEach((slot, index) => {
-      slot.addEventListener('click', () => setActiveSlot(index));
+      slot.addEventListener('pointerdown', () => setActiveSlot(index));
     });
 
     // Setup keyboard events
@@ -7278,22 +7278,22 @@ window.ItemTooltips = (function() {
     };
 
     Object.entries(buttons).forEach(([id, handler]) => {
-      document.getElementById(id).addEventListener('click', handler);
+      document.getElementById(id).addEventListener('pointerdown', handler);
     });
 
     // Setup death overlay respawn button
-    document.getElementById('hud-death-respawn-btn').addEventListener('click', handleRespawn);
+    document.getElementById('hud-death-respawn-btn').addEventListener('pointerdown', handleRespawn);
     
     // Setup mobile buttons
-    document.getElementById('hud-attack-btn').addEventListener('touchstart', handleAttackTap);
-    document.getElementById('hud-attack-btn').addEventListener('touchend', stopAutoAttack);
-    document.getElementById('hud-attack-btn').addEventListener('touchcancel', stopAutoAttack);
-    document.getElementById('hud-dodge-btn').addEventListener('touchstart', () => hytopia.pressInput('q', true));
-    document.getElementById('hud-dodge-btn').addEventListener('touchend', () => hytopia.pressInput('q', false));
-    document.getElementById('hud-jump-btn').addEventListener('touchstart', () => hytopia.pressInput('sp', true));
-    document.getElementById('hud-jump-btn').addEventListener('touchend', () => hytopia.pressInput('sp', false));
-    document.getElementById('hud-interact-btn').addEventListener('touchstart', () => hytopia.pressInput('e', true));
-    document.getElementById('hud-interact-btn').addEventListener('touchend', () => hytopia.pressInput('e', false));
+    document.getElementById('hud-attack-btn').addEventListener('pointerdown', handleAttackTap);
+    document.getElementById('hud-attack-btn').addEventListener('pointerup', stopAutoAttack);
+    document.getElementById('hud-attack-btn').addEventListener('pointercancel', stopAutoAttack);
+    document.getElementById('hud-dodge-btn').addEventListener('pointerdown', () => hytopia.pressInput('q', true));
+    document.getElementById('hud-dodge-btn').addEventListener('pointerup', () => hytopia.pressInput('q', false));
+    document.getElementById('hud-jump-btn').addEventListener('pointerdown', () => hytopia.pressInput('sp', true));
+    document.getElementById('hud-jump-btn').addEventListener('pointerup', () => hytopia.pressInput('sp', false));
+    document.getElementById('hud-interact-btn').addEventListener('pointerdown', () => hytopia.pressInput('e', true));
+    document.getElementById('hud-interact-btn').addEventListener('pointerup', () => hytopia.pressInput('e', false));
   }
 
   function updateHudQuestCount(activeCount, completedCount) {
@@ -7555,7 +7555,6 @@ window.ItemTooltips = (function() {
   // Auto-attack system
   let autoAttackInterval = null;
   let lastTapTime = 0;
-
 
   function handleAttackTap() {
     const currentTime = Date.now();
@@ -8588,8 +8587,6 @@ window.ItemTooltips = (function() {
   .hud-mobile-button:active .hud-mobile-button-icon {
     opacity: 1;
   }
-
-
 
   /* ============================================
      MOBILE RESPONSIVE

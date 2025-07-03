@@ -60,7 +60,7 @@
     // Add close button handler
     const closeButton = document.querySelector('.crafting-close');
     if (closeButton) {
-      closeButton.addEventListener('click', () => toggleCrafting(null));
+      closeButton.addEventListener('pointerdown', () => toggleCrafting(null));
     }
   }
 
@@ -330,7 +330,7 @@
     const confirmBtn = placeholder.querySelector('.crafting-confirm-action');
 
     if (confirmBtn) {
-      confirmBtn.addEventListener('click', confirmCrafting);
+      confirmBtn.addEventListener('pointerdown', confirmCrafting);
     }
 
     // Add tooltips to requirement items

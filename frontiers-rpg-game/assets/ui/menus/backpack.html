@@ -288,12 +288,12 @@
 
   function setupEventListeners() {
     const closeButton = document.querySelector('.backpack-close');
-    closeButton.addEventListener('click', closeBackpack);
+    closeButton.addEventListener('pointerdown', closeBackpack);
 
     // Setup slot click handlers
     document.querySelectorAll('.backpack-slot, .backpack-wearable-slot, .backpack-hotbar-slot')
       .forEach(slot => {
-        slot.addEventListener('click', e => {
+        slot.addEventListener('pointerdown', e => {
           e.preventDefault();
           e.stopPropagation();
           
@@ -322,7 +322,7 @@
     });
 
     // Setup click outside containers handler for item dropping
-    document.addEventListener('click', e => {
+    document.addEventListener('pointerdown', e => {
       // Only handle if we have a held item
       if (!heldItem) return;
       
