@@ -1,0 +1,20 @@
+{
+  "name": "particles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hytopia.com/assets": "^0.3.2",
+    "hytopia": "^0.6.32"
+  },
+  "trustedDependencies": [
+    "mediasoup",
+    "sharp"
+  ]
+}

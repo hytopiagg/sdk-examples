@@ -323,7 +323,6 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   }
 
   public takeDamage(damage: number, attacker?: Entity): void {
-    console.log(damage);
     this.adjustHealth(-damage, attacker);
   }
 
