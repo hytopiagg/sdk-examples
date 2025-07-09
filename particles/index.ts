@@ -111,10 +111,10 @@ function attachPlayerParticles(playerEntity: DefaultPlayerEntity) {
   // Bubble emitter effect from players
   const particleEmitter = new ParticleEmitter({
     attachedToEntity: playerEntity, // Attached to an entity instead of a position, in this case the player entity
+    attachedToEntityNodeName: 'hand-right-anchor', // Optional, Emit from the right hand named model node of the player entity, this is an explicit name of a gltf node in the model.
     textureUri: 'particles/circle-blur.png',
     colorStart: { r: 128, g: 128, b: 255 }, // Blue base color
     gravity: { x: 0, y: -1, z: 0 }, // Gravity of the particles, pull them down at a rate of 1 block per second
-    offset: { x: 0, y: 0.85, z: 0 }, // Offset of the particles from the entity
     opacityStartVariance: 0.5, // Variates the base opacity +/- this value
     velocity: { x: 0, y: 1, z: 0 }, // Velocity of the particles
     velocityVariance: { x: 1, y: 0.5, z: 1 }, // Variates the base velocity +/- this value
