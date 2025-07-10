@@ -106,5 +106,19 @@ export default class GameClock {
     world.setAmbientLightColor({ r, g, b });
     world.setAmbientLightIntensity(ambientIntensity);
     world.setSkyboxIntensity(skyboxIntensity);
+
+    // Adjust fog color based on day/night cycle if region has base fog color
+    if (region.baseFogColor) {
+      // Match the colorIntensity pattern - fog brightness follows same logic as lighting
+      const fogIntensityMultiplier = Math.max(0.3, sunHeightNormalized);
+      
+      const adjustedFogColor = {
+        r: Math.floor(region.baseFogColor.r * fogIntensityMultiplier),
+        g: Math.floor(region.baseFogColor.g * fogIntensityMultiplier),
+        b: Math.floor(region.baseFogColor.b * fogIntensityMultiplier)
+      };
+      
+      world.setFogColor(adjustedFogColor);
+    }
   }
 }
