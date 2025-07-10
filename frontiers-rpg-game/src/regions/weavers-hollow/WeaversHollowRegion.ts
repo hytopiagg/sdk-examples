@@ -5,7 +5,7 @@ import PortalEntity from '../../entities/PortalEntity';
 
 import weaversHollowMap from '../../../assets/maps/weavers-hollow.json';
 
-import SpiderWebEntity from '../../entities/environmental/SpiderWebEntity';
+import SpiderWebEntity from '../../entities/enemies/SpiderWebEntity';
 import QueenWeaverEntity from '../../entities/enemies/QueenWeaverEntity';
 import WeaverBroodlingEntity from '../../entities/enemies/WeaverBroodlingEntity';
 

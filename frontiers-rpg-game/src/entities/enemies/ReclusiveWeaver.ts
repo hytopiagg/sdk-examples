@@ -1,5 +1,5 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
-import SpiderwebEntity from "../environmental/SpiderwebEntity";
+import SpiderwebEntity from "./SpiderWebEntity";
 import { RigidBodyType } from "hytopia";
 import type BaseEntity from "../BaseEntity";
 import type GamePlayerEntity from "../../GamePlayerEntity";

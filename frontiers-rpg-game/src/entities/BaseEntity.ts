@@ -1,6 +1,6 @@
 import {
   Entity,
-  EntityOptions,
+  ModelEntityOptions,
   MoveOptions,
   PathfindingEntityController,
   PathfindingOptions,
@@ -81,7 +81,7 @@ export type BaseEntityOptions = {
   nameplateViewDistnace?: number;
   pathfindingOptions?: PathfindingOptions;
   pushable?: boolean;
-} & EntityOptions;
+} & ModelEntityOptions;
 
 export type WanderOptions = {
   idleMinMs: number;
