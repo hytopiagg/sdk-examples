@@ -15,6 +15,9 @@ export default class HearthwildsRegion extends GameRegion {
       skyboxUri: 'skyboxes/partly-cloudy',
       spawnPoint: { x: 200, y: 15, z: -75 },
       ambientAudioUri: 'audio/music/jungle-theme-looping.mp3',
+      fogColor: { r: 152, g: 196, b: 127 },
+      fogNear: 15,
+      fogFar: 50,
     });
   }
 
