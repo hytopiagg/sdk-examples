@@ -7,23 +7,27 @@ import type BaseEntity from "../BaseEntity";
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
+import ChieftanBladeItem from "../../items/weapons/ChieftanBladeItem";
+import GoldIngotItem from "../../items/materials/GoldIngotItem";
 import GorkinEarItem from "../../items/materials/GorkinEarItem";
 import GorkinEyeItem from "../../items/materials/GorkinEyeItem";
 import GorkinFootItem from "../../items/materials/GorkinFootItem";
 import GorkinHandItem from "../../items/materials/GorkinHandItem";
 import GorkinSkullItem from "../../items/materials/GorkinSkullItem";
+import IronIngotItem from "../../items/materials/IronIngotItem";
 import ShatteredSwordItem from "../../items/materials/ShatteredSwordItem";
 import ShackleItem from "../../items/materials/ShackleItem";
+import SilverSlabItem from "../../items/materials/SilverSlabItem";
 import ToughMonsterHide from "../../items/materials/ToughMonsterHide";
 
-export type GorkinEnforcerEntityOptions = {
+export type GorkinChieftanEntityOptions = {
 
 } & Partial<BaseCombatEntityOptions>;
 
-export default class GorkinEnforcerEntity extends BaseCombatEntity {
+export default class GorkinChieftanEntity extends BaseCombatEntity {
   private _stompParticleEmitter: ParticleEmitter;
 
-  constructor(options?: GorkinEnforcerEntityOptions) {
+  constructor(options?: GorkinChieftanEntityOptions) {
     super({
       aggroRadius: 9,
       aggroSensorForwardOffset: 3,
@@ -53,7 +57,7 @@ export default class GorkinEnforcerEntity extends BaseCombatEntity {
         { // Double slash attack
           animations: [ 'atk3' ],
           complexAttack: (params) => this._doubleSlashAttack(params.target),
-          complexAttackDelayMs: 700,
+          complexAttackDelayMs: 850,
           cooldownMs: 3500,
           simpleAttackDamage: 55, // complex attack triggers simple attack processing
           simpleAttackDamageVariance: 0.2,
@@ -63,23 +67,27 @@ export default class GorkinEnforcerEntity extends BaseCombatEntity {
           weight: 1,
         },
       ],
-      combatExperienceReward: 65,
+      combatExperienceReward: 850,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 2400,
       deathItemDrops: [
-        { itemClass: GoldItem, minQuantity: 30, maxQuantity: 45, weight: 5 },
-        { itemClass: GorkinEarItem, minQuantity: 1, maxQuantity: 2, weight: 4 },
-        { itemClass: GorkinEyeItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
-        { itemClass: GorkinFootItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
-        { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
-        { itemClass: ShatteredSwordItem, weight: 3 },
-        { itemClass: ToughMonsterHide, weight: 3 },
-        { itemClass: GorkinSkullItem, weight: 2 },
-        { itemClass: ShackleItem, weight: 2 },
+        { itemClass: GoldItem, minQuantity: 30, maxQuantity: 45, weight: 20 },
+        { itemClass: GorkinEyeItem, minQuantity: 1, maxQuantity: 2, weight: 15 },
+        { itemClass: GorkinFootItem, minQuantity: 1, maxQuantity: 2, weight: 15 },
+        { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 15 },
+        { itemClass: ShatteredSwordItem, weight: 10 },
+        { itemClass: ToughMonsterHide, weight: 10 },
+        { itemClass: GorkinSkullItem, weight: 10 },
+        { itemClass: ShackleItem, weight: 10 },
+        { itemClass: GoldIngotItem, minQuantity: 1, maxQuantity: 2, weight: 5 },
+        { itemClass: IronIngotItem, minQuantity: 1, maxQuantity: 2, weight: 5 },
+        { itemClass: SilverSlabItem, minQuantity: 1, maxQuantity: 2, weight: 5 },
+        { itemClass: GorkinEarItem, minQuantity: 1, maxQuantity: 2, weight: 5 },
+        { itemClass: ChieftanBladeItem, weight: 1 },
       ],
-      deathItemMaxDrops: 5,
+      deathItemMaxDrops: 3,
       diameterOverride: 0.75,
-      health: 1200,
+      health: 1550,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/gorkin-chieftan.gltf',
       modelPreferredShape: ColliderShape.CAPSULE,
@@ -130,7 +138,7 @@ export default class GorkinEnforcerEntity extends BaseCombatEntity {
 
   private _doubleSlashAttack(target: BaseEntity | GamePlayerEntity) {
     this.processSimpleAttack(target, this.attacks[2]);
-    setTimeout(() => this.processSimpleAttack(target, this.attacks[2]), 800);
+    setTimeout(() => this.processSimpleAttack(target, this.attacks[2]), 650);
   }
 
   private _slashStabAttack(target: BaseEntity | GamePlayerEntity) {
