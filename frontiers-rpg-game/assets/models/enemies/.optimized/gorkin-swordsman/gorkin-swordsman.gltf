@@ -1609,6 +1609,30 @@
       "count": 24,
       "bufferView": 12,
       "byteOffset": 12
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 24,
+      "max": [
+        0.0625,
+        0.125,
+        1.71875
+      ],
+      "min": [
+        -0.0625,
+        0,
+        0.96875
+      ],
+      "bufferView": 13,
+      "byteOffset": 0
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 24,
+      "bufferView": 13,
+      "byteOffset": 12
     }
   ],
   "bufferViews": [
@@ -1699,6 +1723,13 @@
       "byteLength": 480,
       "byteStride": 20,
       "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 54700,
+      "byteLength": 480,
+      "byteStride": 20,
+      "target": 34962
     }
   ],
   "samplers": [
@@ -1724,7 +1755,7 @@
   "buffers": [
     {
       "uri": "gorkin-swordsman.bin",
-      "byteLength": 54700
+      "byteLength": 55180
     }
   ],
   "materials": [
@@ -1737,6 +1768,19 @@
         "baseColorTexture": {
           "index": 0
         }
+      }
+    },
+    {
+      "alphaMode": "MASK",
+      "alphaCutoff": 0.2,
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "metallicFactor": 0
       }
     }
   ],
@@ -1892,6 +1936,19 @@
           "mode": 4,
           "material": 0,
           "indices": 145
+        }
+      ]
+    },
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 170,
+            "TEXCOORD_0": 171,
+            "NORMAL": 165
+          },
+          "mode": 4,
+          "material": 1
         }
       ]
     }
@@ -2126,6 +2183,15 @@
       ]
     },
     {
+      "name": "cube",
+      "translation": [
+        0.40625,
+        0.34375,
+        0
+      ],
+      "mesh": 11
+    },
+    {
       "name": "root",
       "translation": [
         0,
@@ -2135,12 +2201,13 @@
       "children": [
         1,
         3,
-        21
+        21,
+        22
       ]
     },
     {
       "children": [
-        22
+        23
       ]
     }
   ],
@@ -3236,14 +3303,14 @@
         {
           "sampler": 11,
           "target": {
-            "node": 22,
+            "node": 23,
             "path": "rotation"
           }
         },
         {
           "sampler": 12,
           "target": {
-            "node": 22,
+            "node": 23,
             "path": "translation"
           }
         },
@@ -3507,7 +3574,7 @@
     {
       "name": "blockbench_export",
       "nodes": [
-        23
+        24
       ]
     }
   ],

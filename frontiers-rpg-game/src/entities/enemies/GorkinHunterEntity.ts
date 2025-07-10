@@ -1,5 +1,6 @@
-import { ColliderShape, RigidBodyType } from "hytopia";
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
+import BaseProjectileEntity from "../BaseProjectileEntity";
+import type { Vector3Like } from 'hytopia';
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
@@ -8,29 +9,27 @@ import GorkinEyeItem from "../../items/materials/GorkinEyeItem";
 import GorkinFootItem from "../../items/materials/GorkinFootItem";
 import GorkinHandItem from "../../items/materials/GorkinHandItem";
 import GorkinSkullItem from "../../items/materials/GorkinSkullItem";
-import ShatteredSwordItem from "../../items/materials/ShatteredSwordItem";
 import ShackleItem from "../../items/materials/ShackleItem";
 import ToughMonsterHide from "../../items/materials/ToughMonsterHide";
 
-export type GorkinEnforcerEntityOptions = {
+export type GorkinHunterEntityOptions = {
 
 } & Partial<BaseCombatEntityOptions>;
 
-export default class GorkinEnforcerEntity extends BaseCombatEntity {
-  constructor(options?: GorkinEnforcerEntityOptions) {
+export default class GorkinHunterEntity extends BaseCombatEntity {
+  constructor(options?: GorkinHunterEntityOptions) {
     super({
-      aggroRadius: 9,
-      aggroSensorForwardOffset: 3,
+      aggroRadius: 13,
+      aggroSensorForwardOffset: 4,
       attacks: [
-        {
+        { // Slow heavy bow attack
           animations: [ 'atk1' ],
-          cooldownMs: 3000,
-          range: 5, // width/depth calculation is messed up and too large because of the model idle shape, so we use 0
-          simpleAttackDamage: 38,
-          simpleAttackDamageVariance: 0.2,
-          simpleAttackDamageDelayMs: 800,
-          stopAllAnimationForMs: 1900,
-          stopMovingForDurationMs: 1900,
+          complexAttack: (params) => {
+            this._shootArrow(params.target.position, this.calculateDamageWithVariance(24, 0.3));
+          },
+          complexAttackDelayMs: 1550,
+          cooldownMs: 2500,
+          range: 12,
           weight: 1,
         },
       ],
@@ -38,40 +37,44 @@ export default class GorkinEnforcerEntity extends BaseCombatEntity {
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 2400,
       deathItemDrops: [
-        { itemClass: GoldItem, minQuantity: 18, maxQuantity: 27, weight: 5 },
+        { itemClass: GoldItem, minQuantity: 16, maxQuantity: 24, weight: 5 },
         { itemClass: GorkinEarItem, minQuantity: 1, maxQuantity: 2, weight: 4 },
         { itemClass: GorkinEyeItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinFootItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
-        { itemClass: ShatteredSwordItem, weight: 3 },
         { itemClass: ToughMonsterHide, weight: 3 },
         { itemClass: GorkinSkullItem, weight: 2 },
         { itemClass: ShackleItem, weight: 2 },
       ],
-      diameterOverride: 0.75,
-      health: 260,
+      health: 190,
       idleAnimations: [ 'idle' ],
-      modelUri: 'models/enemies/gorkin-enforcer.gltf',
-      modelPreferredShape: ColliderShape.CAPSULE,
+      modelUri: 'models/enemies/gorkin-hunter.gltf',
       modelScale: 0.9,
       moveAnimations: [ 'walk' ],
       moveSpeed: 3,
-      name: 'Gorkin Enforcer',
-      rigidBodyOptions: {
-        type: RigidBodyType.DYNAMIC,
-        colliders: [ // manually sized collider since the chain whip breaks auto calculations
-          {
-            shape: ColliderShape.CAPSULE,
-            halfHeight: 0.35,
-            radius: 0.65,
-          },
-        ],
-      },
+      name: 'Gorkin Hunter',
       pathfindingOptions: {
         maxJump: 2,
         maxFall: 2,
       },
       ...options,
     });
+  }
+
+  private _shootArrow(targetPosition: Vector3Like, damage: number) {
+    if (!this.world) return;
+    
+    const arrow = new BaseProjectileEntity({
+      damage,
+      despawnAfterMs: 1000,
+      direction: this.calculateDirectionToTargetPosition(targetPosition),
+      gravityScale: 0.1,
+      modelUri: 'models/projectiles/arrow.glb',
+      modelScale: 0.75,
+      speed: 35,
+      source: this,
+    });
+    
+    arrow.spawn(this.world, this.position, this.rotation);
   }
 }
