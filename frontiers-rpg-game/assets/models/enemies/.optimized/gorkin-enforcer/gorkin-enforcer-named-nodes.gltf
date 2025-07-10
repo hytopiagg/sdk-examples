@@ -1609,6 +1609,30 @@
       "count": 24,
       "bufferView": 26,
       "byteOffset": 12
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 24,
+      "max": [
+        0.125,
+        0.1875,
+        2.625
+      ],
+      "min": [
+        -0.125,
+        -0.0625,
+        2.5
+      ],
+      "bufferView": 27,
+      "byteOffset": 0
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 24,
+      "bufferView": 27,
+      "byteOffset": 12
     }
   ],
   "bufferViews": [
@@ -1797,6 +1821,13 @@
       "byteLength": 480,
       "byteStride": 20,
       "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 38964,
+      "byteLength": 480,
+      "byteStride": 20,
+      "target": 34962
     }
   ],
   "samplers": [
@@ -1822,7 +1853,7 @@
   "buffers": [
     {
       "uri": "gorkin-enforcer-named-nodes.bin",
-      "byteLength": 38964
+      "byteLength": 39444
     }
   ],
   "materials": [
@@ -1835,6 +1866,19 @@
         "baseColorTexture": {
           "index": 0
         }
+      }
+    },
+    {
+      "alphaMode": "MASK",
+      "alphaCutoff": 0.2,
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "metallicFactor": 0
       }
     }
   ],
@@ -2200,6 +2244,19 @@
           "mode": 4,
           "material": 0,
           "indices": 116
+        }
+      ]
+    },
+    {
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 166,
+            "TEXCOORD_0": 167,
+            "NORMAL": 118
+          },
+          "mode": 4,
+          "material": 1
         }
       ]
     }
@@ -2692,6 +2749,15 @@
       ]
     },
     {
+      "name": "cube",
+      "translation": [
+        0.40625,
+        0.34375,
+        0.65625
+      ],
+      "mesh": 26
+    },
+    {
       "name": "root",
       "translation": [
         0,
@@ -2701,12 +2767,13 @@
       "children": [
         2,
         5,
-        45
+        45,
+        46
       ]
     },
     {
       "children": [
-        46
+        47
       ]
     }
   ],
@@ -3909,14 +3976,14 @@
         {
           "sampler": 12,
           "target": {
-            "node": 46,
+            "node": 47,
             "path": "rotation"
           }
         },
         {
           "sampler": 13,
           "target": {
-            "node": 46,
+            "node": 47,
             "path": "translation"
           }
         },
@@ -4011,7 +4078,7 @@
     {
       "name": "blockbench_export",
       "nodes": [
-        47
+        48
       ]
     }
   ],

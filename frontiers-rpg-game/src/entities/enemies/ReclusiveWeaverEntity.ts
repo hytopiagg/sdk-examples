@@ -42,11 +42,11 @@ export default class ReclusiveWeaverEntity extends BaseCombatEntity {
           weight: 1,
         }
       ],
-      combatExperienceReward: 65,
+      combatExperienceReward: 45,
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 3000,
       deathItemDrops: [
-        { itemClass: GoldItem, minQuantity: 18, maxQuantity: 32, weight: 10 },
+        { itemClass: GoldItem, minQuantity: 18, maxQuantity: 28, weight: 10 },
         { itemClass: WeaverCarapaceItem, weight: 5 },
         { itemClass: WeaverHeartItem, weight: 4 },
         { itemClass: WeaverEggItem, minQuantity: 1, maxQuantity: 2, weight: 3 },

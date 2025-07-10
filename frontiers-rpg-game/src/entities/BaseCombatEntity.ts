@@ -37,6 +37,8 @@ export type BaseCombatEntityAttack = {
   simpleAttackDamageVariance?: number; // Percentage variance (0-1), e.g., 0.2 = ±20% damage
   simpleAttackDamageDelayMs?: number; // When during animation to deal damage (if projectile, delay after hit)
   simpleAttackReach?: number; // Applies damage if target is < reach after delay
+  stopAllAnimationForMs?: number;
+  stopMovingForDurationMs?: number;
   stopMovingDuringDelay?: boolean;
   weight: number;
   onHit?: (target: BaseEntity | GamePlayerEntity, attacker: BaseCombatEntity) => void;
@@ -49,6 +51,7 @@ export type BaseCombatEntityOptions = {
   aggroSensorForwardOffset?: number;
   aggroTargetTypes?: (typeof BaseEntity | typeof GamePlayerEntity)[];
   attacks?: BaseCombatEntityAttack[];
+  diameterOverride?: number;
   health: number;
   outOfCombatRegenDelayMs?: number;
   outOfCombatRegenPerSecondRate?: number; // rate per second as a percent, ie 0.03 is 3% per second
@@ -97,7 +100,7 @@ export default class BaseCombatEntity extends BaseEntity {
     this._aggroSensorForwardOffset = options.aggroSensorForwardOffset ?? 0;
     this._attacks = options.attacks ?? [];
     this._attackTotalWeight = this._attacks.reduce((sum, attack) => sum + attack.weight, 0);
-    this._diameterSquared = this.width > this.depth ? this.width ** 2 : this.depth ** 2;
+    this._diameterSquared = options.diameterOverride ? options.diameterOverride ** 2 : (this.width > this.depth ? this.width ** 2 : this.depth ** 2);
     this._nextAttack = this._pickRandomAttack();
     this._outOfCombatRegenDelayMs = options.outOfCombatRegenDelayMs ?? COMBAT_REGEN_DEFAULT_DELAY_MS;
     this._outOfCombatRegenPerSecondRate = options.outOfCombatRegenPerSecondRate ?? COMBAT_REGEN_DEFAULT_RATE;
@@ -121,6 +124,7 @@ export default class BaseCombatEntity extends BaseEntity {
     this.on(EntityEvent.TICK, this._onTick);
   }
 
+  public get attacks(): BaseCombatEntityAttack[] { return this._attacks; }
   public get diameterSquared(): number { return this._diameterSquared; }
 
   public attack() {
@@ -128,38 +132,38 @@ export default class BaseCombatEntity extends BaseEntity {
     
     const attack = this._nextAttack;
     const target = this._aggroActiveTarget;
-    
+
+    if (attack.stopAllAnimationForMs && !this.isDead) {
+      const idleAnimations = this.pathfindingController.idleLoopedAnimations;
+      const moveAnimations = this.pathfindingController.moveLoopedAnimations;
+
+      this.pathfindingController.idleLoopedAnimations = [];
+      this.pathfindingController.moveLoopedAnimations = [];
+      this.stopAllModelAnimations();
+
+      setTimeout(() => {
+        if (this.isDead) return;
+        this.pathfindingController.idleLoopedAnimations = idleAnimations;
+        this.pathfindingController.moveLoopedAnimations = moveAnimations;
+        this.startModelLoopedAnimations(idleAnimations);
+      }, attack.stopAllAnimationForMs);
+    }
+
     this.startModelOneshotAnimations(attack.animations);
 
     if (attack.stopMovingDuringDelay) {
       this.stopMoving();
       this._stopMoving = true;
     }
+
+    if (attack.stopMovingForDurationMs) {
+      this.stopMoving();
+      this._stopMoving = true;
+      setTimeout(() => this._stopMoving = false, attack.stopMovingForDurationMs);
+    }
     
     if (!attack.complexAttack) { // Simple attack, animation + damage
-      setTimeout(() => {
-        if (!target || !this._aggroPotentialTargets.has(target) || this.isDead) return;
-        
-        if (!attack.simpleAttackDamage) {
-          return ErrorHandler.warning(`BaseCombatEntity.attack(): Simple attack has no simple attack damage!`);
-        };
-        
-        const distanceSquared = this.calculateDistanceSquaredToTarget(target);
-        const reachSquared = attack.simpleAttackReach ? attack.simpleAttackReach ** 2 : attack.range ** 2;
-        
-        if (distanceSquared <= reachSquared + this._diameterSquared) { // make sure target is in reach still
-          if (isDamageable(target)) {
-            const damage = this.calculateDamageWithVariance(attack.simpleAttackDamage, attack.simpleAttackDamageVariance);
-            target.takeDamage(damage, this);
-          }
-          
-          if (attack.onHit) {
-            attack.onHit(target, this);
-          }
-        }
-        
-        this._stopMoving = false;
-      }, attack.simpleAttackDamageDelayMs ?? 0);
+      setTimeout(() => this.processSimpleAttack(target, attack), attack.simpleAttackDamageDelayMs ?? 0);
     } else { // Complex attack, such as projectile, spell, AoE, etc
       setTimeout(() => {
         if (this.isDead || !attack.complexAttack || !this.world) return;
@@ -169,7 +173,9 @@ export default class BaseCombatEntity extends BaseEntity {
           target: target,
         });
 
-        this._stopMoving = false;
+        if (attack.stopMovingDuringDelay) {
+          this._stopMoving = false;
+        }
       }, attack.complexAttackDelayMs ?? 0);
     }
 
@@ -246,6 +252,32 @@ export default class BaseCombatEntity extends BaseEntity {
     const max = baseDamage * (1 + variance);
     
     return Math.floor(min + Math.random() * (max - min));
+  }
+
+  protected processSimpleAttack(target: BaseEntity | GamePlayerEntity, attack: BaseCombatEntityAttack) {
+    if (!target || !this._aggroPotentialTargets.has(target) || this.isDead) return;
+        
+    if (!attack.simpleAttackDamage) {
+      return ErrorHandler.warning(`BaseCombatEntity.attack(): Simple attack has no simple attack damage!`);
+    };
+    
+    const distanceSquared = this.calculateDistanceSquaredToTarget(target);
+    const reachSquared = attack.simpleAttackReach ? attack.simpleAttackReach ** 2 : attack.range ** 2;
+    
+    if (distanceSquared <= reachSquared + this._diameterSquared) { // make sure target is in reach still
+      if (isDamageable(target)) {
+        const damage = this.calculateDamageWithVariance(attack.simpleAttackDamage, attack.simpleAttackDamageVariance);
+        target.takeDamage(damage, this);
+      }
+      
+      if (attack.onHit) {
+        attack.onHit(target, this);
+      }
+    }
+    
+    if (attack.stopMovingDuringDelay) {
+      this._stopMoving = false;
+    }
   }
 
   protected override shouldDeferWander(): boolean {
