@@ -2,6 +2,10 @@ import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import BaseProjectileEntity from "../BaseProjectileEntity";
 import type { Vector3Like } from 'hytopia';
 
+// Aggro Target Types
+import GamePlayerEntity from "../../GamePlayerEntity";
+import GorkinGruntEntity from "./GorkinGruntEntity";
+
 // Drops
 import CommonMushroomItem from "../../items/consumables/CommonMushroomItem";
 import CommonSeedsItem from "../../items/seeds/CommonSeedsItem";
@@ -21,6 +25,10 @@ export default class RatkinSpellcasterEntity extends BaseCombatEntity {
     super({
       aggroRadius: 12,
       aggroSensorForwardOffset: 3,
+      aggroTargetTypes: [
+        GamePlayerEntity,
+        GorkinGruntEntity,
+      ],
       attacks: [
         { // Fireball attack
           animations: [ 'atk1' ],

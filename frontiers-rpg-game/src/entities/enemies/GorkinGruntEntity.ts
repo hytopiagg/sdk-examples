@@ -1,6 +1,13 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
+import GamePlayerEntity from "../../GamePlayerEntity";
 import type BaseEntity from "../BaseEntity";
-import type GamePlayerEntity from "../../GamePlayerEntity";
+
+// Aggro Target Types
+import RatkinBruteEntity from "./RatkinBruteEntity";
+import RatkinRangerEntity from "./RatkinRangerEntity";
+import RatkinSpellcasterEntity from "./RatkinSpellcasterEntity";
+import RatkinWarriorEntity from "./RatkinWarriorEntity";
+import ReclusiveWeaverEntity from "./ReclusiveWeaverEntity";
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
@@ -22,6 +29,14 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
     super({
       aggroRadius: 9,
       aggroSensorForwardOffset: 3,
+      aggroTargetTypes: [
+        GamePlayerEntity,
+        RatkinBruteEntity,
+        RatkinRangerEntity,
+        RatkinSpellcasterEntity,
+        RatkinWarriorEntity,
+        ReclusiveWeaverEntity,
+      ],
       attacks: [
         { // Light attack
           animations: [ 'atk1' ],

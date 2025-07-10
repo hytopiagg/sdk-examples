@@ -2,6 +2,10 @@ import { ColliderShape, Entity, RigidBodyType } from "hytopia";
 import { isDamageable } from '../../interfaces/IDamageable';
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import BaseProjectileEntity from '../BaseProjectileEntity';
+import GamePlayerEntity from "../../GamePlayerEntity";
+
+// Aggro Target Types
+import ReclusiveWeaverEntity from "./ReclusiveWeaverEntity";
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
@@ -22,6 +26,10 @@ export default class GorkinShamanEntity extends BaseCombatEntity {
     super({
       aggroRadius: 9,
       aggroSensorForwardOffset: 3,
+      aggroTargetTypes: [
+        GamePlayerEntity,
+        ReclusiveWeaverEntity,
+      ],
       attacks: [
         { // Toxic AoE
           animations: [ 'atk1' ],

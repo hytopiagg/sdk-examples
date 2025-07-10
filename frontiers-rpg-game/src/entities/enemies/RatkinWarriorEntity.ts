@@ -1,5 +1,9 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 
+// Aggro Target Types
+import GamePlayerEntity from "../../GamePlayerEntity";
+import GorkinGruntEntity from "./GorkinGruntEntity";
+
 // Drops
 import CommonMushroomItem from "../../items/consumables/CommonMushroomItem";
 import CommonSeedsItem from "../../items/seeds/CommonSeedsItem";
@@ -19,6 +23,10 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
     super({
       aggroRadius: 7.5,
       aggroSensorForwardOffset: 3,
+      aggroTargetTypes: [
+        GamePlayerEntity,
+        GorkinGruntEntity,
+      ],
       attacks: [
         { // Heavy attack
           animations: [ 'atk1' ],

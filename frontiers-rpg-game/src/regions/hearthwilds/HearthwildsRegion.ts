@@ -6,6 +6,11 @@ import type { WanderOptions } from '../../entities/BaseEntity';
 
 import hearthwildsMap from '../../../assets/maps/hearthwilds.json';
 
+// NPCs
+import HerderBorisEntity from './npcs/HerderBorisEntity';
+import SurvivorMycelEntity from './npcs/SurvivorMycelEntity';
+import WoolranEntity from '../../entities/npcs/WoolranEntity';
+
 // Spawner Enemies
 import GorkinChieftanEntity from '../../entities/enemies/GorkinChieftanEntity';
 import GorkinEnforcerEntity from '../../entities/enemies/GorkinEnforcerEntity';
@@ -22,7 +27,7 @@ export default class HearthwildsRegion extends GameRegion {
       name: 'Hearthwilds',
       map: hearthwildsMap,
       skyboxUri: 'skyboxes/partly-cloudy',
-      spawnPoint: { x: 200, y: 15, z: -75 },
+      spawnPoint: { x: 245, y: 22, z: -90 },
       ambientAudioUri: 'audio/music/jungle-theme-looping.mp3',
       fogColor: { r: 152, g: 196, b: 127 },
       fogNear: 15,
@@ -34,6 +39,8 @@ export default class HearthwildsRegion extends GameRegion {
     super.setup();
 
     this._setupEnemySpawners();
+    this._setupNPCs();
+    this._setupPortals();
   }
 
   private _setupEnemySpawners(): void {
@@ -46,12 +53,12 @@ export default class HearthwildsRegion extends GameRegion {
 
     // Gorkin
     const gorkinSpawnables = [
-      { entityConstructor: GorkinChieftanEntity, weight: 1, wanderOptions: roamWanderOptions }, // boss
-      { entityConstructor: GorkinEnforcerEntity, weight: 15, wanderOptions: roamWanderOptions },
-      { entityConstructor: GorkinGruntEntity, weight: 20, wanderOptions: roamWanderOptions },
-      { entityConstructor: GorkinShamanEntity, weight: 15, wanderOptions: roamWanderOptions },
-      { entityConstructor: GorkinSwordsmanEntity, weight: 17, wanderOptions: roamWanderOptions },
-      { entityConstructor: GorkinHunterEntity, weight: 18, wanderOptions: roamWanderOptions },
+      { entityConstructor: GorkinChieftanEntity, weight: 1, wanders: true, wanderOptions: roamWanderOptions }, // boss
+      { entityConstructor: GorkinEnforcerEntity, weight: 15, wanders: true, wanderOptions: roamWanderOptions },
+      { entityConstructor: GorkinGruntEntity, weight: 20, wanders: true, wanderOptions: roamWanderOptions },
+      { entityConstructor: GorkinShamanEntity, weight: 15, wanders: true, wanderOptions: roamWanderOptions },
+      { entityConstructor: GorkinSwordsmanEntity, weight: 17, wanders: true, wanderOptions: roamWanderOptions },
+      { entityConstructor: GorkinHunterEntity, weight: 18, wanders: true, wanderOptions: roamWanderOptions },
     ];
 
     const gorkinSpawnerRegions = [
@@ -90,7 +97,7 @@ export default class HearthwildsRegion extends GameRegion {
 
     // Reclusive Weavers
     const reclusiveWeaversSpawnables = [
-      { entityConstructor: ReclusiveWeaverEntity, weight: 1, wanderOptions: roamWanderOptions },
+      { entityConstructor: ReclusiveWeaverEntity, weight: 1, wanders: true, wanderOptions: roamWanderOptions },
     ];
 
     const reclusiveWeaversSpawnerRegions = [
@@ -111,7 +118,36 @@ export default class HearthwildsRegion extends GameRegion {
 
       spawner.start(true);
     }
+  }
 
+  private _setupNPCs(): void {
+    // Woolran in stable
+    [
+      { facingAngle: 210, position: { x: 163, y: 14, z: -168 } }, // stable
+      { facingAngle: 160, position: { x: 167, y: 14, z: -165 } }, // stable
+      { facingAngle: 280, position: { x: 176, y: 14, z: -143 } }, // by bridge 1
+      { facingAngle: 300, position: { x: 149, y: 14, z: -155 } }, // by bridge 2
+    ].forEach(woolran => {
+      const woolranEntity = new WoolranEntity({ facingAngle: woolran.facingAngle });
+      woolranEntity.spawn(this.world, woolran.position);
+    });
 
+    // Herder Boris
+    const herderBoris = new HerderBorisEntity({ facingAngle: 200 });
+    herderBoris.spawn(this.world, { x: 159, y: 14, z: -161 });
+
+    // Survivor Mycel
+    const survivorMycel = new SurvivorMycelEntity({ facingAngle: -80 });
+    survivorMycel.spawn(this.world, { x: 208, y: 14, z: -103.5 });
+  }
+
+  private _setupPortals(): void {
+    const chitterForestPortal = new PortalEntity({
+      destinationRegionId: 'chitter-forest',
+      destinationRegionPosition: { x: 145, y: 2, z: -14 }, 
+      destinationRegionFacingAngle: 120,
+    });
+
+    chitterForestPortal.spawn(this.world, { x: 252, y: 22, z: -89.25 }, Quaternion.fromEuler(0, 90, 0));
   }
 }

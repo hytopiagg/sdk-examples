@@ -1,6 +1,10 @@
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import BaseProjectileEntity from "../BaseProjectileEntity";
+import GamePlayerEntity from "../../GamePlayerEntity";
 import type { Vector3Like } from 'hytopia';
+
+// Aggro Target Types
+import ReclusiveWeaverEntity from "./ReclusiveWeaverEntity";
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
@@ -21,6 +25,10 @@ export default class GorkinHunterEntity extends BaseCombatEntity {
     super({
       aggroRadius: 13,
       aggroSensorForwardOffset: 4,
+      aggroTargetTypes: [
+        GamePlayerEntity,
+        ReclusiveWeaverEntity,
+      ],
       attacks: [
         { // Slow heavy bow attack
           animations: [ 'atk1' ],

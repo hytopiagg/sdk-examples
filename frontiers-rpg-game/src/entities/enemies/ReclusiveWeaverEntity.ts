@@ -1,8 +1,16 @@
+import { RigidBodyType } from "hytopia";
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import SpiderwebEntity from "./SpiderWebEntity";
-import { RigidBodyType } from "hytopia";
+import GamePlayerEntity from "../../GamePlayerEntity";
 import type BaseEntity from "../BaseEntity";
-import type GamePlayerEntity from "../../GamePlayerEntity";
+
+// Aggro Target Types
+import GorkinChieftanEntity from "./GorkinChieftanEntity";
+import GorkinEnforcerEntity from "./GorkinEnforcerEntity";
+import GorkinGruntEntity from "./GorkinGruntEntity";
+import GorkinHunterEntity from "./GorkinHunterEntity";
+import GorkinShamanEntity from "./GorkinShamanEntity";
+import GorkinSwordsmanEntity from "./GorkinSwordsmanEntity";
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
@@ -20,6 +28,15 @@ export default class ReclusiveWeaverEntity extends BaseCombatEntity {
     super({
       aggroRadius: 10,
       aggroSensorForwardOffset: 7,
+      aggroTargetTypes: [
+        GamePlayerEntity,
+        GorkinChieftanEntity,
+        GorkinEnforcerEntity,
+        GorkinGruntEntity,
+        GorkinHunterEntity,
+        GorkinShamanEntity,
+        GorkinSwordsmanEntity,
+      ],
       attacks: [
         { // Bite attack
           animations: [ 'fang_attack' ],

@@ -9,6 +9,7 @@ import CapfolkKnightEntity from '../../entities/npcs/CapfolkKnightEntity';
 import CaptainChanterelionEntity from './npcs/CaptainChanterelionEntity';
 
 // Spawner Enemies
+import GorkinGruntEntity from '../../entities/enemies/GorkinGruntEntity';
 import RatkinBruteEntity from '../../entities/enemies/RatkinBruteEntity';
 import RatkinRangerEntity from '../../entities/enemies/RatkinRangerEntity';
 import RatkinSpellcasterEntity from '../../entities/enemies/RatkinSpellcasterEntity';
@@ -146,11 +147,27 @@ export default class ChitterForestRegion extends GameRegion {
       world: this.world,
     });
 
+    const gorkinGruntsSpawner = new Spawner({
+      maxSpawns: 5,
+      spawnables: [
+        { entityConstructor: GorkinGruntEntity, weight: 1, wanders: true, wanderOptions: roamWanderOptions },
+      ],
+      spawnRegions: [
+        {
+          min: { x: 125, y: 2, z: -16 },
+          max: { x: 134, y: 4, z: 36 },
+        }
+      ],
+      spawnIntervalMs: 60000,
+      world: this.world,
+    });
+
     forestAreaSpawner.start(true);
     forestCamp1Spawner.start(true);
     forestCamp2Spawner.start(true);
     pathCampSpawner.start(true);
     lakeCampSpawner.start(true);
+    gorkinGruntsSpawner.start(true);
   }
 
   private _setupForageableSpawners(): void {
@@ -196,6 +213,14 @@ export default class ChitterForestRegion extends GameRegion {
   }
 
   private _setupPortals(): void {
+    const hearthwildsPortal = new PortalEntity({
+      destinationRegionId: 'hearthwilds',
+      destinationRegionPosition: { x: 249, y: 22, z: -89 },
+      destinationRegionFacingAngle: 90,
+    });
+
+    hearthwildsPortal.spawn(this.world, { x: 149, y: 3.5, z: -15 }, Quaternion.fromEuler(0, -90, 0));
+
     const stalkhavenPortal = new PortalEntity({
       destinationRegionId: 'stalkhaven',
       destinationRegionPosition: { x: 1, y: 2, z: 40 },

@@ -12,6 +12,7 @@ import {
   WorldOptions,
   Vector3Like,
   Quaternion,
+  RgbColor,
 } from 'hytopia';
 
 import GamePlayer from './GamePlayer';
@@ -52,6 +53,7 @@ export type GameRegionOptions = {
 export default class GameRegion {
   private _id: string;
   private _ambientAudio: Audio | undefined;
+  private _baseFogColor: RgbColor | undefined;
   private _isSetup: boolean = false;
   private _maxAmbientLightIntensity: number;
   private _maxDirectionalLightIntensity: number;
@@ -74,6 +76,7 @@ export default class GameRegion {
       loop: true,
     }) : undefined;
 
+    this._baseFogColor = regionOptions.fogColor;
     this._maxAmbientLightIntensity = regionOptions.maxAmbientLightIntensity ?? DEFAULT_MAX_AMBIENT_LIGHT_INTENSITY;
     this._maxDirectionalLightIntensity = regionOptions.maxDirectionalLightIntensity ?? DEFAULT_MAX_DIRECTIONAL_LIGHT_INTENSITY;
     this._minAmbientLightIntensity = regionOptions.minAmbientLightIntensity ?? DEFAULT_MIN_AMBIENT_LIGHT_INTENSITY;
@@ -81,13 +84,13 @@ export default class GameRegion {
     this._respawnOverride = regionOptions.respawnOverride;
     this._spawnFacingAngle = regionOptions.spawnFacingAngle ?? 0;
     this._spawnPoint = regionOptions.spawnPoint ?? { x: 0, y: 10, z: 0 };
-
+    
     this._world = WorldManager.instance.createWorld(regionOptions);
     this._world.stop(); // Keep it in stopped state, when a player joins the world, we'll start it.
     this._world.on(PlayerEvent.JOINED_WORLD, ({ player }) => this.onPlayerJoin(player));
     this._world.on(PlayerEvent.LEFT_WORLD, ({ player }) => this.onPlayerLeave(player));
     this._world.on(PlayerEvent.RECONNECTED_WORLD, ({ player }) => this.onPlayerReconnected(player));
-
+    
     // temp
     // this._world.simulation.enableDebugRendering(true);
     // this._world.simulation.enableDebugRaycasting(true);
@@ -96,6 +99,7 @@ export default class GameRegion {
   }
 
   public get id(): string { return this._id; }
+  public get baseFogColor(): RgbColor | undefined { return this._baseFogColor; }
   public get maxAmbientLightIntensity(): number { return this._maxAmbientLightIntensity; }
   public get maxDirectionalLightIntensity(): number { return this._maxDirectionalLightIntensity; }
   public get minAmbientLightIntensity(): number { return this._minAmbientLightIntensity; }

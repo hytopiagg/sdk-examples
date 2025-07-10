@@ -5,6 +5,9 @@ import { isDamageable } from '../../interfaces/IDamageable';
 import type { Vector3Like, QuaternionLike, World } from 'hytopia';
 import type BaseEntity from "../BaseEntity"; 
 
+// Aggro Target Types
+import ReclusiveWeaverEntity from "./ReclusiveWeaverEntity";
+
 // Drops
 import GoldItem from "../../items/general/GoldItem";
 import ChieftanBladeItem from "../../items/weapons/ChieftanBladeItem";
@@ -31,6 +34,10 @@ export default class GorkinChieftanEntity extends BaseCombatEntity {
     super({
       aggroRadius: 9,
       aggroSensorForwardOffset: 3,
+      aggroTargetTypes: [
+        GamePlayerEntity,
+        ReclusiveWeaverEntity,
+      ],
       attacks: [
         { // Slash, stab attack
           animations: [ 'atk1' ],
