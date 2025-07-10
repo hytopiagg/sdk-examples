@@ -13,11 +13,26 @@ import GoldItem from './general/GoldItem';
 
 // Materials
 import BlightedRootItem from './materials/BlightedRootItem';
+import GoldIngotItem from './materials/GoldIngotItem';
+import GorkinEarItem from './materials/GorkinEarItem';
+import GorkinEyeItem from './materials/GorkinEyeItem';
+import GorkinFootItem from './materials/GorkinFootItem';
+import GorkinHandItem from './materials/GorkinHandItem';
+import GorkinSkullItem from './materials/GorkinSkullItem';
+import IronIngotItem from './materials/IronIngotItem';
 import RawHideItem from './materials/RawHideItem';
 import RatkinBonesItem from './materials/RatkinBonesItem';
 import RatkinEyesItem from './materials/RatkinEyesItem';
 import RatkinTailItem from './materials/RatkinTailItem';
 import RatkinToothItem from './materials/RatkinToothItem';
+import ShackleItem from './materials/ShackleItem';
+import ShatteredSwordItem from './materials/ShatteredSwordItem';
+import SilverSlabItem from './materials/SilverSlabItem';
+import ToughMonsterHide from './materials/ToughMonsterHide';
+import WeaverCarapaceItem from './materials/WeaverCarapaceItem';
+import WeaverEggItem from './materials/WeaverEggItem';
+import WeaverHeartItem from './materials/WeaverHeartItem';
+import WeaverSilkItem from './materials/WeaverSilkItem';
 
 // Seeds
 import CommonSeedsItem from './seeds/CommonSeedsItem';
@@ -25,6 +40,7 @@ import RareSeedsItem from './seeds/RareSeedsItem';
 import UnusualSeedsItem from './seeds/UnusualSeedsItem';
 
 // Weapons
+import ChieftanBladeItem from './weapons/ChieftanBladeItem';
 import DullSwordItem from './weapons/DullSwordItem';
 import IronDaggerItem from './weapons/IronDaggerItem';
 import IronLongSwordItem from './weapons/IronLongSwordItem';
@@ -59,11 +75,26 @@ export default [
 
   // Materials
   BlightedRootItem,
-  RawHideItem,
+  GoldIngotItem,
+  GorkinEarItem,
+  GorkinEyeItem,
+  GorkinFootItem,
+  GorkinHandItem,
+  GorkinSkullItem,
+  IronIngotItem,
   RatkinBonesItem,
   RatkinEyesItem,
   RatkinTailItem,
   RatkinToothItem,
+  RawHideItem,
+  ShackleItem,
+  ShatteredSwordItem,
+  SilverSlabItem,
+  ToughMonsterHide,
+  WeaverCarapaceItem,
+  WeaverEggItem,
+  WeaverHeartItem,
+  WeaverSilkItem,
 
   // Seeds
   CommonSeedsItem,
@@ -71,6 +102,7 @@ export default [
   UnusualSeedsItem,
 
   // Weapons
+  ChieftanBladeItem,
   DullSwordItem,
   IronDaggerItem,
   IronLongSwordItem,

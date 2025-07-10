@@ -23,6 +23,21 @@ window.ItemTooltips = (function() {
     });
   }
 
+  // Get rarity color based on item rarity (matches backpack.html rarity colors)
+  function getRarityColor(rarity) {
+    if (!rarity) return null;
+    
+    const rarityColors = {
+      'common': '#9CA3AF',
+      'uncommon': '#22C55E',
+      'rare': '#3B82F6',
+      'epic': '#A855F7',
+      'legendary': '#F59E0B'
+    };
+    
+    return rarityColors[rarity.toLowerCase()] || null;
+  }
+
   function hasTooltipData(itemData) {
     // Use shared ItemStats system if available, otherwise use basic check
     if (window.ItemStats) {
@@ -68,9 +83,11 @@ window.ItemTooltips = (function() {
     
     const sections = [];
     
-    // Item name
+    // Item name with rarity coloring
     if (itemData.name) {
-      sections.push(`<div class="tooltip-name">${itemData.name}</div>`);
+      const rarityColor = getRarityColor(itemData.rarity);
+      const nameStyle = rarityColor ? ` style="color: ${rarityColor}"` : '';
+      sections.push(`<div class="tooltip-name"${nameStyle}>${itemData.name}</div>`);
     }
     
     // Use shared ItemStats system for consistent stat generation

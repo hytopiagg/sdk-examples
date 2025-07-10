@@ -1,4 +1,4 @@
-import BaseItem from './BaseItem';
+import BaseItem, { ItemRarity } from './BaseItem';
 import BaseWearableItem from './BaseWearableItem';
 import BaseWeaponItem from './BaseWeaponItem';
 
@@ -16,6 +16,7 @@ export type ItemUIData = {
   damage?: number;
   damageVariance?: number;
   position?: number;
+  rarity?: ItemRarity;
   statsHeader?: string;
   statTexts?: string[];
   type?: string; // UI update type
@@ -35,6 +36,7 @@ export class ItemUIDataHelper {
       name: itemInstanceOrClass.name,
       description: itemInstanceOrClass.description,
       iconImageUri: itemInstanceOrClass.iconImageUri,
+      rarity: itemInstanceOrClass.rarity,
       ...overrides,
     };
 
