@@ -39,6 +39,7 @@ export type Spawnable = EntitySpawnable | ItemSpawnable;
 
 export type SpawnerOptions = {
   exclusionZones?: BoundingBox[];
+  groundCheckAllowsLiquids?: boolean;
   groundCheckDistance?: number;
   maxSpawns: number;
   spawnables: Spawnable[];
@@ -49,6 +50,7 @@ export type SpawnerOptions = {
 
 export default class Spawner {
   private _exclusionZones: BoundingBox[];
+  private _groundCheckAllowsLiquids: boolean;
   private _groundCheckDistance: number;
   private _maxSpawns: number;
   private _spawnables: Spawnable[];
@@ -69,6 +71,7 @@ export default class Spawner {
       throw new Error('Spawner: spawnRegions cannot be empty');
     }
 
+    this._groundCheckAllowsLiquids = options.groundCheckAllowsLiquids ?? false;
     this._groundCheckDistance = options.groundCheckDistance ?? 4;
     this._maxSpawns = Math.max(1, options.maxSpawns);
     this._spawnables = options.spawnables;
@@ -186,7 +189,12 @@ export default class Spawner {
       // Check for ground
       let hasGround = false;
       for (let i = 1; i <= this._groundCheckDistance; i++) {
-        if (this._world.chunkLattice.hasBlock({ x: point.x, y: point.y - i, z: point.z })) {
+        const coordinate = { x: point.x, y: point.y - i, z: point.z };
+        if (this._world.chunkLattice.hasBlock(coordinate)) {
+          if (!this._groundCheckAllowsLiquids && this._world.chunkLattice.getBlockType(coordinate)?.isLiquid) {
+            continue;
+          }
+
           hasGround = true;
           break;
         }
