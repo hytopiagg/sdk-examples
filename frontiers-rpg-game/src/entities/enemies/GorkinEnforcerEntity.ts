@@ -12,6 +12,7 @@ import GorkinHandItem from "../../items/materials/GorkinHandItem";
 import GorkinSkullItem from "../../items/materials/GorkinSkullItem";
 import ShatteredSwordItem from "../../items/materials/ShatteredSwordItem";
 import ShackleItem from "../../items/materials/ShackleItem";
+import ToughMonsterHide from "../../items/materials/ToughMonsterHide";
 
 export type GorkinGruntEntityOptions = {
 
@@ -27,7 +28,7 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
           animations: [ 'atk1' ],
           cooldownMs: 3000,
           range: 5, // width/depth calculation is messed up and too large because of the model idle shape, so we use 0
-          simpleAttackDamage: 23,
+          simpleAttackDamage: 38,
           simpleAttackDamageVariance: 0.2,
           simpleAttackDamageDelayMs: 800,
           stopAllAnimationForMs: 1900,
@@ -45,6 +46,7 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
         { itemClass: GorkinFootItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: ShatteredSwordItem, weight: 3 },
+        { itemClass: ToughMonsterHide, weight: 3 },
         { itemClass: GorkinSkullItem, weight: 2 },
         { itemClass: ShackleItem, weight: 2 },
       ],

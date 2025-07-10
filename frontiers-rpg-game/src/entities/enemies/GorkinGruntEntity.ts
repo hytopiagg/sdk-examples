@@ -11,6 +11,7 @@ import GorkinHandItem from "../../items/materials/GorkinHandItem";
 import GorkinSkullItem from "../../items/materials/GorkinSkullItem";
 import ShatteredSwordItem from "../../items/materials/ShatteredSwordItem";
 import ShackleItem from "../../items/materials/ShackleItem";
+import ToughMonsterHide from "../../items/materials/ToughMonsterHide";
 
 export type GorkinGruntEntityOptions = {
 
@@ -26,7 +27,7 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
           animations: [ 'atk1' ],
           cooldownMs: 2000,
           range: 1.5,
-          simpleAttackDamage: 23,
+          simpleAttackDamage: 27,
           simpleAttackDamageVariance: 0.2,
           simpleAttackDamageDelayMs: 800,
           simpleAttackReach: 2,
@@ -39,7 +40,7 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
           complexAttack: (params) => this._doubleSwingAttack(params.target),
           complexAttackDelayMs: 700,
           cooldownMs: 2000,
-          simpleAttackDamage: 26, // complex attack triggers simple attack processing
+          simpleAttackDamage: 30, // complex attack triggers simple attack processing
           simpleAttackDamageVariance: 0.3,
           stopAllAnimationForMs: 1800,
           stopMovingForDurationMs: 2200,
@@ -52,7 +53,7 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
           stopAllAnimationForMs: 1450,
           stopMovingForDurationMs: 1450,
           range: 1.5,
-          simpleAttackDamage: 31,
+          simpleAttackDamage: 36,
           simpleAttackDamageVariance: 0.2,
           simpleAttackDamageDelayMs: 500,
           simpleAttackReach: 2,
@@ -68,6 +69,7 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
         { itemClass: GorkinEyeItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinFootItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
+        { itemClass: ToughMonsterHide, weight: 3 },
         { itemClass: GorkinSkullItem, weight: 2 },
         { itemClass: ShatteredSwordItem, weight: 1 },
         { itemClass: ShackleItem, weight: 1 },
