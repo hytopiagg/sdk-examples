@@ -45,8 +45,9 @@ export default class SpiderWebEntity extends Entity {
                 entity.playerController.runVelocity = entity.playerController.runVelocity * 2;
               }
             }
-          }
-        ]
+          },
+        ],
+        ...options?.rigidBodyOptions,
       }
     });
   }

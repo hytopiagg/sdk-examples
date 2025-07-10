@@ -2,6 +2,8 @@ import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
+import WeaverCarapaceItem from "../../items/materials/WeaverCarapaceItem";
+import WeaverHeartItem from "../../items/materials/WeaverHeartItem";
 
 export type WeaverBroodlingEntityOptions = {
 
@@ -27,7 +29,9 @@ export default class WeaverBroodlingEntity extends BaseCombatEntity {
       deathAnimations: [ 'death' ],
       deathDespawnDelayMs: 1000,
       deathItemDrops: [
-        { itemClass: GoldItem, minQuantity: 16, maxQuantity: 24, weight: 2 },
+        { itemClass: GoldItem, minQuantity: 16, maxQuantity: 24, weight: 7 },
+        { itemClass: WeaverCarapaceItem,  weight: 2 },
+        { itemClass: WeaverHeartItem,  weight: 1 },
       ],
       health: 140,
       idleAnimations: [ 'idle' ],

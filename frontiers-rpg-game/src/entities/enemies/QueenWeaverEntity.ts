@@ -9,6 +9,10 @@ import WeaverBroodlingEntity from './WeaverBroodlingEntity';
 import GoldItem from "../../items/general/GoldItem";
 import RareSeedsItem from '../../items/seeds/RareSeedsItem';
 import UnusualSeedsItem from '../../items/seeds/UnusualSeedsItem';
+import WeaverCarapaceItem from '../../items/materials/WeaverCarapaceItem';
+import WeaverEggItem from '../../items/materials/WeaverEggItem';
+import WeaverHeartItem from '../../items/materials/WeaverHeartItem';
+import WeaverSilkItem from '../../items/materials/WeaverSilkItem';
 
 export type QueenWeaverEntityOptions = {
   
@@ -60,7 +64,11 @@ export default class QueenWeaverEntity extends BaseCombatEntity {
       deathDespawnDelayMs: 1500,
       deathItemDrops: [
         { itemClass: GoldItem, minQuantity: 93, maxQuantity: 186, weight: 40 },
+        { itemClass: WeaverCarapaceItem, weight: 30 },
+        { itemClass: WeaverHeartItem, weight: 20 },
+        { itemClass: WeaverEggItem, minQuantity: 3, maxQuantity: 9, weight: 20 },
         { itemClass: UnusualSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 20 },
+        { itemClass: WeaverSilkItem, minQuantity: 4, maxQuantity: 8, weight: 10 },
         { itemClass: RareSeedsItem, minQuantity: 1, maxQuantity: 3, weight: 1 },
       ],
       deathItemMaxDrops: 5,
