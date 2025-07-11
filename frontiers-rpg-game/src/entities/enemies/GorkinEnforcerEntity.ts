@@ -57,7 +57,7 @@ export default class GorkinEnforcerEntity extends BaseCombatEntity {
         { itemClass: ShackleItem, weight: 2 },
       ],
       diameterOverride: 0.75,
-      health: 260,
+      health: 230,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/gorkin-enforcer.gltf',
       modelPreferredShape: ColliderShape.CAPSULE,

@@ -54,7 +54,7 @@ export default class GorkinHunterEntity extends BaseCombatEntity {
         { itemClass: GorkinSkullItem, weight: 2 },
         { itemClass: ShackleItem, weight: 2 },
       ],
-      health: 190,
+      health: 160,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/gorkin-hunter.gltf',
       modelScale: 0.9,

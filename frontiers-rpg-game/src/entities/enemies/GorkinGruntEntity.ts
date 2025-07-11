@@ -89,7 +89,7 @@ export default class GorkinGruntEntity extends BaseCombatEntity {
         { itemClass: ShatteredSwordItem, weight: 1 },
         { itemClass: ShackleItem, weight: 1 },
       ],
-      health: 200,
+      health: 170,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/gorkin-grunt.gltf',
       modelScale: 0.9,

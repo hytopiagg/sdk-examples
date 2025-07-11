@@ -66,7 +66,7 @@ export default class GorkinShamanEntity extends BaseCombatEntity {
         { itemClass: ShackleItem, weight: 2 },
       ],
       diameterOverride: 0.65,
-      health: 180,
+      health: 150,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/gorkin-shaman.gltf',
       modelPreferredShape: ColliderShape.CAPSULE,

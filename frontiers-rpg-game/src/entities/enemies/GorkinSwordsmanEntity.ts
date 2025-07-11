@@ -81,7 +81,7 @@ export default class GorkinSwordsmanEntity extends BaseCombatEntity {
         { itemClass: ShackleItem, weight: 2 },
       ],
       diameterOverride: 0.65,
-      health: 260,
+      health: 230,
       idleAnimations: [ 'idle' ],
       modelUri: 'models/enemies/gorkin-swordsman.gltf',
       modelPreferredShape: ColliderShape.CAPSULE,
