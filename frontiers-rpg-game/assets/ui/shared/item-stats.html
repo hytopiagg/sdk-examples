@@ -67,7 +67,7 @@ window.ItemStats = (function() {
       wearableStats.push(`-${itemData.damageReduction} damage taken`);
     }
     if (itemData.damageReductionPercent && itemData.damageReductionPercent !== 0) {
-      wearableStats.push(`-${itemData.damageReductionPercent}% damage taken`);
+      wearableStats.push(`-${itemData.damageReductionPercent * 100}% damage taken`);
     }
     
     // Collect all stat lines first

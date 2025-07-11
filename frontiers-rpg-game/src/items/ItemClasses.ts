@@ -54,6 +54,11 @@ import AdventurerGlovesItem from './wearables/AdventurerGlovesItem';
 import AdventurerHoodItem from './wearables/AdventurerHoodItem';
 import AdventurerLeggingsItem from './wearables/AdventurerLeggingsItem';
 import AdventurerTunicItem from './wearables/AdventurerTunicItem';
+import IronChestplateItem from './wearables/IronChestplateItem';
+import IronGauntletsItem from './wearables/IronGauntletsItem';
+import IronGrievesItem from './wearables/IronGrievesItem';
+import IronHelmetItem from './wearables/IronHelmetItem';
+import IronLeggingsItem from './wearables/IronLeggingsItem';
 import LeatherBootsItem from './wearables/LeatherBootsItem';
 import LeatherBracersItem from './wearables/LeatherBracersItem';
 import LeatherHelmetItem from './wearables/LeatherHelmetItem';
@@ -117,6 +122,11 @@ export default [
   AdventurerHoodItem,
   AdventurerLeggingsItem,
   AdventurerTunicItem,
+  IronChestplateItem,
+  IronGauntletsItem,
+  IronGrievesItem,
+  IronHelmetItem,
+  IronLeggingsItem,
   LeatherBootsItem,
   LeatherBracersItem,
   LeatherHelmetItem,

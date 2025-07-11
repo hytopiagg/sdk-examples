@@ -7,5 +7,5 @@ export default class IronIngotItem extends BaseItem {
   static readonly description = 'An ingot of iron, ready for crafting.';
   static readonly rarity = 'unusual';
   static readonly stackable = true;
-  static readonly sellPrice = 75;
+  static readonly sellPrice = 50;
 }

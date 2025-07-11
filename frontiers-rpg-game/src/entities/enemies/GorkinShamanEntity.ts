@@ -14,6 +14,7 @@ import GorkinEyeItem from "../../items/materials/GorkinEyeItem";
 import GorkinFootItem from "../../items/materials/GorkinFootItem";
 import GorkinHandItem from "../../items/materials/GorkinHandItem";
 import GorkinSkullItem from "../../items/materials/GorkinSkullItem";
+import IronIngotItem from "../../items/materials/IronIngotItem";
 import ShackleItem from "../../items/materials/ShackleItem";
 import ToughMonsterHide from "../../items/materials/ToughMonsterHide";
 
@@ -64,6 +65,7 @@ export default class GorkinShamanEntity extends BaseCombatEntity {
         { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: ToughMonsterHide, weight: 3 },
         { itemClass: ShackleItem, weight: 2 },
+        { itemClass: IronIngotItem, minQuantity: 1, maxQuantity: 2, weight: 1 },
       ],
       diameterOverride: 0.65,
       health: 150,
