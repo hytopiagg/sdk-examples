@@ -4,6 +4,7 @@ import CookedDrumstickItem from './consumables/CookedDrumstickItem';
 import CookedMeatItem from './consumables/CookedMeatItem';
 import CookedMeatSkewerItem from './consumables/CookedMeatSkewerItem';
 import EmbercapMushroomItem from './consumables/EmbercapMushroomItem';
+import HealingPotionItem from './consumables/HealingPotionItem';
 import MinorHealingPotionItem from './consumables/MinorHealingPotionItem';
 import StonebellyFungusMushroomItem from './consumables/StonebellyFungusMushroomItem';
 import SunsporeClusterMushroomItem from './consumables/SunsporeClusterMushroomItem';
@@ -66,6 +67,7 @@ export default [
   CookedMeatItem,
   CookedMeatSkewerItem,
   EmbercapMushroomItem,
+  HealingPotionItem,
   MinorHealingPotionItem,
   StonebellyFungusMushroomItem,
   SunsporeClusterMushroomItem,

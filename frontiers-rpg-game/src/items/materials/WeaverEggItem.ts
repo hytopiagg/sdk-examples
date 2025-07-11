@@ -6,5 +6,6 @@ export default class WeaverEggItem extends BaseItem {
   static readonly iconImageUri = 'icons/items/weaver-egg.png';
   static readonly description = `An unhatched Weaver egg. Hopefully it doesn't hatch while carrying it...`;
   static readonly stackable = true;
+  static readonly buyPrice = 120;
   static readonly sellPrice = 12;
 }

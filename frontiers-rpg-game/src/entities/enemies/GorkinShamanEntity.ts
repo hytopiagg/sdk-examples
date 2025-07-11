@@ -57,11 +57,11 @@ export default class GorkinShamanEntity extends BaseCombatEntity {
       deathDespawnDelayMs: 2700,
       deathItemDrops: [
         { itemClass: GoldItem, minQuantity: 20, maxQuantity: 29, weight: 5 },
+        { itemClass: GorkinSkullItem, weight: 4 },
         { itemClass: GorkinEarItem, minQuantity: 1, maxQuantity: 2, weight: 4 },
         { itemClass: GorkinEyeItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinFootItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
-        { itemClass: GorkinSkullItem, weight: 3 },
         { itemClass: ToughMonsterHide, weight: 3 },
         { itemClass: ShackleItem, weight: 2 },
       ],

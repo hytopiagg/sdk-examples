@@ -9,7 +9,9 @@ import hearthwildsMap from '../../../assets/maps/hearthwilds.json';
 // NPCs
 import ArchivesBookshelf1Entity from './npcs/ArchivesBookshelf1Entity';
 import ArchivesBookshelf2Entity from './npcs/ArchivesBookshelf2Entity';
+import GravekeeperArdenEntity from './npcs/GravekeeperArdenEntity';
 import HerderBorisEntity from './npcs/HerderBorisEntity';
+import MerchantFonnEntity from './npcs/MerchantFonnEntity';
 import SurvivorMycelEntity from './npcs/SurvivorMycelEntity';
 import WoolranEntity from '../../entities/npcs/WoolranEntity';
 
@@ -130,9 +132,17 @@ export default class HearthwildsRegion extends GameRegion {
     const archivalBookshelf2 = new ArchivesBookshelf2Entity({ facingAngle: 180 });
     archivalBookshelf2.spawn(this.world, { x: -114.5, y: 11, z: 11.5 });
 
+    // Gravekeeper Arden
+    const gravekeeperArden = new GravekeeperArdenEntity({ facingAngle: 135 });
+    gravekeeperArden.spawn(this.world, { x: 166, y: 14, z: -211.5 });
+
     // Herder Boris
     const herderBoris = new HerderBorisEntity({ facingAngle: 200 });
     herderBoris.spawn(this.world, { x: 159, y: 14, z: -161 });
+
+    // Merchant Fonn
+    const merchantFonn = new MerchantFonnEntity({ facingAngle: -30 });
+    merchantFonn.spawn(this.world, { x: 138, y: 14, z: -4.5 });
 
     // Survivor Mycel
     const survivorMycel = new SurvivorMycelEntity({ facingAngle: -80 });

@@ -1,0 +1,185 @@
+{
+  "health": 58,
+  "currentRegionId": "hearthwilds",
+  "skillExperience": [
+    [
+      "exploration",
+      1000
+    ],
+    [
+      "combat",
+      2065
+    ],
+    [
+      "agility",
+      159
+    ],
+    [
+      "foraging",
+      30
+    ]
+  ],
+  "backpack": {
+    "items": [
+      {
+        "position": 0,
+        "itemId": "unusual_seeds"
+      },
+      {
+        "position": 1,
+        "itemId": "common_mushroom",
+        "quantity": 10
+      },
+      {
+        "position": 2,
+        "itemId": "gorkin_foot",
+        "quantity": 2
+      },
+      {
+        "position": 3,
+        "itemId": "gorkin_skull"
+      }
+    ]
+  },
+  "hotbar": {
+    "items": [
+      {
+        "position": 0,
+        "itemId": "chieftan_blade"
+      },
+      {
+        "position": 2,
+        "itemId": "dull_sword"
+      },
+      {
+        "position": 3,
+        "itemId": "gold",
+        "quantity": 278
+      },
+      {
+        "position": 4,
+        "itemId": "ratkin_tail",
+        "quantity": 3
+      },
+      {
+        "position": 5,
+        "itemId": "raw_hide"
+      },
+      {
+        "position": 6,
+        "itemId": "blighted_root",
+        "quantity": 11
+      },
+      {
+        "position": 7,
+        "itemId": "common_seeds"
+      },
+      {
+        "position": 1,
+        "itemId": "ratkin_eyes"
+      }
+    ]
+  },
+  "questLog": {
+    "quests": [
+      {
+        "questId": "welcome-to-stalkhaven",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-mark": 1
+        }
+      },
+      {
+        "questId": "exploring-stalkhaven",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-mycelis": 1,
+          "talk-to-finn": 1,
+          "talk-to-sporn": 1,
+          "talk-to-mark": 1
+        }
+      },
+      {
+        "questId": "tested-mettle",
+        "state": "completed",
+        "objectiveProgress": {
+          "kill-5-ratkin": 5,
+          "dodge-3-times": 3,
+          "talk-to-mark": 1
+        }
+      },
+      {
+        "questId": "stalkhavens-outpost",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-chanterelion": 1
+        }
+      },
+      {
+        "questId": "clearing-camps",
+        "state": "completed",
+        "objectiveProgress": {
+          "kill-main-camp": 3,
+          "kill-secondary-camp": 3,
+          "kill-lake-camp": 3,
+          "kill-corridor-camp": 3,
+          "talk-to-chanterelion": 1
+        }
+      },
+      {
+        "questId": "into-the-nest",
+        "state": "completed",
+        "objectiveProgress": {
+          "talk-to-scout-morel": 1
+        }
+      },
+      {
+        "questId": "blighted-harvest",
+        "state": "completed",
+        "objectiveProgress": {
+          "collect-blighted-roots": 11,
+          "give-blighted-roots": 1
+        }
+      },
+      {
+        "questId": "ancient-wisdom",
+        "state": "active",
+        "objectiveProgress": {
+          "find-archives": 1,
+          "return-to-healer-mycelis": 0
+        }
+      },
+      {
+        "questId": "skull-trinkets",
+        "state": "active",
+        "objectiveProgress": {
+          "kill-chieftan": 0,
+          "kill-enforcers": 2,
+          "kill-grunts": 1,
+          "kill-hunters": 0,
+          "kill-shamans": 1,
+          "kill-swordsmen": 1,
+          "collect-skulls": 1,
+          "talk-to-arden": 0
+        }
+      }
+    ]
+  },
+  "storage": {
+    "items": []
+  },
+  "wearables": {
+    "items": [
+      {
+        "position": 1,
+        "itemId": "adventurer_tunic"
+      }
+    ]
+  },
+  "currentRegionSpawnFacingAngle": 90,
+  "currentRegionSpawnPoint": {
+    "x": 249,
+    "y": 22,
+    "z": -89
+  }
+}

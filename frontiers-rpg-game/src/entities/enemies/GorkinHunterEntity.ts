@@ -46,12 +46,12 @@ export default class GorkinHunterEntity extends BaseCombatEntity {
       deathDespawnDelayMs: 2400,
       deathItemDrops: [
         { itemClass: GoldItem, minQuantity: 16, maxQuantity: 24, weight: 5 },
+        { itemClass: GorkinSkullItem, weight: 4 },
         { itemClass: GorkinEarItem, minQuantity: 1, maxQuantity: 2, weight: 4 },
         { itemClass: GorkinEyeItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinFootItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: GorkinHandItem, minQuantity: 1, maxQuantity: 2, weight: 3 },
         { itemClass: ToughMonsterHide, weight: 3 },
-        { itemClass: GorkinSkullItem, weight: 2 },
         { itemClass: ShackleItem, weight: 2 },
       ],
       health: 160,
