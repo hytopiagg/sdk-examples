@@ -28,7 +28,7 @@ export default class SkullTrinketsQuest extends BaseQuest {
   static readonly reward = {
     items: [
       { itemClass: GoldItem, quantity: 500 },
-      { itemClass: IronIngotItem, quantity: 5 },
+      { itemClass: IronIngotItem, quantity: 10 },
     ],
     skillExperience: [
       { skillId: SkillId.COMBAT, amount: 1000 },

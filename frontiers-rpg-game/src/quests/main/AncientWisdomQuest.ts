@@ -85,27 +85,35 @@ export default class AncientWisdomQuest extends BaseQuest {
       dialogueOption: {
         text: 'I found the archives and learned about the Blighted Roots.',
         nextDialogue: {
-          text: `By the ancient spores! What did you discover? Tell me everything you learned from those old texts.`,
+          text: `Devs: Well, you've reached the end of the main questline content! We'll have another update next week! In the meantime, there's lot of new sidequests in the Hearthwilds, go explore!`,
           options: [
             {
-              text: 'The roots match ancient drawings, but the text speaks in riddles about mountains and a slumbering hunger .',
-              nextDialogue: {
-                text: `Mountains... slumber... By the sacred groves, this sounds like the old tales of the Withering Age. If these roots are connected to that ancient threat, and if it was merely driven away rather than destroyed... This knowledge is both invaluable and deeply troubling.`,
-                options: [
-                  {
-                    text: `What should we do with this information?`,
-                    dismiss: true,
-                    pureExit: true,
-                  }
-                ]
-              },
-              onSelect: (interactor: GamePlayerEntity) => {
-                interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'return-to-healer-mycelis', 1);
-                interactor.gamePlayer.questLog.completeQuest(this.id);
-                // next quest
-              }
+              text: `Ok, I'll come back next week.`,
+              dismiss: true,
+              pureExit: true,
             }
           ]
+          // text: `By the ancient spores! What did you discover? Tell me everything you learned from those old texts.`,
+          // options: [
+          //   {
+          //     text: 'The roots match ancient drawings, but the text speaks in riddles about mountains and a slumbering hunger .',
+          //     nextDialogue: {
+          //       text: `Mountains... slumber... By the sacred groves, this sounds like the old tales of the Withering Age. If these roots are connected to that ancient threat, and if it was merely driven away rather than destroyed... This knowledge is both invaluable and deeply troubling.`,
+          //       options: [
+          //         {
+          //           text: `What should we do with this information?`,
+          //           dismiss: true,
+          //           pureExit: true,
+          //         }
+          //       ]
+          //     },
+          //     onSelect: (interactor: GamePlayerEntity) => {
+          //       interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'return-to-healer-mycelis', 1);
+          //       interactor.gamePlayer.questLog.completeQuest(this.id);
+          //       // next quest
+          //     }
+          //   }
+          // ]
         },
       },
       enabledForInteractor: (interactor: GamePlayerEntity) => {
