@@ -8,6 +8,7 @@ import type { BaseItemPlayerEventPayloads } from '../../items/BaseItem';
 
 import BlightedRootItem from '../../items/materials/BlightedRootItem';
 import HealerMycelisEntity from '../../regions/stalkhaven/npcs/HealerMycelisEntity';
+import AncientWisdomQuest from './AncientWisdomQuest';
 
 export default class BlightedHarvestQuest extends BaseQuest {
   static readonly id = 'blighted-harvest';
@@ -42,13 +43,34 @@ export default class BlightedHarvestQuest extends BaseQuest {
       dialogueOption: {
         text: 'Scout Morel asked me to bring you these... things. What are they?',
         nextDialogue: {
-          text: '[Frontiers Developers]: Well, this is embarrassing.. You reached the end of the v0.1.0 early alpha content! But have no fear, we will release a another big content update next week, with weekly content updates to follow. With the next update, you can come back and talk to Healer Mycelis and progress!',
+          text: `What?... Where did you find these? These are ancient roots - I remember studying them as a boy in the old Capfolk archives. There was an entire section about these in the ancient texts.`,
           options: [
             {
-              text: `I see, I'll be back next week for the update!`,
-              dismiss: true,
-              pureExit: true,
-            }
+              text: 'Where are these archives?',
+              nextDialogue: {
+                text: `The old archives building is in the Hearthwilds, along the path to Sporewick. It's been abandoned for decades and is just ruins now. But if any books survived, they might still hold knowledge about these roots.`,
+                options: [
+                  {
+                    text: 'I could search the ruins for the books.',
+                    nextDialogue: {
+                      text: `You would? By the ancient spores, that's brave! But please be extremely careful - the fog is much denser in the Hearthwilds, and the creatures far more dangerous. You'll need to go through Chitter Forest to get to the Hearthwilds. Return to me with what you learn.`, 
+                      options: [
+                        {
+                          text: `I'll find those archives.`,
+                          dismiss: true,
+                          pureExit: true,
+                        }
+                      ]
+                    },
+                    onSelect: (interactor: GamePlayerEntity) => {
+                      interactor.gamePlayer.questLog.adjustObjectiveProgress(this.id, 'give-blighted-roots', 1);
+                      interactor.gamePlayer.questLog.completeQuest(this.id);
+                      interactor.gamePlayer.questLog.startQuest(AncientWisdomQuest);
+                    }
+                  },
+                ]
+              }
+            },
           ]
         },
       },

@@ -138,14 +138,15 @@
       "name": "water-still",
       "textureUri": "blocks/water-still.png",
       "isCustom": false,
-      "isMultiTexture": false
+      "isMultiTexture": false,
+      "isLiquid": true
     },
     {
       "id": 101,
-      "name": "+x",
-      "textureUri": "blocks/+x.png",
+      "name": "castle_wall",
+      "textureUri": "blocks/castle_wall",
       "isCustom": true,
-      "isMultiTexture": false
+      "isMultiTexture": true
     }
   ],
   "blocks": {

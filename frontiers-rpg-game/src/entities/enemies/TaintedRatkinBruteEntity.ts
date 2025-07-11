@@ -28,6 +28,8 @@ export default class TaintedRatkinBruteEntity extends BaseCombatEntity {
           simpleAttackDamageVariance: 0.6, // ±60% damage
           simpleAttackDamageDelayMs: 1000, // Deal damage 1000ms into animation
           simpleAttackReach: 3,
+          stopAllAnimationForMs: 2000,
+          stopMovingForDurationMs: 2000,
           weight: 1,
         },
         { // Light hammer swing attack
@@ -38,6 +40,8 @@ export default class TaintedRatkinBruteEntity extends BaseCombatEntity {
           simpleAttackDamageVariance: 0.15, // ±15% damage
           simpleAttackDamageDelayMs: 500, // Deal damage 500ms into animation
           simpleAttackReach: 3,
+          stopAllAnimationForMs: 800,
+          stopMovingForDurationMs: 800,
           weight: 2,
         },
         { // Light hammer swing 2 attack
@@ -48,6 +52,8 @@ export default class TaintedRatkinBruteEntity extends BaseCombatEntity {
           simpleAttackDamageVariance: 0.15, // ±15% damage
           simpleAttackDamageDelayMs: 350, // Deal damage 350ms into animation
           simpleAttackReach: 3,
+          stopAllAnimationForMs: 1000,
+          stopMovingForDurationMs: 1000,
           weight: 2,
         },
       ],

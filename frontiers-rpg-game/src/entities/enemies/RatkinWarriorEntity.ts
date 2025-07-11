@@ -36,6 +36,8 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
           simpleAttackDamageVariance: 0.4, // ±40% damage (12-20)
           simpleAttackDamageDelayMs: 1000, // Deal damage 1000ms into animation
           simpleAttackReach: 3,
+          stopAllAnimationForMs: 2000,
+          stopMovingForDurationMs: 2000,
           weight: 1,
         },
         { // Light attack
@@ -46,6 +48,8 @@ export default class RatkinWarriorEntity extends BaseCombatEntity {
           simpleAttackDamageVariance: 0.1, // ±10% damage (6-8) 
           simpleAttackDamageDelayMs: 400, // Deal damage 400ms into animation
           simpleAttackReach: 3,
+          stopAllAnimationForMs: 1000,
+          stopMovingForDurationMs: 1000,
           weight: 2,
         },
       ],

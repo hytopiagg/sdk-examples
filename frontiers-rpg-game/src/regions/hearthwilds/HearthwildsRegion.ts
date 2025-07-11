@@ -7,6 +7,8 @@ import type { WanderOptions } from '../../entities/BaseEntity';
 import hearthwildsMap from '../../../assets/maps/hearthwilds.json';
 
 // NPCs
+import ArchivesBookshelf1Entity from './npcs/ArchivesBookshelf1Entity';
+import ArchivesBookshelf2Entity from './npcs/ArchivesBookshelf2Entity';
 import HerderBorisEntity from './npcs/HerderBorisEntity';
 import SurvivorMycelEntity from './npcs/SurvivorMycelEntity';
 import WoolranEntity from '../../entities/npcs/WoolranEntity';
@@ -121,6 +123,21 @@ export default class HearthwildsRegion extends GameRegion {
   }
 
   private _setupNPCs(): void {
+    // Archival Bookshelves
+    const archivalBookshelf1 = new ArchivesBookshelf1Entity({ facingAngle: -90 });
+    archivalBookshelf1.spawn(this.world, { x: -120.5, y: 11, z: 12.5 });
+
+    const archivalBookshelf2 = new ArchivesBookshelf2Entity({ facingAngle: 180 });
+    archivalBookshelf2.spawn(this.world, { x: -114.5, y: 11, z: 11.5 });
+
+    // Herder Boris
+    const herderBoris = new HerderBorisEntity({ facingAngle: 200 });
+    herderBoris.spawn(this.world, { x: 159, y: 14, z: -161 });
+
+    // Survivor Mycel
+    const survivorMycel = new SurvivorMycelEntity({ facingAngle: -80 });
+    survivorMycel.spawn(this.world, { x: 208, y: 14, z: -103.5 });
+
     // Woolran in stable
     [
       { facingAngle: 210, position: { x: 163, y: 14, z: -168 } }, // stable
@@ -131,14 +148,6 @@ export default class HearthwildsRegion extends GameRegion {
       const woolranEntity = new WoolranEntity({ facingAngle: woolran.facingAngle });
       woolranEntity.spawn(this.world, woolran.position);
     });
-
-    // Herder Boris
-    const herderBoris = new HerderBorisEntity({ facingAngle: 200 });
-    herderBoris.spawn(this.world, { x: 159, y: 14, z: -161 });
-
-    // Survivor Mycel
-    const survivorMycel = new SurvivorMycelEntity({ facingAngle: -80 });
-    survivorMycel.spawn(this.world, { x: 208, y: 14, z: -103.5 });
   }
 
   private _setupPortals(): void {

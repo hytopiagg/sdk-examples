@@ -48,9 +48,9 @@ export default class GameManager {
     GameClock.instance.addRegionClockCycle(chitterForestRegion);
 
     // Hearthwilds
-    // const hearthwildsRegion = new HearthwildsRegion();
-    // this._regions.set(hearthwildsRegion.id, hearthwildsRegion);
-    // GameClock.instance.addRegionClockCycle(hearthwildsRegion);
+    const hearthwildsRegion = new HearthwildsRegion();
+    this._regions.set(hearthwildsRegion.id, hearthwildsRegion);
+    GameClock.instance.addRegionClockCycle(hearthwildsRegion);
 
     // Ratkin Nest
     const ratkinNestRegion = new RatkinNestRegion();

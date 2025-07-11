@@ -8,7 +8,7 @@ export default class ChieftanBladeItem extends BaseWeaponItem {
   static readonly attack: BaseWeaponItemAttack = {
     animations: ['sword-attack-upper', 'sword-attack-1'],
     cooldownMs: 500,
-    damage: 27,
+    damage: 35,
     damageDelayMs: 200,
     damageVariance: 0.25,
     knockbackForce: 5,
@@ -19,7 +19,7 @@ export default class ChieftanBladeItem extends BaseWeaponItem {
     id: 'spin',
     animations: ['sword-attack-tornado'],
     cooldownMs: 2500,
-    damage: 38,
+    damage: 43,
     damageDelayMs: 200,
     damageVariance: 0.2,
     knockbackForce: 9,

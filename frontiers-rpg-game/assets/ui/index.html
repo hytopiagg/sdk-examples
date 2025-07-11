@@ -2461,8 +2461,9 @@ window.ItemTooltips = (function() {
     document.querySelector('.dialogue-npc-name').textContent = data.name || 'Unknown';
     document.querySelector('.dialogue-npc-title').textContent = data.title || '';
 
-    // Update message
-    document.querySelector('.dialogue-message').textContent = data.text || '';
+    // Update message with italic formatting support
+    const messageEl = document.querySelector('.dialogue-message');
+    messageEl.innerHTML = formatDialogueText(data.text || '');
 
     // Update options
     const optionsContainer = document.querySelector('.dialogue-options');
@@ -2481,10 +2482,10 @@ window.ItemTooltips = (function() {
         if (option.isQuestRoot) {
           optionEl.innerHTML = `
             <img src="{{CDN_ASSETS_URL}}/icons/buttons/quests-transparent.png" alt="Quest" class="dialogue-quest-icon">
-            <span class="dialogue-option-text">${option.text}</span>
+            <span class="dialogue-option-text">${formatDialogueText(option.text)}</span>
           `;
         } else {
-          optionEl.textContent = option.text;
+          optionEl.innerHTML = formatDialogueText(option.text);
         }
         
         optionEl.addEventListener('click', () => {
@@ -2501,6 +2502,26 @@ window.ItemTooltips = (function() {
         optionsContainer.appendChild(optionEl);
       });
     }
+  }
+
+  function formatDialogueText(text) {
+    // Escape HTML to prevent XSS, but allow our specific formatting
+    const escapeHtml = (unsafe) => {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    };
+
+    // Escape the text first
+    let formatted = escapeHtml(text);
+    
+    // Convert *text* to <em>text</em> for italics
+    formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    return formatted;
   }
 
   function closeDialogue(relockPointer = true) {
@@ -2729,6 +2750,11 @@ window.ItemTooltips = (function() {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
     overflow-wrap: break-word;
+  }
+
+  .dialogue-message em,
+  .dialogue-option em {
+    font-style: italic;
   }
 
   .dialogue-options {

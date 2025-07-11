@@ -6,6 +6,7 @@ import StalkhavensOutpostQuest from './main/StalkhavensOutpostQuest';
 import ClearingCampsQuest from './main/ClearingCampsQuest';
 import IntoTheNestQuest from './main/IntoTheNestQuest';
 import BlightedHarvestQuest from './main/BlightedHarvestQuest';
+import AncientWisdomQuest from './main/AncientWisdomQuest';
 
 // Side Quests, Alphabetical
 import DipDuckDodgeQuest from './side/DipDuckDodgeQuest';
@@ -21,6 +22,7 @@ export default [
   StalkhavensOutpostQuest,
   TestedMettleQuest,
   WelcomeToStalkhavenQuest,
+  AncientWisdomQuest,
 
   // Side, Alphabetical
   DipDuckDodgeQuest,

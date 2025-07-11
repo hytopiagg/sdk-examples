@@ -80,6 +80,7 @@ export type BaseEntityOptions = {
   nameplateType?: BaseEntityNameplateType;
   nameplateViewDistnace?: number;
   pathfindingOptions?: PathfindingOptions;
+  rotatesOnInteract?: boolean;
   pushable?: boolean;
 } & ModelEntityOptions;
 
@@ -111,6 +112,7 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   private _optionMap: Map<number, BaseEntityDialogueOption> = new Map();
   private _pathfindingOptions: PathfindingOptions | undefined;
   private _pushable: boolean;
+  private _rotatesOnInteract: boolean;
   private _wanderTimeout: NodeJS.Timeout | undefined;
   
   public constructor(options: BaseEntityOptions = {}) {
@@ -143,6 +145,8 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this._nameplateViewDistance = options.nameplateViewDistnace;
     this._pathfindingOptions = options.pathfindingOptions;
     this._pushable = options.pushable ?? false;
+    this._rotatesOnInteract = options.rotatesOnInteract ?? true;
+
     if (this._dialogueRoot) {
       this._buildDialogueOptionMap();
     }
@@ -234,7 +238,10 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     if (this._dialogueRoot) {
       interactor.setCurrentDialogueEntity(this);
       this.showDialogue(interactor, this._dialogueRoot.dialogue);
-      this.faceTowards(interactor.position, 8);
+
+      if (this._rotatesOnInteract) {
+        this.faceTowards(interactor.position, 8);
+      }
     }
   }
 
