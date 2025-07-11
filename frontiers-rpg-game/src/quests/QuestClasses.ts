@@ -13,6 +13,7 @@ import DipDuckDodgeQuest from './side/DipDuckDodgeQuest';
 import FungalForagingQuest from './side/FungalForagingQuest';
 import HammersAndCraftingQuest from './side/HammersAndCraftingQuest';
 import SkullTrinketsQuest from './side/SkullTrinketsQuest';
+import WeaverSquashingQuest from './side/WeaverSquashingQuest';
 
 export default [
   // Main, Alphabetical
@@ -30,4 +31,5 @@ export default [
   FungalForagingQuest,
   HammersAndCraftingQuest,
   SkullTrinketsQuest,
+  WeaverSquashingQuest,
 ];
