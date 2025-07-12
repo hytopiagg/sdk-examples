@@ -40,6 +40,9 @@ export default class RatkinNestRegion extends GameRegion {
       skyboxUri: 'skyboxes/black',
       spawnPoint: { x: -30, y: 23, z: -62 },
       ambientAudioUri: 'audio/music/cave-theme-looping.mp3',
+      fogColor: { r: 139, g: 69, b: 19 },
+      fogNear: 0,
+      fogFar: 90,
     });
   }
 
