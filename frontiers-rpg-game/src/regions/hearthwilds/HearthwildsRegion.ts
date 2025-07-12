@@ -24,6 +24,10 @@ import GorkinSwordsmanEntity from '../../entities/enemies/GorkinSwordsmanEntity'
 import GorkinHunterEntity from '../../entities/enemies/GorkinHunterEntity';
 import ReclusiveWeaverEntity from '../../entities/enemies/ReclusiveWeaverEntity';
 
+// Spawner Forageables
+import AbandonedCrateEntity from '../../entities/forageables/AbandonedCrateEntity';
+import WeatheredStumpEntity from '../../entities/forageables/WeatheredStumpEntity';
+
 export default class HearthwildsRegion extends GameRegion {
   public constructor() {
     super({
@@ -43,6 +47,7 @@ export default class HearthwildsRegion extends GameRegion {
     super.setup();
 
     this._setupEnemySpawners();
+    this._setupForageableSpawners();
     this._setupNPCs();
     this._setupPortals();
   }
@@ -122,6 +127,28 @@ export default class HearthwildsRegion extends GameRegion {
 
       spawner.start(true);
     }
+  }
+  
+  private _setupForageableSpawners(): void {
+    const hearthwildsSpawner = new Spawner({
+      groundCheckDistance: 6,
+      maxSpawns: 60,
+      spawnables: [
+        { entityConstructor: AbandonedCrateEntity, weight: 1 },
+        { entityConstructor: WeatheredStumpEntity, weight: 1 },
+      ],
+      spawnRegions: [
+        {
+          min: { x: -227, y: 2, z: -227 },
+          max: { x: 220, y: 15, z: 124 },
+          weight: 1,
+        }
+      ],
+      spawnIntervalMs: 15000,
+      world: this.world,
+    });
+
+    hearthwildsSpawner.start(true);
   }
 
   private _setupNPCs(): void {
