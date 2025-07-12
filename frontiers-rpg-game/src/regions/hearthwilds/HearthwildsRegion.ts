@@ -38,7 +38,7 @@ export default class HearthwildsRegion extends GameRegion {
       spawnPoint: { x: 245, y: 22, z: -90 },
       ambientAudioUri: 'audio/music/jungle-theme-looping.mp3',
       fogColor: { r: 152, g: 196, b: 127 },
-      fogNear: 15,
+      fogNear: 0,
       fogFar: 50,
     });
   }
