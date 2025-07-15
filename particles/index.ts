@@ -48,7 +48,7 @@ startServer(world => {
 
   // Start/stop the emitter every 3 seconds 
   setInterval(() => {
-    if (dirtParticleEmitter.isStopped) {
+    if (dirtParticleEmitter.paused) {
       dirtParticleEmitter.restart();
     } else {
       dirtParticleEmitter.stop();
