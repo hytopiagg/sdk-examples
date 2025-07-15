@@ -3,9 +3,6 @@ import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
 import GamePlayerEntity from "../../GamePlayerEntity";
 import type BaseEntity from "../BaseEntity";
 
-// Aggro Target Types
-import ReclusiveWeaverEntity from "./ReclusiveWeaverEntity";
-
 // Drops
 import GoldItem from "../../items/general/GoldItem";
 import GorkinEarItem from "../../items/materials/GorkinEarItem";
@@ -27,10 +24,6 @@ export default class GorkinSwordsmanEntity extends BaseCombatEntity {
     super({
       aggroRadius: 9,
       aggroSensorForwardOffset: 3,
-      aggroTargetTypes: [
-        GamePlayerEntity,
-        ReclusiveWeaverEntity,
-      ],
       attacks: [
         { // heavy, slow slam attack
           animations: [ 'atk1' ],

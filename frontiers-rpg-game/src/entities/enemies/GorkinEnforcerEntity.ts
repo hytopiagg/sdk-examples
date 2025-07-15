@@ -1,9 +1,5 @@
 import { ColliderShape, RigidBodyType } from "hytopia";
 import BaseCombatEntity, { BaseCombatEntityOptions } from "../BaseCombatEntity";
-import GamePlayerEntity from "../../GamePlayerEntity";
-
-// Aggro Target Types
-import ReclusiveWeaverEntity from "./ReclusiveWeaverEntity";
 
 // Drops
 import GoldItem from "../../items/general/GoldItem";
@@ -26,10 +22,6 @@ export default class GorkinEnforcerEntity extends BaseCombatEntity {
     super({
       aggroRadius: 9,
       aggroSensorForwardOffset: 3,
-      aggroTargetTypes: [
-        GamePlayerEntity,
-        ReclusiveWeaverEntity,
-      ],
       attacks: [
         {
           animations: [ 'atk1' ],
