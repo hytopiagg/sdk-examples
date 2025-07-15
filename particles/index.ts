@@ -34,8 +34,8 @@ startServer(world => {
   const dirtParticleEmitter = new ParticleEmitter({
     textureUri: 'particles/dirt.png',
     colorStart: { r: 194, g: 164, b: 132 },
-    size: 1, 
-    sizeVariance: 1, // Variates the base size +/- this value
+    sizeStart: 1, 
+    sizeStartVariance: 1, // Variates the base size +/- this value
     lifetime: 5, // How long the particles live for in seconds
     lifetimeVariance: 3, // Variates the base lifetime +/- this value
     position: { x: 0, y: 1, z: 0 }, // Position of the emitter
@@ -64,8 +64,8 @@ startServer(world => {
     colorEnd: { r: 255, g: 255, b: 255 }, // White base color
     colorEndVariance: { r: 255, g: 255, b: 255 }, // rgb varies +/- 255
     gravity: { x: 0, y: -3, z: 0 }, // Gravity of the particles, pull them down at a rate of 3 blocks per second
-    size: 1, // Base size of the particles
-    sizeVariance: 2, // Variates the base size +/- this value
+    sizeStart: 1, // Base size of the particles
+    sizeStartVariance: 2, // Variates the base size +/- this value
     lifetime: 5, // How long the particles live for in seconds
     lifetimeVariance: 3, // Variates the base lifetime +/- this value
     rate: 50, // How many particles to emit per second
@@ -91,8 +91,8 @@ startServer(world => {
     opacityStart: 0.7, // Starting opacity of the particles
     opacityStartVariance: 0.5, // Variates the base opacity +/- this value
     opacityEnd: 0, // Ending opacity of the particles
-    size: 3, // Base size of the particles
-    sizeVariance: 1.5, // Variates the base size +/- this value
+    sizeStart: 1, // Base size of the particles
+    sizeEnd: 50,
     lifetime: 10, // How long the particles live for in seconds
     lifetimeVariance: 5, // Variates the base lifetime +/- this value
     rate: 40, // How many particles to emit per second
@@ -118,8 +118,8 @@ function attachPlayerParticles(playerEntity: DefaultPlayerEntity) {
     opacityStartVariance: 0.5, // Variates the base opacity +/- this value
     velocity: { x: 0, y: 1, z: 0 }, // Velocity of the particles
     velocityVariance: { x: 1, y: 0.5, z: 1 }, // Variates the base velocity +/- this value
-    size: 0.1, // Base size of the particles
-    sizeVariance: 0.25, // Variates the base size +/- this value
+    sizeStart: 0.1, // Base size of the particles
+    sizeStartVariance: 0.25, // Variates the base size +/- this value
     lifetime: 4, // How long the particles live for in seconds
     rate: 10, // How many particles to emit per second
     maxParticles: 30, // Maximum number of visible particles at any given time
