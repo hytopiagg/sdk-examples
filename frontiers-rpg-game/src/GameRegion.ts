@@ -2,6 +2,7 @@ import {
   Audio,
   Collider,
   ColliderShape,
+  CollisionGroup,
   BlockType,
   Entity,
   ErrorHandler,
@@ -121,6 +122,10 @@ export default class GameRegion {
 
     new Collider({ // Out of world collider
       shape: ColliderShape.BLOCK,
+      collisionGroups: {
+        belongsTo: [ CollisionGroup.ALL ],
+        collidesWith: [ CollisionGroup.ENTITY, CollisionGroup.PLAYER ],
+      },
       halfExtents: { x: 500, y : 32, z: 500 },
       isSensor: true,
       relativePosition: { x: 0, y: -64, z: 0 },

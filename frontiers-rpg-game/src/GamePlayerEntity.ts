@@ -216,6 +216,11 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
+
+    this.setCollisionGroupsForSolidColliders({
+      belongsTo: [ CollisionGroup.PLAYER ],
+      collidesWith: [ CollisionGroup.ALL ],
+    })
     
     this._gamePlayer.onEntitySpawned(this);
     

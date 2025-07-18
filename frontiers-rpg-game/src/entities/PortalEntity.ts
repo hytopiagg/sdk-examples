@@ -2,6 +2,7 @@ import {
   BlockColliderOptions,
   Collider,
   ColliderShape,
+  CollisionGroup,
   Entity,
   ErrorHandler,
   ModelEntityOptions,
@@ -40,6 +41,10 @@ export default class PortalEntity extends Entity {
         colliders: [
           {
             ...colliderOptions,
+            collisionGroups: {
+              belongsTo: [ CollisionGroup.ALL ],
+              collidesWith: [ CollisionGroup.PLAYER ],
+            },
             isSensor: true,
             onCollision: (other, started) => {
               if (!(other instanceof GamePlayerEntity)) return;

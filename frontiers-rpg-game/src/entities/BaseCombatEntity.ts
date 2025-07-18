@@ -223,13 +223,17 @@ export default class BaseCombatEntity extends BaseEntity {
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     super.spawn(world, position, rotation);
 
+    // This is an optimization to reduce the amount of work the physics engien needs
+    // to do in the narrow phase for checking collisions with the aggro sensor collider.
+    const playerAggroOnly = this._aggroPotentialTargetTypes.length === 1 && this._aggroPotentialTargetTypes[0] === GamePlayerEntity;
+    
     // Create the aggro sensor collider
     this.createAndAddChildCollider({
       shape: ColliderShape.BALL,
       radius: this._aggroRadius,
       collisionGroups: {
         belongsTo: [ CollisionGroup.ENTITY_SENSOR ],
-        collidesWith: [ CollisionGroup.ENTITY ],
+        collidesWith: playerAggroOnly ? [ CollisionGroup.PLAYER ] : [ CollisionGroup.ENTITY, CollisionGroup.PLAYER ],
       },
       isSensor: true,
       tag: 'aggroSensor',
