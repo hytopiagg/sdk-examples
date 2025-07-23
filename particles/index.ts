@@ -45,6 +45,7 @@ startServer(world => {
     velocityVariance: { x: 4, y: 2, z: 4 }, // Variates the base velocity +/- this value
   });
   dirtParticleEmitter.spawn(world);
+  dirtParticleEmitter.stop();
 
   // Start/stop the emitter every 3 seconds 
   setInterval(() => {
@@ -54,6 +55,11 @@ startServer(world => {
       dirtParticleEmitter.stop();
     }
   }, 5000);
+
+  // Burst every 1 second, regardless of pause state
+  setInterval(() => {
+    dirtParticleEmitter.burst(500);
+  }, 3000);
 
 
   // Falling sparkles emitter
