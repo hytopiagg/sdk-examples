@@ -1,0 +1,36 @@
+{
+  "health": 94,
+  "currentRegionId": "hearthwilds",
+  "currentRegionSpawnFacingAngle": 90,
+  "currentRegionSpawnPoint": {
+    "x": 249,
+    "y": 22,
+    "z": -89
+  },
+  "skillExperience": [
+    [
+      "agility",
+      8
+    ]
+  ],
+  "backpack": {
+    "items": []
+  },
+  "hotbar": {
+    "items": [
+      {
+        "position": 0,
+        "itemId": "toy_sword"
+      }
+    ]
+  },
+  "questLog": {
+    "quests": []
+  },
+  "storage": {
+    "items": []
+  },
+  "wearables": {
+    "items": []
+  }
+}
