@@ -51,7 +51,7 @@ export default class GameManager {
     const hearthwildsRegion = new HearthwildsRegion();
     this._regions.set(hearthwildsRegion.id, hearthwildsRegion);
     GameClock.instance.addRegionClockCycle(hearthwildsRegion);
-    this._startRegion = hearthwildsRegion;
+    // this._startRegion = hearthwildsRegion;
 
     // Ratkin Nest
     const ratkinNestRegion = new RatkinNestRegion();
@@ -67,7 +67,7 @@ export default class GameManager {
     const stalkhavenPortRegion = new StalkhavenPortRegion();
     this._regions.set(stalkhavenPortRegion.id, stalkhavenPortRegion);
     GameClock.instance.addRegionClockCycle(stalkhavenPortRegion);
-    // this._startRegion = stalkhavenPortRegion;
+    this._startRegion = stalkhavenPortRegion;
 
     // Weaver's Hollow
     const weaversHollowRegion = new WeaversHollowRegion();
