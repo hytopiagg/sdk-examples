@@ -18,7 +18,7 @@ import {
   DefaultPlayerEntityController,
 } from 'hytopia';
 
-import worldMap from './assets/map.json';
+import worldMap from './assets/map.json' with { type: 'json' } ;
 
 const GAME_BLOCK_SIZE_RANGE = {
   x: [ 0.5, 4 ],

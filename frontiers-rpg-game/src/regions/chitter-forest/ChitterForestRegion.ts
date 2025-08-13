@@ -18,7 +18,7 @@ import RatkinWarriorEntity from '../../entities/enemies/RatkinWarriorEntity';
 // Spawner Forageables
 import RottenLogEntity from '../../entities/forageables/RottenLogEntity';
 
-import chitterForestMap from '../../../assets/maps/chitter-forest.json';
+import chitterForestMap from '../../../assets/maps/chitter-forest.json' with { type: 'json' } ;
 
 export default class ChitterForestRegion extends GameRegion {
   public constructor() {

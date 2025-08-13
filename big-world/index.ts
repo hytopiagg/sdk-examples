@@ -4,7 +4,7 @@ import {
   PlayerEvent,
 } from 'hytopia';
 
-import worldMap from './assets/map.json';
+import worldMap from './assets/map.json' with { type: 'json' } ;
 
 /**
  * This example loads and simulates extremely large map that is

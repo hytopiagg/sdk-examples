@@ -13,7 +13,7 @@ import BlacksmithArdenEntity from './npcs/BlacksmithArdenEntity';
 import HealerMycelisEntity from './npcs/HealerMycelisEntity';
 import MerchantFinnEntity from './npcs/MerchantFinnEntity';
 
-import stalkhavenMap from '../../../assets/maps/stalkhaven.json';
+import stalkhavenMap from '../../../assets/maps/stalkhaven.json' with { type: 'json' } ;
 
 export default class StalkhavenRegion extends GameRegion {
   public constructor() {

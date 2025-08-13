@@ -6,7 +6,7 @@ import {
 
 import MyEntityController from './MyEntityController';
 
-import worldMap from './assets/map.json';
+import worldMap from './assets/map.json' with { type: 'json' } ;
 
 startServer(world => {
   // Uncomment this to visualize physics vertices, will cause noticable lag.

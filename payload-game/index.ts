@@ -45,7 +45,7 @@ import type {
   EventPayloads,
 } from 'hytopia';
 
-import map from './assets/map.json';
+import map from './assets/map.json' with { type: 'json' } ;
 
 // Constants
 const BULLET_SPEED = 50;

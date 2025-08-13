@@ -11,7 +11,7 @@ import {
   World,
 } from 'hytopia';
 
-import worldMap from './assets/map.json';
+import worldMap from './assets/map.json' with { type: 'json' } ;
 
 startServer(world => {
   // Boilerplate setup for our example, ignore this.

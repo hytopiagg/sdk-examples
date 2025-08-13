@@ -3,7 +3,7 @@ import GameRegion from '../../GameRegion';
 import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
 
-import weaversHollowMap from '../../../assets/maps/weavers-hollow.json';
+import weaversHollowMap from '../../../assets/maps/weavers-hollow.json' with { type: 'json' } ;
 
 import SpiderWebEntity from '../../entities/enemies/SpiderWebEntity';
 import QueenWeaverEntity from '../../entities/enemies/QueenWeaverEntity';

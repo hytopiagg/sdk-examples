@@ -33,11 +33,11 @@ export default class GameManager {
     return this._regions.get(id);
   }
 
-  public loadItems(): void {
-    ItemRegistry.initializeItems();
+  public async loadItems(): Promise<void> {
+    await ItemRegistry.initializeItems();
   }
 
-  public loadQuests(): void {
+  public async loadQuests(): Promise<void> {
     QuestRegistry.initializeQuests();
   }
 

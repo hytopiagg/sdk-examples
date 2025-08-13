@@ -30,8 +30,8 @@ import {
  */
 
 // We'll use 2 maps in this example, 1 for each unique world.
-import world1Map from './assets/maps/world1.json';
-import world2Map from './assets/maps/world2.json';
+import world1Map from './assets/maps/world1.json' with { type: 'json' } ;
+import world2Map from './assets/maps/world2.json' with { type: 'json' } ;
 
 // The server always starts with a created default world passed in the startServer callback.
 startServer(defaultWorld => {

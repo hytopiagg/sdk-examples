@@ -1,5 +1,5 @@
 import { startServer, PlayerEvent } from 'hytopia';
-import worldMap from './assets/maps/terrain.json';
+import worldMap from './assets/maps/terrain.json' with { type: 'json' } ;
 
 import GameManager from './classes/GameManager';
 

@@ -4,7 +4,7 @@ import Spawner from '../../systems/Spawner';
 import PortalEntity from '../../entities/PortalEntity';
 import type { WanderOptions } from '../../entities/BaseEntity';
 
-import hearthwildsMap from '../../../assets/maps/hearthwilds.json';
+import hearthwildsMap from '../../../assets/maps/hearthwilds.json' with { type: 'json' } ;
 
 // NPCs
 import ArchivesBookshelf1Entity from './npcs/ArchivesBookshelf1Entity';

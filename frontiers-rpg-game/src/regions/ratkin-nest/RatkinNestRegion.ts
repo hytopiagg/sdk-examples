@@ -25,7 +25,7 @@ import WeaverBroodlingEntity from '../../entities/enemies/WeaverBroodlingEntity'
 // Spawner Forageables
 import DecayingPileEntity from '../../entities/forageables/DecayingPileEntity';
 
-import ratkinNestMap from '../../../assets/maps/ratkin-nest.json';
+import ratkinNestMap from '../../../assets/maps/ratkin-nest.json' with { type: 'json' } ;
 
 export default class RatkinNestRegion extends GameRegion {
   public constructor() {

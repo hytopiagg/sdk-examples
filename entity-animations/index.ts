@@ -5,7 +5,7 @@ import {
   ModelRegistry,
 } from 'hytopia';
 
-import worldMap from './assets/map.json';
+import worldMap from './assets/map.json' with { type: 'json' } ;
 
 /**
  * This is a simple example used to visualize and debug animations.

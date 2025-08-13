@@ -4,7 +4,7 @@ import PortalEntity from '../../entities/PortalEntity';
 import BoatRepairmanSidEntity from './npcs/BoatRepairmanSidEntity';
 import PirateCaptainShroudEntity from './npcs/PirateCaptainShroudEntity';
 
-import stalkhavenPortMap from '../../../assets/maps/stalkhaven-port.json';
+import stalkhavenPortMap from '../../../assets/maps/stalkhaven-port.json' with { type: 'json' } ;
 
 export default class StalkhavenRegion extends GameRegion {
   public constructor() {

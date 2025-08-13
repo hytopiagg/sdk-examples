@@ -7,7 +7,7 @@ import {
   PlayerUIEvent,
 } from 'hytopia';
 
-import worldMap from './assets/map.json';
+import worldMap from './assets/map.json' with { type: 'json' } ;
 
 // Simple map for player -> singular controlled entity
 const playerEntityMap = new Map<Player, DefaultPlayerEntity>();

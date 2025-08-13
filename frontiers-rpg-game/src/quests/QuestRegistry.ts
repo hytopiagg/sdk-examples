@@ -40,10 +40,10 @@ export default class QuestRegistry {
     return data?.interaction.enabledForInteractor(interactor) ? data.option : undefined;
   }
   
-  public static initializeQuests(): void {
+  public static async initializeQuests(): Promise<void> {
     console.log('Loading quests...');
     
-    const QuestClasses = require('./QuestClasses').default; // lazy load to avoid circular dependencies
+    const QuestClasses = (await import('./QuestClasses')).default; // lazy load to avoid circular dependencies
     const npcIdCounters = new Map<typeof BaseEntity, number>();
     let loadedCount = 0;
     

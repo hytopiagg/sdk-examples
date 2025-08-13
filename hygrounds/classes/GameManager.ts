@@ -6,7 +6,7 @@ import {
   World,
 } from 'hytopia';
 
-import worldMap from '../assets/map.json';
+import worldMap from '../assets/map.json' with { type: 'json' } ;
 
 import {
   BEDROCK_BLOCK_ID,
