@@ -52,6 +52,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     super({
       player: gamePlayer.player,
       name: 'Player',
+      cosmeticHiddenSlots: [ 'LEFT_ITEM', 'RIGHT_ITEM' ], // hide held items
     });
 
     this._gamePlayer = gamePlayer;
