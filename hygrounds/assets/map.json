@@ -11,8 +11,8 @@
     },
     {
       "id": 2,
-      "name": "clay",
-      "textureUri": "blocks/clay.png",
+      "name": "andesite",
+      "textureUri": "blocks/andesite.png",
       "isCustom": false,
       "isMultiTexture": false,
       "isLiquid": false,
@@ -145,17 +145,17 @@
     {
       "id": 16,
       "name": "grass",
-      "textureUri": "blocks/grass",
+      "textureUri": "blocks/grass-block",
       "isCustom": false,
       "isMultiTexture": true,
       "isLiquid": false,
       "sideTextures": {
-        "+x": "./assets/blocks/grass/+x.png",
-        "+y": "./assets/blocks/grass/+y.png",
-        "+z": "./assets/blocks/grass/+z.png",
-        "-x": "./assets/blocks/grass/-x.png",
-        "-y": "./assets/blocks/grass/-y.png",
-        "-z": "./assets/blocks/grass/-z.png"
+        "+x": "./assets/blocks/grass-block/+x.png",
+        "+y": "./assets/blocks/grass-block/+y.png",
+        "+z": "./assets/blocks/grass-block/+z.png",
+        "-x": "./assets/blocks/grass-block/-x.png",
+        "-y": "./assets/blocks/grass-block/-y.png",
+        "-z": "./assets/blocks/grass-block/-z.png"
       }
     },
     {
@@ -400,7 +400,7 @@
     {
       "id": 42,
       "name": "water-flow",
-      "textureUri": "blocks/water-flow.png",
+      "textureUri": "blocks/water.png",
       "isCustom": false,
       "isMultiTexture": false,
       "isLiquid": true,
@@ -409,7 +409,7 @@
     {
       "id": 43,
       "name": "water-still",
-      "textureUri": "blocks/water-still.png",
+      "textureUri": "blocks/water.png",
       "isCustom": false,
       "isMultiTexture": false,
       "isLiquid": true,

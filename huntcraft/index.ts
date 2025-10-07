@@ -13,6 +13,8 @@ import largeRuins from './assets/maps/procedural/forest/large-ruins.json';
 import river from './assets/maps/procedural/forest/river.json';
 import ruins from './assets/maps/procedural/forest/ruins.json';
 
+import tidehaven from './assets/maps/tidehaven.json';
+
 startServer(defaultWorld => {
   const proceduralRegion = new ProceduralRegion({
     liquidBlockNames: [ 'water-still' ],
@@ -32,7 +34,8 @@ startServer(defaultWorld => {
   });
 
   // defaultWorld.simulation.enableDebugRendering(true, 0);
-  defaultWorld.loadMap(proceduralRegion.generateMap(2));
+  // defaultWorld.loadMap(proceduralRegion.generateMap(2));
+  defaultWorld.loadMap(tidehaven);
 
   defaultWorld.on(PlayerEvent.JOINED_WORLD, ({ player }) => {
     const playerEntity = new DefaultPlayerEntity({
