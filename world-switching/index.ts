@@ -81,12 +81,12 @@ function playerLeftWorld({ player, world }: { player: Player, world: World }) {
 function addPortal(world: World, toWorld: World) {
   const portal = new Entity({
     name: 'Portal',
-    modelUri: 'models/structures/jump-pad.gltf',
+    modelUri: 'models/projectiles/energy-orb-projectile.gltf',
     rigidBodyOptions: {
       type: RigidBodyType.KINEMATIC_POSITION,
       colliders: [
         {
-          ...Collider.optionsFromModelUri('models/structures/jump-pad.gltf'),
+          ...Collider.optionsFromModelUri('models/projectiles/energy-orb-projectile.gltf'),
           isSensor: true,
           onCollision(other: Entity | BlockType, started: boolean) {
             if (started && other instanceof DefaultPlayerEntity) {
