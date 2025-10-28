@@ -13,7 +13,6 @@
     "hytopia": "*"
   },
   "trustedDependencies": [
-    "mediasoup",
     "sharp"
   ]
 }

@@ -14,7 +14,6 @@
     "openai": "^4.77.3"
   },
   "trustedDependencies": [
-    "mediasoup",
     "sharp"
   ]
 }

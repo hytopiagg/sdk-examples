@@ -15,7 +15,6 @@
     "hytopia": "*"
   },
   "trustedDependencies": [
-    "mediasoup",
     "sharp"
   ],
   "devDependencies": {
