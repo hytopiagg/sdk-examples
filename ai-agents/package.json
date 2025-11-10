@@ -9,7 +9,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@hytopia.com/assets": "^0.3.2",
+    "@hytopia.com/assets": "^0.4.2",
     "hytopia": "*",
     "openai": "^4.77.3"
   },

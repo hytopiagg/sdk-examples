@@ -79,8 +79,8 @@
     },
     {
       "id": 43,
-      "name": "mossy-coblestone",
-      "textureUri": "blocks/mossy-coblestone.png",
+      "name": "mossy-cobblestone",
+      "textureUri": "blocks/mossy-cobblestone.png",
       "isCustom": false,
       "isMultiTexture": false
     },
@@ -108,7 +108,7 @@
     {
       "id": 52,
       "name": "oak-planks-vertical",
-      "textureUri": "blocks/oak-planks-vertical.png",
+      "textureUri": "blocks/oak-planks-dark.png",
       "isCustom": false,
       "isMultiTexture": false
     },
