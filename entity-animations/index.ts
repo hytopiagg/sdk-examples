@@ -20,7 +20,6 @@ startServer(world => {
   const animatedEntity = new Entity({
     name: 'Entity',
     modelUri: 'models/players/player.gltf', // Change the model here for testing different models
-    modelScale: 0.5, // Change the scale here relative to your neeeds.
   })
 
   animatedEntity.spawn(world, { x: 0, y: 10, z: 0 });
