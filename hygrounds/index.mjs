@@ -24871,7 +24871,7 @@ wzUfQXDpZndkqxHilERgvPXLEsTTCMF/W+C8gsO9AoGAZWt+CU6zQhqMBB5MMGZf
 UE5WUS/oOd4jHBqwVxBTLOAPlmnQSp1uiTu2K0NrnnvZ6Zi/+tIsjbtxhomeOmnH
 +wsk9n+Bif4P7VTvwqc9FY4Ya79PEJK+J/xx/mldUEz3R63RiRXZAaDddO7yCQFX
 W8eeuIMLKU6dSq0yu22+nyU=
------END PRIVATE KEY-----`, SC, ni = "__DEV_SDK_VERSION__", ai, Qz, B3, tN1, IC6 = 5000, v$, w5, eN1, si, oi, ri, ti, SC6, ei = 60, Jn, $B, AC6 = 2, cC6 = 3, JO1, WB, $n, KB, $O1, bK, XO1, F$, ZB, YO1, L5, N3, k6, xX, $8, u4, b8, Wz, w8, GB, z8, Kz, dR1, pR1 = 0.099856, VB, qn;
+-----END PRIVATE KEY-----`, SC, ni = "0.14.3", ai, Qz, B3, tN1, IC6 = 5000, v$, w5, eN1, si, oi, ri, ti, SC6, ei = 60, Jn, $B, AC6 = 2, cC6 = 3, JO1, WB, $n, KB, $O1, bK, XO1, F$, ZB, YO1, L5, N3, k6, xX, $8, u4, b8, Wz, w8, GB, z8, Kz, dR1, pR1 = 0.099856, VB, qn;
 var init_server = __esm(() => {
   iR1 = Object.create;
   ({ getPrototypeOf: nR1, defineProperty: sC, getOwnPropertyNames: aR1 } = Object);
@@ -127170,7 +127170,7 @@ var init_gameConfig = __esm(() => {
       rotation: Wz.fromEuler(0, 180, 0)
     }
   ];
-  GAME_DURATION_MS = 8 * 60 * 1000;
+  GAME_DURATION_MS = 30 * 1000;
   ITEM_DESPAWN_TIME_MS = 25 * 1000;
   ITEM_SPAWNS = [
     { position: { x: -21.5, y: 2, z: -17 } },
@@ -129705,7 +129705,7 @@ var init_BotPlayerEntity = __esm(() => {
   BotPlayerEntity = class BotPlayerEntity extends GamePlayerEntity {
     static _botsByWorld = new Map;
     static _activeWorlds = new Set;
-    static _maxBots = 6;
+    static _maxBots = 5 + Math.floor(Math.random() * 4);
     static ensureForWorld(world) {
       const bots = this._botsByWorld.get(world.id) ?? new Set;
       if (!this._botsByWorld.has(world.id)) {
@@ -130751,7 +130751,6 @@ var init_GameManager = __esm(() => {
       BotPlayerEntity.setWorldActive(this.world, false);
       this.world.chatManager.sendBroadcastMessage("Game over! Starting the next round in 10 seconds...", "FF0000");
       this._identifyWinningPlayer();
-      BotPlayerEntity.despawnAll(this.world);
       this.refreshPlayerCount();
       if (this._restartTimer) {
         clearTimeout(this._restartTimer);
@@ -130816,7 +130815,6 @@ var init_GameManager = __esm(() => {
     _cleanup() {
       if (!this.world)
         return;
-      BotPlayerEntity.despawnAll(this.world);
       this.world.loadMap(map_default);
       this._spawnBedrock(this.world);
       this.world.entityManager.getAllPlayerEntities().forEach((playerEntity) => {

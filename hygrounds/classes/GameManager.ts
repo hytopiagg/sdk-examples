@@ -18,7 +18,6 @@ import {
   ITEM_SPAWNS,
   ITEM_SPAWNS_AT_START,
   ITEM_SPAWN_ITEMS,
-  MINIMUM_PLAYERS_TO_START,
   SPAWN_REGION_AABB,
   RANK_WIN_EXP,
 } from '../gameConfig';
@@ -103,8 +102,6 @@ export default class GameManager {
     this.world.chatManager.sendBroadcastMessage('Game over! Starting the next round in 10 seconds...', 'FF0000');
     
     this._identifyWinningPlayer();
-
-    BotPlayerEntity.despawnAll(this.world);
     this.refreshPlayerCount();
 
     // Clear any existing restart timer
@@ -213,8 +210,6 @@ export default class GameManager {
    */
   private _cleanup() {
     if (!this.world) return;
-
-    BotPlayerEntity.despawnAll(this.world);
 
     // Reset map to initial state
     this.world.loadMap(worldMap);
