@@ -21,7 +21,6 @@ startServer(world => {
   // Handle player joining the game
   world.on(PlayerEvent.JOINED_WORLD, ({ player }) => {
     GameManager.instance.spawnPlayerEntity(player);
-    GameManager.instance.playerCount++;
   });
 
   // Handle player leaving the game
@@ -31,7 +30,7 @@ startServer(world => {
       .getPlayerEntitiesByPlayer(player)
       .forEach(entity => entity.despawn());
 
-    GameManager.instance.playerCount--;
+    GameManager.instance.onPlayerPopulationChanged();
   });
 
   world.on(PlayerEvent.RECONNECTED_WORLD, ({ player }) => {

@@ -5,6 +5,7 @@ import {
   Entity,
   ModelEntityOptions,
   QuaternionLike,
+  RigidBodyType,
   SceneUI,
   Vector3Like,
   World,
@@ -24,6 +25,7 @@ export default class ChestEntity extends Entity {
       modelScale: 1,
       name: 'Item Chest',
       rigidBodyOptions: {
+        type: RigidBodyType.DYNAMIC,
         additionalMass: 10000,
         enabledPositions: { x: false, y: true, z: false },
         enabledRotations: { x: false, y: false, z: false },
@@ -81,6 +83,10 @@ export default class ChestEntity extends Entity {
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     super.spawn(world, position, rotation);
     this._labelSceneUI.load(world);
+  }
+
+  public get isOpened(): boolean {
+    return this._opened;
   }
 
   private _createLabelUI(): SceneUI {

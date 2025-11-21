@@ -79,6 +79,16 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
   public get isDead(): boolean { return this._dead; }
 
+  /** The currently active inventory item, if any. */
+  public get activeInventoryItem(): ItemEntity | undefined {
+    return this._inventory[this._inventoryActiveSlotIndex];
+  }
+
+  /** A snapshot of the inventory items. */
+  public get inventoryItems(): ReadonlyArray<ItemEntity | undefined> {
+    return this._inventory.slice();
+  }
+
   public constructor(player: Player) {
     super({
       player,

@@ -185,6 +185,35 @@ export default abstract class GunEntity extends ItemEntity {
     }
   }
 
+  /** The amount of ammo currently in the clip. */
+  public getClipAmmo(): number {
+    return this.ammo;
+  }
+
+  /** The remaining reserve ammo for this gun. */
+  public getReserveAmmo(): number {
+    return this.totalAmmo;
+  }
+
+  /** Whether the gun has ammo available in the clip or reserves. */
+  public hasUsableAmmo(): boolean {
+    return this.ammo > 0 || this.totalAmmo > 0;
+  }
+
+  public getReloadTimeMs(): number {
+    return this.reloadTimeMs;
+  }
+
+  /** The effective range (in blocks) of the gun. */
+  public getEffectiveRange(): number {
+    return this.range;
+  }
+
+  /** Whether the gun is currently reloading. */
+  public isReloading(): boolean {
+    return this._reloading;
+  }
+
   private _createMuzzleFlash(): void {
     if (!this.isSpawned || !this.world) return;
 

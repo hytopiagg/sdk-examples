@@ -126843,7 +126843,7 @@ var init_map = __esm(() => {
 });
 
 // gameConfig.ts
-var BEDROCK_BLOCK_ID = 2, BLOCK_ID_BREAK_DAMAGE, BLOCK_ID_MATERIALS, BUILD_BLOCK_ID = 37, CHEST_DROP_INTERVAL_MS, CHEST_DROP_REGION_AABB, CHEST_SPAWNS_AT_START = 20, CHEST_MAX_DROP_ITEMS = 2, CHEST_OPEN_DESPAWN_MS, CHEST_DROP_ITEMS, CHEST_SPAWNS, GAME_DURATION_MS, ITEM_DESPAWN_TIME_MS, ITEM_SPAWNS, ITEM_SPAWN_ITEMS, ITEM_SPAWNS_AT_START = 12, MINIMUM_PLAYERS_TO_START = 2, RANK_SAVE_INTERVAL_EXP = 500, RANK_KILL_EXP = 100, RANK_WIN_EXP = 1000, RANKS, SPAWN_REGION_AABB;
+var BEDROCK_BLOCK_ID = 2, BLOCK_ID_BREAK_DAMAGE, BLOCK_ID_MATERIALS, BUILD_BLOCK_ID = 37, CHEST_DROP_INTERVAL_MS, CHEST_DROP_REGION_AABB, CHEST_SPAWNS_AT_START = 20, CHEST_MAX_DROP_ITEMS = 2, CHEST_OPEN_DESPAWN_MS, CHEST_DROP_ITEMS, CHEST_SPAWNS, GAME_DURATION_MS, ITEM_DESPAWN_TIME_MS, ITEM_SPAWNS, ITEM_SPAWN_ITEMS, ITEM_SPAWNS_AT_START = 12, RANK_SAVE_INTERVAL_EXP = 500, RANK_KILL_EXP = 100, RANK_WIN_EXP = 1000, RANKS, SPAWN_REGION_AABB;
 var init_gameConfig = __esm(() => {
   init_server();
   BLOCK_ID_BREAK_DAMAGE = {
@@ -127849,6 +127849,24 @@ var init_GunEntity = __esm(() => {
       if (raycastHit?.hitEntity) {
         this._handleHitEntity(raycastHit.hitEntity, direction);
       }
+    }
+    getClipAmmo() {
+      return this.ammo;
+    }
+    getReserveAmmo() {
+      return this.totalAmmo;
+    }
+    hasUsableAmmo() {
+      return this.ammo > 0 || this.totalAmmo > 0;
+    }
+    getReloadTimeMs() {
+      return this.reloadTimeMs;
+    }
+    getEffectiveRange() {
+      return this.range;
+    }
+    isReloading() {
+      return this._reloading;
     }
     _createMuzzleFlash() {
       if (!this.isSpawned || !this.world)
@@ -128878,6 +128896,7 @@ var init_ChestEntity = __esm(() => {
         modelScale: 1,
         name: "Item Chest",
         rigidBodyOptions: {
+          type: kF.DYNAMIC,
           additionalMass: 1e4,
           enabledPositions: { x: false, y: true, z: false },
           enabledRotations: { x: false, y: false, z: false },
@@ -128925,6 +128944,9 @@ var init_ChestEntity = __esm(() => {
     spawn(world, position, rotation) {
       super.spawn(world, position, rotation);
       this._labelSceneUI.load(world);
+    }
+    get isOpened() {
+      return this._opened;
     }
     _createLabelUI() {
       return new wU({
@@ -129056,6 +129078,12 @@ var init_GamePlayerEntity = __esm(() => {
     }
     get isDead() {
       return this._dead;
+    }
+    get activeInventoryItem() {
+      return this._inventory[this._inventoryActiveSlotIndex];
+    }
+    get inventoryItems() {
+      return this._inventory.slice();
     }
     constructor(player) {
       super({
@@ -129546,6 +129574,1122 @@ var init_GamePlayerEntity = __esm(() => {
   };
 });
 
+// classes/BotPlayerEntity.ts
+class BotPlayerUI {
+  _listeners = new Map;
+  load(_) {}
+  sendData(_) {}
+  on(event, callback) {
+    if (!this._listeners.has(event)) {
+      this._listeners.set(event, new Set);
+    }
+    this._listeners.get(event).add(callback);
+  }
+  emitData(data) {
+    const listeners = this._listeners.get(cO.DATA);
+    listeners?.forEach((listener) => listener({ data }));
+  }
+}
+
+class BotPlayerCamera {
+  mode = Bq0.FIRST_PERSON;
+  offset = { x: 0, y: 0.5, z: 0 };
+  zoom = 1;
+  _orientation = { pitch: 0, yaw: 0 };
+  _attachedEntity;
+  get orientation() {
+    return this._orientation;
+  }
+  get facingDirection() {
+    return {
+      x: -Math.sin(this._orientation.yaw) * Math.cos(this._orientation.pitch),
+      y: Math.sin(this._orientation.pitch),
+      z: -Math.cos(this._orientation.yaw) * Math.cos(this._orientation.pitch)
+    };
+  }
+  get facingQuaternion() {
+    const hp2 = this._orientation.pitch * 0.5;
+    const hy = this._orientation.yaw * 0.5;
+    const cp2 = Math.cos(hp2);
+    const sp = Math.sin(hp2);
+    const cy = Math.cos(hy);
+    const sy2 = Math.sin(hy);
+    return {
+      x: sp * cy,
+      y: cp2 * sy2,
+      z: -sp * sy2,
+      w: cp2 * cy
+    };
+  }
+  setMode(mode) {
+    this.mode = mode;
+  }
+  setAttachedToEntity(entity) {
+    this._attachedEntity = entity;
+  }
+  setModelHiddenNodes(_) {}
+  setModelShownNodes(_) {}
+  setOffset(offset) {
+    this.offset = { ...offset };
+  }
+  setOrientationYaw(yaw) {
+    this._orientation.yaw = yaw;
+  }
+  setOrientationPitch(pitch) {
+    this._orientation.pitch = pitch;
+  }
+  lookAtPosition(position) {
+    if (!this._attachedEntity) {
+      return;
+    }
+    const origin = this._attachedEntity.position;
+    const dir = {
+      x: position.x - origin.x,
+      y: position.y - origin.y,
+      z: position.z - origin.z
+    };
+    const flat = Math.hypot(dir.x, dir.z) || 1;
+    this._orientation.yaw = Math.atan2(-dir.x, -dir.z);
+    this._orientation.pitch = Math.atan2(dir.y, flat);
+  }
+  setZoom(zoom) {
+    this.zoom = zoom;
+  }
+}
+var AIM_JITTER_RADIANS = 0.035, AIM_JITTER_RANDOM_MIN_SCALE = 0.75, AIM_JITTER_RANDOM_MAX_SCALE = 2.1, MELEE_ATTACK_RANGE = 2.4, PICKAXE_SLOT_INDEX = 0, LOOT_INTERACT_RANGE = 1.5, NAVIGATION_PROGRESS_INTERVAL_MS = 600, NAVIGATION_MIN_PROGRESS = 0.35, MAX_VERTICAL_TARGET_DELTA = 12, MELEE_LOOT_OPPORTUNITY_RANGE = 8, BEHAVIOR_LOCK_MS = 450, ENEMY_RETARGET_COOLDOWN_MS = 750, ENEMY_LOST_GRACE_MS = 1400, LOOT_RETARGET_COOLDOWN_MS = 550, LOOT_LOST_GRACE_MS = 2200, BotStubPlayer, BotPlayerEntity;
+var init_BotPlayerEntity = __esm(() => {
+  init_server();
+  init_ChestEntity();
+  init_GamePlayerEntity();
+  init_GunEntity();
+  init_ItemEntity();
+  init_gameConfig();
+  BotStubPlayer = class BotStubPlayer extends $1 {
+    static _idCounter = 1;
+    id;
+    camera;
+    cosmetics;
+    ui;
+    input = {};
+    profilePictureUrl;
+    username;
+    world;
+    _persistedData;
+    constructor(username) {
+      super();
+      this.id = `bot-${BotStubPlayer._idCounter++}`;
+      this.username = username;
+      this.camera = new BotPlayerCamera;
+      this.cosmetics = Promise.resolve(undefined);
+      this.ui = new BotPlayerUI;
+    }
+    joinWorld(world) {
+      this.world = world;
+    }
+    getPersistedData() {
+      return this._persistedData;
+    }
+    setPersistedData(data) {
+      this._persistedData = { ...this._persistedData ?? {}, ...data };
+    }
+    scheduleNotification() {
+      return Promise.resolve();
+    }
+    unscheduleNotification() {
+      return Promise.resolve(false);
+    }
+    resetInputs() {
+      this.input = {};
+    }
+  };
+  BotPlayerEntity = class BotPlayerEntity extends GamePlayerEntity {
+    static _botsByWorld = new Map;
+    static _activeWorlds = new Set;
+    static _maxBots = 6;
+    static ensureForWorld(world) {
+      const bots = this._botsByWorld.get(world.id) ?? new Set;
+      if (!this._botsByWorld.has(world.id)) {
+        this._botsByWorld.set(world.id, bots);
+      }
+      const desiredBots = this._maxBots;
+      while (bots.size < desiredBots) {
+        const botName = this._generateRandomBotName();
+        const driver = new BotStubPlayer(botName);
+        const bot = new BotPlayerEntity(driver);
+        bot.spawn(world, BotPlayerEntity._randomSpawnPosition());
+        bots.add(bot);
+      }
+      while (bots.size > desiredBots) {
+        const iterator = bots.values().next();
+        if (iterator.done) {
+          break;
+        }
+        const bot = iterator.value;
+        bot.despawn();
+        bots.delete(bot);
+      }
+    }
+    static despawnAll(world) {
+      if (!world) {
+        return;
+      }
+      const bots = this._botsByWorld.get(world.id);
+      bots?.forEach((bot) => bot.despawn());
+      this._botsByWorld.delete(world.id);
+    }
+    static setWorldActive(world, active) {
+      if (!world) {
+        return;
+      }
+      if (active) {
+        this._activeWorlds.add(world.id);
+      } else {
+        this._activeWorlds.delete(world.id);
+      }
+    }
+    static _randomSpawnPosition() {
+      return {
+        x: SPAWN_REGION_AABB.min.x + Math.random() * (SPAWN_REGION_AABB.max.x - SPAWN_REGION_AABB.min.x),
+        y: SPAWN_REGION_AABB.min.y + Math.random() * (SPAWN_REGION_AABB.max.y - SPAWN_REGION_AABB.min.y),
+        z: SPAWN_REGION_AABB.min.z + Math.random() * (SPAWN_REGION_AABB.max.z - SPAWN_REGION_AABB.min.z)
+      };
+    }
+    static _generateRandomBotName() {
+      const digits = Math.floor(Math.random() * 1e9).toString().padStart(9, "0");
+      return `guest-${digits}`;
+    }
+    _driver;
+    _behaviorState = "IDLE" /* IDLE */;
+    _behaviorLockUntil = 0;
+    _targetEnemy;
+    _targetLootEntity;
+    _idleDestination;
+    _nextSenseAt = 0;
+    _strafeDirection = 1;
+    _strafeSwitchAt = 0;
+    _loopHandler;
+    _loopWorld;
+    _lastWorldId;
+    _navLastTarget;
+    _navLastDistance = Number.POSITIVE_INFINITY;
+    _navLastCheckAt = 0;
+    _navLastShortProgressAt = 0;
+    _jumpRetryDebounceAt = 0;
+    _unstickLastPosition;
+    _unstickNextCheckAt = 0;
+    _blockBreakTarget;
+    _blockBreakExpiresAt = 0;
+    _spentWeaponIds = new Set;
+    _targetReevalAt = 0;
+    _spentWeapons = new WeakSet;
+    _enemyRetargetCooldownUntil = 0;
+    _enemyForgetAt = 0;
+    _lootRetargetCooldownUntil = 0;
+    _lootForgetAt = 0;
+    _activeLootTargetId;
+    _lootOverrideUntil = 0;
+    constructor(driver) {
+      super(driver);
+      this._driver = driver;
+    }
+    spawn(world, position, rotation) {
+      this._driver.joinWorld(world);
+      super.spawn(world, position, rotation);
+      this._lastWorldId = world.id;
+      this._bindLoop(world);
+    }
+    despawn() {
+      this._unbindLoop();
+      const worldId = this._lastWorldId;
+      super.despawn();
+      if (worldId !== undefined) {
+        BotPlayerEntity._botsByWorld.get(worldId)?.delete(this);
+      }
+    }
+    setupPlayerUI() {}
+    async loadPersistedData() {}
+    savePersistedData() {}
+    respawn() {
+      super.respawn();
+      this._idleDestination = undefined;
+      this._blockBreakTarget = undefined;
+      this._targetLootEntity = undefined;
+      this._activeLootTargetId = undefined;
+      this._blockBreakTarget = undefined;
+      this._blockBreakExpiresAt = 0;
+      this._activeLootTargetId = undefined;
+      this._activeLootTargetId = undefined;
+      this._spentWeaponIds.clear();
+      this._spentWeapons = new WeakSet;
+    }
+    _bindLoop(world) {
+      this._loopHandler = ({ tickDeltaMs }) => this._updateBehavior(tickDeltaMs);
+      this._loopWorld = world;
+      world.loop.on(JO1.TICK_START, this._loopHandler);
+    }
+    _unbindLoop() {
+      if (this._loopHandler && this._loopWorld) {
+        this._loopWorld.loop.off(JO1.TICK_START, this._loopHandler);
+      }
+      this._loopHandler = undefined;
+      this._loopWorld = undefined;
+    }
+    _updateBehavior(deltaTimeMs) {
+      if (!this.world || !BotPlayerEntity._activeWorlds.has(this.world.id) || this.isDead) {
+        this._resetInput();
+        return;
+      }
+      this._resetInput();
+      this._navLastCheckAt = Math.min(this._navLastCheckAt, performance.now());
+      this._senseEnvironment();
+      this._monitorAndUnstick();
+      const hasEnemy = Boolean(this._targetEnemy?.isSpawned);
+      const now = performance.now();
+      const lootOverrideActive = now < this._lootOverrideUntil;
+      let desiredState = "IDLE" /* IDLE */;
+      if (hasEnemy && !lootOverrideActive) {
+        desiredState = "COMBAT" /* COMBAT */;
+      } else if (this._targetLootEntity?.isSpawned) {
+        desiredState = "LOOT" /* LOOT */;
+      }
+      const forceCombat = desiredState === "COMBAT" /* COMBAT */ && this._behaviorState !== "COMBAT" /* COMBAT */;
+      this._setBehaviorState(desiredState, forceCombat);
+      switch (this._behaviorState) {
+        case "COMBAT" /* COMBAT */:
+          this._driveCombat(deltaTimeMs);
+          break;
+        case "LOOT" /* LOOT */:
+          this._driveLoot();
+          break;
+        default:
+          this._driveIdle();
+          break;
+      }
+    }
+    _setBehaviorState(state, force = false) {
+      if (state === this._behaviorState) {
+        return;
+      }
+      const now = performance.now();
+      if (!force && now < this._behaviorLockUntil) {
+        return;
+      }
+      this._behaviorState = state;
+      this._behaviorLockUntil = now + BEHAVIOR_LOCK_MS;
+      this._blockBreakTarget = undefined;
+      this._blockBreakExpiresAt = 0;
+      this._navLastTarget = undefined;
+      this._navLastDistance = Number.POSITIVE_INFINITY;
+      if (state === "LOOT" /* LOOT */) {
+        this._targetReevalAt = now + 4000;
+      } else {
+        this._targetReevalAt = 0;
+        if (state === "COMBAT" /* COMBAT */) {
+          this._lootOverrideUntil = 0;
+        }
+      }
+    }
+    _senseEnvironment() {
+      if (!this.world) {
+        return;
+      }
+      if (performance.now() < this._nextSenseAt) {
+        return;
+      }
+      this._nextSenseAt = performance.now() + 200;
+      const position = this.position;
+      let closestEnemy;
+      let closestEnemyDist = Number.POSITIVE_INFINITY;
+      for (const entity of this.world.entityManager.getAllPlayerEntities()) {
+        if (!(entity instanceof GamePlayerEntity)) {
+          continue;
+        }
+        if (entity === this) {
+          continue;
+        }
+        if (Math.abs(entity.position.y - position.y) > MAX_VERTICAL_TARGET_DELTA) {
+          continue;
+        }
+        const dist = this._distanceSq(position, entity.position);
+        if (dist < closestEnemyDist) {
+          closestEnemy = entity;
+          closestEnemyDist = dist;
+        }
+      }
+      this._updateEnemyTarget(closestEnemy);
+      let closestGun;
+      let closestGunDist = Number.POSITIVE_INFINITY;
+      let closestChest;
+      let closestChestDist = Number.POSITIVE_INFINITY;
+      let closestItem;
+      let closestItemDist = Number.POSITIVE_INFINITY;
+      for (const entity of this.world.entityManager.getAllEntities()) {
+        if (!entity.isSpawned) {
+          continue;
+        }
+        if (Math.abs(entity.position.y - position.y) > MAX_VERTICAL_TARGET_DELTA) {
+          continue;
+        }
+        if (entity instanceof ChestEntity) {
+          if (entity.isOpened) {
+            continue;
+          }
+          const dist2 = this._distanceSq(position, entity.position);
+          if (dist2 < closestChestDist) {
+            closestChestDist = dist2;
+            closestChest = entity;
+          }
+          continue;
+        }
+        if (!(entity instanceof ItemEntity)) {
+          continue;
+        }
+        if (entity.parent) {
+          continue;
+        }
+        if (entity instanceof GunEntity && this._isSpentGun(entity)) {
+          continue;
+        }
+        const dist = this._distanceSq(position, entity.position);
+        if (entity instanceof GunEntity) {
+          if (dist < closestGunDist) {
+            closestGunDist = dist;
+            closestGun = entity;
+          }
+        } else if (dist < closestItemDist) {
+          closestItemDist = dist;
+          closestItem = entity;
+        }
+      }
+      const weaponNeeded = !this._hasUsableGun();
+      const lowOnAmmo = this._shouldSeekAmmo();
+      const prioritizeWeapons = weaponNeeded || lowOnAmmo;
+      const desiredLoot = prioritizeWeapons ? closestGun ?? closestChest ?? closestItem : closestChest ?? closestGun ?? closestItem;
+      this._updateLootTarget(desiredLoot);
+      if (!this._targetEnemy && !this._targetLootEntity) {
+        if (!this._idleDestination || this._distanceSq(this._idleDestination, position) < 1) {
+          this._idleDestination = BotPlayerEntity._randomSpawnPosition();
+        }
+      }
+    }
+    _updateEnemyTarget(candidate) {
+      const now = performance.now();
+      const current = this._targetEnemy;
+      const candidateValid = Boolean(candidate && candidate.isSpawned && !candidate.isDead);
+      if (candidateValid && candidate) {
+        if (current === candidate) {
+          this._enemyForgetAt = now + ENEMY_LOST_GRACE_MS;
+          return;
+        }
+        const canRetarget = !current || !current.isSpawned || current.isDead || now >= this._enemyRetargetCooldownUntil;
+        if (canRetarget) {
+          this._targetEnemy = candidate;
+          this._enemyRetargetCooldownUntil = now + ENEMY_RETARGET_COOLDOWN_MS;
+          this._enemyForgetAt = now + ENEMY_LOST_GRACE_MS;
+          this._blockBreakTarget = undefined;
+          this._blockBreakExpiresAt = 0;
+        }
+        return;
+      }
+      if (current && (!current.isSpawned || current.isDead || now > this._enemyForgetAt)) {
+        this._targetEnemy = undefined;
+      }
+    }
+    _updateLootTarget(candidate) {
+      const now = performance.now();
+      const current = this._targetLootEntity;
+      if (this._isValidLootTarget(candidate)) {
+        if (current === candidate) {
+          this._lootForgetAt = now + LOOT_LOST_GRACE_MS;
+          return;
+        }
+        const canRetarget = !this._isValidLootTarget(current) || now >= this._lootRetargetCooldownUntil;
+        if (canRetarget) {
+          this._targetLootEntity = candidate;
+          this._activeLootTargetId = candidate.id;
+          this._lootRetargetCooldownUntil = now + LOOT_RETARGET_COOLDOWN_MS;
+          this._lootForgetAt = now + LOOT_LOST_GRACE_MS;
+          this._blockBreakTarget = undefined;
+          this._blockBreakExpiresAt = 0;
+          this._targetReevalAt = now + 4000;
+        }
+        return;
+      }
+      if (current && (!this._isValidLootTarget(current) || now > this._lootForgetAt)) {
+        this._targetLootEntity = undefined;
+        this._activeLootTargetId = undefined;
+      }
+    }
+    _isValidLootTarget(entity) {
+      if (!entity || !entity.isSpawned) {
+        return false;
+      }
+      if (entity instanceof ItemEntity) {
+        return !entity.parent;
+      }
+      if (entity instanceof ChestEntity) {
+        return !entity.isOpened;
+      }
+      return true;
+    }
+    _findNearbyLootOpportunity(radius) {
+      if (!this.world) {
+        return;
+      }
+      const radiusSq = radius * radius;
+      let closestGun;
+      let closestGunDist = Number.POSITIVE_INFINITY;
+      let closestChest;
+      let closestChestDist = Number.POSITIVE_INFINITY;
+      for (const entity of this.world.entityManager.getAllEntities()) {
+        if (!entity.isSpawned) {
+          continue;
+        }
+        const distSq = this._distanceSq(this.position, entity.position);
+        if (distSq > radiusSq) {
+          continue;
+        }
+        if (entity instanceof GunEntity) {
+          if (entity.parent || this._isSpentGun(entity)) {
+            continue;
+          }
+          if (distSq < closestGunDist) {
+            closestGun = entity;
+            closestGunDist = distSq;
+          }
+          continue;
+        }
+        if (entity instanceof ChestEntity) {
+          if (entity.isOpened) {
+            continue;
+          }
+          if (distSq < closestChestDist) {
+            closestChest = entity;
+            closestChestDist = distSq;
+          }
+        }
+      }
+      return closestGun ?? closestChest;
+    }
+    _driveCombat(deltaTimeMs) {
+      if (!this.world || !this._targetEnemy || !this._targetEnemy.isSpawned || this._targetEnemy.isDead) {
+        this._targetEnemy = undefined;
+        return;
+      }
+      const enemyPosition = this._targetEnemy.position;
+      const distance = Math.sqrt(this._distanceSq(this.position, enemyPosition));
+      const gun = this._ensureBestWeaponEquipped();
+      if (gun && gun.hasUsableAmmo()) {
+        this._handleGunCombat(gun, enemyPosition, distance, deltaTimeMs);
+        return;
+      }
+      const lootOpportunity = this._findNearbyLootOpportunity(MELEE_LOOT_OPPORTUNITY_RANGE);
+      if (lootOpportunity) {
+        this._targetLootEntity = lootOpportunity;
+        this._activeLootTargetId = lootOpportunity.id;
+        this._targetReevalAt = performance.now() + 4000;
+        this._lootOverrideUntil = performance.now() + 3000;
+        this._setBehaviorState("LOOT" /* LOOT */, true);
+        return;
+      }
+      this._handleMeleeCombat(enemyPosition, distance, deltaTimeMs);
+      return;
+    }
+    _driveLoot() {
+      const target = this._targetLootEntity;
+      const now = performance.now();
+      if (!target) {
+        this._activeLootTargetId = undefined;
+        this._lootOverrideUntil = 0;
+        return;
+      }
+      if (target.id !== undefined && target.id !== this._activeLootTargetId) {
+        this._targetReevalAt = now + 4000;
+        this._activeLootTargetId = target.id;
+      }
+      if (!this._isValidLootTarget(target)) {
+        this._targetLootEntity = undefined;
+        this._activeLootTargetId = undefined;
+        return;
+      }
+      if (now > this._targetReevalAt) {
+        this._targetLootEntity = undefined;
+        this._activeLootTargetId = undefined;
+        this._blockBreakTarget = undefined;
+        this._blockBreakExpiresAt = 0;
+        this._targetReevalAt = now + 4000;
+        this._lootOverrideUntil = 0;
+        return;
+      }
+      const targetPosition = { ...target.position };
+      const distance = Math.sqrt(this._distanceSq(this.position, targetPosition));
+      this._facePosition(targetPosition, false, AIM_JITTER_RADIANS * 0.25);
+      if (this._blockBreakTarget && this._continueBlockBreaking(targetPosition)) {
+        return;
+      }
+      if (this._maybeBreakBlockForTarget(targetPosition)) {
+        return;
+      }
+      if (this._recordNavigationProgress(targetPosition)) {
+        this._moveTowards(targetPosition);
+      } else {
+        this._targetLootEntity = undefined;
+        this._activeLootTargetId = undefined;
+        return;
+      }
+      if (distance < LOOT_INTERACT_RANGE) {
+        const input = this.player.input;
+        input.e = true;
+        if (target instanceof ItemEntity) {
+          target.pickup(this);
+        } else if (target instanceof ChestEntity) {
+          target.open();
+        }
+        this._targetLootEntity = undefined;
+        this._activeLootTargetId = undefined;
+      }
+    }
+    _driveIdle() {
+      if (!this._idleDestination) {
+        this._idleDestination = BotPlayerEntity._randomSpawnPosition();
+      }
+      this._facePosition(this._idleDestination);
+      this._moveTowards(this._idleDestination);
+      if (this._distanceSq(this.position, this._idleDestination) < 4) {
+        this._idleDestination = BotPlayerEntity._randomSpawnPosition();
+      }
+    }
+    _moveTowards(target) {
+      const direction = this._directionTo(target);
+      this._faceDirection(direction);
+      const input = this.player.input;
+      input.w = true;
+      input.sh = true;
+      const shouldJump = this._shouldAutoJump(target);
+      if (shouldJump) {
+        input.sp = true;
+        this._jumpRetryDebounceAt = performance.now() + 400;
+      } else if (!this._hasHeadroom() && this.playerController.isGrounded) {
+        input.sp = true;
+      }
+      if (this._isPathBlocked()) {
+        this._strafe(0);
+        if (this.playerController.isGrounded && performance.now() > this._jumpRetryDebounceAt) {
+          input.sp = true;
+          this._jumpRetryDebounceAt = performance.now() + 400;
+        }
+      }
+      this._recordNavigationProgress(target);
+    }
+    _strafe(deltaTimeMs) {
+      const now = performance.now();
+      if (now > this._strafeSwitchAt) {
+        this._strafeDirection = this._strafeDirection === 1 ? -1 : 1;
+        this._strafeSwitchAt = now + 1000 + Math.random() * 750;
+      }
+      const input = this.player.input;
+      if (this._strafeDirection > 0) {
+        input.d = true;
+      } else {
+        input.a = true;
+      }
+      if (deltaTimeMs > 0 && Math.random() < 0.02 && this.playerController.isGrounded) {
+        input.sp = true;
+      }
+    }
+    _resetInput() {
+      const input = this.player.input;
+      Object.keys(input).forEach((key) => {
+        delete input[key];
+      });
+    }
+    _directionTo(target) {
+      const dir = {
+        x: target.x - this.position.x,
+        y: target.y - this.position.y,
+        z: target.z - this.position.z
+      };
+      const length = Math.hypot(dir.x, dir.y, dir.z) || 1;
+      return {
+        x: dir.x / length,
+        y: dir.y / length,
+        z: dir.z / length
+      };
+    }
+    _distanceSq(a3, b) {
+      const dx2 = a3.x - b.x;
+      const dy = a3.y - b.y;
+      const dz2 = a3.z - b.z;
+      return dx2 * dx2 + dy * dy + dz2 * dz2;
+    }
+    _faceDirection(direction, jitterRadians = 0) {
+      let yaw = Math.atan2(-direction.x, -direction.z);
+      let pitch = Math.atan2(direction.y, Math.hypot(direction.x, direction.z));
+      if (jitterRadians > 0) {
+        const jitterScale = AIM_JITTER_RANDOM_MIN_SCALE + Math.random() * (AIM_JITTER_RANDOM_MAX_SCALE - AIM_JITTER_RANDOM_MIN_SCALE);
+        const yawJitter = (Math.random() - 0.5) * 2 * jitterRadians * jitterScale;
+        const pitchJitter = (Math.random() - 0.5) * jitterRadians * jitterScale;
+        yaw += yawJitter;
+        pitch += pitchJitter;
+      }
+      const camera = this._botCamera;
+      camera.setOrientationYaw(yaw);
+      camera.setOrientationPitch(pitch);
+    }
+    _facePosition(position, flatten = false, jitterRadians = 0) {
+      const dir = this._directionTo(position);
+      if (flatten) {
+        dir.y = 0;
+      }
+      this._faceDirection(dir, jitterRadians);
+    }
+    _isPathBlocked() {
+      if (!this.world) {
+        return false;
+      }
+      const origin = {
+        x: this.position.x,
+        y: this.position.y + this._botCamera.offset.y,
+        z: this.position.z
+      };
+      const raycast = this.world.simulation.raycast(origin, this._botCamera.facingDirection, 0.75, {
+        filterExcludeRigidBody: this.rawRigidBody
+      });
+      return Boolean(raycast?.hitBlock);
+    }
+    get _botCamera() {
+      return this.player.camera;
+    }
+    _recordNavigationProgress(target) {
+      const now = performance.now();
+      const distance = Math.sqrt(this._distanceSq(this.position, target));
+      if (!this._navLastTarget || this._distanceSq(this._navLastTarget, target) > 1) {
+        this._navLastTarget = { ...target };
+        this._navLastDistance = Number.POSITIVE_INFINITY;
+        this._navLastCheckAt = now;
+        return true;
+      }
+      if (now - this._navLastCheckAt < NAVIGATION_PROGRESS_INTERVAL_MS) {
+        return true;
+      }
+      const progress = this._navLastDistance - distance;
+      this._navLastCheckAt = now;
+      this._navLastDistance = distance;
+      if (progress < NAVIGATION_MIN_PROGRESS) {
+        this._handleNavigationFailure();
+        return false;
+      }
+      return true;
+    }
+    _handleNavigationFailure() {
+      const now = performance.now();
+      if (now > this._jumpRetryDebounceAt && this.playerController.isGrounded) {
+        this.player.input.sp = true;
+        this._jumpRetryDebounceAt = now + 400;
+      }
+      if (!this._blockBreakTarget) {
+        const forward = this._blockAheadCoordinate();
+        if (forward && this._assignBlockBreak(forward)) {
+          return;
+        }
+      }
+      this._targetLootEntity = undefined;
+      this._idleDestination = BotPlayerEntity._randomSpawnPosition();
+      this._navLastTarget = undefined;
+      this._navLastDistance = Number.POSITIVE_INFINITY;
+    }
+    _hasHeadroom() {
+      if (!this.world) {
+        return true;
+      }
+      const origin = {
+        x: this.position.x,
+        y: this.position.y + 0.5,
+        z: this.position.z
+      };
+      const hit = this.world.simulation.raycast(origin, { x: 0, y: 1, z: 0 }, 1.8, {
+        filterExcludeRigidBody: this.rawRigidBody
+      });
+      return !hit?.hitBlock;
+    }
+    _shouldAutoJump(target) {
+      if (!this.world || performance.now() < this._jumpRetryDebounceAt) {
+        return false;
+      }
+      const direction = this._directionTo(target);
+      const horizontal = Math.hypot(direction.x, direction.z) || 1;
+      const forward = { x: direction.x / horizontal, z: direction.z / horizontal };
+      const footOrigin = {
+        x: this.position.x + forward.x * 0.4,
+        y: this.position.y - this.height * 0.5 + 0.1,
+        z: this.position.z + forward.z * 0.4
+      };
+      const blockAhead = this._castBlock(footOrigin, { x: forward.x, y: 0, z: forward.z }, 0.9);
+      if (!blockAhead) {
+        return false;
+      }
+      const headOrigin = {
+        x: footOrigin.x,
+        y: this.position.y + this.height * 0.4,
+        z: footOrigin.z
+      };
+      const headClear = !this._castBlock(headOrigin, { x: forward.x, y: 0, z: forward.z }, 0.75);
+      return headClear;
+    }
+    _castBlock(origin, direction, length) {
+      if (!this.world) {
+        return false;
+      }
+      const hit = this.world.simulation.raycast(origin, direction, length, {
+        filterExcludeRigidBody: this.rawRigidBody
+      });
+      return Boolean(hit?.hitBlock);
+    }
+    _monitorAndUnstick() {
+      if (!this.world) {
+        return;
+      }
+      const now = performance.now();
+      if (!this._unstickLastPosition) {
+        this._unstickLastPosition = { ...this.position };
+        this._unstickNextCheckAt = now + 650;
+        return;
+      }
+      if (now < this._unstickNextCheckAt) {
+        return;
+      }
+      const moved = Math.sqrt(this._distanceSq(this.position, this._unstickLastPosition));
+      this._unstickLastPosition = { ...this.position };
+      this._unstickNextCheckAt = now + 650;
+      if (moved > 0.25) {
+        return;
+      }
+      this._forceUnstick();
+    }
+    _forceUnstick() {
+      const mass = Math.max(1, this.mass);
+      const impulseMagnitude = 4 * mass;
+      const angle = Math.random() * Math.PI * 2;
+      const impulse = {
+        x: Math.cos(angle) * impulseMagnitude,
+        y: impulseMagnitude * 0.6,
+        z: Math.sin(angle) * impulseMagnitude
+      };
+      this.applyImpulse(impulse);
+      this.player.input.sp = true;
+      this._jumpRetryDebounceAt = performance.now() + 450;
+      if (this._behaviorState === "LOOT" /* LOOT */) {
+        this._targetLootEntity = undefined;
+        this._activeLootTargetId = undefined;
+      }
+      this._blockBreakTarget = undefined;
+      this._blockBreakExpiresAt = 0;
+      this._idleDestination = BotPlayerEntity._randomSpawnPosition();
+    }
+    _continueBlockBreaking(desiredPosition) {
+      if (!this.world || !this._blockBreakTarget) {
+        return false;
+      }
+      if (this._blockBreakExpiresAt && performance.now() > this._blockBreakExpiresAt) {
+        this._blockBreakTarget = undefined;
+        this._blockBreakExpiresAt = 0;
+        return false;
+      }
+      const blockType = this.world.chunkLattice.getBlockType(this._blockBreakTarget);
+      if (!blockType) {
+        this._blockBreakTarget = undefined;
+        this._blockBreakExpiresAt = 0;
+        return false;
+      }
+      const blockCenter = {
+        x: this._blockBreakTarget.x + 0.5,
+        y: this._blockBreakTarget.y + 0.5,
+        z: this._blockBreakTarget.z + 0.5
+      };
+      const distance = Math.sqrt(this._distanceSq(this.position, blockCenter));
+      if (desiredPosition && distance > 2.5) {
+        this._moveTowards(desiredPosition);
+        return true;
+      }
+      this.setActiveInventorySlotIndex(PICKAXE_SLOT_INDEX);
+      const input = this.player.input;
+      input.ml = true;
+      this._facePosition(blockCenter);
+      return true;
+    }
+    _maybeBreakBlockForTarget(targetPosition, allowAbove = false) {
+      if (!this.world) {
+        return false;
+      }
+      if (this._blockBreakTarget) {
+        return this._continueBlockBreaking(targetPosition);
+      }
+      const verticalDelta = this.position.y - targetPosition.y;
+      const horizontalSq = this._distanceSq({ x: this.position.x, y: 0, z: this.position.z }, { x: targetPosition.x, y: 0, z: targetPosition.z });
+      const botAboveTarget = verticalDelta > 0.5;
+      const botBelowTarget = verticalDelta < -0.5;
+      if (botAboveTarget && horizontalSq < 4) {
+        const below = this._blockBelowCoordinate();
+        if (below && this._assignBlockBreak(below)) {
+          return true;
+        }
+      }
+      const ahead = this._blockAheadCoordinate();
+      if (ahead && (allowAbove || !botAboveTarget || targetPosition.y <= this.position.y + 0.25) && this._assignBlockBreak(ahead)) {
+        return true;
+      }
+      if (allowAbove && botBelowTarget && horizontalSq < 4) {
+        const above = this._blockAboveCoordinate();
+        if (above && this._assignBlockBreak(above)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    _blockBelowCoordinate() {
+      if (!this.world) {
+        return;
+      }
+      const coord = {
+        x: Math.floor(this.position.x),
+        y: Math.floor(this.position.y - this.height * 0.5),
+        z: Math.floor(this.position.z)
+      };
+      return this.world.chunkLattice.getBlockType(coord) ? coord : undefined;
+    }
+    _blockAheadCoordinate() {
+      if (!this.world) {
+        return;
+      }
+      const forward = this._botCamera.facingDirection;
+      const horizontal = Math.hypot(forward.x, forward.z) || 1;
+      const coord = {
+        x: Math.floor(this.position.x + forward.x / horizontal),
+        y: Math.floor(this.position.y - this.height * 0.25),
+        z: Math.floor(this.position.z + forward.z / horizontal)
+      };
+      return this.world.chunkLattice.getBlockType(coord) ? coord : undefined;
+    }
+    _blockAboveCoordinate() {
+      if (!this.world) {
+        return;
+      }
+      const coord = {
+        x: Math.floor(this.position.x),
+        y: Math.floor(this.position.y + this.height * 0.5),
+        z: Math.floor(this.position.z)
+      };
+      return this.world.chunkLattice.getBlockType(coord) ? coord : undefined;
+    }
+    _assignBlockBreak(coord) {
+      if (!this.world) {
+        return false;
+      }
+      const block = this.world.chunkLattice.getBlockType(coord);
+      if (!block) {
+        return false;
+      }
+      this._blockBreakTarget = { ...coord };
+      this._blockBreakExpiresAt = performance.now() + 3000;
+      return true;
+    }
+    _hasLineOfSight(target, distance) {
+      if (!this.world) {
+        return false;
+      }
+      const origin = {
+        x: this.position.x,
+        y: this.position.y + this._botCamera.offset.y,
+        z: this.position.z
+      };
+      const direction = {
+        x: target.x - origin.x,
+        y: target.y - origin.y,
+        z: target.z - origin.z
+      };
+      const length = Math.hypot(direction.x, direction.y, direction.z) || 1;
+      direction.x /= length;
+      direction.y /= length;
+      direction.z /= length;
+      const hit = this.world.simulation.raycast(origin, direction, distance, {
+        filterExcludeRigidBody: this.rawRigidBody
+      });
+      if (!hit) {
+        return true;
+      }
+      if (hit.hitEntity && hit.hitEntity === this._targetEnemy) {
+        return true;
+      }
+      return false;
+    }
+    _hasUsableGun() {
+      return !!this._findBestGun();
+    }
+    _shouldSeekAmmo() {
+      const bestGun = this._findBestGun(true);
+      if (!bestGun) {
+        return true;
+      }
+      const ammoTotal = bestGun.gun.getClipAmmo() + bestGun.gun.getReserveAmmo();
+      return ammoTotal < 5;
+    }
+    _findBestGun(requireAmmo = true) {
+      const items = this.inventoryItems;
+      let best;
+      for (let i7 = 0;i7 < items.length; i7++) {
+        const item = items[i7];
+        if (!(item instanceof GunEntity))
+          continue;
+        if (this._isSpentGun(item))
+          continue;
+        if (!item.hasUsableAmmo()) {
+          this._markWeaponSpent(item);
+          continue;
+        }
+        const ammoScore = item.getClipAmmo() + item.getReserveAmmo();
+        if (requireAmmo && ammoScore <= 0)
+          continue;
+        if (!best || ammoScore > best.score) {
+          best = { gun: item, slot: i7, score: ammoScore };
+        }
+      }
+      return best ? { gun: best.gun, slot: best.slot } : undefined;
+    }
+    _isSpentGun(gun) {
+      if (this._spentWeapons.has(gun)) {
+        return true;
+      }
+      const id = typeof gun.id === "number" ? gun.id : undefined;
+      return id !== undefined && this._spentWeaponIds.has(id);
+    }
+    _markWeaponSpent(gun) {
+      this._spentWeapons.add(gun);
+      if (typeof gun.id === "number") {
+        this._spentWeaponIds.add(gun.id);
+      }
+    }
+    _reloadUntilFull(gun, attempt = 0) {
+      if (gun.getReserveAmmo() <= 0) {
+        return;
+      }
+      if (gun.getClipAmmo() > 0) {
+        return;
+      }
+      const activeItem = this.activeInventoryItem;
+      if (activeItem !== gun) {
+        const slot = this.getItemInventorySlot(gun);
+        if (slot !== -1) {
+          this.setActiveInventorySlotIndex(slot);
+        }
+      }
+      if (!gun.isReloading()) {
+        gun.reload();
+      }
+      if (attempt > 6) {
+        return;
+      }
+      const retryDelay = Math.max(100, gun.getReloadTimeMs());
+      setTimeout(() => this._reloadUntilFull(gun, attempt + 1), retryDelay);
+    }
+    _ensureBestWeaponEquipped() {
+      const activeItem = this.activeInventoryItem;
+      const activeGun = activeItem instanceof GunEntity ? activeItem : undefined;
+      const bestGunInfo = this._findBestGun();
+      if (!bestGunInfo) {
+        if (!activeGun) {
+          this.setActiveInventorySlotIndex(PICKAXE_SLOT_INDEX);
+        }
+        return;
+      }
+      if (activeGun === bestGunInfo.gun) {
+        return activeGun;
+      }
+      this.setActiveInventorySlotIndex(bestGunInfo.slot);
+      return bestGunInfo.gun;
+    }
+    _handleGunCombat(gun, enemyPosition, distance, deltaTimeMs) {
+      const hasLineOfSight = this._hasLineOfSight(enemyPosition, distance);
+      this._facePosition(enemyPosition, true, AIM_JITTER_RADIANS);
+      if (!gun.hasUsableAmmo()) {
+        const alternate = this._findBestGun(true);
+        if (gun.getClipAmmo() <= 0 && gun.getReserveAmmo() <= 0 && this.activeInventoryItem === gun) {
+          this._markWeaponSpent(gun);
+          this.dropActiveInventoryItem();
+        }
+        if (alternate) {
+          this.setActiveInventorySlotIndex(alternate.slot);
+          return;
+        }
+        this._handleMeleeCombat(enemyPosition, distance, deltaTimeMs);
+        return;
+      }
+      if (gun.getClipAmmo() <= 0) {
+        if (gun.getReserveAmmo() > 0) {
+          if (!gun.isReloading()) {
+            this._reloadUntilFull(gun);
+          }
+          return;
+        }
+        this._markWeaponSpent(gun);
+        if (this.isItemActiveInInventory(gun)) {
+          this.dropActiveInventoryItem();
+        }
+        const fallback = this._findBestGun(false);
+        if (fallback && fallback.gun.hasUsableAmmo()) {
+          this.setActiveInventorySlotIndex(fallback.slot);
+          return;
+        }
+        this._targetLootEntity = undefined;
+        this._activeLootTargetId = undefined;
+        this._handleMeleeCombat(enemyPosition, distance, deltaTimeMs);
+        return;
+      }
+      const input = this.player.input;
+      const preferredRange = Math.max(6, gun.getEffectiveRange() * 0.6);
+      if (!hasLineOfSight) {
+        if (this._maybeBreakBlockForTarget(enemyPosition, true)) {
+          return;
+        }
+        this._moveTowards(enemyPosition);
+        return;
+      }
+      if (this._blockBreakTarget) {
+        this._blockBreakTarget = undefined;
+        this._blockBreakExpiresAt = 0;
+      }
+      if (distance > preferredRange) {
+        this._moveTowards(enemyPosition);
+      } else if (distance < preferredRange * 0.4) {
+        input.s = true;
+      } else {
+        this._strafe(deltaTimeMs);
+      }
+      input.ml = true;
+      input.sh = true;
+      if (gun.getClipAmmo() <= 1 && gun.getReserveAmmo() > 0 && !gun.isReloading()) {
+        gun.reload();
+      }
+      if (!gun.hasUsableAmmo()) {
+        this._activeLootTargetId = undefined;
+      }
+    }
+    _handleMeleeCombat(enemyPosition, distance, deltaTimeMs) {
+      this.setActiveInventorySlotIndex(PICKAXE_SLOT_INDEX);
+      this._facePosition(enemyPosition, true, AIM_JITTER_RADIANS * 0.5);
+      const input = this.player.input;
+      if (distance > MELEE_ATTACK_RANGE || !this._hasLineOfSight(enemyPosition, distance)) {
+        this._moveTowards(enemyPosition);
+        return;
+      }
+      input.ml = true;
+      this._strafe(deltaTimeMs);
+      if (Math.random() < 0.05 && this.playerController.isGrounded) {
+        input.sp = true;
+      }
+    }
+  };
+});
+
 // classes/GameManager.ts
 var GameManager;
 var init_GameManager = __esm(() => {
@@ -129554,6 +130698,7 @@ var init_GameManager = __esm(() => {
   init_gameConfig();
   init_GamePlayerEntity();
   init_ChestEntity();
+  init_BotPlayerEntity();
   GameManager = class GameManager {
     static instance = new GameManager;
     world;
@@ -129578,12 +130723,14 @@ var init_GameManager = __esm(() => {
       this.world = world;
       this._spawnBedrock(world);
       this._waitForPlayersToStart();
+      BotPlayerEntity.setWorldActive(world, false);
     }
     startGame() {
       if (!this.world)
         return;
       this._cleanup();
       this._gameActive = true;
+      BotPlayerEntity.setWorldActive(this.world, true);
       this._gameStartAt = Date.now();
       this._spawnStartingChests();
       this._spawnStartingItems();
@@ -129595,13 +130742,17 @@ var init_GameManager = __esm(() => {
       });
       this._gameTimer = setTimeout(() => this.endGame(), GAME_DURATION_MS);
       this._syncAllPlayersUI();
+      this.onPlayerPopulationChanged();
     }
     endGame() {
       if (!this.world || !this._gameActive)
         return;
       this._gameActive = false;
+      BotPlayerEntity.setWorldActive(this.world, false);
       this.world.chatManager.sendBroadcastMessage("Game over! Starting the next round in 10 seconds...", "FF0000");
       this._identifyWinningPlayer();
+      BotPlayerEntity.despawnAll(this.world);
+      this.refreshPlayerCount();
       if (this._restartTimer) {
         clearTimeout(this._restartTimer);
       }
@@ -129619,6 +130770,7 @@ var init_GameManager = __esm(() => {
         this._sendGameStartAnnouncements(player);
       }
       playerEntity.loadPersistedData();
+      this.onPlayerPopulationChanged();
     }
     addKill(playerUsername) {
       const killCount = this._killCounter.get(playerUsername) ?? 0;
@@ -129664,6 +130816,7 @@ var init_GameManager = __esm(() => {
     _cleanup() {
       if (!this.world)
         return;
+      BotPlayerEntity.despawnAll(this.world);
       this.world.loadMap(map_default);
       this._spawnBedrock(this.world);
       this.world.entityManager.getAllPlayerEntities().forEach((playerEntity) => {
@@ -129694,6 +130847,21 @@ var init_GameManager = __esm(() => {
         this._chestDropInterval = undefined;
       }
       this.resetLeaderboard();
+      this.onPlayerPopulationChanged();
+    }
+    refreshPlayerCount() {
+      if (!this.world)
+        return;
+      this.playerCount = this.world.entityManager.getAllPlayerEntities().length;
+    }
+    onPlayerPopulationChanged() {
+      this._syncBots();
+      this.refreshPlayerCount();
+    }
+    _syncBots() {
+      if (!this.world)
+        return;
+      BotPlayerEntity.ensureForWorld(this.world);
     }
     _identifyWinningPlayer() {
       if (!this.world)
@@ -129819,12 +130987,17 @@ var init_GameManager = __esm(() => {
     _waitForPlayersToStart() {
       if (!this.world)
         return;
-      const connectedPlayers = yK.instance.playerManager.getConnectedPlayersByWorld(this.world).length;
-      if (connectedPlayers >= MINIMUM_PLAYERS_TO_START) {
+      const connectedPlayers = this._getHumanPlayerCount();
+      if (connectedPlayers >= 1) {
         this.startGame();
       } else {
         setTimeout(() => this._waitForPlayersToStart(), 1000);
       }
+    }
+    _getHumanPlayerCount() {
+      if (!this.world)
+        return 0;
+      return this.world.entityManager.getAllPlayerEntities().filter((entity) => !(entity instanceof BotPlayerEntity)).length;
     }
   };
 });
@@ -129841,11 +131014,10 @@ bC6((world) => {
   GameManager.instance.setupGame(world);
   world.on(vU.JOINED_WORLD, ({ player }) => {
     GameManager.instance.spawnPlayerEntity(player);
-    GameManager.instance.playerCount++;
   });
   world.on(vU.LEFT_WORLD, ({ player }) => {
     world.entityManager.getPlayerEntitiesByPlayer(player).forEach((entity) => entity.despawn());
-    GameManager.instance.playerCount--;
+    GameManager.instance.onPlayerPopulationChanged();
   });
   world.on(vU.RECONNECTED_WORLD, ({ player }) => {
     world.entityManager.getPlayerEntitiesByPlayer(player).forEach((entity) => {

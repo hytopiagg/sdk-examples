@@ -26,6 +26,7 @@ import {
 import GamePlayerEntity from './GamePlayerEntity';
 import ChestEntity from './ChestEntity';
 import ItemFactory from './ItemFactory';
+import BotPlayerEntity from './BotPlayerEntity';
 
 export default class GameManager {
   public static readonly instance = new GameManager();
@@ -54,6 +55,7 @@ export default class GameManager {
     this.world = world;
     this._spawnBedrock(world);
     this._waitForPlayersToStart();
+    BotPlayerEntity.setWorldActive(world, false);
   }
 
   /**
@@ -67,6 +69,7 @@ export default class GameManager {
     
     // Set game as active
     this._gameActive = true;
+    BotPlayerEntity.setWorldActive(this.world, true);
     this._gameStartAt = Date.now();
     
     // Spawn initial game elements
@@ -86,6 +89,7 @@ export default class GameManager {
 
     // Sync UI for all players
     this._syncAllPlayersUI();
+    this.onPlayerPopulationChanged();
   }
 
   /**
@@ -95,9 +99,13 @@ export default class GameManager {
     if (!this.world || !this._gameActive) return;
     
     this._gameActive = false;
+    BotPlayerEntity.setWorldActive(this.world, false);
     this.world.chatManager.sendBroadcastMessage('Game over! Starting the next round in 10 seconds...', 'FF0000');
     
     this._identifyWinningPlayer();
+
+    BotPlayerEntity.despawnAll(this.world);
+    this.refreshPlayerCount();
 
     // Clear any existing restart timer
     if (this._restartTimer) {
@@ -129,6 +137,8 @@ export default class GameManager {
 
     // Load player's data
     playerEntity.loadPersistedData();
+
+    this.onPlayerPopulationChanged();
   }
 
   /**
@@ -204,6 +214,8 @@ export default class GameManager {
   private _cleanup() {
     if (!this.world) return;
 
+    BotPlayerEntity.despawnAll(this.world);
+
     // Reset map to initial state
     this.world.loadMap(worldMap);
     this._spawnBedrock(this.world);
@@ -246,6 +258,25 @@ export default class GameManager {
 
     // Reset leaderboard
     this.resetLeaderboard();
+
+    this.onPlayerPopulationChanged();
+  }
+
+  public refreshPlayerCount(): void {
+    if (!this.world) return;
+
+    this.playerCount = this.world.entityManager.getAllPlayerEntities().length;
+  }
+
+  public onPlayerPopulationChanged(): void {
+    this._syncBots();
+    this.refreshPlayerCount();
+  }
+
+  private _syncBots(): void {
+    if (!this.world) return;
+
+    BotPlayerEntity.ensureForWorld(this.world);
   }
 
   public _identifyWinningPlayer() {
@@ -422,12 +453,21 @@ export default class GameManager {
   private _waitForPlayersToStart() {
     if (!this.world) return;
 
-    const connectedPlayers = GameServer.instance.playerManager.getConnectedPlayersByWorld(this.world).length;
+    const connectedPlayers = this._getHumanPlayerCount();
 
-    if (connectedPlayers >= MINIMUM_PLAYERS_TO_START) {
+    if (connectedPlayers >= 1) {
       this.startGame();
     } else {
       setTimeout(() => this._waitForPlayersToStart(), 1000);
     }
+  }
+
+  private _getHumanPlayerCount(): number {
+    if (!this.world) return 0;
+
+    return this.world.entityManager
+      .getAllPlayerEntities()
+      .filter(entity => !(entity instanceof BotPlayerEntity))
+      .length;
   }
 }
