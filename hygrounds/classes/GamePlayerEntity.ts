@@ -88,7 +88,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     });
     
     this._setupPlayerController();
-    this._setupPlayerUI();
+    this.setupPlayerUI();
     this._setupPlayerCamera();
     this._setupPlayerHeadshotCollider();
     
@@ -396,7 +396,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     pickaxe.pickup(this);
   }
 
-  private _setupPlayerUI(): void {
+  public setupPlayerUI(): void {
     this.nametagSceneUI.setViewDistance(8); // lessen view distance so you only see player names when close
     this.player.ui.load('ui/index.html');
 

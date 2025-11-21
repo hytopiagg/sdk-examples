@@ -6,6 +6,7 @@ import {
 import GameManager from './classes/GameManager';
 
 import worldMap from './assets/map.json' with { type: 'json' } ;
+import GamePlayerEntity from './classes/GamePlayerEntity';
 
 startServer(world => {
   // Load the game map
@@ -31,6 +32,14 @@ startServer(world => {
       .forEach(entity => entity.despawn());
 
     GameManager.instance.playerCount--;
+  });
+
+  world.on(PlayerEvent.RECONNECTED_WORLD, ({ player }) => {
+    world.entityManager.getPlayerEntitiesByPlayer(player).forEach(entity => {
+      if (entity instanceof GamePlayerEntity) {
+        entity.setupPlayerUI();
+      }
+    });
   });
 });
 

@@ -733,7 +733,7 @@
     transform: translateY(-50%);
   }
 
-  .game-start-announcement {
+  #ui-container .game-start-announcement {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -755,7 +755,7 @@
     animation: announcementFade 5s ease-in-out forwards;
   }
 
-  .winner-announcement {
+  #ui-container .winner-announcement {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -777,7 +777,7 @@
     animation: winnerFade 5s ease-in-out forwards;
   }
 
-  .rank-up-announcement {
+  #ui-container .rank-up-announcement {
     position: fixed;
     top: 0;
     left: 0;
@@ -847,7 +847,7 @@
     100% { opacity: 0; transform: scale(0.9); }
   }
 
-  .hit-damage-container {
+  #ui-container .hit-damage-container {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -902,7 +902,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   }
 
-  .floating-number {
+  #ui-container .floating-number {
     position: absolute;
     color: #ffffff;
     font-weight: bold;
@@ -1172,7 +1172,7 @@
     z-index: 1;
   }
 
-  .exp-gain-indicator {
+  #ui-container .exp-gain-indicator {
     position: absolute;
     z-index: 9999;
     bottom: 100%; /* Start just above the bar */
@@ -1260,7 +1260,7 @@
     height: 48px;
   }
 
-  .scope-overlay {
+  #ui-container .scope-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -1281,7 +1281,7 @@
     width: 25% !important;
   }
 
-  .damage-indicator-container {
+  #ui-container .damage-indicator-container {
     position: fixed;
     top: 0;
     left: 0;
@@ -1400,6 +1400,7 @@
     flex-direction: column;
     gap: 5px;
     overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
   }
 
   .leaderboard-player {
@@ -1550,6 +1551,7 @@
     bottom: 113px;
     right: 118px;
     user-select: none;
+    pointer-events: auto !important;
   }
 
   body.mobile .mobile-button {
@@ -1571,6 +1573,7 @@
     font-weight: bold;
     color: rgba(255, 255, 255, 0.8);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: auto !important;
   }
 
   body.mobile .mobile-button.active {
