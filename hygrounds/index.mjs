@@ -130859,7 +130859,8 @@ var init_GameManager = __esm(() => {
         return;
       player.ui.sendData({
         type: "leaderboard-sync",
-        killCounts: this.getKillCounts()
+        killCounts: this.getKillCounts(),
+        localPlayer: player.username
       });
     }
     syncTimer(player) {
@@ -131036,7 +131037,8 @@ var init_GameManager = __esm(() => {
         player.ui.sendData({
           type: "leaderboard-update",
           username,
-          killCount
+          killCount,
+          localPlayer: player.username
         });
       });
     }

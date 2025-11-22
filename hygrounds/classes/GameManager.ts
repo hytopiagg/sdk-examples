@@ -176,6 +176,7 @@ export default class GameManager {
     player.ui.sendData({
       type: 'leaderboard-sync',
       killCounts: this.getKillCounts(),
+      localPlayer: player.username,
     });
   }
 
@@ -428,6 +429,7 @@ export default class GameManager {
         type: 'leaderboard-update',
         username,
         killCount,
+        localPlayer: player.username,
       });
     });
   }
