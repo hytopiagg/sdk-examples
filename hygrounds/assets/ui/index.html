@@ -119,6 +119,7 @@
   <div id="mobile-attack-button" class="mobile-button">
     <img src="{{CDN_ASSETS_URL}}/icons/mobile-shoot.png" />
   </div>
+  <div class="mobile-auto-fire-label">Aim gun at target to auto-fire</div>
 
   <div id="mobile-place-block-button" class="mobile-button">
     <img src="{{CDN_ASSETS_URL}}/icons/mobile-place-block.png" />
@@ -213,6 +214,12 @@
   const summarySecondKillsEl = document.querySelector('.summary-second-kills');
   const summarySelfNameEl = document.querySelector('.summary-self-name');
   const summarySelfKillsEl = document.querySelector('.summary-self-kills');
+
+  const isMobileClient = Boolean(hytopia?.isMobile);
+  hytopia.sendData({
+    type: 'client-platform',
+    isMobile: isMobileClient,
+  });
 
   function updateLeaderboard() {
     const leaderboardPlayers = document.querySelector('.leaderboard-players');
@@ -1547,6 +1554,10 @@
     display: none;
   }
 
+  .mobile-auto-fire-label {
+    display: none;
+  }
+
 .leaderboard-mobile-summary {
   display: none;
   gap: 4px;
@@ -1757,6 +1768,21 @@
     color: rgba(255, 255, 255, 0.8);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     pointer-events: auto !important;
+  }
+
+  body.mobile .mobile-auto-fire-label {
+    position: absolute;
+    bottom: -45px;
+    right: -60px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    display: block;
+    text-transform: uppercase;
   }
 
   body.mobile .mobile-button.active {

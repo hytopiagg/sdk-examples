@@ -129028,7 +129028,7 @@ var init_PickaxeEntity = __esm(() => {
 });
 
 // classes/GamePlayerEntity.ts
-var BASE_HEALTH = 100, BASE_SHIELD = 0, BLOCK_MATERIAL_COST = 3, INTERACT_RANGE = 4, MAX_HEALTH = 100, MAX_SHIELD = 100, TOTAL_INVENTORY_SLOTS = 6, STARTING_MATERIALS = 30, GamePlayerEntity;
+var BASE_HEALTH = 100, BASE_SHIELD = 0, BLOCK_MATERIAL_COST = 3, INTERACT_RANGE = 4, MOBILE_AUTOFIRE_SAMPLE_INTERVAL_TICKS = 3, MAX_HEALTH = 100, MAX_SHIELD = 100, TOTAL_INVENTORY_SLOTS = 6, STARTING_MATERIALS = 30, GamePlayerEntity;
 var init_GamePlayerEntity = __esm(() => {
   init_server();
   init_ChestEntity();
@@ -129041,6 +129041,10 @@ var init_GamePlayerEntity = __esm(() => {
   GamePlayerEntity = class GamePlayerEntity extends fh {
     _damageAudio;
     _inventory = new Array(TOTAL_INVENTORY_SLOTS).fill(undefined);
+    _isMobileClient = false;
+    _autoFireRaycastCooldown = 0;
+    _autoFireHasTarget = false;
+    _autoFireEngaged = false;
     _dead = false;
     _health = BASE_HEALTH;
     _inventoryActiveSlotIndex = 0;
@@ -129146,6 +129150,8 @@ var init_GamePlayerEntity = __esm(() => {
     checkDeath(attacker) {
       if (this.health <= 0) {
         this._dead = true;
+        this._autoFireRaycastCooldown = 0;
+        this._autoFireHasTarget = false;
         if (attacker) {
           GameManager.instance.addKill(attacker.player.username);
           attacker.addExp(RANK_KILL_EXP);
@@ -129247,6 +129253,8 @@ var init_GamePlayerEntity = __esm(() => {
       if (!this.world)
         return;
       this._dead = false;
+      this._autoFireRaycastCooldown = 0;
+      this._autoFireHasTarget = false;
       this.health = this._maxHealth;
       this.shield = 0;
       this.resetAnimations();
@@ -129339,6 +129347,10 @@ var init_GamePlayerEntity = __esm(() => {
       });
       this.player.ui.on(cO.DATA, (payload) => {
         const { data } = payload;
+        if (data.type === "client-platform") {
+          this._isMobileClient = Boolean(data.isMobile);
+          return;
+        }
         if (data.type === "inventory-select") {
           this.setActiveInventorySlotIndex(data.index);
         }
@@ -129354,6 +129366,7 @@ var init_GamePlayerEntity = __esm(() => {
       if (this._dead) {
         return;
       }
+      this._applyMobileAutoFire(input);
       if (input.ml) {
         this._handleMouseLeftClick();
       }
@@ -129378,6 +129391,53 @@ var init_GamePlayerEntity = __esm(() => {
       }
       this._handleInventoryHotkeys(input);
     };
+    _applyMobileAutoFire(input) {
+      const wasAutoEngaged = this._autoFireEngaged;
+      const manualRequested = input.ml && !wasAutoEngaged;
+      this._autoFireEngaged = false;
+      const disableAutoFire = () => {
+        this._autoFireHasTarget = false;
+        this._autoFireRaycastCooldown = 0;
+      };
+      const activeItem = this._inventory[this._inventoryActiveSlotIndex];
+      const canUseAutoFire = this._isMobileClient && this.world && activeItem instanceof GunEntity;
+      if (!canUseAutoFire) {
+        disableAutoFire();
+      } else if (this._autoFireRaycastCooldown <= 0) {
+        this._autoFireHasTarget = this._hasTargetInCrosshair(activeItem);
+        this._autoFireRaycastCooldown = MOBILE_AUTOFIRE_SAMPLE_INTERVAL_TICKS;
+      } else {
+        this._autoFireRaycastCooldown--;
+      }
+      if (this._autoFireHasTarget) {
+        input.ml = true;
+        this._autoFireEngaged = true;
+        return;
+      }
+      if (manualRequested) {
+        input.ml = true;
+        return;
+      }
+      if (wasAutoEngaged) {
+        input.ml = false;
+        return;
+      }
+      input.ml = false;
+    }
+    _hasTargetInCrosshair(activeGun) {
+      if (!this.world) {
+        return false;
+      }
+      const origin = {
+        x: this.position.x,
+        y: this.position.y + this.player.camera.offset.y,
+        z: this.position.z
+      };
+      const raycastHit = this.world.simulation.raycast(origin, this.player.camera.facingDirection, activeGun.getEffectiveRange(), {
+        filterExcludeRigidBody: this.rawRigidBody
+      });
+      return Boolean(raycastHit?.hitEntity instanceof GamePlayerEntity && raycastHit.hitEntity !== this && !raycastHit.hitEntity.isDead);
+    }
     _handleMouseLeftClick() {
       const activeItem = this._inventory[this._inventoryActiveSlotIndex];
       if (activeItem instanceof ItemEntity && activeItem.consumable) {

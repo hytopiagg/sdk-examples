@@ -26,6 +26,7 @@ const BASE_HEALTH = 100;
 const BASE_SHIELD = 0;
 const BLOCK_MATERIAL_COST = 3;
 const INTERACT_RANGE = 4;
+const MOBILE_AUTOFIRE_SAMPLE_INTERVAL_TICKS = 3;
 const MAX_HEALTH = 100;
 const MAX_SHIELD = 100;
 const TOTAL_INVENTORY_SLOTS = 6;
@@ -44,6 +45,10 @@ interface PlayerPersistedData extends Record<string, unknown> {
 export default class GamePlayerEntity extends DefaultPlayerEntity {
   private readonly _damageAudio: Audio;
   private readonly _inventory: (ItemEntity | undefined)[] = new Array(TOTAL_INVENTORY_SLOTS).fill(undefined);
+  private _isMobileClient: boolean = false;
+  private _autoFireRaycastCooldown: number = 0;
+  private _autoFireHasTarget: boolean = false;
+  private _autoFireEngaged: boolean = false;
   private _dead: boolean = false;
   private _health: number = BASE_HEALTH;
   private _inventoryActiveSlotIndex: number = 0;
@@ -163,6 +168,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   public checkDeath(attacker?: GamePlayerEntity): void {
     if (this.health <= 0) {
       this._dead = true;
+      this._autoFireRaycastCooldown = 0;
+      this._autoFireHasTarget = false;
 
       if (attacker) {
         GameManager.instance.addKill(attacker.player.username);
@@ -289,6 +296,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     if (!this.world) return;
 
     this._dead = false;
+    this._autoFireRaycastCooldown = 0;
+    this._autoFireHasTarget = false;
     this.health = this._maxHealth;
     this.shield = 0;
     this.resetAnimations();
@@ -420,6 +429,11 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this.player.ui.on(PlayerUIEvent.DATA, (payload) => {
       const { data } = payload;
 
+      if (data.type === 'client-platform') {
+        this._isMobileClient = Boolean(data.isMobile);
+        return;
+      }
+
       if (data.type === 'inventory-select') {
         this.setActiveInventorySlotIndex(data.index);
       }
@@ -438,6 +452,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     if (this._dead) {
       return;
     }
+
+    this._applyMobileAutoFire(input);
 
     if (input.ml) {
       this._handleMouseLeftClick();
@@ -468,6 +484,74 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     }
 
     this._handleInventoryHotkeys(input);
+  }
+
+  private _applyMobileAutoFire(input: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]['input']): void {
+    const wasAutoEngaged = this._autoFireEngaged;
+    const manualRequested = input.ml && !wasAutoEngaged;
+    this._autoFireEngaged = false;
+
+    const disableAutoFire = () => {
+      this._autoFireHasTarget = false;
+      this._autoFireRaycastCooldown = 0;
+    };
+
+    const activeItem = this._inventory[this._inventoryActiveSlotIndex];
+    const canUseAutoFire = this._isMobileClient && this.world && activeItem instanceof GunEntity;
+
+    if (!canUseAutoFire) {
+      disableAutoFire();
+    } else if (this._autoFireRaycastCooldown <= 0) {
+      this._autoFireHasTarget = this._hasTargetInCrosshair(activeItem);
+      this._autoFireRaycastCooldown = MOBILE_AUTOFIRE_SAMPLE_INTERVAL_TICKS;
+    } else {
+      this._autoFireRaycastCooldown--;
+    }
+
+    if (this._autoFireHasTarget) {
+      input.ml = true;
+      this._autoFireEngaged = true;
+      return;
+    }
+
+    if (manualRequested) {
+      input.ml = true;
+      return;
+    }
+
+    if (wasAutoEngaged) {
+      input.ml = false;
+      return;
+    }
+
+    input.ml = false;
+  }
+
+  private _hasTargetInCrosshair(activeGun: GunEntity): boolean {
+    if (!this.world) {
+      return false;
+    }
+
+    const origin = {
+      x: this.position.x,
+      y: this.position.y + this.player.camera.offset.y,
+      z: this.position.z,
+    };
+
+    const raycastHit = this.world.simulation.raycast(
+      origin,
+      this.player.camera.facingDirection,
+      activeGun.getEffectiveRange(),
+      {
+        filterExcludeRigidBody: this.rawRigidBody,
+      }
+    );
+
+    return Boolean(
+      raycastHit?.hitEntity instanceof GamePlayerEntity &&
+      raycastHit.hitEntity !== this &&
+      !raycastHit.hitEntity.isDead
+    );
   }
 
   private _handleMouseLeftClick(): void {
