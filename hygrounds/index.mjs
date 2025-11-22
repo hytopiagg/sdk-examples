@@ -127170,7 +127170,7 @@ var init_gameConfig = __esm(() => {
       rotation: Wz.fromEuler(0, 180, 0)
     }
   ];
-  GAME_DURATION_MS = 30 * 1000;
+  GAME_DURATION_MS = 8 * 60 * 1000;
   ITEM_DESPAWN_TIME_MS = 25 * 1000;
   ITEM_SPAWNS = [
     { position: { x: -21.5, y: 2, z: -17 } },
@@ -129656,7 +129656,7 @@ class BotPlayerCamera {
     this.zoom = zoom;
   }
 }
-var AIM_JITTER_RADIANS = 0.035, AIM_JITTER_RANDOM_MIN_SCALE = 0.75, AIM_JITTER_RANDOM_MAX_SCALE = 2.1, MELEE_ATTACK_RANGE = 2.4, PICKAXE_SLOT_INDEX = 0, LOOT_INTERACT_RANGE = 1.5, NAVIGATION_PROGRESS_INTERVAL_MS = 600, NAVIGATION_MIN_PROGRESS = 0.35, MAX_VERTICAL_TARGET_DELTA = 12, MELEE_LOOT_OPPORTUNITY_RANGE = 8, BEHAVIOR_LOCK_MS = 450, ENEMY_RETARGET_COOLDOWN_MS = 750, ENEMY_LOST_GRACE_MS = 1400, LOOT_RETARGET_COOLDOWN_MS = 550, LOOT_LOST_GRACE_MS = 2200, BotStubPlayer, BotPlayerEntity;
+var AIM_JITTER_RADIANS = 0.055, AIM_JITTER_RANDOM_MIN_SCALE = 0.6, AIM_JITTER_RANDOM_MAX_SCALE = 2.6, MELEE_ATTACK_RANGE = 2.4, PICKAXE_SLOT_INDEX = 0, LOOT_INTERACT_RANGE = 1.5, NAVIGATION_PROGRESS_INTERVAL_MS = 600, NAVIGATION_MIN_PROGRESS = 0.35, MAX_VERTICAL_TARGET_DELTA = 12, MELEE_LOOT_OPPORTUNITY_RANGE = 8, BEHAVIOR_LOCK_MS = 450, REACTION_DELAY_MS = 180, ENEMY_RETARGET_COOLDOWN_MS = 750, ENEMY_LOST_GRACE_MS = 1400, LOOT_RETARGET_COOLDOWN_MS = 550, LOOT_LOST_GRACE_MS = 2200, BotStubPlayer, BotPlayerEntity;
 var init_BotPlayerEntity = __esm(() => {
   init_server();
   init_ChestEntity();
@@ -129788,6 +129788,7 @@ var init_BotPlayerEntity = __esm(() => {
     _lootForgetAt = 0;
     _activeLootTargetId;
     _lootOverrideUntil = 0;
+    _nextReactionAt = 0;
     constructor(driver) {
       super(driver);
       this._driver = driver;
@@ -129988,11 +129989,13 @@ var init_BotPlayerEntity = __esm(() => {
           this._enemyForgetAt = now + ENEMY_LOST_GRACE_MS;
           this._blockBreakTarget = undefined;
           this._blockBreakExpiresAt = 0;
+          this._nextReactionAt = now + REACTION_DELAY_MS + Math.random() * REACTION_DELAY_MS;
         }
         return;
       }
       if (current && (!current.isSpawned || current.isDead || now > this._enemyForgetAt)) {
         this._targetEnemy = undefined;
+        this._nextReactionAt = 0;
       }
     }
     _updateLootTarget(candidate) {
@@ -130078,6 +130081,10 @@ var init_BotPlayerEntity = __esm(() => {
       }
       const enemyPosition = this._targetEnemy.position;
       const distance = Math.sqrt(this._distanceSq(this.position, enemyPosition));
+      if (performance.now() < this._nextReactionAt) {
+        this._facePosition(enemyPosition, true, AIM_JITTER_RADIANS);
+        return;
+      }
       const gun = this._ensureBestWeaponEquipped();
       if (gun && gun.hasUsableAmmo()) {
         this._handleGunCombat(gun, enemyPosition, distance, deltaTimeMs);
@@ -130168,7 +130175,7 @@ var init_BotPlayerEntity = __esm(() => {
       const shouldJump = this._shouldAutoJump(target);
       if (shouldJump) {
         input.sp = true;
-        this._jumpRetryDebounceAt = performance.now() + 400;
+        this._jumpRetryDebounceAt = performance.now() + 550;
       } else if (!this._hasHeadroom() && this.playerController.isGrounded) {
         input.sp = true;
       }
@@ -130176,7 +130183,7 @@ var init_BotPlayerEntity = __esm(() => {
         this._strafe(0);
         if (this.playerController.isGrounded && performance.now() > this._jumpRetryDebounceAt) {
           input.sp = true;
-          this._jumpRetryDebounceAt = performance.now() + 400;
+          this._jumpRetryDebounceAt = performance.now() + 550;
         }
       }
       this._recordNavigationProgress(target);
@@ -130185,7 +130192,7 @@ var init_BotPlayerEntity = __esm(() => {
       const now = performance.now();
       if (now > this._strafeSwitchAt) {
         this._strafeDirection = this._strafeDirection === 1 ? -1 : 1;
-        this._strafeSwitchAt = now + 1000 + Math.random() * 750;
+        this._strafeSwitchAt = now + 1500 + Math.random() * 1200;
       }
       const input = this.player.input;
       if (this._strafeDirection > 0) {
@@ -130193,7 +130200,7 @@ var init_BotPlayerEntity = __esm(() => {
       } else {
         input.a = true;
       }
-      if (deltaTimeMs > 0 && Math.random() < 0.02 && this.playerController.isGrounded) {
+      if (deltaTimeMs > 0 && Math.random() < 0.008 && this.playerController.isGrounded) {
         input.sp = true;
       }
     }
@@ -130285,7 +130292,7 @@ var init_BotPlayerEntity = __esm(() => {
       const now = performance.now();
       if (now > this._jumpRetryDebounceAt && this.playerController.isGrounded) {
         this.player.input.sp = true;
-        this._jumpRetryDebounceAt = now + 400;
+        this._jumpRetryDebounceAt = now + 550;
       }
       if (!this._blockBreakTarget) {
         const forward = this._blockAheadCoordinate();
@@ -130377,7 +130384,7 @@ var init_BotPlayerEntity = __esm(() => {
       };
       this.applyImpulse(impulse);
       this.player.input.sp = true;
-      this._jumpRetryDebounceAt = performance.now() + 450;
+      this._jumpRetryDebounceAt = performance.now() + 520;
       if (this._behaviorState === "LOOT" /* LOOT */) {
         this._targetLootEntity = undefined;
         this._activeLootTargetId = undefined;

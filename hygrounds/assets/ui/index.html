@@ -1141,6 +1141,7 @@
     border-radius: 3px;
     box-shadow: 0 0 10px rgba(230, 190, 40, 0.3);
     position: relative; /* Needed for absolute positioning of children */
+    text-align: center;
   }
 
   .exp-bar-fill {
@@ -1358,6 +1359,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     border: 2px solid rgba(255, 255, 255, 0.2);
     z-index: 100;
+    pointer-events: none;
   }
 
   .leaderboard-title {
@@ -1452,29 +1454,31 @@
 
   /* Mobile UI */
   body.mobile .hud {
+    top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    bottom: 35px;
+    bottom: auto;
     right: auto;
   }
 
   body.mobile .inventory-hud {
-    bottom: 30px;
+    bottom: 28px;
+    left: 24px;
+    right: auto;
+    top: auto;
+    transform: none;
+    display: flex;
+    gap: 10px;
   }
 
   body.mobile .inventory-slot {
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
   }
 
-  body.mobile .slot-number {
-    font-size: 12px;
-    top: -16px;
-  }
-
+  body.mobile .slot-number,
   body.mobile .slot-name {
-    font-size: 8px;
-    bottom: -14px;
+    display: none;
   }
 
   body.mobile .slot-quantity {
@@ -1505,6 +1509,14 @@
     height: 35px;
   }
 
+  body.mobile .leaderboard {
+    top: 20px;
+    right: 20px;
+    width: 160px;
+    max-height: 40%;
+    z-index: 120;
+  }
+
   body.mobile .leaderboard-title {
     font-size: 14px;
   }
@@ -1526,10 +1538,16 @@
     font-size: 10px;
   }
 
+  body.mobile .materials-amount {
+    font-size: 14px;
+  }
+
   body.mobile .materials-counter {
-    right: 20px;
-    bottom: 115px;
-    font-size: 12px;
+    left: 24px;
+    bottom: 90px;
+    top: auto;
+    right: auto;
+    font-size: 10px;
   }
 
   body.mobile .floating-number {
@@ -1545,31 +1563,34 @@
   }
 
   body.mobile .mobile-buttons-container {
-    display: flex;
-    gap: 10px;
+    display: block;
     position: fixed;
-    bottom: 113px;
-    right: 118px;
+    bottom: 30px;
+    right: 50px;
+    width: 250px;
+    height: 230px;
     user-select: none;
-    pointer-events: auto !important;
+    pointer-events: none;
+    z-index: 1000;
   }
 
   body.mobile .mobile-button {
-    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.55);
     border-radius: 50%;
     align-items: center;
     justify-content: center;
     display: flex;
-    width: 45px;
-    height: 45px;
+    width: 56px;
+    height: 56px;
     -webkit-tap-highlight-color: transparent;
-    touch-action: none;
+    touch-action: manipulation;
     user-select: none;
     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform, background-color;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
     font-family: 'Inter', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
     color: rgba(255, 255, 255, 0.8);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -1583,8 +1604,48 @@
   }
 
   body.mobile .mobile-button img {
-    width: 25px;
-    height: 25px;
+    width: 22px;
+    height: 22px;
+  }
+
+  body.mobile #mobile-attack-button {
+    width: 100px;
+    height: 100px;
+    bottom: 0;
+    right: 0;
+  }
+
+  body.mobile #mobile-attack-button img {
+    width: 40px;
+    height: 40px;
+  }
+
+  body.mobile #mobile-jump-button {
+    width: 66px;
+    height: 66px;
+    bottom: 110px;
+    right: -10px;
+  }
+
+  body.mobile #mobile-place-block-button {
+    width: 62px;
+    height: 62px;
+    bottom: -20px;
+    right: 105px;
+  }
+
+  body.mobile #mobile-interact-button {
+    width: 58px;
+    height: 58px;
+    bottom: 50px;
+    right: 110px;
+  }
+
+  body.mobile #mobile-reload-button {
+    width: 58px;
+    height: 58px;
+    bottom: 100px;
+    right: 65px;
   }
 
   body.mobile .rank-up-title {

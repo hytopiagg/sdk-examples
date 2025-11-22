@@ -17,9 +17,9 @@ import GunEntity from './GunEntity';
 import ItemEntity from './ItemEntity';
 import { SPAWN_REGION_AABB } from '../gameConfig';
 
-const AIM_JITTER_RADIANS = 0.035;
-const AIM_JITTER_RANDOM_MIN_SCALE = 0.75;
-const AIM_JITTER_RANDOM_MAX_SCALE = 2.1;
+const AIM_JITTER_RADIANS = 0.055;
+const AIM_JITTER_RANDOM_MIN_SCALE = 0.6;
+const AIM_JITTER_RANDOM_MAX_SCALE = 2.6;
 const MELEE_ATTACK_RANGE = 2.4;
 const PICKAXE_SLOT_INDEX = 0;
 const LOOT_INTERACT_RANGE = 1.5;
@@ -28,6 +28,7 @@ const NAVIGATION_MIN_PROGRESS = 0.35;
 const MAX_VERTICAL_TARGET_DELTA = 12;
 const MELEE_LOOT_OPPORTUNITY_RANGE = 8;
 const BEHAVIOR_LOCK_MS = 450;
+const REACTION_DELAY_MS = 180;
 const ENEMY_RETARGET_COOLDOWN_MS = 750;
 const ENEMY_LOST_GRACE_MS = 1400;
 const LOOT_RETARGET_COOLDOWN_MS = 550;
@@ -292,6 +293,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
   private _lootForgetAt = 0;
   private _activeLootTargetId: number | undefined;
   private _lootOverrideUntil = 0;
+  private _nextReactionAt = 0;
 
   private constructor(driver: BotStubPlayer) {
     super(driver as unknown as Player);
@@ -552,6 +554,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
         this._enemyForgetAt = now + ENEMY_LOST_GRACE_MS;
         this._blockBreakTarget = undefined;
         this._blockBreakExpiresAt = 0;
+        this._nextReactionAt = now + REACTION_DELAY_MS + Math.random() * REACTION_DELAY_MS;
       }
 
       return;
@@ -562,6 +565,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
       (!current.isSpawned || current.isDead || now > this._enemyForgetAt)
     ) {
       this._targetEnemy = undefined;
+      this._nextReactionAt = 0;
     }
   }
 
@@ -676,6 +680,11 @@ export default class BotPlayerEntity extends GamePlayerEntity {
 
     const enemyPosition = this._targetEnemy.position;
     const distance = Math.sqrt(this._distanceSq(this.position, enemyPosition));
+    if (performance.now() < this._nextReactionAt) {
+      this._facePosition(enemyPosition, true, AIM_JITTER_RADIANS);
+      return;
+    }
+
     const gun = this._ensureBestWeaponEquipped();
 
     if (gun && gun.hasUsableAmmo()) {
@@ -786,7 +795,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
     const shouldJump = this._shouldAutoJump(target);
     if (shouldJump) {
       input.sp = true;
-      this._jumpRetryDebounceAt = performance.now() + 400;
+      this._jumpRetryDebounceAt = performance.now() + 550;
     } else if (!this._hasHeadroom() && this.playerController.isGrounded) {
       input.sp = true;
     }
@@ -795,7 +804,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
       this._strafe(0);
       if (this.playerController.isGrounded && performance.now() > this._jumpRetryDebounceAt) {
         input.sp = true;
-        this._jumpRetryDebounceAt = performance.now() + 400;
+        this._jumpRetryDebounceAt = performance.now() + 550;
       }
     }
 
@@ -806,7 +815,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
     const now = performance.now();
     if (now > this._strafeSwitchAt) {
       this._strafeDirection = this._strafeDirection === 1 ? -1 : 1;
-      this._strafeSwitchAt = now + 1000 + Math.random() * 750;
+      this._strafeSwitchAt = now + 1500 + Math.random() * 1200;
     }
 
     const input = this.player.input as PlayerInput;
@@ -816,7 +825,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
       input.a = true;
     }
 
-    if (deltaTimeMs > 0 && Math.random() < 0.02 && this.playerController.isGrounded) {
+    if (deltaTimeMs > 0 && Math.random() < 0.008 && this.playerController.isGrounded) {
       input.sp = true;
     }
   }
@@ -942,7 +951,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
     const now = performance.now();
     if (now > this._jumpRetryDebounceAt && this.playerController.isGrounded) {
       (this.player.input as PlayerInput).sp = true;
-      this._jumpRetryDebounceAt = now + 400;
+      this._jumpRetryDebounceAt = now + 550;
     }
 
     if (!this._blockBreakTarget) {
@@ -1058,7 +1067,7 @@ export default class BotPlayerEntity extends GamePlayerEntity {
 
     this.applyImpulse(impulse);
     (this.player.input as PlayerInput).sp = true;
-    this._jumpRetryDebounceAt = performance.now() + 450;
+    this._jumpRetryDebounceAt = performance.now() + 520;
 
     if (this._behaviorState === BotBehaviorState.LOOT) {
       this._targetLootEntity = undefined;
