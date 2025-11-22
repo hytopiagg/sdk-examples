@@ -33,8 +33,36 @@
 <!-- Leaderboard -->
 <div class="leaderboard">
   <div class="leaderboard-title">Deathmatch</div>
-  <div class="leaderboard-timer">0:00</div>
-  <div class="leaderboard-players-count">Players: 0</div>
+  <div class="leaderboard-info-row">
+    <div class="leaderboard-timer">
+      <img src="{{CDN_ASSETS_URL}}/icons/clock.png" alt="Timer" class="leaderboard-info-icon">
+      <span class="leaderboard-timer-value">0:00</span>
+    </div>
+    <div class="leaderboard-players-count">
+      <img src="{{CDN_ASSETS_URL}}/icons/player.png" alt="Players" class="leaderboard-info-icon">
+      <span class="leaderboard-player-count-value">0</span>
+    </div>
+  </div>
+  <div class="leaderboard-mobile-summary">
+    <div class="leaderboard-summary-entry summary-top">
+      <div class="summary-label-with-icon">
+        <img src="{{CDN_ASSETS_URL}}/icons/crown-gold.png" class="summary-crown" alt="Top player">
+        <span class="summary-name summary-top-name">—</span>
+      </div>
+      <span class="summary-kills summary-top-kills">0</span>
+    </div>
+    <div class="leaderboard-summary-entry summary-second">
+      <div class="summary-label-with-icon">
+        <img src="{{CDN_ASSETS_URL}}/icons/crown-silver.png" class="summary-crown" alt="Second player">
+        <span class="summary-name summary-second-name">—</span>
+      </div>
+      <span class="summary-kills summary-second-kills">0</span>
+    </div>
+    <div class="leaderboard-summary-entry summary-self">
+      <span class="summary-name summary-self-name">You</span>
+      <span class="summary-kills summary-self-kills">0</span>
+    </div>
+  </div>
   <div class="leaderboard-header">
     <div class="header-name">Player</div>
     <div class="header-kills">Kills</div>
@@ -62,15 +90,17 @@
       <div class="exp-text">Unranked</div>
     </div>
 
-    <div class="shield-bar">
-      <div class="shield-bar-fill"></div>
-      <img src="{{CDN_ASSETS_URL}}/icons/shield.png" alt="Shield Icon" class="shield-icon">
-      <div class="shield-text">0</div>
-    </div>
-    <div class="health-bar">
-      <div class="health-bar-fill"></div>
-      <img src="{{CDN_ASSETS_URL}}/icons/heart.png" alt="Health Icon" class="health-icon">
-      <div class="health-text">100</div>
+    <div class="health-shield-row">
+      <div class="health-bar">
+        <div class="health-bar-fill"></div>
+        <img src="{{CDN_ASSETS_URL}}/icons/heart.png" alt="Health Icon" class="health-icon">
+        <div class="health-text">100</div>
+      </div>
+      <div class="shield-bar">
+        <div class="shield-bar-fill"></div>
+        <img src="{{CDN_ASSETS_URL}}/icons/shield.png" alt="Shield Icon" class="shield-icon">
+        <div class="shield-text">0</div>
+      </div>
     </div>
   </div>
 </div>
@@ -176,6 +206,13 @@
   let gameEndTime = 0;
   let timerInterval;
   let isLoadExpUpdate = true; // Flag to track the first EXP update
+  let localPlayerUsername = '';
+  const summaryTopNameEl = document.querySelector('.summary-top-name');
+  const summaryTopKillsEl = document.querySelector('.summary-top-kills');
+  const summarySecondNameEl = document.querySelector('.summary-second-name');
+  const summarySecondKillsEl = document.querySelector('.summary-second-kills');
+  const summarySelfNameEl = document.querySelector('.summary-self-name');
+  const summarySelfKillsEl = document.querySelector('.summary-self-kills');
 
   function updateLeaderboard() {
     const leaderboardPlayers = document.querySelector('.leaderboard-players');
@@ -239,6 +276,35 @@
 
       leaderboardPlayers.appendChild(playerElement);
     });
+
+    updateLeaderboardSummary();
+  }
+
+  function updateLeaderboardSummary() {
+    if (
+      !document.body.classList.contains('mobile') ||
+      !summaryTopNameEl ||
+      !summaryTopKillsEl ||
+      !summarySecondNameEl ||
+      !summarySecondKillsEl ||
+      !summarySelfNameEl ||
+      !summarySelfKillsEl
+    ) {
+      return;
+    }
+
+    const entries = Object.entries(leaderboardKillCounts).sort((a, b) => b[1] - a[1]);
+    const [topName = '—', topKills = 0] = entries[0] ?? [];
+    const [secondName = '—', secondKills = 0] = entries[1] ?? [];
+    const yourName = localPlayerUsername || 'You';
+    const yourKills = localPlayerUsername ? (leaderboardKillCounts[localPlayerUsername] ?? 0) : 0;
+
+    summaryTopNameEl.textContent = topName || '—';
+    summaryTopKillsEl.textContent = `${topKills || 0} Kills`;
+    summarySecondNameEl.textContent = secondName || '—';
+    summarySecondKillsEl.textContent = `${secondKills || 0} Kills`;
+    summarySelfNameEl.textContent = yourName;
+    summarySelfKillsEl.textContent = `${yourKills || 0} Kills`;
   }
 
   function updateTimer() {
@@ -250,8 +316,10 @@
     const seconds = Math.floor((timeRemaining % 60000) / 1000);
     const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-    const timerElement = document.querySelector('.leaderboard-timer');
-    timerElement.textContent = formattedTime;
+    const timerValue = document.querySelector('.leaderboard-timer-value');
+    if (timerValue) {
+      timerValue.textContent = formattedTime;
+    }
 
     // Stop the timer when it reaches zero
     if (timeRemaining <= 0) {
@@ -549,21 +617,29 @@
     }
 
     if (type === 'leaderboard-sync') {
-      const { killCounts } = data;
+      const { killCounts, localPlayer } = data;
       leaderboardKillCounts = killCounts;
+      if (localPlayer) {
+        localPlayerUsername = localPlayer;
+      }
       updateLeaderboard();
     }
 
     if (type === 'leaderboard-update') {
-      const { username, killCount } = data;
+      const { username, killCount, localPlayer } = data;
       leaderboardKillCounts[username] = killCount;
+      if (localPlayer) {
+        localPlayerUsername = localPlayer;
+      }
       updateLeaderboard();
     }
 
     if (type === 'players-count') {
       const { count } = data;
-      const playersCount = document.querySelector('.leaderboard-players-count');
-      playersCount.textContent = `Players: ${count}`;
+      const playersCount = document.querySelector('.leaderboard-player-count-value');
+      if (playersCount) {
+        playersCount.textContent = count;
+      }
     }
 
     if (type === 'materials') {
@@ -1374,15 +1450,34 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   }
 
-  .leaderboard-timer {
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
+.leaderboard-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
     margin-bottom: 10px;
-    padding: 3px;
+  }
+
+  .leaderboard-info-row .leaderboard-timer,
+  .leaderboard-info-row .leaderboard-players-count {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
+    padding: 3px 6px;
+    height: 20px;
+    font-size: 15px;
+    font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .leaderboard-info-icon {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    display: block;
   }
 
   .leaderboard-header {
@@ -1452,6 +1547,43 @@
     display: none;
   }
 
+.leaderboard-mobile-summary {
+  display: none;
+  gap: 4px;
+}
+
+.leaderboard-summary-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 10px;
+}
+
+.summary-label-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-crown {
+  width: 12px;
+  height: 12px;
+}
+
+.leaderboard-summary-entry .summary-name {
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.leaderboard-summary-entry .summary-kills {
+  font-size: 11px;
+}
+
   /* Mobile UI */
   body.mobile .hud {
     top: 15px;
@@ -1485,17 +1617,35 @@
     font-size: 10px;
   }
 
-  body.mobile .shield-bar,
-  body.mobile .health-bar,
   body.mobile .exp-bar {
+    width: 160px;
+    height: 16px;
+    margin-bottom: 8px;
+  }
+
+  body.mobile .exp-text {
+    font-size: 0.7em;
+  }
+
+  body.mobile .shield-bar,
+  body.mobile .health-bar {
     width: 120px;
     height: 16px;
   }
 
   body.mobile .shield-text,
-  body.mobile .health-text,
-  body.mobile .exp-text {
+  body.mobile .health-text {
     font-size: 0.7em;
+  }
+
+  body.mobile .info-container {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  body.mobile .health-shield-row {
+    display: flex;
+    gap: 10px;
   }
 
   body.mobile .shield-icon,
@@ -1512,8 +1662,8 @@
   body.mobile .leaderboard {
     top: 20px;
     right: 20px;
-    width: 160px;
-    max-height: 40%;
+    width: 180px;
+    max-height: none;
     z-index: 120;
   }
 
@@ -1521,17 +1671,29 @@
     font-size: 14px;
   }
 
-  body.mobile .leaderboard-timer {
-    font-size: 12px;
-  }
-
+  body.mobile .leaderboard-timer,
   body.mobile .leaderboard-players-count {
-    display: none;
-    font-size: 12px;
+    font-size: 11px;
+    padding: 3px 4px;
   }
 
-  body.mobile .leaderboard-header {
-    font-size: 10px;
+  body.mobile .leaderboard-mobile-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  body.mobile .leaderboard-info-row {
+    margin-bottom: 0px;
+  }
+
+  body.mobile .leaderboard-mobile-summary .leaderboard-summary-entry:last-child {
+    margin-bottom: 0;
+  }
+
+  body.mobile .leaderboard-header,
+  body.mobile .leaderboard-players {
+    display: none;
   }
 
   body.mobile .leaderboard-player {

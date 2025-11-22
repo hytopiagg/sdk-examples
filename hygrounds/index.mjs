@@ -129705,7 +129705,7 @@ var init_BotPlayerEntity = __esm(() => {
   BotPlayerEntity = class BotPlayerEntity extends GamePlayerEntity {
     static _botsByWorld = new Map;
     static _activeWorlds = new Set;
-    static _maxBots = 5 + Math.floor(Math.random() * 4);
+    static _maxBots = 50;
     static ensureForWorld(world) {
       const bots = this._botsByWorld.get(world.id) ?? new Set;
       if (!this._botsByWorld.has(world.id)) {
