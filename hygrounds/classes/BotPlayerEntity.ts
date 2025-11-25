@@ -195,7 +195,8 @@ class BotStubPlayer extends EventRouter {
 export default class BotPlayerEntity extends GamePlayerEntity {
   private static readonly _botsByWorld: Map<number, Set<BotPlayerEntity>> = new Map();
   private static readonly _activeWorlds: Set<number> = new Set();
-  private static readonly _maxBots = 5 + Math.floor(Math.random() * 4); // 5-8 inclusive
+  private static readonly _maxBots = 3;
+  private static readonly _humanPlayersBeforeBotRemoval = 5;
 
   public static ensureForWorld(world: World): void {
     const bots = this._botsByWorld.get(world.id) ?? new Set<BotPlayerEntity>();
@@ -204,7 +205,13 @@ export default class BotPlayerEntity extends GamePlayerEntity {
       this._botsByWorld.set(world.id, bots);
     }
 
-    const desiredBots = this._maxBots;
+    const humanPlayers = world.entityManager
+      .getAllPlayerEntities()
+      .filter(entity => !(entity instanceof BotPlayerEntity))
+      .length;
+
+    const playersAboveThreshold = Math.max(0, humanPlayers - this._humanPlayersBeforeBotRemoval);
+    const desiredBots = Math.max(0, Math.min(this._maxBots, this._maxBots - playersAboveThreshold));
 
     while (bots.size < desiredBots) {
       const botName = this._generateRandomBotName();

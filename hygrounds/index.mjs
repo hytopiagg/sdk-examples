@@ -24871,7 +24871,7 @@ wzUfQXDpZndkqxHilERgvPXLEsTTCMF/W+C8gsO9AoGAZWt+CU6zQhqMBB5MMGZf
 UE5WUS/oOd4jHBqwVxBTLOAPlmnQSp1uiTu2K0NrnnvZ6Zi/+tIsjbtxhomeOmnH
 +wsk9n+Bif4P7VTvwqc9FY4Ya79PEJK+J/xx/mldUEz3R63RiRXZAaDddO7yCQFX
 W8eeuIMLKU6dSq0yu22+nyU=
------END PRIVATE KEY-----`, SC, ni = "0.14.3", ai, Qz, B3, tN1, IC6 = 5000, v$, w5, eN1, si, oi, ri, ti, SC6, ei = 60, Jn, $B, AC6 = 2, cC6 = 3, JO1, WB, $n, KB, $O1, bK, XO1, F$, ZB, YO1, L5, N3, k6, xX, $8, u4, b8, Wz, w8, GB, z8, Kz, dR1, pR1 = 0.099856, VB, qn;
+-----END PRIVATE KEY-----`, SC, ni = "0.14.5", ai, Qz, B3, tN1, IC6 = 30000, v$, w5, eN1, si, oi, ri, ti, SC6, ei = 60, Jn, $B, AC6 = 2, cC6 = 3, JO1, WB, $n, KB, $O1, bK, XO1, F$, ZB, YO1, L5, N3, k6, xX, $8, u4, b8, Wz, w8, GB, z8, Kz, dR1, pR1 = 0.099856, VB, qn;
 var init_server = __esm(() => {
   iR1 = Object.create;
   ({ getPrototypeOf: nR1, defineProperty: sC, getOwnPropertyNames: aR1 } = Object);
@@ -83727,7 +83727,7 @@ return fn.apply(this, arguments)
       }
       tQ.mkdirSync($, { recursive: true });
       let V = C9.join($, l8.ATLAS_PNG_FILE), q = C9.join($, l8.ATLAS_KTX2_FILE);
-      await G.write(V), await Tz("toktx", ["--t2", "--encode", "uastc", "--uastc_quality", "2", "--uastc_rdo_l", "1.0", "--zcmp", "3", "--assign_oetf", "srgb", "--genmipmap", "--2d", q, V]), tQ.writeFileSync(C9.join($, l8.ATLAS_MANIFEST_FILE), JSON.stringify({ version: l8.DATA_SCHEMA_VERSION, textureSize: l8.TEXTURE_SIZE, padding: l8.TEXTURE_PADDING, atlasWidth: K, atlasHeight: Z, textures: Object.fromEntries(this._textureUriMetadata), sourceHash: this._calculateSourceHash(J) }, null, 2)), console.log(`BlockTextureRegistry.preloadAtlas(): Successfully created block texture atlas (${K}x${Z})`);
+      await G.write(V), await Tz("toktx", ["--t2", "--encode", "uastc", "--uastc_quality", "4", "--zcmp", "5", "--assign_oetf", "srgb", "--genmipmap", q, V]), tQ.writeFileSync(C9.join($, l8.ATLAS_MANIFEST_FILE), JSON.stringify({ version: l8.DATA_SCHEMA_VERSION, textureSize: l8.TEXTURE_SIZE, padding: l8.TEXTURE_PADDING, atlasWidth: K, atlasHeight: Z, textures: Object.fromEntries(this._textureUriMetadata), sourceHash: this._calculateSourceHash(J) }, null, 2)), console.log(`BlockTextureRegistry.preloadAtlas(): Successfully created block texture atlas (${K}x${Z})`);
     }
     _loadCachedAtlasManifest(J, $) {
       let X = C9.join($, l8.ATLAS_MANIFEST_FILE), Y = C9.join($, l8.ATLAS_PNG_FILE), Q = C9.join($, l8.ATLAS_KTX2_FILE);
@@ -87737,7 +87737,7 @@ return fn.apply(this, arguments)
         if (W.stderr)
           return n.warning(`ModelRegistry._optimizeModel(): Error optimizing model ${this._absoluteModelPathToModelUri(J)}, defaulting to unoptimized model. Error: ${W.stderr}`), J;
         await this._embedModelMetadata(Q);
-        let K = await Tz("npx", ["@gltf-transform/cli", "uastc", Q, Q, "--rdo", "--rdo-lambda", "2.0", "--zstd", "10"]);
+        let K = await Tz("npx", ["@gltf-transform/cli", "uastc", Q, Q, "--zstd", "10"]);
         if (K.stderr)
           n.warning(`ModelRegistry._optimizeModel(): Error compressing textures for model ${this._absoluteModelPathToModelUri(J)}, continuing without compression. Error: ${K.stderr}`);
       }
@@ -129765,13 +129765,16 @@ var init_BotPlayerEntity = __esm(() => {
   BotPlayerEntity = class BotPlayerEntity extends GamePlayerEntity {
     static _botsByWorld = new Map;
     static _activeWorlds = new Set;
-    static _maxBots = 5 + Math.floor(Math.random() * 4);
+    static _maxBots = 3;
+    static _humanPlayersBeforeBotRemoval = 5;
     static ensureForWorld(world) {
       const bots = this._botsByWorld.get(world.id) ?? new Set;
       if (!this._botsByWorld.has(world.id)) {
         this._botsByWorld.set(world.id, bots);
       }
-      const desiredBots = this._maxBots;
+      const humanPlayers = world.entityManager.getAllPlayerEntities().filter((entity) => !(entity instanceof BotPlayerEntity)).length;
+      const playersAboveThreshold = Math.max(0, humanPlayers - this._humanPlayersBeforeBotRemoval);
+      const desiredBots = Math.max(0, Math.min(this._maxBots, this._maxBots - playersAboveThreshold));
       while (bots.size < desiredBots) {
         const botName = this._generateRandomBotName();
         const driver = new BotStubPlayer(botName);
