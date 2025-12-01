@@ -10,10 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hytopia.com/assets": "^0.4.2",
     "hytopia": "*"
   },
   "trustedDependencies": [
     "sharp"
-  ]
+  ],
+  "optionalDependencies": {
+    "@hytopia.com/assets": "^0.4.5"
+  }
 }
