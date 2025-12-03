@@ -1,0 +1,17 @@
+<script>
+  const playerEntityId = hytopia.getPlayerEntityId(); // this player 
+  const targetEntityId = hytopia.getEntityIdByName('tutorial-target'); // the target
+
+  if (playerEntityId && targetEntityId) {
+    hytopia.connectArrow(
+      playerEntityId,
+      targetEntityId,
+      { // Options for greater configurability of the arrow.
+        // color: { r: 0, g: 0, b: 255 }, // If you use color overrides, the base arrow image must be white.
+        // because this is a hytopia UI method, it will auto resolve the path relative to assets/
+        // it does not need {{CDN_ASSETS_URL}}. 
+        // textureUri: 'arrows/double-arrow.png', 
+      }
+    );
+  }
+</script>
