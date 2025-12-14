@@ -329,7 +329,11 @@ export default class GamePlayer {
     this.setCurrentRegion(region);
     this.setCurrentRegionSpawnFacingAngle(facingAngle);
     this.setCurrentRegionSpawnPoint(spawnPoint);              
-    this.save();
+    // IMPORTANT:
+    // World switching triggers PLAYER.LEFT_WORLD and our GameRegion handler currently drops the in-memory
+    // GamePlayer instance. The destination world then reconstructs GamePlayer from persisted data.
+    // If we debounce saves here, the persisted spawn point can be stale, causing "random" teleports.
+    this.flushSave();
     this.player.joinWorld(region.world);
   }
 
@@ -435,6 +439,17 @@ export default class GamePlayer {
     this._saveTimeout = setTimeout(() => { // prevent spamming the server with save requests
       this.player.setPersistedData(this._serialize());
     }, 500);
+  }
+
+  /**
+   * Immediately persists player state, bypassing the debounce used by {@link save}.
+   *
+   * This is critical before operations that might recreate the player state
+   * (e.g. switching worlds/regions) to prevent stale region spawn data.
+   */
+  public flushSave(): void {
+    clearTimeout(this._saveTimeout);
+    this.player.setPersistedData(this._serialize());
   }
 
   public showNotification(message: string, notificationType: NotificationType): void {
