@@ -1,0 +1,37 @@
+<style>
+  .crosshair {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  .crosshair::before,
+  .crosshair::after {
+    content: '';
+    position: absolute;
+    background: white;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+  }
+
+  .crosshair::before {
+    width: 2px;
+    height: 12px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .crosshair::after {
+    width: 12px;
+    height: 2px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+
+<div class="crosshair"></div>
+
