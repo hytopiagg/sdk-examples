@@ -1,7 +1,10 @@
 <template id="item-nameplate-template">
   <div class="item-nameplate-container">
     <div class="item-nameplate">
-      <div class="item-nameplate-name"></div>
+      <div class="item-nameplate-text">
+        <div class="item-nameplate-name"></div>
+        <div class="item-nameplate-pickup-hint"></div>
+      </div>
       <div class="item-nameplate-quantity"></div>
     </div>
     <div class="item-nameplate-icon">
@@ -17,6 +20,11 @@
     const name = clone.querySelector('.item-nameplate-name');
     const iconImage = clone.querySelector('.item-icon-image');
     const quantity = clone.querySelector('.item-nameplate-quantity');
+    const pickupHint = clone.querySelector('.item-nameplate-pickup-hint');
+
+    // Set pickup hint based on platform
+    const isMobile = document.body.classList.contains('mobile');
+    pickupHint.textContent = isMobile ? 'tap to pickup' : 'click to pickup';
 
     onState(state => {
       if (state.name) {
@@ -52,6 +60,7 @@
     align-items: center;
     position: relative;
     animation: itemFloat 3s ease-in-out infinite;
+    pointer-events: none !important;
   }
 
   /* Ground shadow */
@@ -106,14 +115,38 @@
     z-index: 1;
   }
 
+  .item-nameplate-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    overflow: hidden;
+  }
+
   .item-nameplate-name {
     font-size: 12px;
     font-weight: 500;
     color: var(--nameplate-text);
     text-shadow: 0 1px 2px var(--nameplate-shadow);
-    flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  .item-nameplate-pickup-hint {
+    font-size: 9px;
+    font-weight: 500;
+    color: #AAAAAA;
+    text-shadow: 0 1px 2px var(--nameplate-shadow);
+    margin-top: 2px;
+    opacity: 0.8;
+    text-align: center;
+    animation: subtlePickupPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes subtlePickupPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
   }
 
   .item-nameplate-quantity {
@@ -127,6 +160,7 @@
     padding: 2px 6px;
     line-height: 1;
     display: none;
+    align-self: flex-start;
   }
 
   .item-nameplate-icon {

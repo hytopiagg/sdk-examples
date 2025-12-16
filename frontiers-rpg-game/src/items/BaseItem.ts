@@ -16,7 +16,6 @@ import {
 import BaseItemEntity from '../entities/BaseItemEntity';
 import CustomCollisionGroup from '../physics/CustomCollisionGroup';
 import GamePlayerEntity from '../GamePlayerEntity';
-import IInteractable from '../interfaces/IInteractable';
 
 const DEFAULT_MODEL_CHILD_RELATIVE_POSITION = { x: -0.025, y: 0, z: -0.15 };
 const DEFAULT_MODEL_URI = 'models/items/snowball.gltf';
@@ -47,7 +46,7 @@ export type ItemOverrides = {
   quantity?: number;
 };
 
-export default abstract class BaseItem implements IInteractable {
+export default abstract class BaseItem {
   // Required static properties that subclasses MUST implement
   static readonly id: string;
   static readonly name: string;

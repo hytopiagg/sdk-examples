@@ -1,9 +1,12 @@
 import {
   Entity,
+  EntityEvent,
+  EventPayloads,
   ModelEntityOptions,
   MoveOptions,
   PathfindingEntityController,
   PathfindingOptions,
+  Player,
   Quaternion,
   QuaternionLike,
   RigidBodyType,
@@ -15,7 +18,6 @@ import {
 import { SkillId } from '../config';
 import GamePlayerEntity from '../GamePlayerEntity';
 import QuestRegistry, { QUEST_DIALOGUE_OPTION_START_ID } from '../quests/QuestRegistry';
-import type IInteractable from '../interfaces/IInteractable';
 import type IDamageable from '../interfaces/IDamageable';
 import type { ItemClass } from '../items/BaseItem';
 
@@ -91,7 +93,7 @@ export type WanderOptions = {
   moveOptions?: MoveOptions;
 }
 
-export default class BaseEntity extends Entity implements IInteractable, IDamageable {
+export default class BaseEntity extends Entity implements IDamageable {
   private _combatExperienceReward: number;
   private _deathAnimations: string[];
   private _deathDespawnDelayMs: number;
@@ -234,7 +236,18 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
     this.pathfindingController.face(target, faceSpeed);
   }
 
-  public interact(interactor: GamePlayerEntity): void {
+  /**
+   * Returns the GamePlayerEntity for the given player, or undefined if not found.
+   */
+  protected getGamePlayerEntity(player: Player): GamePlayerEntity | undefined {
+    return this.world?.entityManager.getPlayerEntitiesByPlayer(player)[0] as GamePlayerEntity | undefined;
+  }
+
+  /**
+   * Called when a player interacts with this entity (clicks/taps).
+   * Override in subclasses to customize interaction behavior.
+   */
+  protected onInteract(interactor: GamePlayerEntity): void {
     if (this._dialogueRoot) {
       interactor.setCurrentDialogueEntity(this);
       this.showDialogue(interactor, this._dialogueRoot.dialogue);
@@ -244,6 +257,14 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
       }
     }
   }
+
+  /** @internal */
+  private _onInteract = (payload: EventPayloads[EntityEvent.INTERACT]): void => {
+    const interactor = this.getGamePlayerEntity(payload.player);
+    if (!interactor) return;
+    
+    this.onInteract(interactor);
+  };
 
   public jump(height: number) {
     this.pathfindingController.jump(height);
@@ -277,6 +298,9 @@ export default class BaseEntity extends Entity implements IInteractable, IDamage
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike) {
     super.spawn(world, position, rotation);
     this._nameplateSceneUI.load(world);
+    
+    // Listen to the new interact system
+    this.on(EntityEvent.INTERACT, this._onInteract);
   }
 
   public showDialogue(interactor: GamePlayerEntity, dialogue: BaseEntityDialogue): void {

@@ -14,7 +14,6 @@ import {
   ErrorHandler,
 } from 'hytopia';
 
-import ChestEntity from './ChestEntity';
 import GunEntity from './GunEntity';
 import ItemEntity from './ItemEntity';
 import PickaxeEntity from './weapons/PickaxeEntity';
@@ -25,7 +24,7 @@ import GameManager from './GameManager';
 const BASE_HEALTH = 100;
 const BASE_SHIELD = 0;
 const BLOCK_MATERIAL_COST = 3;
-const INTERACT_RANGE = 4;
+const INTERACT_DISTANCE = 4;
 const MOBILE_AUTOFIRE_SAMPLE_INTERVAL_TICKS = 3;
 const MAX_HEALTH = 100;
 const MAX_SHIELD = 100;
@@ -101,8 +100,9 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       modelUri: 'models/players/soldier-player.gltf',
       modelScale: 0.5,
     });
-    
+
     this._setupPlayerController();
+    this._setupPlayerInteraction();
     this.setupPlayerUI();
     this._setupPlayerCamera();
     this._setupPlayerHeadshotCollider();
@@ -463,11 +463,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
       this._handleMouseRightClick();
     }
 
-    if (input.e) {
-      this._handleInteract();
-      input.e = false;
-    }
-
     if (input.q) {
       this.dropActiveInventoryItem();
       input.q = false;
@@ -618,6 +613,15 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     }
   }
 
+  private _setupPlayerInteraction(): void {
+    this.player.setMaxInteractDistance(INTERACT_DISTANCE);
+  }
+
+  /** Whether the player can pick up an item (has an available inventory slot that isn't slot 0). */
+  public canPickupItem(): boolean {
+    return this._findInventorySlot() !== 0;
+  }
+
   private _handleInventoryHotkeys(input: any): void {
     if (input.f) {
       this.setActiveInventorySlotIndex(0);
@@ -630,41 +634,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
         this.setActiveInventorySlotIndex(i);
         input[key] = false;
       }
-    }
-  }
-
-  private _handleInteract(): void {
-    if (!this.world) return;
-
-    const origin = {
-      x: this.position.x,
-      y: this.position.y + this.player.camera.offset.y,
-      z: this.position.z,
-    };
-    
-    const raycastHit = this.world.simulation.raycast(
-      origin,
-      this.player.camera.facingDirection,
-      INTERACT_RANGE,
-      {
-        filterExcludeRigidBody: this.rawRigidBody,
-        filterFlags: 8, // Rapier exclude sensors,
-      }
-    );
-
-    const hitEntity = raycastHit?.hitEntity;
-
-    if (hitEntity instanceof ChestEntity) {
-      hitEntity.open();
-    }
-
-    if (hitEntity instanceof ItemEntity) {
-      if (this._findInventorySlot() === 0) {
-        this.world?.chatManager?.sendPlayerMessage(this.player, 'You cannot replace your pickaxe! Switch to a different item first to pick up this item.');
-        return;
-      }
-
-      hitEntity.pickup(this);
     }
   }
 

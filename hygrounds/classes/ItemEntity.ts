@@ -3,9 +3,12 @@ import {
   Collider,
   CollisionGroup,
   Entity,
+  EntityEvent,
   EntityOptions,
+  EventPayloads,
   BlockEntityOptions,
   ModelEntityOptions,
+  Player,
   PlayerEntityController,
   QuaternionLike,
   SceneUI,
@@ -166,7 +169,31 @@ export default class ItemEntity extends Entity {
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     super.spawn(world, position, rotation);
-    this._updateVisualEffects(); 
+    this._updateVisualEffects();
+    this.on(EntityEvent.INTERACT, this._onInteract);
+  }
+
+  private _onInteract = (payload: EventPayloads[EntityEvent.INTERACT]): void => {
+    // Don't allow pickup if already held by a player
+    if (this.parent) return;
+
+    const playerEntity = this._getGamePlayerEntity(payload.player);
+    if (!playerEntity) return;
+
+    // Check if player can pick up this item (inventory slot availability)
+    if (!playerEntity.canPickupItem()) {
+      this.world?.chatManager?.sendPlayerMessage(
+        payload.player,
+        'You cannot replace your pickaxe! Switch to a different item first to pick up this item.'
+      );
+      return;
+    }
+
+    this.pickup(playerEntity);
+  };
+
+  private _getGamePlayerEntity(player: Player): GamePlayerEntity | undefined {
+    return this.world?.entityManager.getPlayerEntitiesByPlayer(player)[0] as GamePlayerEntity | undefined;
   }
 
   public startDespawnTimer(): void {

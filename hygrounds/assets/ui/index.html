@@ -110,8 +110,6 @@
     <img src="{{CDN_ASSETS_URL}}/icons/mobile-reload.png" />
   </div>
 
-  <div id="mobile-interact-button" class="mobile-button">E</div>
-
   <div id="mobile-jump-button" class="mobile-button">
     <img src="{{CDN_ASSETS_URL}}/icons/mobile-jump.png" />
   </div>
@@ -184,7 +182,7 @@
   <div class="item-label">
     <div class="label-quantity"></div>
     <div class="label-name"></div>
-    <div class="label-prompt">"E" to Pickup</div>
+    <div class="label-prompt"></div>
     <div class="label-caret"></div>
   </div>
 </template>
@@ -192,7 +190,7 @@
 <template id="chest-label-template">
   <div class="item-label">
     <div class="label-name"></div>
-    <div class="label-prompt">"E" to Open</div>
+    <div class="label-prompt"></div>
     <div class="label-caret"></div>
   </div>
 </template>
@@ -392,6 +390,11 @@
     const clone = template.content.cloneNode(true);
     const labelName = clone.querySelector('.label-name');
     const labelQuantity = clone.querySelector('.label-quantity');
+    const labelPrompt = clone.querySelector('.label-prompt');
+
+    // Set prompt text based on platform
+    const isMobile = document.body.classList.contains('mobile');
+    labelPrompt.textContent = isMobile ? 'Tap to Pickup' : 'Click to Pickup';
 
     onState(state => {
       if (state.name) {
@@ -410,6 +413,11 @@
     const template = document.getElementById('chest-label-template');
     const clone = template.content.cloneNode(true);
     const labelName = clone.querySelector('.label-name');
+    const labelPrompt = clone.querySelector('.label-prompt');
+
+    // Set prompt text based on platform
+    const isMobile = document.body.classList.contains('mobile');
+    labelPrompt.textContent = isMobile ? 'Tap to Open' : 'Click to Open';
 
     onState(state => {
       if (state.name) {
@@ -724,17 +732,6 @@
         index: index,
       })
     });
-  });
-
-  const mobileInteractButton = document.getElementById('mobile-interact-button');
-  mobileInteractButton.addEventListener('touchstart', () => {
-    mobileInteractButton.classList.add('active');
-    hytopia.pressInput('e', true);
-  });
-
-  mobileInteractButton.addEventListener('touchend', () => {
-    mobileInteractButton.classList.remove('active');
-    hytopia.pressInput('e', false);
   });
 
   const mobileReloadButton = document.getElementById('mobile-reload-button');
@@ -1299,6 +1296,7 @@
     max-width: 220px;
     margin: 0 auto;
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+    pointer-events: none !important;
   }
 
   .label-name {
@@ -1822,18 +1820,11 @@
     right: 105px;
   }
 
-  body.mobile #mobile-interact-button {
-    width: 58px;
-    height: 58px;
-    bottom: 50px;
-    right: 110px;
-  }
-
   body.mobile #mobile-reload-button {
     width: 58px;
     height: 58px;
-    bottom: 100px;
-    right: 65px;
+    bottom: 80px;
+    right: 95px;
   }
 
   body.mobile .rank-up-title {

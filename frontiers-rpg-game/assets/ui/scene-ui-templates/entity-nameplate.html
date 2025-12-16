@@ -3,7 +3,7 @@
   <div class="entity-nameplate">
     <div class="entity-nameplate-alert">!</div>
     <div class="entity-nameplate-name">A Test Mob</div>
-    <div class="entity-nameplate-interact">Press "E" to interact</div>
+    <div class="entity-nameplate-interact"></div>
     <div class="entity-nameplate-level">Lvl 12</div>
     <div class="entity-nameplate-health-bar">
       <div class="entity-nameplate-health-bar-fill"></div>
@@ -100,12 +100,16 @@
 
       if (state.interactable) {
         interact.style.display = 'block';
+        
+        // Use custom action text if provided, otherwise show default based on platform
+        if (state.interactActionText) {
+          interact.textContent = state.interactActionText;
+        } else {
+          const isMobile = document.body.classList.contains('mobile');
+          interact.textContent = isMobile ? 'Tap to interact' : 'Click to interact';
+        }
       } else {
         interact.style.display = 'none';
-      }
-
-      if (state.interactActionText) {
-        interact.textContent = state.interactActionText;
       }
 
       if (state.name) {
@@ -169,7 +173,7 @@
     align-items: center;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     user-select: none;
-    pointer-events: none;
+    pointer-events: none !important;
   }
 
   .entity-nameplate-alert {

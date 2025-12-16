@@ -1,7 +1,6 @@
 import {
   BaseEntityControllerEvent,
   CollisionGroup,
-  CollisionGroupsBuilder,
   DefaultPlayerEntity,
   DefaultPlayerEntityController,
   EventPayloads,
@@ -12,7 +11,6 @@ import {
 } from 'hytopia';
 
 import { SkillId } from './config';
-import CustomCollisionGroup from './physics/CustomCollisionGroup';
 import GameClock from './GameClock';
 import GamePlayer from './GamePlayer';
 import Levels from './systems/Levels';
@@ -40,7 +38,7 @@ const DODGE_DELAY_MS = 50;
 const DODGE_DURATION_MS = 700;
 const DODGE_HORIZONTAL_FORCE = 3;
 const DODGE_VERTICAL_FORCE = 6;
-const INTERACT_REACH = 3;
+const INTERACT_DISTANCE = 3;
 
 export default class GamePlayerEntity extends DefaultPlayerEntity implements IDamageable {
   private readonly _gamePlayer: GamePlayer;
@@ -59,6 +57,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
     this._setupPlayerCamera();
     this._setupPlayerController();
+    this._setupPlayerInteraction();
     this._setupPlayerUI();
   }
 
@@ -277,34 +276,12 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
     }
   }
 
-  private _interact(): void {
-    const raycastResult = this.world?.simulation.raycast(
-      this.adjustedRaycastPosition,
-      this.adjustedFacingDirection,
-      INTERACT_REACH,
-      {
-        filterGroups: CollisionGroupsBuilder.buildRawCollisionGroups({
-          belongsTo: [ CollisionGroup.ALL ],
-          collidesWith: [ CollisionGroup.ENTITY, CustomCollisionGroup.ITEM ],
-        }),
-        filterExcludeRigidBody: this.rawRigidBody,
-        filterFlags: 8,
-      },
-    );
-
-    if (raycastResult?.hitEntity) {
-      if ('interact' in raycastResult.hitEntity && typeof raycastResult.hitEntity.interact === 'function') {
-        raycastResult.hitEntity.interact(this);
-      }
-    }
-  }
-
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {
     const { input } = payload;
     const canInteract = !this._isMovementDisabled && !this._gamePlayer.isDead;
 
-    // Face camera direction on item usage & interact
-    if ((input.ml || input.mr || input.e) && canInteract) {
+    // Face camera direction on item usage
+    if ((input.ml || input.mr) && canInteract) {
       const halfYaw = this.player.camera.orientation.yaw * 0.5;
       this.setRotation({
         x: 0,
@@ -314,7 +291,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       });
     }
 
-    // Left click item usage
+    // Left click item usage (attack with weapon)
     if (input.ml && canInteract) {
       const selectedItem = this._gamePlayer.hotbar.selectedItem;
       
@@ -336,12 +313,6 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       }
 
       input.mr = false;
-    }
-
-    // NPC & Environment Interact
-    if (input.e && canInteract) {
-      this._interact();
-      input.e = false;
     }
 
     // Dodge
@@ -384,12 +355,16 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
 
   private _setupPlayerController(): void {
     this.playerController.faceForwardOnStop = false;
-    this.playerController.interactOneshotAnimations = [];
     this.playerController.canJump = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
     this.playerController.canRun = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
     this.playerController.canSwim = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
     this.playerController.canWalk = () => !this._gamePlayer.isDead && !this._isMovementDisabled;
     this.playerController.on(BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT, this._onTickWithPlayerInput);
+  }
+
+  private _setupPlayerInteraction(): void {
+    // Set the interact distance for the new click/tap interaction system
+    this.player.setMaxInteractDistance(INTERACT_DISTANCE);
   } 
 
   private _setupPlayerUI(): void {

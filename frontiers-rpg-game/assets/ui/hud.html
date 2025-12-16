@@ -103,9 +103,6 @@
   <button class="hud-mobile-button" id="hud-jump-btn">
     <img src="{{CDN_ASSETS_URL}}/icons/buttons/jump.png" alt="Jump" class="hud-mobile-button-icon">
   </button>
-  <button class="hud-mobile-button" id="hud-interact-btn">
-    <img src="{{CDN_ASSETS_URL}}/icons/buttons/e-mobile.png" alt="Interact" class="hud-mobile-button-icon">
-  </button>
 
   <!-- Hotbar -->
   <div class="hud-hotbar-container">
@@ -247,8 +244,6 @@
     document.getElementById('hud-dodge-btn').addEventListener('pointerup', () => hytopia.pressInput('q', false));
     document.getElementById('hud-jump-btn').addEventListener('pointerdown', () => hytopia.pressInput('sp', true));
     document.getElementById('hud-jump-btn').addEventListener('pointerup', () => hytopia.pressInput('sp', false));
-    document.getElementById('hud-interact-btn').addEventListener('pointerdown', () => hytopia.pressInput('e', true));
-    document.getElementById('hud-interact-btn').addEventListener('pointerup', () => hytopia.pressInput('e', false));
   }
 
   function updateHudQuestCount(activeCount, completedCount) {
@@ -1517,11 +1512,6 @@
   #hud-jump-btn {
     bottom: 130px;
     right: 50px;
-  }
-
-  #hud-interact-btn {
-    bottom: 120px;
-    right: 130px;
   }
 
   .hud-mobile-button:active {

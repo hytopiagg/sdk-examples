@@ -179,6 +179,10 @@ class BotStubPlayer extends EventRouter {
     this._persistedData = { ...(this._persistedData ?? {}), ...data };
   }
 
+  public setMaxInteractDistance(_distance: number): void {
+    // No-op for bot stub player - bots interact directly via method calls
+  }
+
   public scheduleNotification(): Promise<string | void> {
     return Promise.resolve();
   }
@@ -764,9 +768,6 @@ export default class BotPlayerEntity extends GamePlayerEntity {
     }
 
     if (distance < LOOT_INTERACT_RANGE) {
-      const input = this.player.input as PlayerInput;
-      input.e = true;
-
       if (target instanceof ItemEntity) {
         target.pickup(this);
       } else if (target instanceof ChestEntity) {

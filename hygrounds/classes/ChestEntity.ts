@@ -3,13 +3,18 @@ import {
   BallColliderOptions,
   Collider,
   Entity,
+  EntityEvent,
+  EventPayloads,
   ModelEntityOptions,
+  Player,
   QuaternionLike,
   RigidBodyType,
   SceneUI,
   Vector3Like,
   World,
 } from 'hytopia';
+
+import GamePlayerEntity from './GamePlayerEntity';
 
 import { CHEST_DROP_ITEMS, CHEST_MAX_DROP_ITEMS, CHEST_OPEN_DESPAWN_MS } from '../gameConfig';
 import ItemFactory from './ItemFactory';
@@ -83,6 +88,17 @@ export default class ChestEntity extends Entity {
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
     super.spawn(world, position, rotation);
     this._labelSceneUI.load(world);
+    this.on(EntityEvent.INTERACT, this._onInteract);
+  }
+
+  private _onInteract = (payload: EventPayloads[EntityEvent.INTERACT]): void => {
+    const playerEntity = this._getGamePlayerEntity(payload.player);
+    if (!playerEntity) return;
+    this.open();
+  };
+
+  private _getGamePlayerEntity(player: Player): GamePlayerEntity | undefined {
+    return this.world?.entityManager.getPlayerEntitiesByPlayer(player)[0] as GamePlayerEntity | undefined;
   }
 
   public get isOpened(): boolean {

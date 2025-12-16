@@ -36,7 +36,7 @@ export default class BaseForageableEntity extends BaseEntity {
 
   public constructor(options: BaseForageableEntityOptions) {
     super({
-      interactActionText: 'Press "E" to forage',
+      interactActionText: 'Forage',
       nameplateViewDistnace: 10,
       ...options,
     });
@@ -68,7 +68,7 @@ export default class BaseForageableEntity extends BaseEntity {
     }
   }
 
-  public override interact(interactor: GamePlayerEntity): void {
+  protected override onInteract(interactor: GamePlayerEntity): void {
     if (this._isBeingForaged) return;
 
     this._isBeingForaged = true;
