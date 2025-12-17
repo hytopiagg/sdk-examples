@@ -20,7 +20,7 @@ startServer(world => {
     playerEntity.spawn(world, { x: 0, y: 10, z: 0 });
   
     setTimeout(async () => {
-      await player.scheduleNotification('GIFT', Date.now() + 120 * 1000); // Schedule for 2 minutes from now. 120s * 1000ms = 2 minutes in ms
+      await player.scheduleNotification('GIFT', Date.now() + 60 * 1000); // Schedule for 2 minutes from now. 120s * 1000ms = 2 minutes in ms
     });
 
     world.chatManager.sendPlayerMessage(player, 'Schedule a notification for 1 minute from now by entering /schedule [type] [secondsFromNow]');
@@ -34,8 +34,8 @@ startServer(world => {
 
   world.chatManager.registerCommand('/schedule', async (player, args) => {
     const types = args[0] || 'GIFT';
-    const secondsFromNow = parseInt(args[1] || '120');
-    const notificationId = await player.scheduleNotification(types, Date.now() + secondsFromNow * 1000); // Schedule for 2 minutes from now. 120s * 1000ms = 2 minutes in ms
+    const secondsFromNow = parseInt(args[1] || '60');
+    const notificationId = await player.scheduleNotification(types, Date.now() + secondsFromNow * 1000);
 
     if (notificationId) {
       world.chatManager.sendPlayerMessage(player, `Scheduled notification for ${types} in ${secondsFromNow} seconds. Notification ID: ${notificationId}`);
