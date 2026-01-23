@@ -39,7 +39,7 @@ export default class HearthwildsRegion extends GameRegion {
       ambientAudioUri: 'audio/music/jungle-theme-looping.mp3',
       fogColor: { r: 152, g: 196, b: 127 },
       fogNear: 0,
-      fogFar: 50,
+      fogFar: 125,
     });
   }
 

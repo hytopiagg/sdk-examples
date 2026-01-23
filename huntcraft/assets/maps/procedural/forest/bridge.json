@@ -2,8 +2,8 @@
   "blockTypes": [
     {
       "id": 1,
-      "name": "cobblestone-mossy",
-      "textureUri": "blocks/cobblestone-mossy.png",
+      "name": "mossy-cobblestone",
+      "textureUri": "blocks/mossy-cobblestone.png",
       "isCustom": false,
       "isMultiTexture": false
     },
