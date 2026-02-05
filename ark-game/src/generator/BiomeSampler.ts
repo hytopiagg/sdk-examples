@@ -4,8 +4,8 @@
  * Uses cellular noise (like Terra) to create natural, irregular biome shapes
  * instead of grid-aligned squares. Provides smooth blending at boundaries.
  * 
- * Block selection uses the DOMINANT biome (highest weight) at each position,
- * not random dithering - this creates natural transitions that follow terrain.
+ * Block selection uses noise-based dithering at boundaries (like Terra's blend.sampler)
+ * to create natural, organic transitions between biome block types.
  */
 
 import { CellularNoise2D, CellInfo } from './noise/Cellular';
@@ -36,9 +36,13 @@ export interface BlendedBiomeValues {
 export class BiomeSampler {
   private cellularNoise: CellularNoise2D;
   private jitterNoise: Simplex2D;
+  private ditherNoise: Simplex2D;  // For block dithering at boundaries
   private jitterAmount: number;
   private sortedBiomes: BiomeDefinition[];
   private weightThresholds: number[];
+
+  // Pre-allocated working array to avoid per-call allocations
+  private readonly _neighborData: { biome: BiomeDefinition; weight: number }[];
   
   constructor(config: BiomeSamplerConfig) {
     // Cellular noise for organic Voronoi-based biome regions (jitter 0.7 = irregular but not chaotic)
@@ -48,6 +52,13 @@ export class BiomeSampler {
     this.jitterNoise = new Simplex2D(config.seed + 222222, 0.01);
     this.jitterAmount = config.biomeSize * 0.15;
     
+    // Dither noise for block selection at boundaries (like Terra's blend.sampler)
+    // Higher frequency creates finer-grained dithering pattern
+    this.ditherNoise = new Simplex2D(config.seed + 333333, 0.15);
+    
+    // Pre-allocate neighbor data array (max 8 neighbors from cellular noise)
+    this._neighborData = Array.from({ length: 8 }, () => ({ biome: null as any, weight: 0 }));
+
     // Pre-sort biomes and compute cumulative weight thresholds
     this.sortedBiomes = [...ALL_BIOMES].sort((a, b) => b.weight - a.weight);
     const totalWeight = getTotalWeight();
@@ -68,35 +79,38 @@ export class BiomeSampler {
   /** Get blended biome values at a position */
   getBlendedValues(x: number, z: number): BlendedBiomeValues {
     const [jx, jz] = this.applyJitter(x, z);
-    const { primary, neighbors } = this.cellularNoise.sampleWithNeighbors(jx, jz);
-    
+    const { primary, neighbors, neighborCount } = this.cellularNoise.sampleWithNeighbors(jx, jz);
+
     const primaryBiome = this.getBiomeForCell(primary);
-    
+
     // If we're far from any edge (edgeFactor close to 0), fast path
-    if (primary.edgeFactor < 0.1 || neighbors.length === 0) {
-      return this.createValues(primaryBiome, 1, []);
+    if (primary.edgeFactor < 0.1 || neighborCount === 0) {
+      return this.createValues(primaryBiome, 1, this._neighborData, x, z, 0, 0);
     }
-    
+
     // Convert neighbor cell info to biome weights based on distance
-    const neighborData: { biome: BiomeDefinition; weight: number }[] = [];
-    
-    for (const neighbor of neighbors) {
+    let ndCount = 0;
+
+    for (let i = 0; i < neighborCount; i++) {
+      const neighbor = neighbors[i];
       const biome = this.getBiomeForCell(neighbor);
-      
+
       // Weight is based on how close we are to this neighbor's cell
       // Use inverse distance ratio: closer neighbors get more weight
       const distRatio = primary.distance1 / neighbor.distance1;
       const weight = smoothstep(distRatio) * primary.edgeFactor;
-      
+
       if (weight > 0.01) {
-        neighborData.push({ biome, weight });
+        const nd = this._neighborData[ndCount++];
+        nd.biome = biome;
+        nd.weight = weight;
       }
     }
-    
+
     // Primary weight decreases as we approach boundaries
     const primaryWeight = Math.max(0.01, 1 - primary.edgeFactor * 0.8);
-    
-    return this.createValues(primaryBiome, primaryWeight, neighborData);
+
+    return this.createValues(primaryBiome, primaryWeight, this._neighborData, x, z, primary.edgeFactor, ndCount);
   }
   
   /** Apply coordinate jitter for organic boundaries */
@@ -124,16 +138,21 @@ export class BiomeSampler {
   }
   
   private createValues(
-    primary: BiomeDefinition, 
-    primaryWeight: number, 
-    neighbors: { biome: BiomeDefinition; weight: number }[]
+    primary: BiomeDefinition,
+    primaryWeight: number,
+    neighbors: { biome: BiomeDefinition; weight: number }[],
+    x: number,
+    z: number,
+    edgeFactor: number,
+    neighborCount: number = neighbors.length
   ): BlendedBiomeValues {
-    const totalWeight = primaryWeight + neighbors.reduce((s, n) => s + n.weight, 0);
-    
+    let totalWeight = primaryWeight;
+    for (let i = 0; i < neighborCount; i++) totalWeight += neighbors[i].weight;
+
     // Weighted average helper
     const avg = (get: (b: BiomeDefinition) => number) => {
       let sum = get(primary) * primaryWeight;
-      for (const { biome, weight } of neighbors) sum += get(biome) * weight;
+      for (let i = 0; i < neighborCount; i++) sum += get(neighbors[i].biome) * neighbors[i].weight;
       return sum / totalWeight;
     };
     
@@ -151,11 +170,11 @@ export class BiomeSampler {
       wormStrength: avg(b => (b.caves?.wormCaves ?? true) ? 1 : 0),
     };
     
-    // Block selection: use dominant biome (highest adjusted weight)
-    const blocks = this.selectDominantBlocks(primary, primaryWeight, neighbors);
-    
+    // Block selection: noise-based dithering at boundaries
+    const blocks = this.selectDitheredBlocks(primary, primaryWeight, neighbors, neighborCount, x, z, edgeFactor);
+
     // Liquid blending: interpolate levels, use dominant biome's block type
-    const liquids = this.blendLiquids(primary, primaryWeight, neighbors, totalWeight, avg);
+    const liquids = this.blendLiquids(primary, primaryWeight, neighbors, neighborCount, totalWeight, avg);
     
     return { biome: primary, blocks, terrain, caves, liquids };
   }
@@ -168,40 +187,44 @@ export class BiomeSampler {
     primary: BiomeDefinition,
     primaryWeight: number,
     neighbors: { biome: BiomeDefinition; weight: number }[],
+    neighborCount: number,
     totalWeight: number,
     avg: (get: (b: BiomeDefinition) => number) => number
   ): { surface?: BlendedLiquid; underground?: BlendedLiquid } {
     const result: { surface?: BlendedLiquid; underground?: BlendedLiquid } = {};
-    
+
     // Check if any biome in the blend has surface liquid
-    const hasSurfaceLiquid = primary.liquids?.surface || neighbors.some(n => n.biome.liquids?.surface);
+    let hasSurfaceLiquid = !!primary.liquids?.surface;
+    for (let i = 0; !hasSurfaceLiquid && i < neighborCount; i++) {
+      hasSurfaceLiquid = !!neighbors[i].biome.liquids?.surface;
+    }
     if (hasSurfaceLiquid) {
-      // Blend the level (biomes without liquid contribute 0)
       const blendedLevel = avg(b => b.liquids?.surface?.level ?? 0);
-      // Only include if blended level is meaningful (> 0)
       if (blendedLevel > 0) {
-        // Use dominant biome's block type
-        const dominant = this.getDominantWithLiquid(primary, primaryWeight, neighbors, 'surface');
+        const dominant = this.getDominantWithLiquid(primary, primaryWeight, neighbors, neighborCount, 'surface');
         result.surface = {
-          blockId: dominant?.liquids?.surface?.blockId ?? 57, // Default to water
+          blockId: dominant?.liquids?.surface?.blockId ?? 57,
           level: blendedLevel,
         };
       }
     }
-    
+
     // Check if any biome in the blend has underground liquid
-    const hasUndergroundLiquid = primary.liquids?.underground || neighbors.some(n => n.biome.liquids?.underground);
+    let hasUndergroundLiquid = !!primary.liquids?.underground;
+    for (let i = 0; !hasUndergroundLiquid && i < neighborCount; i++) {
+      hasUndergroundLiquid = !!neighbors[i].biome.liquids?.underground;
+    }
     if (hasUndergroundLiquid) {
       const blendedLevel = avg(b => b.liquids?.underground?.level ?? 0);
       if (blendedLevel > 0) {
-        const dominant = this.getDominantWithLiquid(primary, primaryWeight, neighbors, 'underground');
+        const dominant = this.getDominantWithLiquid(primary, primaryWeight, neighbors, neighborCount, 'underground');
         result.underground = {
           blockId: dominant?.liquids?.underground?.blockId ?? 57,
           level: blendedLevel,
         };
       }
     }
-    
+
     return result;
   }
   
@@ -210,12 +233,14 @@ export class BiomeSampler {
     primary: BiomeDefinition,
     primaryWeight: number,
     neighbors: { biome: BiomeDefinition; weight: number }[],
+    neighborCount: number,
     type: 'surface' | 'underground'
   ): BiomeDefinition | null {
     let dominant: BiomeDefinition | null = primary.liquids?.[type] ? primary : null;
     let dominantWeight = dominant ? primaryWeight * (primary.blendStrength ?? 1) : 0;
-    
-    for (const { biome, weight } of neighbors) {
+
+    for (let i = 0; i < neighborCount; i++) {
+      const { biome, weight } = neighbors[i];
       if (!biome.liquids?.[type]) continue;
       const adjusted = weight * (biome.blendStrength ?? 1);
       if (adjusted > dominantWeight) {
@@ -223,40 +248,67 @@ export class BiomeSampler {
         dominantWeight = adjusted;
       }
     }
-    
+
     return dominant;
   }
   
   /**
-   * Select blocks from the DOMINANT biome at this position
-   * No random dithering - blocks follow the biome that "owns" this position
+   * Select blocks using noise-based dithering at boundaries (like Terra's blend.sampler)
+   * Creates organic, natural-looking transitions between biome block types
    */
-  private selectDominantBlocks(
+  private selectDitheredBlocks(
     primary: BiomeDefinition,
     primaryWeight: number,
-    neighbors: { biome: BiomeDefinition; weight: number }[]
+    neighbors: { biome: BiomeDefinition; weight: number }[],
+    neighborCount: number,
+    x: number,
+    z: number,
+    edgeFactor: number
   ): { surface: number; subsurface: number; underground: number; subsurfaceDepth: number } {
-    // Apply blendStrength to weights
-    const primaryAdjusted = primaryWeight * (primary.blendStrength ?? 1.0);
-    
-    // Find dominant biome (highest adjusted weight)
-    let dominant = primary;
-    let dominantWeight = primaryAdjusted;
-    
-    for (const { biome, weight } of neighbors) {
-      const adjusted = weight * (biome.blendStrength ?? 1.0);
-      if (adjusted > dominantWeight) {
-        dominant = biome;
-        dominantWeight = adjusted;
+    // If not at a boundary or no neighbors, use primary biome
+    if (edgeFactor < 0.1 || neighborCount === 0) {
+      return {
+        surface: primary.blocks.surface,
+        subsurface: primary.blocks.subsurface ?? primary.blocks.surface,
+        underground: primary.blocks.underground ?? primary.blocks.surface,
+        subsurfaceDepth: primary.blocks.subsurfaceDepth ?? 4,
+      };
+    }
+
+    // Build cumulative thresholds inline (avoid allocating candidates/thresholds arrays)
+    let totalWeight = primaryWeight * (primary.blendStrength ?? 1.0);
+    for (let i = 0; i < neighborCount; i++) {
+      totalWeight += neighbors[i].weight * (neighbors[i].biome.blendStrength ?? 1.0);
+    }
+
+    // Sample noise and map to 0-1 range
+    const noise = (this.ditherNoise.sample(x, z) + 1) * 0.5;
+
+    // Select biome based on noise value crossing cumulative weight thresholds
+    let cumulative = (primaryWeight * (primary.blendStrength ?? 1.0)) / totalWeight;
+    if (noise < cumulative) {
+      return {
+        surface: primary.blocks.surface,
+        subsurface: primary.blocks.subsurface ?? primary.blocks.surface,
+        underground: primary.blocks.underground ?? primary.blocks.surface,
+        subsurfaceDepth: primary.blocks.subsurfaceDepth ?? 4,
+      };
+    }
+
+    let selected = primary;
+    for (let i = 0; i < neighborCount; i++) {
+      cumulative += (neighbors[i].weight * (neighbors[i].biome.blendStrength ?? 1.0)) / totalWeight;
+      if (noise < cumulative) {
+        selected = neighbors[i].biome;
+        break;
       }
     }
-    
-    // Use dominant biome's blocks
+
     return {
-      surface: dominant.blocks.surface,
-      subsurface: dominant.blocks.subsurface ?? dominant.blocks.surface,
-      underground: dominant.blocks.underground ?? dominant.blocks.surface,
-      subsurfaceDepth: dominant.blocks.subsurfaceDepth ?? 4,
+      surface: selected.blocks.surface,
+      subsurface: selected.blocks.subsurface ?? selected.blocks.surface,
+      underground: selected.blocks.underground ?? selected.blocks.surface,
+      subsurfaceDepth: selected.blocks.subsurfaceDepth ?? 4,
     };
   }
 }

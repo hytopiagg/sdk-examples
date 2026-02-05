@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(npx tsc:*)",
+      "Bash(bun build:*)"
     ]
   }
 }

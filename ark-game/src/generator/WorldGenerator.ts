@@ -90,14 +90,19 @@ export default class WorldGenerator {
    * Generate world by executing all passes in order
    */
   generate(): GeneratorResult {
+    const { worldSize } = this.config;
     const startTime = performance.now();
+    
+    console.log(`[Generator] Starting ${worldSize.x}×${worldSize.z} world (seed: ${this.config.seed})`);
     
     // Create shared context for all passes
     const ctx = createContext(this.config, this.terrain, this.caves, this.biomes);
     
-    // Execute passes in order
+    // Execute passes in order with timing
     for (const pass of this.passes) {
+      const passStart = performance.now();
       pass.execute(ctx);
+      console.log(`[Generator] ${pass.name} pass: ${(performance.now() - passStart).toFixed(0)}ms`);
     }
     
     // Convert blocks map to result object
@@ -107,13 +112,16 @@ export default class WorldGenerator {
       blocks[blockId] = placements;
       totalBlocks += placements.length;
     });
+    
+    const totalTime = performance.now() - startTime;
+    console.log(`[Generator] Complete: ${totalBlocks.toLocaleString()} blocks in ${totalTime.toFixed(0)}ms`);
 
     return {
       blocks,
       spawnPoint: this.findSpawnPoint(),
       stats: {
         totalBlocks,
-        generationTimeMs: performance.now() - startTime,
+        generationTimeMs: totalTime,
       },
     };
   }

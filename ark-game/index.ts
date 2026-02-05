@@ -4,25 +4,18 @@ import {
   PlayerEvent,
 } from 'hytopia';
 
-import worldMap from './assets/maps/generator-base.json' with { type: 'json' } ;
+import worldMap from './assets/maps/generator-base.json' with { type: 'json' };
 import { WorldGenerator } from './src/generator';
-import type { GeneratorConfig } from './src/generator';
-
 
 startServer(async world => {
   world.loadMap(worldMap);
 
-  const config: GeneratorConfig = {
+  // Create procedural world generator
+  const generator = new WorldGenerator({
     seed: Date.now(),
-    worldSize: { x: 256, y: 192, z: 256 },
-    urbanDensity: 0.45,
-    decayLevel: 0.45,
-    caveFrequency: 0.5,
-    oreAbundance: 0.5,
-    waterLevel: 58,
-  };
-
-  const generator = new WorldGenerator(config, worldMap.blockTypes);
+    worldSize: { x: 384, y: 128, z: 384 },
+  });
+  
   const result = generator.generate();
 
   world.chunkLattice.initializeBlocks(result.blocks);

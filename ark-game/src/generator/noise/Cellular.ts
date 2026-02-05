@@ -31,12 +31,21 @@ export class CellularNoise2D {
   private cellSize: number;
   private invSize: number; // Pre-computed for hot path
   private jitter: number;
-  
+
+  // Pre-allocated working arrays to avoid per-call allocations
+  private readonly _cells: { id: number; dist: number }[];
+  private readonly _resultNeighbors: CellInfo[];
+
   constructor(seed: number, cellSize: number, jitter = 0.8) {
     this.seed = seed;
     this.cellSize = cellSize;
     this.invSize = 1 / cellSize;
     this.jitter = Math.max(0, Math.min(1, jitter));
+
+    this._cells = Array.from({ length: 9 }, () => ({ id: 0, dist: 0 }));
+    this._resultNeighbors = Array.from({ length: 8 }, () => ({
+      cellId: 0, distance1: 0, distance2: 0, edgeFactor: 0,
+    }));
   }
   
   /** Get cell information at world coordinates */
@@ -78,16 +87,16 @@ export class CellularNoise2D {
     };
   }
   
-  /** Get neighboring cells for blending */
-  sampleWithNeighbors(x: number, z: number): { primary: CellInfo; neighbors: CellInfo[] } {
+  /** Get neighboring cells for blending (reuses pre-allocated arrays) */
+  sampleWithNeighbors(x: number, z: number): { primary: CellInfo; neighbors: CellInfo[]; neighborCount: number } {
     const cellX = x * this.invSize;
     const cellZ = z * this.invSize;
     const cellXi = cellX | 0;
     const cellZi = cellZ | 0;
-    
-    // Collect cells with distances (reuse small fixed array)
-    const cells: { id: number; dist: number }[] = [];
-    
+
+    // Fill pre-allocated cells array
+    const cells = this._cells;
+    let idx = 0;
     for (let dx = -1; dx <= 1; dx++) {
       const nx = cellXi + dx;
       for (let dz = -1; dz <= 1; dz++) {
@@ -96,12 +105,24 @@ export class CellularNoise2D {
         const h2 = hash2D(this.seed + 1, nx, nz);
         const px = nx + 0.5 + (hashToFloat(h1) - 0.5) * this.jitter;
         const pz = nz + 0.5 + (hashToFloat(h2) - 0.5) * this.jitter;
-        cells.push({ id: h1, dist: Math.sqrt((cellX - px) ** 2 + (cellZ - pz) ** 2) });
+        const c = cells[idx++];
+        c.id = h1;
+        c.dist = Math.sqrt((cellX - px) ** 2 + (cellZ - pz) ** 2);
       }
     }
-    
-    cells.sort((a, b) => a.dist - b.dist);
-    
+
+    // In-place insertion sort (fast for n=9)
+    for (let i = 1; i < 9; i++) {
+      const tmp = cells[i];
+      const tmpDist = tmp.dist;
+      let j = i - 1;
+      while (j >= 0 && cells[j].dist > tmpDist) {
+        cells[j + 1] = cells[j];
+        j--;
+      }
+      cells[j + 1] = tmp;
+    }
+
     const d1 = cells[0].dist, d2 = cells[1].dist;
     const primary: CellInfo = {
       cellId: cells[0].id,
@@ -109,23 +130,23 @@ export class CellularNoise2D {
       distance2: d2 * this.cellSize,
       edgeFactor: 1 - Math.min(1, (d2 - d1) / 0.5),
     };
-    
-    // Only include neighbors close enough to potentially blend
-    const neighbors: CellInfo[] = [];
+
+    // Fill pre-allocated neighbors array
+    const neighbors = this._resultNeighbors;
     const threshold = d1 * 1.5;
-    
-    for (let i = 1; i < cells.length && cells[i].dist < threshold; i++) {
+    let neighborCount = 0;
+
+    for (let i = 1; i < 9 && cells[i].dist < threshold; i++) {
       const d = cells[i].dist;
-      const d2n = cells[i + 1]?.dist ?? d * 2;
-      neighbors.push({
-        cellId: cells[i].id,
-        distance1: d * this.cellSize,
-        distance2: d2n * this.cellSize,
-        edgeFactor: 1 - Math.min(1, (d2n - d) / 0.5),
-      });
+      const d2n = i + 1 < 9 ? cells[i + 1].dist : d * 2;
+      const n = neighbors[neighborCount++];
+      n.cellId = cells[i].id;
+      n.distance1 = d * this.cellSize;
+      n.distance2 = d2n * this.cellSize;
+      n.edgeFactor = 1 - Math.min(1, (d2n - d) / 0.5);
     }
-    
-    return { primary, neighbors };
+
+    return { primary, neighbors, neighborCount };
   }
 }
 
