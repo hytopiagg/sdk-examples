@@ -5,7 +5,14 @@
  * Add new biomes by importing them here.
  */
 
-export { BiomeDefinition, BiomeBlocks, BiomeTerrainConfig, BiomeCaveConfig, defineBiome } from './BiomeDefinition';
+export type {
+  BiomeDefinition,
+  BiomeBlocks,
+  BiomeTerrainConfig,
+  BiomeCaveConfig,
+  BiomeCraterConfig,
+} from './BiomeDefinition';
+export { defineBiome } from './BiomeDefinition';
 
 // Import all biomes
 import grasslands from './grasslands';
@@ -38,4 +45,3 @@ export function getTotalWeight(): number {
 
 // Re-export individual biomes for direct import
 export { grasslands, desert, mountains, forest, wasteland };
-

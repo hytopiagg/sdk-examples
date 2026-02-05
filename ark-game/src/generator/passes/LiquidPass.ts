@@ -10,8 +10,8 @@
 
 import type { GeneratorPass, GenerationContext } from './GeneratorPass';
 
-const DX = [1, -1, 0, 0];
-const DZ = [0, 0, 1, -1];
+const DX = new Int8Array([1, -1, 0, 0]);
+const DZ = new Int8Array([0, 0, 1, -1]);
 
 export class LiquidPass implements GeneratorPass {
   readonly name = 'liquid';
@@ -35,11 +35,13 @@ export class LiquidPass implements GeneratorPass {
   private fillSurfaceLiquids(
     ctx: GenerationContext, sizeX: number, sizeY: number, sizeZ: number
   ): void {
+    const terrain = ctx.terrain;
     const totalColumns = sizeX * sizeZ;
-    const liquidLevel = new Uint8Array(totalColumns);
+    const liquidLevel = new Uint16Array(totalColumns);
     const liquidBlock = new Uint8Array(totalColumns);
-    const queue: number[] = [];
-    let head = 0;
+    const queueX = new Int32Array(totalColumns);
+    const queueZ = new Int32Array(totalColumns);
+    let head = 0, tail = 0;
 
     // Seed: columns whose primary biome has surface liquid
     for (let x = 0; x < sizeX; x++) {
@@ -52,17 +54,20 @@ export class LiquidPass implements GeneratorPass {
         liquidLevel[idx] = level;
         liquidBlock[idx] = biome.liquids.surface.blockId;
 
-        const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
+        const surfaceY = terrain.getBaseHeight(x, z) | 0;
         if (surfaceY < level) {
-          queue.push(x, z);
+          queueX[tail] = x;
+          queueZ[tail] = z;
+          tail++;
         }
       }
     }
 
     // Propagate: spread to neighbors where terrain is below the liquid level
-    while (head < queue.length) {
-      const x = queue[head++];
-      const z = queue[head++];
+    while (head < tail) {
+      const x = queueX[head];
+      const z = queueZ[head];
+      head++;
       const idx = x * sizeZ + z;
       const level = liquidLevel[idx];
 
@@ -74,12 +79,14 @@ export class LiquidPass implements GeneratorPass {
         const nIdx = nx * sizeZ + nz;
         if (liquidLevel[nIdx] > 0) continue;
 
-        const surfaceY = ctx.terrain.getBaseHeight(nx, nz) | 0;
+        const surfaceY = terrain.getBaseHeight(nx, nz) | 0;
         if (surfaceY >= level) continue;
 
         liquidLevel[nIdx] = level;
         liquidBlock[nIdx] = liquidBlock[idx];
-        queue.push(nx, nz);
+        queueX[tail] = nx;
+        queueZ[tail] = nz;
+        tail++;
       }
     }
 
@@ -90,7 +97,7 @@ export class LiquidPass implements GeneratorPass {
         const level = liquidLevel[idx];
         if (level === 0) continue;
 
-        const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
+        const surfaceY = terrain.getBaseHeight(x, z) | 0;
         if (surfaceY >= level) continue;
 
         const blockId = liquidBlock[idx];
@@ -122,11 +129,13 @@ export class LiquidPass implements GeneratorPass {
   ): void {
     if (!caveConfig.enabled) return;
 
+    const terrain = ctx.terrain;
     const totalColumns = sizeX * sizeZ;
-    const ugLevel = new Uint8Array(totalColumns);
+    const ugLevel = new Uint16Array(totalColumns);
     const ugBlock = new Uint8Array(totalColumns);
-    const queue: number[] = [];
-    let head = 0;
+    const queueX = new Int32Array(totalColumns);
+    const queueZ = new Int32Array(totalColumns);
+    let head = 0, tail = 0;
 
     // Seed: columns whose primary biome has underground liquid + caves enabled
     for (let x = 0; x < sizeX; x++) {
@@ -141,14 +150,17 @@ export class LiquidPass implements GeneratorPass {
         const idx = x * sizeZ + z;
         ugLevel[idx] = blended.biome.liquids.underground.level;
         ugBlock[idx] = blended.biome.liquids.underground.blockId;
-        queue.push(x, z);
+        queueX[tail] = x;
+        queueZ[tail] = z;
+        tail++;
       }
     }
 
     // Propagate: spread to neighbors where caves can exist at the liquid depth
-    while (head < queue.length) {
-      const x = queue[head++];
-      const z = queue[head++];
+    while (head < tail) {
+      const x = queueX[head];
+      const z = queueZ[head];
+      head++;
       const idx = x * sizeZ + z;
       const level = ugLevel[idx];
 
@@ -164,12 +176,14 @@ export class LiquidPass implements GeneratorPass {
         const cm = ctx.getCaveModifiersAt(nx, nz);
         if (!(cm?.enabled ?? true)) continue;
 
-        const nSurfaceY = ctx.terrain.getBaseHeight(nx, nz) | 0;
+        const nSurfaceY = terrain.getBaseHeight(nx, nz) | 0;
         if (nSurfaceY <= level) continue;
 
         ugLevel[nIdx] = level;
         ugBlock[nIdx] = ugBlock[idx];
-        queue.push(nx, nz);
+        queueX[tail] = nx;
+        queueZ[tail] = nz;
+        tail++;
       }
     }
 
@@ -181,7 +195,7 @@ export class LiquidPass implements GeneratorPass {
         if (level === 0) continue;
 
         const caveModifiers = ctx.getCaveModifiersAt(x, z);
-        const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
+        const surfaceY = terrain.getBaseHeight(x, z) | 0;
         const maxY = Math.min(level, surfaceY - caveConfig.surfaceFadeDistance);
         const blockId = ugBlock[idx];
 

@@ -45,6 +45,17 @@ export default defineBiome({
       level: 12,           // Water in deepest caves only
     },
   },
+
+  craters: {
+    spacing: 20,
+    chance: 0.2,
+    diameter: 16,
+    diameterJitter: 0.4,
+    depthRatio: 2,
+    depthJitter: 0.5,
+    impactBlockId: 58,     // white-concrete for visualizing test
+    impactRadius: 0.75,
+  },
   
   blendStrength: 1.3,
 });

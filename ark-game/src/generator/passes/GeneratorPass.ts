@@ -27,6 +27,12 @@ export interface GenerationContext {
   /** Add a block (with deduplication) */
   addBlock(blockId: number, x: number, y: number, z: number): void;
 
+  /** Remove a block at position (if present) */
+  removeBlock(x: number, y: number, z: number): void;
+
+  /** Force a block at position (replaces existing block if needed) */
+  setBlock(blockId: number, x: number, y: number, z: number): void;
+
   /** Check if a position already has a block */
   hasBlock(x: number, y: number, z: number): boolean;
 
@@ -41,6 +47,12 @@ export interface GenerationContext {
    * Carved results are memoized so subsequent passes skip 3D noise recomputation.
    */
   isCarved(x: number, y: number, z: number, biome: CaveBiomeModifiers | undefined, surfaceY: number): boolean;
+
+  /**
+   * Finalize grouped block placements after all passes complete.
+   * Applies removals/replacements if any mutating pass ran.
+   */
+  finalizeBlocks(): { blocks: { [blockTypeId: number]: BlockPlacement[] }; totalBlocks: number };
 }
 
 /**
@@ -73,21 +85,37 @@ export function createContext(
   const totalPositions = worldSize.x * worldSize.y * worldSize.z;
   const bitsetWords = (totalPositions + 31) >>> 5;
   const addedBits = new Uint32Array(bitsetWords);
+  const removedBits = new Uint32Array(bitsetWords);
   const carvedBits = new Uint32Array(bitsetWords);
+  const replacedBlocks = new Map<number, number>();
+  let hasMutations = false;
 
-  // Cache biome values - major performance win (getBlendedValues is expensive)
-  const biomeCache = new Map<number, BlendedBiomeValues>();
+  // Dense cache by x/z index avoids Map/hash overhead in hot paths.
+  const biomeCache = biomes
+    ? new Array<BlendedBiomeValues | undefined>(worldSize.x * worldSize.z)
+    : null;
 
-  // Reusable cave modifiers object to avoid allocations
-  const cachedCaveModifiers: CaveBiomeModifiers = { enabled: true, frequency: 1, threshold: 0, wormStrength: 1 };
+  const toKey = (x: number, y: number, z: number) => x + z * worldSize.x + y * stride;
+  const inBounds = (x: number, y: number, z: number) =>
+    x >= 0 && x < worldSize.x && z >= 0 && z < worldSize.z && y >= 0 && y < worldSize.y;
+
+  const pushPlacement = (target: Map<number, BlockPlacement[]>, blockId: number, x: number, y: number, z: number) => {
+    let list = target.get(blockId);
+    if (!list) {
+      list = [];
+      target.set(blockId, list);
+    }
+    list.push({ globalCoordinate: { x, y, z } });
+  };
 
   const getBiomeCached = (x: number, z: number): BlendedBiomeValues | undefined => {
-    if (!biomes) return undefined;
+    if (!biomes || !biomeCache) return undefined;
+
     const key = x + z * worldSize.x;
-    let cached = biomeCache.get(key);
+    let cached = biomeCache[key];
     if (!cached) {
       cached = biomes.getBlendedValues(x, z);
-      biomeCache.set(key, cached);
+      biomeCache[key] = cached;
     }
     return cached;
   };
@@ -100,45 +128,119 @@ export function createContext(
     blocks,
 
     addBlock(blockId: number, x: number, y: number, z: number) {
-      if (y < 0 || y >= worldSize.y) return;
-      const key = x + z * worldSize.x + y * stride;
-      if (addedBits[key >>> 5] & (1 << (key & 31))) return;
-      addedBits[key >>> 5] |= 1 << (key & 31);
+      if (!inBounds(x, y, z)) return;
+      const key = toKey(x, y, z);
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      const hasAdded = !!(addedBits[word] & bit);
+      const isRemoved = !!(removedBits[word] & bit);
 
-      let list = blocks.get(blockId);
-      if (!list) {
-        list = [];
-        blocks.set(blockId, list);
+      // A forced replacement takes precedence over regular adds.
+      if (replacedBlocks.has(key)) return;
+
+      if (hasAdded && !isRemoved) return;
+
+      if (hasAdded && isRemoved) {
+        replacedBlocks.set(key, blockId);
+        hasMutations = true;
+        return;
       }
-      list.push({ globalCoordinate: { x, y, z } });
+
+      if (isRemoved) removedBits[word] &= ~bit;
+      addedBits[word] |= bit;
+      pushPlacement(blocks, blockId, x, y, z);
+    },
+
+    removeBlock(x: number, y: number, z: number) {
+      if (!inBounds(x, y, z)) return;
+      const key = toKey(x, y, z);
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      const hadReplacement = replacedBlocks.delete(key);
+      const hadAdded = !!(addedBits[word] & bit);
+      if (!hadReplacement && !hadAdded) return;
+      removedBits[word] |= bit;
+      hasMutations = true;
+    },
+
+    setBlock(blockId: number, x: number, y: number, z: number) {
+      if (!inBounds(x, y, z)) return;
+      const key = toKey(x, y, z);
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      if (addedBits[word] & bit) removedBits[word] |= bit;
+      replacedBlocks.set(key, blockId);
+      hasMutations = true;
     },
 
     hasBlock(x: number, y: number, z: number): boolean {
-      const key = x + z * worldSize.x + y * stride;
-      return !!(addedBits[key >>> 5] & (1 << (key & 31)));
+      if (!inBounds(x, y, z)) return false;
+      const key = toKey(x, y, z);
+      if (replacedBlocks.has(key)) return true;
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      if (removedBits[word] & bit) return false;
+      return !!(addedBits[word] & bit);
     },
 
     getBiomeAt: getBiomeCached,
 
     getCaveModifiersAt(x: number, z: number) {
-      const biome = getBiomeCached(x, z);
-      if (!biome) return undefined;
-      cachedCaveModifiers.enabled = biome.caves.enabled;
-      cachedCaveModifiers.frequency = biome.caves.frequency;
-      cachedCaveModifiers.threshold = biome.caves.threshold;
-      cachedCaveModifiers.wormStrength = biome.caves.wormStrength;
-      return cachedCaveModifiers;
+      return getBiomeCached(x, z)?.caves;
     },
 
     isCarved(x: number, y: number, z: number, biome: CaveBiomeModifiers | undefined, surfaceY: number): boolean {
       // Bounds check: TerrainPass neighbor checks can pass out-of-bounds coords
       if (x < 0 || x >= worldSize.x || z < 0 || z >= worldSize.z || y < 0 || y >= worldSize.y) return false;
-      const key = x + z * worldSize.x + y * stride;
+      const key = toKey(x, y, z);
       if (carvedBits[key >>> 5] & (1 << (key & 31))) return true;
       const result = caves.isCarved(x, y, z, biome, surfaceY);
       if (result) carvedBits[key >>> 5] |= 1 << (key & 31);
       return result;
     },
+
+    finalizeBlocks() {
+      // Fast path: no mutating pass ran.
+      if (!hasMutations) {
+        const out: { [blockTypeId: number]: BlockPlacement[] } = {};
+        let totalBlocks = 0;
+        blocks.forEach((placements, blockId) => {
+          out[blockId] = placements;
+          totalBlocks += placements.length;
+        });
+        return { blocks: out, totalBlocks };
+      }
+
+      const finalized = new Map<number, BlockPlacement[]>();
+      let totalBlocks = 0;
+
+      blocks.forEach((placements, blockId) => {
+        for (let i = 0; i < placements.length; i++) {
+          const c = placements[i].globalCoordinate;
+          const key = toKey(c.x, c.y, c.z);
+          if (replacedBlocks.has(key)) continue;
+          const word = key >>> 5;
+          const bit = 1 << (key & 31);
+          if (removedBits[word] & bit) continue;
+          pushPlacement(finalized, blockId, c.x, c.y, c.z);
+          totalBlocks++;
+        }
+      });
+
+      replacedBlocks.forEach((blockId, key) => {
+        const y = (key / stride) | 0;
+        const rem = key - y * stride;
+        const z = (rem / worldSize.x) | 0;
+        const x = rem - z * worldSize.x;
+        pushPlacement(finalized, blockId, x, y, z);
+        totalBlocks++;
+      });
+
+      const out: { [blockTypeId: number]: BlockPlacement[] } = {};
+      finalized.forEach((placements, blockId) => {
+        out[blockId] = placements;
+      });
+      return { blocks: out, totalBlocks };
+    },
   };
 }
-

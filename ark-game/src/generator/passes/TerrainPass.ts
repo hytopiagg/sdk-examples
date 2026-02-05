@@ -30,12 +30,7 @@ export class TerrainPass implements GeneratorPass {
     const surfaceY = terrain.getBaseHeight(x, z) | 0;
     const biome = ctx.getBiomeAt(x, z);
 
-    const caveModifiers = biome ? {
-      enabled: biome.caves.enabled,
-      frequency: biome.caves.frequency,
-      threshold: biome.caves.threshold,
-      wormStrength: biome.caves.wormStrength,
-    } : undefined;
+    const caveModifiers = biome?.caves;
 
     const surfaceBlock = biome?.blocks.surface ?? config.blockId;
     const subsurfaceBlock = biome?.blocks.subsurface ?? surfaceBlock;
@@ -135,10 +130,9 @@ export class TerrainPass implements GeneratorPass {
 
   /** Check if position is cave air (uses position's own terrain height, with caching) */
   private isCaveAir(ctx: GenerationContext, x: number, y: number, z: number): boolean {
+    const { caves: caveConfig } = ctx.config;
     const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
     if (y < 0 || y >= surfaceY) return false;
-
-    const { caves: caveConfig } = ctx.config;
     if (y < caveConfig.minHeight) return false;
 
     const caveModifiers = ctx.getCaveModifiersAt(x, z);
@@ -150,4 +144,3 @@ export class TerrainPass implements GeneratorPass {
     return ctx.isCarved(x, y, z, caveModifiers, surfaceY);
   }
 }
-

@@ -29,7 +29,8 @@
  */
 
 export { default as WorldGenerator, type GeneratorResult } from './WorldGenerator';
-export { GeneratorConfig, DEFAULT_CONFIG, mergeConfig } from './GeneratorConfig';
+export type { GeneratorConfig } from './GeneratorConfig';
+export { DEFAULT_CONFIG, mergeConfig } from './GeneratorConfig';
 export { BiomeSampler, type BiomeSamplerConfig, type BlendedBiomeValues } from './BiomeSampler';
 export * from './noise';
 export * from './biomes';

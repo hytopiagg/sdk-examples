@@ -62,6 +62,25 @@ export interface BiomeLiquidConfig {
   };
 }
 
+export interface BiomeCraterConfig {
+  /** Average spacing between crater candidates (in blocks) */
+  spacing: number;
+  /** Probability (0-1) that a candidate cell spawns a crater */
+  chance: number;
+  /** Base crater diameter (in blocks) */
+  diameter: number;
+  /** Relative diameter jitter (0-1, default: 0.25) */
+  diameterJitter?: number;
+  /** Crater depth as a fraction of radius (default: 0.4) */
+  depthRatio?: number;
+  /** Relative depth jitter (0-1, default: 0.2) */
+  depthJitter?: number;
+  /** Optional block to paint near impact contact point */
+  impactBlockId?: number;
+  /** Contact paint radius as a fraction of crater radius (default: 0.35) */
+  impactRadius?: number;
+}
+
 export interface BiomeDefinition {
   /** Unique biome identifier */
   id: string;
@@ -83,6 +102,9 @@ export interface BiomeDefinition {
   
   /** Liquid generation (water, lava) */
   liquids?: BiomeLiquidConfig;
+
+  /** Optional impact crater generation for this biome */
+  craters?: BiomeCraterConfig;
   
   /** 
    * Block blend strength at borders (0.0 - 2.0, default 1.0)

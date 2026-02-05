@@ -3,7 +3,9 @@
     "allow": [
       "Bash(wc:*)",
       "Bash(npx tsc:*)",
-      "Bash(bun build:*)"
+      "Bash(bun build:*)",
+      "Bash(bun index.ts:*)",
+      "Bash(hytopia --help:*)"
     ]
   }
 }

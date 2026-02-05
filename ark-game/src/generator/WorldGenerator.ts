@@ -4,19 +4,23 @@
  * Generation happens in ordered passes, each building on previous results:
  * 1. Terrain - Surface, subsurface, caves
  * 2. Blending - Smooth biome transitions, seal gaps
- * 3. Liquid - Water, lava based on biome config
- * 4. (Future) Structures - Buildings, ruins
- * 5. (Future) Decoration - Trees, plants, details
+ * 3. Crater - Surface impact carving + contact effects
+ * 4. Liquid - Water, lava based on biome config
+ * 5. (Future) Structures - Buildings, ruins
+ * 6. (Future) Decoration - Trees, plants, details
  */
 
 import type { BlockPlacement, Vector3Like } from 'hytopia';
 import { TerrainSampler } from './noise/TerrainSampler';
-import { CaveCarver, CaveBiomeModifiers } from './noise/CaveCarver';
-import { BiomeSampler, BlendedBiomeValues } from './BiomeSampler';
-import { GeneratorConfig, mergeConfig } from './GeneratorConfig';
-import { GeneratorPass, createContext } from './passes';
+import { CaveCarver } from './noise/CaveCarver';
+import { BiomeSampler } from './BiomeSampler';
+import { mergeConfig } from './GeneratorConfig';
+import type { GeneratorConfig } from './GeneratorConfig';
+import type { GeneratorPass } from './passes';
+import { createContext } from './passes';
 import { TerrainPass } from './passes/TerrainPass';
 import { BlendingPass } from './passes/BlendingPass';
+import { CraterPass } from './passes/CraterPass';
 import { LiquidPass } from './passes/LiquidPass';
 
 export interface GeneratorResult {
@@ -79,6 +83,7 @@ export default class WorldGenerator {
     this.passes = [
       new TerrainPass(),
       new BlendingPass(),
+      new CraterPass(),
       new LiquidPass(),
       // Future passes:
       // new StructurePass(),
@@ -105,13 +110,7 @@ export default class WorldGenerator {
       console.log(`[Generator] ${pass.name} pass: ${(performance.now() - passStart).toFixed(0)}ms`);
     }
     
-    // Convert blocks map to result object
-    const blocks: { [blockTypeId: number]: BlockPlacement[] } = {};
-    let totalBlocks = 0;
-    ctx.blocks.forEach((placements, blockId) => {
-      blocks[blockId] = placements;
-      totalBlocks += placements.length;
-    });
+    const { blocks, totalBlocks } = ctx.finalizeBlocks();
     
     const totalTime = performance.now() - startTime;
     console.log(`[Generator] Complete: ${totalBlocks.toLocaleString()} blocks in ${totalTime.toFixed(0)}ms`);
@@ -153,12 +152,7 @@ export default class WorldGenerator {
     
     // Get biome-blended cave modifiers
     const biome = this.biomes?.getBlendedValues(x, z);
-    const caveModifiers = biome ? {
-      enabled: biome.caves.enabled,
-      frequency: biome.caves.frequency,
-      threshold: biome.caves.threshold,
-      wormStrength: biome.caves.wormStrength,
-    } : undefined;
+    const caveModifiers = biome?.caves;
     
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
     // Pass surfaceY so caves can extend into mountains (terrain-relative)
@@ -186,4 +180,5 @@ export default class WorldGenerator {
   }
 }
 
-export { GeneratorConfig, DEFAULT_CONFIG, mergeConfig } from './GeneratorConfig';
+export type { GeneratorConfig } from './GeneratorConfig';
+export { DEFAULT_CONFIG, mergeConfig } from './GeneratorConfig';

@@ -6,7 +6,6 @@
  */
 
 import type { GeneratorPass, GenerationContext } from './GeneratorPass';
-import type { BlendedBiomeValues } from '../BiomeSampler';
 
 export class BlendingPass implements GeneratorPass {
   readonly name = 'blending';
@@ -27,29 +26,34 @@ export class BlendingPass implements GeneratorPass {
 
     const surfaceY = terrain.getBaseHeight(x, z) | 0;
     const biome = ctx.getBiomeAt(x, z);
-    const blocks = this.getBlocks(biome, config.blockId);
-    const caveModifiers = biome ? {
-      enabled: biome.caves.enabled,
-      frequency: biome.caves.frequency,
-      threshold: biome.caves.threshold,
-      wormStrength: biome.caves.wormStrength,
-    } : undefined;
+    const surfaceBlock = biome?.blocks.surface ?? config.blockId;
+    const subsurfaceBlock = biome?.blocks.subsurface ?? surfaceBlock;
+    const undergroundBlock = biome?.blocks.underground ?? surfaceBlock;
+    const subsurfaceDepth = biome?.blocks.subsurfaceDepth ?? 4;
+    const caveModifiers = biome?.caves;
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
 
     // Find lowest neighbor surface (check immediate + blend distance)
     const bd = biomeConfig.blendWidth;
     let lowest = surfaceY;
-    const checkNeighbor = (nx: number, nz: number) => {
-      if (nx >= 0 && nx < worldSize.x && nz >= 0 && nz < worldSize.z) {
-        lowest = Math.min(lowest, terrain.getBaseHeight(nx, nz) | 0);
-      }
-    };
-    checkNeighbor(x - 1, z); checkNeighbor(x + 1, z);
-    checkNeighbor(x, z - 1); checkNeighbor(x, z + 1);
-    checkNeighbor(x - bd, z); checkNeighbor(x + bd, z);
-    checkNeighbor(x, z - bd); checkNeighbor(x, z + bd);
+    const maxX = worldSize.x - 1;
+    const maxZ = worldSize.z - 1;
+    if (x > 0) lowest = Math.min(lowest, terrain.getBaseHeight(x - 1, z) | 0);
+    if (x < maxX) lowest = Math.min(lowest, terrain.getBaseHeight(x + 1, z) | 0);
+    if (z > 0) lowest = Math.min(lowest, terrain.getBaseHeight(x, z - 1) | 0);
+    if (z < maxZ) lowest = Math.min(lowest, terrain.getBaseHeight(x, z + 1) | 0);
+
+    const left = x - bd;
+    const right = x + bd;
+    const back = z - bd;
+    const front = z + bd;
+    if (left >= 0) lowest = Math.min(lowest, terrain.getBaseHeight(left, z) | 0);
+    if (right <= maxX) lowest = Math.min(lowest, terrain.getBaseHeight(right, z) | 0);
+    if (back >= 0) lowest = Math.min(lowest, terrain.getBaseHeight(x, back) | 0);
+    if (front <= maxZ) lowest = Math.min(lowest, terrain.getBaseHeight(x, front) | 0);
 
     // Terrain-relative cave bounds
+    const minCaveY = caveConfig.minHeight;
     const localMaxCaveY = surfaceY - caveConfig.surfaceFadeDistance;
 
     // Fill height gaps if significant difference exists
@@ -57,8 +61,8 @@ export class BlendingPass implements GeneratorPass {
       for (let y = Math.max(0, lowest); y <= surfaceY; y++) {
         if (ctx.hasBlock(x, y, z)) continue;
         // Use cached cave results — TerrainPass already computed most of these
-        if (cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
-        ctx.addBlock(this.blockForDepth(surfaceY - y, blocks), x, y, z);
+        if (cavesEnabled && y >= minCaveY && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
+        ctx.addBlock(this.blockForDepth(surfaceY - y, surfaceBlock, subsurfaceBlock, undergroundBlock, subsurfaceDepth), x, y, z);
       }
     }
 
@@ -67,27 +71,24 @@ export class BlendingPass implements GeneratorPass {
     for (let y = 0; y <= surfaceY; y++) {
       if (ctx.hasBlock(x, y, z)) { hasFloor = true; continue; }
 
-      const isCaveAir = cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY);
+      const isCaveAir = cavesEnabled && y >= minCaveY && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY);
       if (isCaveAir) {
-        if (!hasFloor) { ctx.addBlock(blocks.underground, x, 0, z); hasFloor = true; }
+        if (!hasFloor) { ctx.addBlock(undergroundBlock, x, 0, z); hasFloor = true; }
         continue;
       }
 
-      ctx.addBlock(this.blockForDepth(surfaceY - y, blocks), x, y, z);
+      ctx.addBlock(this.blockForDepth(surfaceY - y, surfaceBlock, subsurfaceBlock, undergroundBlock, subsurfaceDepth), x, y, z);
       hasFloor = true;
     }
   }
-  
-  private getBlocks(biome: BlendedBiomeValues | undefined, fallback: number) {
-    return {
-      surface: biome?.blocks.surface ?? fallback,
-      subsurface: biome?.blocks.subsurface ?? biome?.blocks.surface ?? fallback,
-      underground: biome?.blocks.underground ?? biome?.blocks.surface ?? fallback,
-      depth: biome?.blocks.subsurfaceDepth ?? 4,
-    };
-  }
-  
-  private blockForDepth(depth: number, blocks: ReturnType<typeof this.getBlocks>): number {
-    return depth <= 0 ? blocks.surface : depth <= blocks.depth ? blocks.subsurface : blocks.underground;
+
+  private blockForDepth(
+    depth: number,
+    surfaceBlock: number,
+    subsurfaceBlock: number,
+    undergroundBlock: number,
+    subsurfaceDepth: number
+  ): number {
+    return depth <= 0 ? surfaceBlock : depth <= subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
   }
 }

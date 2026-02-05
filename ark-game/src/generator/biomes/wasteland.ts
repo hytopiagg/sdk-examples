@@ -31,6 +31,17 @@ export default defineBiome({
     threshold: 0.15,       // Much more caves (lowers effective threshold)
     wormCaves: true,
   },
+
+  craters: {
+    spacing: 80,
+    chance: 0.55,
+    diameter: 22,
+    diameterJitter: 0.45,
+    depthRatio: 0.4,
+    depthJitter: 0.3,
+    impactBlockId: 5,      // black-concrete scorched contact
+    impactRadius: 0.38,
+  },
   
   liquids: {
     // Lava pools in deep caves
