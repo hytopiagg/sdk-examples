@@ -79,6 +79,15 @@ export interface BiomeCraterConfig {
   impactBlockId?: number;
   /** Contact paint radius as a fraction of crater radius (default: 0.35) */
   impactRadius?: number;
+  /** Optional ejection debris around crater rim */
+  debris?: {
+    /** Debris density (0-1) in the ejection ring */
+    amount: number;
+    /** Max spread diameter from crater center (in blocks) */
+    maxDiameter: number;
+    /** Block ID used for ejected debris */
+    blockId: number;
+  };
 }
 
 export interface BiomeDefinition {

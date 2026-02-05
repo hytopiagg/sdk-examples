@@ -55,6 +55,11 @@ export default defineBiome({
     depthJitter: 0.5,
     impactBlockId: 58,     // white-concrete for visualizing test
     impactRadius: 0.75,
+    debris: {
+      amount: 0.12,
+      maxDiameter: 30,
+      blockId: 25,         // dirt ejecta
+    },
   },
   
   blendStrength: 1.3,

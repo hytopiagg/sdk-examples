@@ -10,10 +10,14 @@ import type { GenerationContext, GeneratorPass } from './GeneratorPass';
 interface CraterImpact {
   x: number;
   z: number;
+  seed: number;
   radius: number;
   depth: number;
   impactBlockId?: number;
   impactRadius: number;
+  debrisBlockId?: number;
+  debrisAmount: number;
+  debrisMaxRadius: number;
 }
 
 const HASH_A = 374761393;
@@ -94,13 +98,23 @@ export class CraterPass implements GeneratorPass {
           jitter(depthBase, centerCrater.depthJitter ?? 0.2, rand01(hash2(seed + 505, cellX, cellZ)))
         );
 
+        const debris = centerCrater.debris;
+        const debrisAmount = clamp01(debris?.amount ?? 0);
+        const debrisMaxRadius = debrisAmount > 0
+          ? Math.max(radius + 1, (debris?.maxDiameter ?? 0) * 0.5)
+          : 0;
+
         out.push({
           x: centerX,
           z: centerZ,
+          seed: hash2(seed + 606, cellX, cellZ),
           radius,
           depth: Math.min(depth, radius * 0.98),
           impactBlockId: centerCrater.impactBlockId,
           impactRadius: clamp01(centerCrater.impactRadius ?? 0.35),
+          debrisBlockId: debrisAmount > 0 ? debris?.blockId : undefined,
+          debrisAmount,
+          debrisMaxRadius,
         });
       }
     }
@@ -146,11 +160,13 @@ export class CraterPass implements GeneratorPass {
           if (ctx.hasBlock(x, y, z)) ctx.removeBlock(x, y, z);
         }
 
-        if (impact.impactBlockId && distSq <= scorchRadiusSq) {
+        if (impact.impactBlockId !== undefined && distSq <= scorchRadiusSq) {
           this.paintImpact(ctx, impact.impactBlockId, x, floorY, z);
         }
       }
     }
+
+    this.scatterDebris(ctx, impact);
   }
 
   private paintImpact(ctx: GenerationContext, blockId: number, x: number, floorY: number, z: number): void {
@@ -159,6 +175,53 @@ export class CraterPass implements GeneratorPass {
       if (ctx.hasBlock(x, y, z)) {
         ctx.setBlock(blockId, x, y, z);
         return;
+      }
+    }
+  }
+
+  /**
+   * Scatter deterministic ejection debris around crater rim.
+   * Debris is placed only where there is nearby supporting terrain.
+   */
+  private scatterDebris(ctx: GenerationContext, impact: CraterImpact): void {
+    if (impact.debrisBlockId === undefined || impact.debrisAmount <= 0) return;
+    if (impact.debrisMaxRadius <= impact.radius + 0.5) return;
+
+    const { x: sizeX, y: sizeY, z: sizeZ } = ctx.config.worldSize;
+    const innerSq = impact.radius * impact.radius;
+    const outerSq = impact.debrisMaxRadius * impact.debrisMaxRadius;
+    const spanSq = Math.max(1, outerSq - innerSq);
+
+    const minX = Math.max(0, Math.floor(impact.x - impact.debrisMaxRadius));
+    const maxX = Math.min(sizeX - 1, Math.ceil(impact.x + impact.debrisMaxRadius));
+    const minZ = Math.max(0, Math.floor(impact.z - impact.debrisMaxRadius));
+    const maxZ = Math.min(sizeZ - 1, Math.ceil(impact.z + impact.debrisMaxRadius));
+
+    for (let x = minX; x <= maxX; x++) {
+      const dx = x - impact.x;
+      for (let z = minZ; z <= maxZ; z++) {
+        const dz = z - impact.z;
+        const distSq = dx * dx + dz * dz;
+        if (distSq <= innerSq || distSq > outerSq) continue;
+
+        // Higher chance near rim, lower chance toward max fling distance.
+        const ringFactor = 1 - (distSq - innerSq) / spanSq;
+        const chance = impact.debrisAmount * (0.35 + ringFactor * 0.65);
+        if (rand01(hash2(impact.seed + 707, x, z)) > chance) continue;
+
+        const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
+        if (surfaceY + 1 >= sizeY) continue;
+
+        // Find nearby support (handles local cuts/slopes around crater edge).
+        let supportY = surfaceY;
+        const minSupportY = Math.max(0, surfaceY - 4);
+        while (supportY >= minSupportY && !ctx.hasBlock(x, supportY, z)) supportY--;
+        if (supportY < minSupportY) continue;
+
+        const placeY = supportY + 1;
+        if (placeY <= 0 || placeY >= sizeY) continue;
+        if (ctx.hasBlock(x, placeY, z)) continue;
+        ctx.addBlock(impact.debrisBlockId, x, placeY, z);
       }
     }
   }

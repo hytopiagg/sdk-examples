@@ -41,6 +41,11 @@ export default defineBiome({
     depthJitter: 0.3,
     impactBlockId: 5,      // black-concrete scorched contact
     impactRadius: 0.38,
+    debris: {
+      amount: 0.2,
+      maxDiameter: 52,
+      blockId: 14,          // cobbled-deepslate ejecta
+    },
   },
   
   liquids: {
