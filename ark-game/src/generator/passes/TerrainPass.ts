@@ -46,14 +46,14 @@ export class TerrainPass implements GeneratorPass {
     
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
     
-    // Surface block
-    if (!cavesEnabled || !caves.isCarved(x, surfaceY, z, caveModifiers)) {
+    // Surface block (pass surfaceY for terrain-relative caves)
+    if (!cavesEnabled || !caves.isCarved(x, surfaceY, z, caveModifiers, surfaceY)) {
       ctx.addBlock(surfaceBlock, x, surfaceY, z);
     }
     
     // Subsurface buffer
     const belowY = surfaceY - 1;
-    if (belowY >= 0 && (!cavesEnabled || !caves.isCarved(x, belowY, z, caveModifiers))) {
+    if (belowY >= 0 && (!cavesEnabled || !caves.isCarved(x, belowY, z, caveModifiers, surfaceY))) {
       const blockId = belowY >= surfaceY - subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
       ctx.addBlock(blockId, x, belowY, z);
     }
@@ -66,21 +66,22 @@ export class TerrainPass implements GeneratorPass {
     if (z < worldSize.z - 1) lowestNeighbor = Math.min(lowestNeighbor, terrain.getBaseHeight(x, z + 1) | 0);
     
     for (let y = Math.max(0, lowestNeighbor); y < surfaceY - 1; y++) {
-      if (cavesEnabled && caves.isCarved(x, y, z, caveModifiers)) continue;
+      if (cavesEnabled && caves.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
       const depthFromSurface = surfaceY - y;
       const blockId = depthFromSurface <= subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
       ctx.addBlock(blockId, x, y, z);
     }
     
-    // Cave boundaries
+    // Cave boundaries - now terrain-relative
     if (cavesEnabled) {
       const minY = config.caves.minHeight;
-      const maxY = Math.min(surfaceY - 2, config.caves.fadeHeight);
+      // Caves can now extend into mountains (maxY based on local surface)
+      const maxY = surfaceY - config.caves.surfaceFadeDistance;
       
       for (let y = minY; y <= maxY; y++) {
-        if (caves.isCarved(x, y, z, caveModifiers)) continue;
+        if (caves.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
         
-        if (this.adjacentToCave(ctx, x, y, z, surfaceY)) {
+        if (this.adjacentToCave(ctx, x, y, z)) {
           const depthFromSurface = surfaceY - y;
           const blockId = depthFromSurface <= subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
           ctx.addBlock(blockId, x, y, z);
@@ -89,25 +90,28 @@ export class TerrainPass implements GeneratorPass {
     }
   }
   
-  private adjacentToCave(ctx: GenerationContext, x: number, y: number, z: number, surfaceY: number): boolean {
-    return this.isCaveAir(ctx, x - 1, y, z, surfaceY) ||
-           this.isCaveAir(ctx, x + 1, y, z, surfaceY) ||
-           this.isCaveAir(ctx, x, y - 1, z, surfaceY) ||
-           this.isCaveAir(ctx, x, y + 1, z, surfaceY) ||
-           this.isCaveAir(ctx, x, y, z - 1, surfaceY) ||
-           this.isCaveAir(ctx, x, y, z + 1, surfaceY);
+  private adjacentToCave(ctx: GenerationContext, x: number, y: number, z: number): boolean {
+    return this.isCaveAir(ctx, x - 1, y, z) ||
+           this.isCaveAir(ctx, x + 1, y, z) ||
+           this.isCaveAir(ctx, x, y - 1, z) ||
+           this.isCaveAir(ctx, x, y + 1, z) ||
+           this.isCaveAir(ctx, x, y, z - 1) ||
+           this.isCaveAir(ctx, x, y, z + 1);
   }
   
-  private isCaveAir(ctx: GenerationContext, x: number, y: number, z: number, surfaceY: number): boolean {
+  /** Check if position is cave air (uses position's own terrain height) */
+  private isCaveAir(ctx: GenerationContext, x: number, y: number, z: number): boolean {
+    const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
     if (y < 0 || y >= surfaceY) return false;
+    
     const { caves: caveConfig } = ctx.config;
-    if (y < caveConfig.minHeight || y >= caveConfig.fadeHeight) return false;
+    const localMaxY = surfaceY - caveConfig.surfaceFadeDistance;
+    if (y < caveConfig.minHeight || y >= localMaxY) return false;
     
     const caveModifiers = ctx.getCaveModifiersAt(x, z);
-    const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
-    if (!cavesEnabled) return false;
+    if (!caveConfig.enabled || !(caveModifiers?.enabled ?? true)) return false;
     
-    return ctx.caves.isCarved(x, y, z, caveModifiers);
+    return ctx.caves.isCarved(x, y, z, caveModifiers, surfaceY);
   }
 }
 

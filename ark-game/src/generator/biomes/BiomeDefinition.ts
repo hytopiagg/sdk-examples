@@ -38,6 +38,30 @@ export interface BiomeCaveConfig {
   wormCaves?: boolean;
 }
 
+export interface BiomeLiquidConfig {
+  /** 
+   * Surface liquid (fills air gaps at/below surfaceLevel)
+   * Used for oceans, lakes, rivers
+   */
+  surface?: {
+    /** Block ID for surface liquid (e.g., 57 = water) */
+    blockId: number;
+    /** Y level at/below which surface liquid fills air gaps */
+    level: number;
+  };
+  
+  /**
+   * Underground liquid (fills cave air at/below undergroundLevel)
+   * Used for lava pools, underground lakes
+   */
+  underground?: {
+    /** Block ID for underground liquid (e.g., 43 = lava, 57 = water) */
+    blockId: number;
+    /** Y level at/below which underground liquid fills cave air */
+    level: number;
+  };
+}
+
 export interface BiomeDefinition {
   /** Unique biome identifier */
   id: string;
@@ -56,6 +80,9 @@ export interface BiomeDefinition {
   
   /** Cave generation overrides */
   caves?: BiomeCaveConfig;
+  
+  /** Liquid generation (water, lava) */
+  liquids?: BiomeLiquidConfig;
   
   /** 
    * Block blend strength at borders (0.0 - 2.0, default 1.0)

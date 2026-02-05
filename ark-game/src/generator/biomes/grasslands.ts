@@ -32,5 +32,18 @@ export default defineBiome({
     wormCaves: true,
   },
   
+  liquids: {
+    // Small ponds in low areas
+    surface: {
+      blockId: 57,         // water
+      level: 44,           // Fill depressions below Y=44
+    },
+    // Underground water pools
+    underground: {
+      blockId: 57,         // water
+      level: 20,           // Water in caves below Y=20
+    },
+  },
+  
   blendStrength: 1.3,
 });

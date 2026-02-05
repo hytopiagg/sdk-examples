@@ -4,7 +4,7 @@
  * Generation happens in ordered passes, each building on previous results:
  * 1. Terrain - Surface, subsurface, caves
  * 2. Blending - Smooth biome transitions, seal gaps
- * 3. (Future) Water - Lakes, rivers, oceans
+ * 3. Liquid - Water, lava based on biome config
  * 4. (Future) Structures - Buildings, ruins
  * 5. (Future) Decoration - Trees, plants, details
  */
@@ -17,6 +17,7 @@ import { GeneratorConfig, mergeConfig } from './GeneratorConfig';
 import { GeneratorPass, createContext } from './passes';
 import { TerrainPass } from './passes/TerrainPass';
 import { BlendingPass } from './passes/BlendingPass';
+import { LiquidPass } from './passes/LiquidPass';
 
 export interface GeneratorResult {
   blocks: { [blockTypeId: number]: BlockPlacement[] };
@@ -69,7 +70,7 @@ export default class WorldGenerator {
       caveOctaves: this.config.caves.octaves,
       caveThreshold: this.config.caves.threshold,
       minHeight: this.config.caves.minHeight,
-      maxHeight: this.config.caves.fadeHeight,
+      surfaceFadeDistance: this.config.caves.surfaceFadeDistance,
       wormFrequency: this.config.caves.wormFrequency,
       wormStrength: this.config.caves.wormCaves ? this.config.caves.wormStrength : 0,
     });
@@ -78,8 +79,8 @@ export default class WorldGenerator {
     this.passes = [
       new TerrainPass(),
       new BlendingPass(),
+      new LiquidPass(),
       // Future passes:
-      // new WaterPass(),
       // new StructurePass(),
       // new DecorationPass(),
     ];
@@ -152,7 +153,8 @@ export default class WorldGenerator {
     } : undefined;
     
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
-    if (cavesEnabled && this.caves.isCarved(x, y, z, caveModifiers)) return null;
+    // Pass surfaceY so caves can extend into mountains (terrain-relative)
+    if (cavesEnabled && this.caves.isCarved(x, y, z, caveModifiers, surfaceY | 0)) return null;
     
     // Determine block type
     const surfaceBlock = biome?.blocks.surface ?? this.config.blockId;

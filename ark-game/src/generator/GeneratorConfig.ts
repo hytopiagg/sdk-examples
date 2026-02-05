@@ -54,8 +54,8 @@ export interface GeneratorConfig {
     threshold: number;
     /** Min Y for caves (default: 5) */
     minHeight: number;
-    /** Max Y for caves (default: 40) */
-    fadeHeight: number;
+    /** Distance from surface where caves fade out (terrain-relative) */
+    surfaceFadeDistance: number;
     /** Enable worm-style tunnels */
     wormCaves: boolean;
     wormFrequency: number;
@@ -85,7 +85,7 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
     octaves: 3,
     threshold: 0.30,           // Cavern density threshold
     minHeight: 5,
-    fadeHeight: 50,            // Allow caves to breach surface (baseHeight 48 + buffer)
+    surfaceFadeDistance: 4,    // Caves fade 4 blocks below surface (terrain-relative)
     wormCaves: true,
     wormFrequency: 0.012,      // Lower = longer tunnels, more spread out
     wormStrength: 0.7,         // Reduce density of tunnel networks

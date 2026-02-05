@@ -32,5 +32,13 @@ export default defineBiome({
     wormCaves: true,
   },
   
+  liquids: {
+    // Lava pools in deep caves
+    underground: {
+      blockId: 43,         // lava
+      level: 15,           // Only in deep caves (Y <= 15)
+    },
+  },
+  
   blendStrength: 1.2,
 });

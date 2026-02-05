@@ -49,11 +49,14 @@ export class BlendingPass implements GeneratorPass {
     checkNeighbor(x - bd, z); checkNeighbor(x + bd, z);
     checkNeighbor(x, z - bd); checkNeighbor(x, z + bd);
     
+    // Terrain-relative cave bounds
+    const localMaxCaveY = surfaceY - caveConfig.surfaceFadeDistance;
+    
     // Fill height gaps if significant difference exists
     if (surfaceY - lowest >= 2) {
       for (let y = Math.max(0, lowest); y <= surfaceY; y++) {
         if (ctx.hasBlock(x, y, z)) continue;
-        if (cavesEnabled && y >= caveConfig.minHeight && y < caveConfig.fadeHeight && caves.isCarved(x, y, z, caveModifiers)) continue;
+        if (cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && caves.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
         ctx.addBlock(this.blockForDepth(surfaceY - y, blocks), x, y, z);
       }
     }
@@ -63,7 +66,7 @@ export class BlendingPass implements GeneratorPass {
     for (let y = 0; y <= surfaceY; y++) {
       if (ctx.hasBlock(x, y, z)) { hasFloor = true; continue; }
       
-      const isCaveAir = cavesEnabled && y >= caveConfig.minHeight && y < caveConfig.fadeHeight && caves.isCarved(x, y, z, caveModifiers);
+      const isCaveAir = cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && caves.isCarved(x, y, z, caveModifiers, surfaceY);
       if (isCaveAir) {
         if (!hasFloor) { ctx.addBlock(blocks.underground, x, 0, z); hasFloor = true; }
         continue;

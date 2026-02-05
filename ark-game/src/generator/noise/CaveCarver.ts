@@ -17,7 +17,8 @@ export interface CaveCarverConfig {
   caveOctaves: number;
   caveThreshold: number;
   minHeight: number;
-  maxHeight: number;
+  /** Distance from surface where caves begin to fade (terrain-relative) */
+  surfaceFadeDistance: number;
   wormFrequency: number;
   wormStrength: number;
 }
@@ -67,21 +68,28 @@ export class CaveCarver {
     this.spaghetti2B = new Simplex3D(config.seed + 999991, wf * 1.3);
   }
   
-  /** Check if position should be carved out */
-  isCarved(x: number, y: number, z: number, biome?: CaveBiomeModifiers): boolean {
+  /** 
+   * Check if position should be carved out
+   * @param surfaceY - Local terrain surface height (caves extend into mountains)
+   */
+  isCarved(x: number, y: number, z: number, biome?: CaveBiomeModifiers, surfaceY?: number): boolean {
     if (biome && !biome.enabled) return false;
     
-    const { minHeight, maxHeight, caveThreshold, wormStrength } = this.config;
+    const { minHeight, surfaceFadeDistance, caveThreshold, wormStrength } = this.config;
     
-    if (y <= minHeight || y >= maxHeight) return false;
+    // Terrain-relative max height: caves can go up into mountains
+    // surfaceY defaults to a reasonable value if not provided
+    const localMaxHeight = (surfaceY ?? 64) - surfaceFadeDistance;
     
-    // Depth-based fade - caves diminish near bedrock and surface
+    if (y <= minHeight || y >= localMaxHeight) return false;
+    
+    // Depth-based fade - caves diminish near bedrock and local surface
     const fadeZone = 6;
     let depthFactor = 1;
     if (y < minHeight + fadeZone) {
       depthFactor = (y - minHeight) / fadeZone;
-    } else if (y > maxHeight - fadeZone) {
-      depthFactor = (maxHeight - y) / fadeZone;
+    } else if (y > localMaxHeight - fadeZone) {
+      depthFactor = (localMaxHeight - y) / fadeZone;
     }
     if (depthFactor <= 0) return false;
     
