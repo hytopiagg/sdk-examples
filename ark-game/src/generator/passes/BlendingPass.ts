@@ -22,9 +22,9 @@ export class BlendingPass implements GeneratorPass {
   }
   
   private processColumn(ctx: GenerationContext, x: number, z: number): void {
-    const { terrain, caves, config } = ctx;
+    const { terrain, config } = ctx;
     const { worldSize, caves: caveConfig, biomes: biomeConfig } = config;
-    
+
     const surfaceY = terrain.getBaseHeight(x, z) | 0;
     const biome = ctx.getBiomeAt(x, z);
     const blocks = this.getBlocks(biome, config.blockId);
@@ -35,7 +35,7 @@ export class BlendingPass implements GeneratorPass {
       wormStrength: biome.caves.wormStrength,
     } : undefined;
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
-    
+
     // Find lowest neighbor surface (check immediate + blend distance)
     const bd = biomeConfig.blendWidth;
     let lowest = surfaceY;
@@ -48,30 +48,31 @@ export class BlendingPass implements GeneratorPass {
     checkNeighbor(x, z - 1); checkNeighbor(x, z + 1);
     checkNeighbor(x - bd, z); checkNeighbor(x + bd, z);
     checkNeighbor(x, z - bd); checkNeighbor(x, z + bd);
-    
+
     // Terrain-relative cave bounds
     const localMaxCaveY = surfaceY - caveConfig.surfaceFadeDistance;
-    
+
     // Fill height gaps if significant difference exists
     if (surfaceY - lowest >= 2) {
       for (let y = Math.max(0, lowest); y <= surfaceY; y++) {
         if (ctx.hasBlock(x, y, z)) continue;
-        if (cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && caves.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
+        // Use cached cave results — TerrainPass already computed most of these
+        if (cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
         ctx.addBlock(this.blockForDepth(surfaceY - y, blocks), x, y, z);
       }
     }
-    
+
     // Seal any remaining holes
     let hasFloor = false;
     for (let y = 0; y <= surfaceY; y++) {
       if (ctx.hasBlock(x, y, z)) { hasFloor = true; continue; }
-      
-      const isCaveAir = cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && caves.isCarved(x, y, z, caveModifiers, surfaceY);
+
+      const isCaveAir = cavesEnabled && y >= caveConfig.minHeight && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY);
       if (isCaveAir) {
         if (!hasFloor) { ctx.addBlock(blocks.underground, x, 0, z); hasFloor = true; }
         continue;
       }
-      
+
       ctx.addBlock(this.blockForDepth(surfaceY - y, blocks), x, y, z);
       hasFloor = true;
     }

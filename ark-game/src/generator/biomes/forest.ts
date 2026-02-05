@@ -22,9 +22,9 @@ export default defineBiome({
     heightOffset: 2,
     heightScale: 0.6,      // Gentle rolling hills
     frequencyScale: 1.0,
-    valleyScale: 0.0,      // No valleys - solid forested surface
+    valleyScale: 0.0,      // No valleys - solid surface
   },
-  
+
   caves: {
     enabled: true,
     frequency: 0.6,        // Small tunnel systems

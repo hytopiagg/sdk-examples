@@ -19,7 +19,7 @@ export default defineBiome({
   },
   
   terrain: {
-    heightOffset: -12,     // Very sunken - exposes cave layer
+    heightOffset: -6,      // Sunken terrain - exposes cave layer
     heightScale: 1.8,      // Chaotic terrain variation
     frequencyScale: 1.6,   // Irregular features
     valleyScale: 4.0,      // Deep canyons (4 * base 4 = 16 block valleys)

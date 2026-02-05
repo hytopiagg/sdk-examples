@@ -76,20 +76,21 @@ export class CaveCarver {
     if (biome && !biome.enabled) return false;
     
     const { minHeight, surfaceFadeDistance, caveThreshold, wormStrength } = this.config;
-    
+
     // Terrain-relative max height: caves can go up into mountains
     // surfaceY defaults to a reasonable value if not provided
     const localMaxHeight = (surfaceY ?? 64) - surfaceFadeDistance;
-    
+
     if (y <= minHeight || y >= localMaxHeight) return false;
-    
-    // Depth-based fade - caves diminish near bedrock and local surface
-    const fadeZone = 6;
+
+    // Depth-based fade - caves diminish near bedrock and near surface
+    const bottomFadeZone = 6;
+    const surfaceFadeZone = 6;
     let depthFactor = 1;
-    if (y < minHeight + fadeZone) {
-      depthFactor = (y - minHeight) / fadeZone;
-    } else if (y > localMaxHeight - fadeZone) {
-      depthFactor = (localMaxHeight - y) / fadeZone;
+    if (y < minHeight + bottomFadeZone) {
+      depthFactor = (y - minHeight) / bottomFadeZone;
+    } else if (surfaceFadeZone > 0 && y > localMaxHeight - surfaceFadeZone) {
+      depthFactor = (localMaxHeight - y) / surfaceFadeZone;
     }
     if (depthFactor <= 0) return false;
     

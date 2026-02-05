@@ -20,17 +20,11 @@ export interface BiomeSamplerConfig {
   blendWidth: number;
 }
 
-export interface BlendedLiquid {
-  blockId: number;
-  level: number;
-}
-
 export interface BlendedBiomeValues {
   biome: BiomeDefinition;
   blocks: { surface: number; subsurface: number; underground: number; subsurfaceDepth: number };
   terrain: { heightOffset: number; heightScale: number; frequencyScale: number; valleyScale: number };
   caves: { enabled: boolean; frequency: number; threshold: number; wormStrength: number };
-  liquids: { surface?: BlendedLiquid; underground?: BlendedLiquid };
 }
 
 export class BiomeSampler {
@@ -173,83 +167,7 @@ export class BiomeSampler {
     // Block selection: noise-based dithering at boundaries
     const blocks = this.selectDitheredBlocks(primary, primaryWeight, neighbors, neighborCount, x, z, edgeFactor);
 
-    // Liquid blending: interpolate levels, use dominant biome's block type
-    const liquids = this.blendLiquids(primary, primaryWeight, neighbors, neighborCount, totalWeight, avg);
-    
-    return { biome: primary, blocks, terrain, caves, liquids };
-  }
-  
-  /**
-   * Blend liquid configurations at biome boundaries
-   * Levels are interpolated; block type comes from dominant biome
-   */
-  private blendLiquids(
-    primary: BiomeDefinition,
-    primaryWeight: number,
-    neighbors: { biome: BiomeDefinition; weight: number }[],
-    neighborCount: number,
-    totalWeight: number,
-    avg: (get: (b: BiomeDefinition) => number) => number
-  ): { surface?: BlendedLiquid; underground?: BlendedLiquid } {
-    const result: { surface?: BlendedLiquid; underground?: BlendedLiquid } = {};
-
-    // Check if any biome in the blend has surface liquid
-    let hasSurfaceLiquid = !!primary.liquids?.surface;
-    for (let i = 0; !hasSurfaceLiquid && i < neighborCount; i++) {
-      hasSurfaceLiquid = !!neighbors[i].biome.liquids?.surface;
-    }
-    if (hasSurfaceLiquid) {
-      const blendedLevel = avg(b => b.liquids?.surface?.level ?? 0);
-      if (blendedLevel > 0) {
-        const dominant = this.getDominantWithLiquid(primary, primaryWeight, neighbors, neighborCount, 'surface');
-        result.surface = {
-          blockId: dominant?.liquids?.surface?.blockId ?? 57,
-          level: blendedLevel,
-        };
-      }
-    }
-
-    // Check if any biome in the blend has underground liquid
-    let hasUndergroundLiquid = !!primary.liquids?.underground;
-    for (let i = 0; !hasUndergroundLiquid && i < neighborCount; i++) {
-      hasUndergroundLiquid = !!neighbors[i].biome.liquids?.underground;
-    }
-    if (hasUndergroundLiquid) {
-      const blendedLevel = avg(b => b.liquids?.underground?.level ?? 0);
-      if (blendedLevel > 0) {
-        const dominant = this.getDominantWithLiquid(primary, primaryWeight, neighbors, neighborCount, 'underground');
-        result.underground = {
-          blockId: dominant?.liquids?.underground?.blockId ?? 57,
-          level: blendedLevel,
-        };
-      }
-    }
-
-    return result;
-  }
-  
-  /** Find the dominant biome that actually has the specified liquid type */
-  private getDominantWithLiquid(
-    primary: BiomeDefinition,
-    primaryWeight: number,
-    neighbors: { biome: BiomeDefinition; weight: number }[],
-    neighborCount: number,
-    type: 'surface' | 'underground'
-  ): BiomeDefinition | null {
-    let dominant: BiomeDefinition | null = primary.liquids?.[type] ? primary : null;
-    let dominantWeight = dominant ? primaryWeight * (primary.blendStrength ?? 1) : 0;
-
-    for (let i = 0; i < neighborCount; i++) {
-      const { biome, weight } = neighbors[i];
-      if (!biome.liquids?.[type]) continue;
-      const adjusted = weight * (biome.blendStrength ?? 1);
-      if (adjusted > dominantWeight) {
-        dominant = biome;
-        dominantWeight = adjusted;
-      }
-    }
-
-    return dominant;
+    return { biome: primary, blocks, terrain, caves };
   }
   
   /**

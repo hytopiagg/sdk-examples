@@ -22,13 +22,13 @@ export default defineBiome({
     heightOffset: 40,      // Very high peaks
     heightScale: 2.5,      // Large rolling variation
     frequencyScale: 1.3,   // Natural mountain ridges
-    valleyScale: 0.5,      // Some valleys between peaks (not exposing caves)
+    valleyScale: 0.5,      // Valleys between peaks
   },
-  
+
   caves: {
     enabled: true,
     frequency: 0.8,        // Medium internal tunnels
-    threshold: -0.05,      // Moderate caves - some cliff face openings
+    threshold: -0.05,      // Fewer caves
     wormCaves: true,
   },
   

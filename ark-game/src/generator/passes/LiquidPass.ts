@@ -1,182 +1,196 @@
 /**
- * Liquid Pass - Fills contained basins with liquids
- * 
- * Uses flood-fill to find enclosed depressions and fills them to the
- * containment height (lowest point where liquid would spill out).
- * 
- * Two liquid types per biome:
- * - Surface: Fills terrain depressions (lakes, ponds)
- * - Underground: Fills enclosed cave floors (lava pools, underground lakes)
+ * Liquid Pass - Terrain-contained fill with uniform levels
+ *
+ * Both surface and underground liquids use BFS propagation seeded from
+ * liquid-biome columns. Each column gets the source biome's exact level
+ * (not blended), so surfaces are perfectly flat. Liquid spreads past biome
+ * boundaries — terrain (surface) and cave walls (underground) act as the
+ * natural containers.
  */
 
 import type { GeneratorPass, GenerationContext } from './GeneratorPass';
 
+const DX = [1, -1, 0, 0];
+const DZ = [0, 0, 1, -1];
+
 export class LiquidPass implements GeneratorPass {
   readonly name = 'liquid';
-  
+
   execute(ctx: GenerationContext): void {
-    const { x: sizeX, z: sizeZ } = ctx.config.worldSize;
+    const { x: sizeX, y: sizeY, z: sizeZ } = ctx.config.worldSize;
     const { caves: caveConfig } = ctx.config;
-    
-    // Track which columns have been processed for surface liquid
-    const surfaceVisited = new Set<number>();
-    
-    // Process surface liquids with flood-fill basin detection
+
+    this.fillSurfaceLiquids(ctx, sizeX, sizeY, sizeZ);
+    this.fillUndergroundLiquids(ctx, sizeX, sizeZ, caveConfig);
+  }
+
+  /**
+   * Terrain-contained surface liquid fill.
+   *
+   * 1. Seed every column whose primary biome has surface liquid with its exact level.
+   * 2. BFS outward: propagate to neighbors where terrain height < liquid level,
+   *    regardless of biome boundaries. Terrain is the container.
+   * 3. Fill all marked columns.
+   */
+  private fillSurfaceLiquids(
+    ctx: GenerationContext, sizeX: number, sizeY: number, sizeZ: number
+  ): void {
+    const totalColumns = sizeX * sizeZ;
+    const liquidLevel = new Uint8Array(totalColumns);
+    const liquidBlock = new Uint8Array(totalColumns);
+    const queue: number[] = [];
+    let head = 0;
+
+    // Seed: columns whose primary biome has surface liquid
     for (let x = 0; x < sizeX; x++) {
       for (let z = 0; z < sizeZ; z++) {
-        const key = x * sizeZ + z;
-        if (surfaceVisited.has(key)) continue;
-        
-        const biome = ctx.getBiomeAt(x, z);
-        if (!biome?.liquids.surface) continue;
-        
+        const biome = ctx.getBiomeAt(x, z)?.biome;
+        if (!biome?.liquids?.surface) continue;
+
+        const idx = x * sizeZ + z;
+        const level = biome.liquids.surface.level;
+        liquidLevel[idx] = level;
+        liquidBlock[idx] = biome.liquids.surface.blockId;
+
         const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
-        const liquidLevel = Math.round(biome.liquids.surface.level);
-        
-        // Only start flood-fill from columns that could hold liquid
-        if (surfaceY >= liquidLevel) {
-          surfaceVisited.add(key);
-          continue;
+        if (surfaceY < level) {
+          queue.push(x, z);
         }
-        
-        // Flood-fill to find the basin and its containment height
-        this.fillSurfaceBasin(ctx, x, z, surfaceVisited);
       }
     }
-    
-    // Process underground liquids (simpler - just fill cave floors)
+
+    // Propagate: spread to neighbors where terrain is below the liquid level
+    while (head < queue.length) {
+      const x = queue[head++];
+      const z = queue[head++];
+      const idx = x * sizeZ + z;
+      const level = liquidLevel[idx];
+
+      for (let d = 0; d < 4; d++) {
+        const nx = x + DX[d];
+        const nz = z + DZ[d];
+        if (nx < 0 || nx >= sizeX || nz < 0 || nz >= sizeZ) continue;
+
+        const nIdx = nx * sizeZ + nz;
+        if (liquidLevel[nIdx] > 0) continue;
+
+        const surfaceY = ctx.terrain.getBaseHeight(nx, nz) | 0;
+        if (surfaceY >= level) continue;
+
+        liquidLevel[nIdx] = level;
+        liquidBlock[nIdx] = liquidBlock[idx];
+        queue.push(nx, nz);
+      }
+    }
+
+    // Fill marked columns
     for (let x = 0; x < sizeX; x++) {
       for (let z = 0; z < sizeZ; z++) {
-        const biome = ctx.getBiomeAt(x, z);
-        if (!biome?.liquids.underground) continue;
-        
+        const idx = x * sizeZ + z;
+        const level = liquidLevel[idx];
+        if (level === 0) continue;
+
+        const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
+        if (surfaceY >= level) continue;
+
+        const blockId = liquidBlock[idx];
+        for (let y = surfaceY + 1; y <= level && y < sizeY; y++) {
+          if (!ctx.hasBlock(x, y, z)) {
+            ctx.addBlock(blockId, x, y, z);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Underground liquid fill with BFS propagation.
+   *
+   * 1. Seed from columns whose primary biome has underground liquid.
+   * 2. BFS outward to neighbors where caves are enabled and surface is
+   *    above the liquid level (so caves can exist at that depth).
+   * 3. Fill all carved space from minHeight to liquidLevel in marked columns.
+   *
+   * This ensures caves that cross biome boundaries are fully filled,
+   * while cave walls provide natural containment.
+   */
+  private fillUndergroundLiquids(
+    ctx: GenerationContext,
+    sizeX: number,
+    sizeZ: number,
+    caveConfig: GenerationContext['config']['caves']
+  ): void {
+    if (!caveConfig.enabled) return;
+
+    const totalColumns = sizeX * sizeZ;
+    const ugLevel = new Uint8Array(totalColumns);
+    const ugBlock = new Uint8Array(totalColumns);
+    const queue: number[] = [];
+    let head = 0;
+
+    // Seed: columns whose primary biome has underground liquid + caves enabled
+    for (let x = 0; x < sizeX; x++) {
+      for (let z = 0; z < sizeZ; z++) {
+        const blended = ctx.getBiomeAt(x, z);
+        if (!blended) continue;
+        if (!blended.biome.liquids?.underground) continue;
+
+        const cm = ctx.getCaveModifiersAt(x, z);
+        if (!(cm?.enabled ?? true)) continue;
+
+        const idx = x * sizeZ + z;
+        ugLevel[idx] = blended.biome.liquids.underground.level;
+        ugBlock[idx] = blended.biome.liquids.underground.blockId;
+        queue.push(x, z);
+      }
+    }
+
+    // Propagate: spread to neighbors where caves can exist at the liquid depth
+    while (head < queue.length) {
+      const x = queue[head++];
+      const z = queue[head++];
+      const idx = x * sizeZ + z;
+      const level = ugLevel[idx];
+
+      for (let d = 0; d < 4; d++) {
+        const nx = x + DX[d];
+        const nz = z + DZ[d];
+        if (nx < 0 || nx >= sizeX || nz < 0 || nz >= sizeZ) continue;
+
+        const nIdx = nx * sizeZ + nz;
+        if (ugLevel[nIdx] > 0) continue;
+
+        // Caves need enabled + surface above liquid level for vertical space
+        const cm = ctx.getCaveModifiersAt(nx, nz);
+        if (!(cm?.enabled ?? true)) continue;
+
+        const nSurfaceY = ctx.terrain.getBaseHeight(nx, nz) | 0;
+        if (nSurfaceY <= level) continue;
+
+        ugLevel[nIdx] = level;
+        ugBlock[nIdx] = ugBlock[idx];
+        queue.push(nx, nz);
+      }
+    }
+
+    // Fill carved space in marked columns
+    for (let x = 0; x < sizeX; x++) {
+      for (let z = 0; z < sizeZ; z++) {
+        const idx = x * sizeZ + z;
+        const level = ugLevel[idx];
+        if (level === 0) continue;
+
         const caveModifiers = ctx.getCaveModifiersAt(x, z);
-        const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
-        if (!cavesEnabled) continue;
-        
-        this.fillUndergroundLiquid(ctx, x, z, biome.liquids.underground, caveModifiers);
-      }
-    }
-  }
-  
-  /**
-   * Flood-fill to find a surface basin and fill it to containment height
-   * 
-   * Key insight: Use a CONSISTENT liquid level for the entire basin search,
-   * then blend the actual fill at boundaries. This prevents artificial edges
-   * where blended liquid levels create false "rims".
-   */
-  private fillSurfaceBasin(
-    ctx: GenerationContext,
-    startX: number,
-    startZ: number,
-    visited: Set<number>
-  ): void {
-    const { x: sizeX, z: sizeZ, y: sizeY } = ctx.config.worldSize;
-    
-    // Get liquid config from starting position
-    const startBiome = ctx.getBiomeAt(startX, startZ);
-    if (!startBiome?.liquids.surface) return;
-    
-    const liquidBlockId = startBiome.liquids.surface.blockId;
-    const searchLevel = Math.round(startBiome.liquids.surface.level);
-    
-    // Flood-fill to find all connected columns in this potential basin
-    // Use the STARTING biome's level for basin detection (prevents boundary artifacts)
-    const basinColumns: Array<{ x: number; z: number; surfaceY: number; fillLevel: number }> = [];
-    const queue: Array<[number, number]> = [[startX, startZ]];
-    let spillHeight = searchLevel; // Lowest edge where liquid would escape
-    
-    while (queue.length > 0) {
-      const [x, z] = queue.pop()!;
-      const key = x * sizeZ + z;
-      
-      if (visited.has(key)) continue;
-      if (x < 0 || x >= sizeX || z < 0 || z >= sizeZ) {
-        // World edge = liquid escapes
-        spillHeight = -Infinity;
-        continue;
-      }
-      
-      visited.add(key);
-      
-      const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
-      
-      // Use consistent search level for basin detection
-      // This prevents blended levels from creating false edges
-      if (surfaceY >= searchLevel) {
-        // This column is terrain that contains the basin
-        // Update spill height if this is a low point in the rim
-        spillHeight = Math.min(spillHeight, surfaceY);
-      } else {
-        // This column is part of the basin
-        // Get the BLENDED liquid level for actual fill height
-        const biome = ctx.getBiomeAt(x, z);
-        const columnFillLevel = biome?.liquids.surface 
-          ? Math.round(biome.liquids.surface.level) 
-          : 0;
-        
-        basinColumns.push({ x, z, surfaceY, fillLevel: columnFillLevel });
-        
-        // Continue flood-fill to neighbors
-        queue.push([x - 1, z], [x + 1, z], [x, z - 1], [x, z + 1]);
-      }
-    }
-    
-    // If basin has no containment (spills to world edge or below ground), skip
-    if (spillHeight <= 0 || basinColumns.length === 0) return;
-    
-    // Calculate global spill constraint
-    const maxFill = spillHeight - 1;
-    
-    for (const { x, z, surfaceY, fillLevel } of basinColumns) {
-      // Fill up to minimum of: column's blended level, spill height, search level
-      const columnMax = Math.min(fillLevel, maxFill, searchLevel);
-      
-      // Fill from just above terrain up to fill level
-      for (let y = surfaceY + 1; y <= columnMax && y < sizeY; y++) {
-        if (!ctx.hasBlock(x, y, z)) {
-          ctx.addBlock(liquidBlockId, x, y, z);
+        const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
+        const maxY = Math.min(level, surfaceY - caveConfig.surfaceFadeDistance);
+        const blockId = ugBlock[idx];
+
+        for (let y = caveConfig.minHeight; y <= maxY; y++) {
+          if (ctx.hasBlock(x, y, z)) continue;
+          if (ctx.isCarved(x, y, z, caveModifiers, surfaceY)) {
+            ctx.addBlock(blockId, x, y, z);
+          }
         }
-      }
-    }
-  }
-  
-  /**
-   * Fill underground liquid in cave floors (contained by cave walls/floor)
-   */
-  private fillUndergroundLiquid(
-    ctx: GenerationContext,
-    x: number,
-    z: number,
-    liquid: { blockId: number; level: number },
-    caveModifiers: { enabled: boolean; frequency: number; threshold: number; wormStrength: number } | undefined
-  ): void {
-    const { caves: caveConfig } = ctx.config;
-    const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
-    const liquidLevel = Math.round(liquid.level);
-    
-    // Scan down from liquid level to find cave floor
-    for (let y = Math.min(liquidLevel, surfaceY - 1); y >= caveConfig.minHeight; y--) {
-      // Skip if already has a block
-      if (ctx.hasBlock(x, y, z)) continue;
-      
-      // Check if this is cave air (pass surfaceY for terrain-relative caves)
-      if (!ctx.caves.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
-      
-      // Check if there's a floor below (either solid or already liquid)
-      const hasFloor = y === caveConfig.minHeight || 
-                       ctx.hasBlock(x, y - 1, z) || 
-                       !ctx.caves.isCarved(x, y - 1, z, caveModifiers, surfaceY);
-      
-      if (hasFloor) {
-        // Fill upward from floor until we hit ceiling or liquid level
-        for (let fillY = y; fillY <= liquidLevel && fillY < surfaceY; fillY++) {
-          if (ctx.hasBlock(x, fillY, z)) break;
-          if (!ctx.caves.isCarved(x, fillY, z, caveModifiers, surfaceY)) break;
-          ctx.addBlock(liquid.blockId, x, fillY, z);
-        }
-        break; // Done with this column
       }
     }
   }

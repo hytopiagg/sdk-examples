@@ -19,10 +19,10 @@ export default defineBiome({
   },
   
   terrain: {
-    heightOffset: 0,
-    heightScale: 0.3,      // Very flat plains
+    heightOffset: -6,          // Lower basin - creates natural lake beds
+    heightScale: 0.6,          // More variation for pond depressions
     frequencyScale: 0.7,
-    valleyScale: 0.0,      // No valleys - completely solid surface
+    valleyScale: 0.0,          // No valleys - completely solid surface
   },
   
   caves: {
@@ -33,15 +33,16 @@ export default defineBiome({
   },
   
   liquids: {
-    // Small ponds in low areas
+    // Ponds in low areas - level must stay below other biomes' terrain minimums
+    // Desert min ~43, Forest min ~43, so 38 is safe
     surface: {
       blockId: 57,         // water
-      level: 44,           // Fill depressions below Y=44
+      level: 38,           // Fill depressions below Y=38
     },
-    // Underground water pools
+    // Underground water pools - below Wasteland lava (Y=15) so lava dominates there
     underground: {
       blockId: 57,         // water
-      level: 20,           // Water in caves below Y=20
+      level: 12,           // Water in deepest caves only
     },
   },
   
