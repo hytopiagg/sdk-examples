@@ -3,8 +3,8 @@
  * 
  * Generation happens in ordered passes, each building on previous results:
  * 1. Terrain - Surface, subsurface, caves
- * 2. (Future) Water - Lakes, rivers, oceans
- * 3. (Future) Smoothing - Terrain refinement
+ * 2. Blending - Smooth biome transitions, seal gaps
+ * 3. (Future) Water - Lakes, rivers, oceans
  * 4. (Future) Structures - Buildings, ruins
  * 5. (Future) Decoration - Trees, plants, details
  */
@@ -16,6 +16,7 @@ import { BiomeSampler, BlendedBiomeValues } from './BiomeSampler';
 import { GeneratorConfig, mergeConfig } from './GeneratorConfig';
 import { GeneratorPass, createContext } from './passes';
 import { TerrainPass } from './passes/TerrainPass';
+import { BlendingPass } from './passes/BlendingPass';
 
 export interface GeneratorResult {
   blocks: { [blockTypeId: number]: BlockPlacement[] };
@@ -45,7 +46,7 @@ export default class WorldGenerator {
         })
       : null;
     
-    // Create terrain sampler with biome awareness
+    // Create terrain sampler with biome awareness and gradient-based smoothing
     this.terrain = new TerrainSampler({
       seed: this.config.seed,
       worldSizeX: this.config.worldSize.x,
@@ -57,6 +58,8 @@ export default class WorldGenerator {
       valleyFrequency: this.config.terrain.valley.frequency,
       valleyDepth: this.config.terrain.valley.depth,
       biomeSampler: this.biomes ?? undefined,
+      // Blend width for gradient-based height smoothing
+      blendWidth: this.config.biomes.enabled ? this.config.biomes.blendWidth : undefined,
     });
     
     // Create cave carver
@@ -74,9 +77,9 @@ export default class WorldGenerator {
     // Configure generation passes
     this.passes = [
       new TerrainPass(),
+      new BlendingPass(),
       // Future passes:
       // new WaterPass(),
-      // new SmoothingPass(),
       // new StructurePass(),
       // new DecorationPass(),
     ];

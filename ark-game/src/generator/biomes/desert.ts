@@ -1,32 +1,36 @@
 import { defineBiome } from './BiomeDefinition';
 
 /**
- * Desert - Eroded badlands with deep canyons
- * Dramatic elevation changes with exposed cave systems
+ * Desert - Flat arid terrain with small underground tunnel systems
+ * Solid surface with rare small cave openings
+ * 
+ * Blocks: hay-block (sandy), stone-bricks (sandstone), stone
  */
 export default defineBiome({
   id: 'desert',
-  name: 'Desert Badlands',
-  weight: 0.6,
+  name: 'Desert',
+  weight: 0.8,
   
   blocks: {
-    surface: 56,      // stone-bricks (weathered)
-    subsurface: 55,   // stone
-    underground: 16,  // deepslate
-    subsurfaceDepth: 2,
+    surface: 40,      // hay-block (sandy appearance)
+    subsurface: 56,   // stone-bricks (sandstone-like)
+    underground: 55,  // stone
+    subsurfaceDepth: 3,
   },
   
   terrain: {
-    heightOffset: -8,      // Lower base - more cave exposure
-    heightScale: 1.8,      // Dramatic mesas and canyons
-    frequencyScale: 1.5,   // More jagged features
-    valleyScale: 3.0,      // Deep canyon cuts
+    heightOffset: 0,
+    heightScale: 0.4,      // Flat with gentle dunes
+    frequencyScale: 0.8,
+    valleyScale: 0.0,      // No valleys - completely solid surface
   },
   
   caves: {
     enabled: true,
-    frequency: 1.3,        // Larger cave chambers
-    threshold: 0.08,       // More caves (erosion)
+    frequency: 0.6,        // Small tight tunnels
+    threshold: -0.08,      // Fewer caves (raises effective threshold)
     wormCaves: true,
   },
+  
+  blendStrength: 1.1,
 });

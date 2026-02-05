@@ -7,10 +7,10 @@
 
 export { GeneratorPass, GenerationContext, createContext } from './GeneratorPass';
 export { TerrainPass } from './TerrainPass';
+export { BlendingPass } from './BlendingPass';
 
 // Future passes will be added here:
 // export { WaterPass } from './WaterPass';
-// export { SmoothingPass } from './SmoothingPass';
 // export { StructurePass } from './StructurePass';
 // export { DecorationPass } from './DecorationPass';
 

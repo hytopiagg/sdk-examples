@@ -56,6 +56,13 @@ export interface BiomeDefinition {
   
   /** Cave generation overrides */
   caves?: BiomeCaveConfig;
+  
+  /** 
+   * Block blend strength at borders (0.0 - 2.0, default 1.0)
+   * Higher values make this biome's blocks spread further into neighbors
+   * Lower values make this biome accept more neighbor blocks
+   */
+  blendStrength?: number;
 }
 
 /**

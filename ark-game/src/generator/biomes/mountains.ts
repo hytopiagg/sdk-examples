@@ -1,32 +1,38 @@
 import { defineBiome } from './BiomeDefinition';
 
 /**
- * Mountains - Extreme peaks with cliff faces and chasms
- * Dramatic vertical terrain with extensive cave networks
+ * Mountains - Massive peaks with internal cave systems
+ * Mostly solid rock with some natural cave openings in cliff faces
+ * 
+ * Blocks: stone (exposed rock), deepslate, lava-stone (volcanic)
  */
 export default defineBiome({
   id: 'mountains',
-  name: 'Mountains',
-  weight: 0.4,
+  name: 'Volcanic Mountains',
+  weight: 0.5,
   
   blocks: {
-    surface: 55,      // stone (exposed rock)
-    subsurface: 55,   // stone
-    underground: 16,  // deepslate
-    subsurfaceDepth: 1,
+    surface: 55,      // stone (exposed mountain rock)
+    subsurface: 16,   // deepslate
+    underground: 44,  // lava-stone (volcanic core)
+    subsurfaceDepth: 2,
   },
   
   terrain: {
-    heightOffset: 24,      // Very high peaks
-    heightScale: 3.5,      // Extreme height variation
-    frequencyScale: 1.8,   // Rugged, jagged terrain
-    valleyScale: 4.0,      // Deep gorges between peaks
+    heightOffset: 40,      // Very high peaks
+    heightScale: 2.5,      // Large rolling variation
+    frequencyScale: 1.3,   // Natural mountain ridges
+    valleyScale: 0.5,      // Some valleys between peaks (not exposing caves)
   },
   
   caves: {
     enabled: true,
-    frequency: 1.5,        // Large cave systems
-    threshold: 0.1,        // Many caves
+    frequency: 0.8,        // Medium internal tunnels
+    threshold: -0.05,      // Moderate caves - some cliff face openings
     wormCaves: true,
   },
+  
+  // Low blendStrength: mountain blocks yield to neighbor biomes at boundaries
+  // This prevents mountain stone from dominating the transition zone
+  blendStrength: 0.4,
 });

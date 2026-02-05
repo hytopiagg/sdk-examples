@@ -1,32 +1,36 @@
 import { defineBiome } from './BiomeDefinition';
 
 /**
- * Forest - Dense ravines and hidden cave entrances
- * Moderate hills with deep cuts revealing underground
+ * Forest - Rolling hills with underground cave networks
+ * Solid surface with rare small cave entrances
+ * 
+ * Blocks: grass-block-pine, dirt, mossy-cobblestone
  */
 export default defineBiome({
   id: 'forest',
-  name: 'Forest Ravines',
-  weight: 0.8,
+  name: 'Forest',
+  weight: 1.0,
   
   blocks: {
-    surface: 33,      // grass-block
+    surface: 34,      // grass-block-pine (forest grass)
     subsurface: 25,   // dirt
-    underground: 55,  // stone
-    subsurfaceDepth: 5,
+    underground: 45,  // mossy-cobblestone (forest underground)
+    subsurfaceDepth: 4,
   },
   
   terrain: {
-    heightOffset: 4,
-    heightScale: 1.5,      // Rolling hills
-    frequencyScale: 1.4,   // More varied features
-    valleyScale: 2.5,      // Deep ravines
+    heightOffset: 2,
+    heightScale: 0.6,      // Gentle rolling hills
+    frequencyScale: 1.0,
+    valleyScale: 0.0,      // No valleys - solid forested surface
   },
   
   caves: {
     enabled: true,
-    frequency: 1.2,
-    threshold: 0.05,       // Good cave density
+    frequency: 0.6,        // Small tunnel systems
+    threshold: -0.08,      // Fewer caves
     wormCaves: true,
   },
+  
+  blendStrength: 1.0, // Neutral blending
 });

@@ -65,30 +65,30 @@ export interface GeneratorConfig {
 
 export const DEFAULT_CONFIG: GeneratorConfig = {
   seed: 12345,
-  worldSize: { x: 512, y: 128, z: 512 },
+  worldSize: { x: 2048, y: 128, z: 2048 },
   blockId: 33,
   biomes: {
     enabled: true,
-    size: 64,
-    blendWidth: 12,
+    size: 128,
+    blendWidth: 20, // Wider blend for smoother terrain transitions
   },
   terrain: {
     baseHeight: 48,
-    heightVariation: 16,       // More dramatic terrain
+    heightVariation: 12,       // Moderate terrain variation
     frequency: 0.003,
     octaves: 5,
-    valley: { frequency: 0.003, depth: 12 }, // Deeper valleys for canyons
+    valley: { frequency: 0.003, depth: 4 }, // Conservative valley depth (biomes multiply this)
   },
   caves: {
     enabled: true,
-    frequency: 0.018,          // Slightly larger caves
+    frequency: 0.018,          // Large cavern noise frequency
     octaves: 3,
-    threshold: 0.22,           // Slightly more caves
+    threshold: 0.30,           // Cavern density threshold
     minHeight: 5,
-    fadeHeight: 55,            // Caves can reach near surface
+    fadeHeight: 50,            // Allow caves to breach surface (baseHeight 48 + buffer)
     wormCaves: true,
-    wormFrequency: 0.008,      // Longer worm tunnels
-    wormStrength: 0.5,         // Stronger worm caves
+    wormFrequency: 0.012,      // Lower = longer tunnels, more spread out
+    wormStrength: 0.7,         // Reduce density of tunnel networks
   },
 };
 

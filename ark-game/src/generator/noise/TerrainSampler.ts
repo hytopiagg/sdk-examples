@@ -2,7 +2,7 @@
  * TerrainSampler - 2D heightmap-based terrain generation with biome support
  * 
  * Pre-computes a heightmap for the entire world on construction,
- * applying biome modifiers for smooth terrain transitions.
+ * applying biome modifiers and smoothing for natural terrain transitions.
  */
 
 import { FBM2D, Simplex2D } from './Simplex';
@@ -19,6 +19,8 @@ export interface TerrainSamplerConfig {
   valleyFrequency: number;
   valleyDepth: number;
   biomeSampler?: BiomeSampler;
+  /** Blend width for height smoothing at steep transitions */
+  blendWidth?: number;
 }
 
 export class TerrainSampler {
@@ -32,6 +34,11 @@ export class TerrainSampler {
     this.sizeZ = worldSizeZ;
     this.heightmap = new Float32Array(worldSizeX * worldSizeZ);
     this.computeHeightmap(config);
+    
+    // Apply gradient-based height smoothing to eliminate steep transitions
+    if (config.blendWidth) {
+      this.smoothSteepTransitions(config.blendWidth);
+    }
   }
   
   private computeHeightmap(config: TerrainSamplerConfig): void {
@@ -72,7 +79,75 @@ export class TerrainSampler {
           height = targetBase + Math.sign(deviation) * (maxDev + (Math.abs(deviation) - maxDev) * 0.4);
         }
         
-        this.heightmap[x * worldSizeZ + z] = height;
+        this.heightmap[x * this.sizeZ + z] = height;
+      }
+    }
+  }
+  
+  /**
+   * Smooth steep height transitions globally
+   * Uses gradient-aware smoothing - stronger where height changes are steeper
+   * Works with organic Voronoi biomes (no grid dependency)
+   */
+  private smoothSteepTransitions(blendWidth: number): void {
+    const { sizeX, sizeZ, heightmap } = this;
+    
+    // Create a copy for reading while we write
+    const original = new Float32Array(heightmap);
+    
+    const passes = 3;
+    const smoothRadius = Math.ceil(blendWidth * 0.5);
+    const radiusSq = smoothRadius * smoothRadius;
+    const radiusNorm = smoothRadius + 1;
+    
+    // Threshold for what counts as a "steep" gradient (blocks per 1 block distance)
+    const steepThreshold = 3;
+    
+    for (let pass = 0; pass < passes; pass++) {
+      const source = pass === 0 ? original : heightmap;
+      
+      for (let x = 0; x < sizeX; x++) {
+        for (let z = 0; z < sizeZ; z++) {
+          const centerH = source[x * sizeZ + z];
+          
+          // Measure local gradient (max height difference from immediate neighbors)
+          let maxDiff = 0;
+          if (x > 0) maxDiff = Math.max(maxDiff, Math.abs(centerH - source[(x-1) * sizeZ + z]));
+          if (x < sizeX-1) maxDiff = Math.max(maxDiff, Math.abs(centerH - source[(x+1) * sizeZ + z]));
+          if (z > 0) maxDiff = Math.max(maxDiff, Math.abs(centerH - source[x * sizeZ + (z-1)]));
+          if (z < sizeZ-1) maxDiff = Math.max(maxDiff, Math.abs(centerH - source[x * sizeZ + (z+1)]));
+          
+          // Only smooth steep areas
+          if (maxDiff < steepThreshold) continue;
+          
+          // Smoothing strength based on gradient steepness
+          const gradientFactor = Math.min(1, (maxDiff - steepThreshold) / 10);
+          const smoothStrength = 0.4 + gradientFactor * 0.4;
+          
+          let sum = 0;
+          let weightSum = 0;
+          
+          for (let dx = -smoothRadius; dx <= smoothRadius; dx++) {
+            const nx = x + dx;
+            if (nx < 0 || nx >= sizeX) continue;
+            
+            for (let dz = -smoothRadius; dz <= smoothRadius; dz++) {
+              const nz = z + dz;
+              if (nz < 0 || nz >= sizeZ) continue;
+              
+              const distSq = dx * dx + dz * dz;
+              if (distSq > radiusSq) continue;
+              
+              const weight = 1 - Math.sqrt(distSq) / radiusNorm;
+              sum += source[nx * sizeZ + nz] * weight;
+              weightSum += weight;
+            }
+          }
+          
+          if (weightSum > 0) {
+            heightmap[x * sizeZ + z] = centerH + (sum / weightSum - centerH) * smoothStrength;
+          }
+        }
       }
     }
   }

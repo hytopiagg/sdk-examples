@@ -1,32 +1,36 @@
 import { defineBiome } from './BiomeDefinition';
 
 /**
- * Wasteland - Crater-scarred terrain with collapsed tunnels
- * Post-apocalyptic landscape with exposed underground
+ * Wasteland - Post-apocalyptic terrain with exposed caverns and canyons
+ * Dramatic surface damage revealing underground systems
+ * 
+ * Blocks: cobbled-deepslate (cracked), black-concrete (charred), coal-ore (burned)
  */
 export default defineBiome({
   id: 'wasteland',
   name: 'Wasteland',
-  weight: 0.5,
+  weight: 0.6,
   
   blocks: {
-    surface: 25,      // dirt (dead earth)
-    subsurface: 14,   // cobbled-deepslate
-    underground: 16,  // deepslate
+    surface: 14,      // cobbled-deepslate (cracked wasteland surface)
+    subsurface: 5,    // black-concrete (charred/burned layer)
+    underground: 13,  // coal-ore (burned underground)
     subsurfaceDepth: 2,
   },
   
   terrain: {
-    heightOffset: -6,      // Lower terrain - more exposure
-    heightScale: 2.0,      // Dramatic craters
-    frequencyScale: 1.6,   // Chaotic terrain
-    valleyScale: 3.5,      // Deep impact craters
+    heightOffset: -12,     // Very sunken - exposes cave layer
+    heightScale: 1.8,      // Chaotic terrain variation
+    frequencyScale: 1.6,   // Irregular features
+    valleyScale: 4.0,      // Deep canyons (4 * base 4 = 16 block valleys)
   },
   
   caves: {
     enabled: true,
-    frequency: 1.4,        // Large collapsed areas
-    threshold: 0.12,       // Lots of caves (structural damage)
+    frequency: 1.4,        // Large cavern systems
+    threshold: 0.15,       // Much more caves (lowers effective threshold)
     wormCaves: true,
   },
+  
+  blendStrength: 1.2,
 });

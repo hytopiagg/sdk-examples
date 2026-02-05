@@ -1,8 +1,10 @@
 import { defineBiome } from './BiomeDefinition';
 
 /**
- * Grasslands - Rolling hills with occasional sinkholes
- * Moderate terrain with some surface cave openings
+ * Grasslands - Flat open plains with underground tunnel systems
+ * Solid surface - caves only accessible through rare openings
+ * 
+ * Blocks: grass-block, dirt, stone
  */
 export default defineBiome({
   id: 'grasslands',
@@ -10,7 +12,7 @@ export default defineBiome({
   weight: 1.0,
   
   blocks: {
-    surface: 33,      // grass-block
+    surface: 33,      // grass-block (standard grass)
     subsurface: 25,   // dirt
     underground: 55,  // stone
     subsurfaceDepth: 4,
@@ -18,15 +20,17 @@ export default defineBiome({
   
   terrain: {
     heightOffset: 0,
-    heightScale: 1.2,      // Slightly more varied
-    frequencyScale: 1.0,
-    valleyScale: 1.5,      // Deeper valleys can expose caves
+    heightScale: 0.3,      // Very flat plains
+    frequencyScale: 0.7,
+    valleyScale: 0.0,      // No valleys - completely solid surface
   },
   
   caves: {
     enabled: true,
-    frequency: 1.0,
-    threshold: 0.02,       // Slightly more caves
+    frequency: 0.6,        // Small underground tunnels
+    threshold: -0.1,       // Very few caves (highest effective threshold)
     wormCaves: true,
   },
+  
+  blendStrength: 1.3,
 });
