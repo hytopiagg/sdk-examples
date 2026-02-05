@@ -1,0 +1,25 @@
+{
+  "name": "ark-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --watch src --watch assets --ext ts,js,json,html --exec \"bun index.ts\"",
+    "dev-ui": "nodemon --watch assets/ui --ext html,js --ignore index.html --exec \"bun run ./assets/ui/build.js\""
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "hytopia": "*"
+  },
+  "trustedDependencies": [
+    "sharp"
+  ],
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "optionalDependencies": {
+    "@hytopia.com/assets": "^0.4.11"
+  }
+}

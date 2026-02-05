@@ -1,0 +1,176 @@
+/**
+ * WorldGenerator - Multi-pass procedural world generation
+ * 
+ * Generation happens in ordered passes, each building on previous results:
+ * 1. Terrain - Surface, subsurface, caves
+ * 2. (Future) Water - Lakes, rivers, oceans
+ * 3. (Future) Smoothing - Terrain refinement
+ * 4. (Future) Structures - Buildings, ruins
+ * 5. (Future) Decoration - Trees, plants, details
+ */
+
+import type { BlockPlacement, Vector3Like } from 'hytopia';
+import { TerrainSampler } from './noise/TerrainSampler';
+import { CaveCarver, CaveBiomeModifiers } from './noise/CaveCarver';
+import { BiomeSampler, BlendedBiomeValues } from './BiomeSampler';
+import { GeneratorConfig, mergeConfig } from './GeneratorConfig';
+import { GeneratorPass, createContext } from './passes';
+import { TerrainPass } from './passes/TerrainPass';
+
+export interface GeneratorResult {
+  blocks: { [blockTypeId: number]: BlockPlacement[] };
+  spawnPoint: Vector3Like;
+  stats: {
+    totalBlocks: number;
+    generationTimeMs: number;
+  };
+}
+
+export default class WorldGenerator {
+  private config: GeneratorConfig;
+  private terrain: TerrainSampler;
+  private caves: CaveCarver;
+  private biomes: BiomeSampler | null;
+  private passes: GeneratorPass[];
+  
+  constructor(config: Partial<GeneratorConfig> = {}) {
+    this.config = mergeConfig(config);
+    
+    // Create biome sampler if enabled
+    this.biomes = this.config.biomes.enabled
+      ? new BiomeSampler({
+          seed: this.config.seed,
+          biomeSize: this.config.biomes.size,
+          blendWidth: this.config.biomes.blendWidth,
+        })
+      : null;
+    
+    // Create terrain sampler with biome awareness
+    this.terrain = new TerrainSampler({
+      seed: this.config.seed,
+      worldSizeX: this.config.worldSize.x,
+      worldSizeZ: this.config.worldSize.z,
+      baseHeight: this.config.terrain.baseHeight,
+      heightVariation: this.config.terrain.heightVariation,
+      terrainFrequency: this.config.terrain.frequency,
+      terrainOctaves: this.config.terrain.octaves,
+      valleyFrequency: this.config.terrain.valley.frequency,
+      valleyDepth: this.config.terrain.valley.depth,
+      biomeSampler: this.biomes ?? undefined,
+    });
+    
+    // Create cave carver
+    this.caves = new CaveCarver({
+      seed: this.config.seed,
+      caveFrequency: this.config.caves.frequency,
+      caveOctaves: this.config.caves.octaves,
+      caveThreshold: this.config.caves.threshold,
+      minHeight: this.config.caves.minHeight,
+      maxHeight: this.config.caves.fadeHeight,
+      wormFrequency: this.config.caves.wormFrequency,
+      wormStrength: this.config.caves.wormCaves ? this.config.caves.wormStrength : 0,
+    });
+    
+    // Configure generation passes
+    this.passes = [
+      new TerrainPass(),
+      // Future passes:
+      // new WaterPass(),
+      // new SmoothingPass(),
+      // new StructurePass(),
+      // new DecorationPass(),
+    ];
+  }
+  
+  /**
+   * Generate world by executing all passes in order
+   */
+  generate(): GeneratorResult {
+    const startTime = performance.now();
+    
+    // Create shared context for all passes
+    const ctx = createContext(this.config, this.terrain, this.caves, this.biomes);
+    
+    // Execute passes in order
+    for (const pass of this.passes) {
+      pass.execute(ctx);
+    }
+    
+    // Convert blocks map to result object
+    const blocks: { [blockTypeId: number]: BlockPlacement[] } = {};
+    let totalBlocks = 0;
+    ctx.blocks.forEach((placements, blockId) => {
+      blocks[blockId] = placements;
+      totalBlocks += placements.length;
+    });
+
+    return {
+      blocks,
+      spawnPoint: this.findSpawnPoint(),
+      stats: {
+        totalBlocks,
+        generationTimeMs: performance.now() - startTime,
+      },
+    };
+  }
+  
+  private findSpawnPoint(): Vector3Like {
+    const cx = Math.floor(this.config.worldSize.x / 2);
+    const cz = Math.floor(this.config.worldSize.z / 2);
+    return { x: cx, y: this.getTerrainHeight(cx, cz) + 2, z: cz };
+  }
+  
+  /** Get terrain height at x,z */
+  getTerrainHeight(x: number, z: number): number {
+    return Math.floor(this.terrain.getBaseHeight(x, z));
+  }
+  
+  /**
+   * Get block at any coordinate - deterministic lookup
+   * Returns blockId if solid, null if air
+   */
+  getBlockAt(x: number, y: number, z: number): number | null {
+    const { worldSize, caves: caveConfig } = this.config;
+    
+    if (x < 0 || x >= worldSize.x || z < 0 || z >= worldSize.z || y < 0 || y >= worldSize.y) {
+      return null;
+    }
+    
+    const surfaceY = this.terrain.getBaseHeight(x, z);
+    if (y >= surfaceY) return null;
+    
+    // Get biome-blended cave modifiers
+    const biome = this.biomes?.getBlendedValues(x, z);
+    const caveModifiers = biome ? {
+      enabled: biome.caves.enabled,
+      frequency: biome.caves.frequency,
+      threshold: biome.caves.threshold,
+      wormStrength: biome.caves.wormStrength,
+    } : undefined;
+    
+    const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
+    if (cavesEnabled && this.caves.isCarved(x, y, z, caveModifiers)) return null;
+    
+    // Determine block type
+    const surfaceBlock = biome?.blocks.surface ?? this.config.blockId;
+    const subsurfaceBlock = biome?.blocks.subsurface ?? surfaceBlock;
+    const undergroundBlock = biome?.blocks.underground ?? subsurfaceBlock;
+    const subsurfaceDepth = biome?.blocks.subsurfaceDepth ?? 4;
+    
+    const depthFromSurface = Math.floor(surfaceY) - y;
+    if (depthFromSurface <= 1) return surfaceBlock;
+    if (depthFromSurface <= subsurfaceDepth) return subsurfaceBlock;
+    return undergroundBlock;
+  }
+  
+  /** Get the biome at a position */
+  getBiomeAt(x: number, z: number) {
+    return this.biomes?.getBiomeAt(x, z) ?? null;
+  }
+  
+  getConfig(): GeneratorConfig {
+    return this.config;
+  }
+}
+
+export { GeneratorConfig, DEFAULT_CONFIG, mergeConfig } from './GeneratorConfig';
