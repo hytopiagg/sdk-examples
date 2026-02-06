@@ -79,7 +79,7 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
   blockId: 33,
   biomes: {
     enabled: true,
-    size: 192,
+    size: 64,
     blendWidth: 20, // Wider blend for smoother terrain transitions
   },
   terrain: {

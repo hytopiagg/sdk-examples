@@ -22,6 +22,7 @@ import desert from './desert';
 import mountains from './mountains';
 import forest from './forest';
 import wasteland from './wasteland';
+import ocean from './ocean';
 
 /** All registered biomes */
 export const BIOMES = {
@@ -30,6 +31,7 @@ export const BIOMES = {
   mountains,
   forest,
   wasteland,
+  ocean,
 } as const;
 
 /** Array of all biomes for iteration */
@@ -46,4 +48,4 @@ export function getTotalWeight(): number {
 }
 
 // Re-export individual biomes for direct import
-export { grasslands, desert, mountains, forest, wasteland };
+export { grasslands, desert, mountains, forest, wasteland, ocean };
