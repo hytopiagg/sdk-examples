@@ -47,6 +47,14 @@ export default defineBiome({
       frequency: 1.1,
     },
   },
+
+  roads: {
+    densityMult: 1.2,
+    throughCostMult: 0.85,
+    forkChanceMult: 1.15,
+    tunnelChanceMult: 0.75,
+    curveBiasMult: 0.95,
+  },
   
   liquids: {
     // Ponds in low areas - level must stay below other biomes' terrain minimums
@@ -69,7 +77,7 @@ export default defineBiome({
     diameterJitter: 0.4,
     depthRatio: 2,
     depthJitter: 0.5,
-    impactBlockId: 58,     // white-concrete for visualizing test
+    impactBlockId: 51,     // crater impact floor/contact
     impactRadius: 0.75,
     debris: {
       amount: 0.12,

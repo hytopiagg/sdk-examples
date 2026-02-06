@@ -101,6 +101,31 @@ export interface BiomeCaveConfig {
   };
 }
 
+export interface BiomeRoadConfig {
+  /**
+   * Local multiplier for how likely road hubs/nodes are to be placed here.
+   * >1 tends to create denser local road patterns, <1 sparser.
+   */
+  densityMult?: number;
+  /**
+   * Traversal cost multiplier used by road graph routing.
+   * >1 discourages roads through this biome, <1 attracts them.
+   */
+  throughCostMult?: number;
+  /**
+   * Local multiplier for branch/fork creation frequency.
+   */
+  forkChanceMult?: number;
+  /**
+   * Local multiplier for tunnel likelihood/depth.
+   */
+  tunnelChanceMult?: number;
+  /**
+   * Local multiplier for gentle road curvature amplitude.
+   */
+  curveBiasMult?: number;
+}
+
 export interface BiomeLiquidConfig {
   /** 
    * Surface liquid (fills air gaps at/below surfaceLevel)
@@ -171,6 +196,9 @@ export interface BiomeDefinition {
   
   /** Cave generation overrides */
   caves?: BiomeCaveConfig;
+
+  /** Road generation overrides */
+  roads?: BiomeRoadConfig;
   
   /** Liquid generation (water, lava) */
   liquids?: BiomeLiquidConfig;

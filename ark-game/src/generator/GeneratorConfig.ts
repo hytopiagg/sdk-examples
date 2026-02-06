@@ -66,6 +66,26 @@ export interface GeneratorConfig {
     chamberFrequency: number;
   };
 
+  /** Global road network controls */
+  roads: {
+    /** Enable/disable road generation */
+    enabled: boolean;
+    /** Node/edge density scale (1 = default) */
+    density: number;
+    /** Road deck width in blocks (odd values recommended) */
+    width: number;
+    /** Chance for an extra surface fork edge */
+    forkChance: number;
+    /** Chance for an edge to dive underground and re-emerge */
+    tunnelChance: number;
+    /** Typical tunnel dive depth in blocks */
+    tunnelDepth: number;
+    /** Fraction of an edge spent underground (0-1) */
+    tunnelSpan: number;
+    /** Chance for an additional forced-underground branch edge */
+    undergroundForkChance: number;
+  };
+
   /** Output-related generation controls */
   output: {
     /** Emit only exposed + depth-1 occluded solids */
@@ -102,6 +122,16 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
     warpFrequency: 0.009,
     chamberFrequency: 0.006,
   },
+  roads: {
+    enabled: true,
+    density: 3,
+    width: 7,
+    forkChance: 0.68,
+    tunnelChance: 0.64,
+    tunnelDepth: 22,
+    tunnelSpan: 0.64,
+    undergroundForkChance: 0.94,
+  },
   output: {
     occlusionCulling: true,
   },
@@ -122,6 +152,7 @@ export function mergeConfig(userConfig: Partial<GeneratorConfig>): GeneratorConf
       },
     },
     caves: { ...DEFAULT_CONFIG.caves, ...userConfig.caves },
+    roads: { ...DEFAULT_CONFIG.roads, ...userConfig.roads },
     output: { ...DEFAULT_CONFIG.output, ...userConfig.output },
   };
 }

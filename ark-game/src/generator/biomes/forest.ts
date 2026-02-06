@@ -56,6 +56,14 @@ export default defineBiome({
       stalagmites: true,
     },
   },
+
+  roads: {
+    densityMult: 1.0,
+    throughCostMult: 1.0,
+    forkChanceMult: 1.0,
+    tunnelChanceMult: 0.9,
+    curveBiasMult: 1.1,
+  },
   
   craters: {
     spacing: 20,
@@ -64,7 +72,7 @@ export default defineBiome({
     diameterJitter: 0.4,
     depthRatio: 2,
     depthJitter: 0.5,
-    impactBlockId: 58,     // white-concrete for visualizing test
+    impactBlockId: 51,     // crater impact floor/contact
     impactRadius: 0.75,
     debris: {
       amount: 0.12,

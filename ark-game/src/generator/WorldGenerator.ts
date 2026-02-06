@@ -4,11 +4,12 @@
  * Generation happens in ordered passes, each building on previous results:
  * 1. Terrain - Surface, subsurface, caves
  * 2. Blending - Smooth biome transitions, seal gaps
- * 3. Crater - Surface impact carving + contact effects
- * 4. Speleothem - Cave stalactite/stalagmite decoration
- * 5. Liquid - Water, lava based on biome config
- * 6. (Future) Structures - Buildings, ruins
- * 7. (Future) Decoration - Trees, plants, details
+ * 3. Speleothem - Cave stalactite/stalagmite decoration
+ * 4. Liquid - Water, lava based on biome config
+ * 5. Road - Global road network (bridges + tunnels)
+ * 6. Crater - Surface impact carving + contact effects (can destroy roads)
+ * 7. (Future) Structures - Buildings, ruins
+ * 8. (Future) Decoration - Trees, plants, details
  */
 
 import type { BlockPlacement, Vector3Like } from 'hytopia';
@@ -22,9 +23,10 @@ import type { GeneratorPass } from './passes';
 import { createContext } from './passes';
 import { TerrainPass } from './passes/TerrainPass';
 import { BlendingPass } from './passes/BlendingPass';
-import { CraterPass } from './passes/CraterPass';
 import { SpeleothemPass } from './passes/SpeleothemPass';
 import { LiquidPass } from './passes/LiquidPass';
+import { RoadPass } from './passes/RoadPass';
+import { CraterPass } from './passes/CraterPass';
 
 export interface GeneratorResult {
   blocks: { [blockTypeId: number]: BlockPlacement[] };
@@ -90,9 +92,10 @@ export default class WorldGenerator {
     this.passes = [
       new TerrainPass(),
       new BlendingPass(),
-      new CraterPass(),
       new SpeleothemPass(),
       new LiquidPass(),
+      new RoadPass(),
+      new CraterPass(),
       // Future passes:
       // new StructurePass(),
       // new DecorationPass(),

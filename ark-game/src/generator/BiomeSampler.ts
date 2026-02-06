@@ -37,6 +37,13 @@ export interface BlendedBiomeValues {
     chamberStrength: number;
     chamberFrequency: number;
   };
+  roads: {
+    densityMult: number;
+    throughCostMult: number;
+    forkChanceMult: number;
+    tunnelChanceMult: number;
+    curveBiasMult: number;
+  };
 }
 
 export class BiomeSampler {
@@ -208,11 +215,27 @@ export class BiomeSampler {
       chamberStrength: caveAvg(b => b.caves?.chamber?.strength ?? 0),
       chamberFrequency: caveAvg(b => b.caves?.chamber?.frequency ?? 1),
     };
+
+    const roadAvg = (get: (b: BiomeDefinition) => number) => {
+      let sum = get(primary) * primaryWeight;
+      for (let i = 0; i < neighborCount; i++) {
+        const nb = neighbors[i];
+        sum += get(nb.biome) * nb.weight;
+      }
+      return sum / totalWeight;
+    };
+    const roads = {
+      densityMult: roadAvg(b => b.roads?.densityMult ?? 1),
+      throughCostMult: roadAvg(b => b.roads?.throughCostMult ?? 1),
+      forkChanceMult: roadAvg(b => b.roads?.forkChanceMult ?? 1),
+      tunnelChanceMult: roadAvg(b => b.roads?.tunnelChanceMult ?? 1),
+      curveBiasMult: roadAvg(b => b.roads?.curveBiasMult ?? 1),
+    };
     
     // Block selection: noise-based dithering at boundaries
     const blocks = this.selectDitheredBlocks(primary, primaryWeight, neighbors, neighborCount, x, z);
 
-    return { biome: primary, blocks, terrain, caves };
+    return { biome: primary, blocks, terrain, caves, roads };
   }
 
   private blendTerrain(

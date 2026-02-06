@@ -59,6 +59,14 @@ export default defineBiome({
       stalagmites: true,
     },
   },
+
+  roads: {
+    densityMult: 0.65,
+    throughCostMult: 1.35,
+    forkChanceMult: 0.75,
+    tunnelChanceMult: 1.6,
+    curveBiasMult: 0.8,
+  },
   
   // Low blendStrength: mountain blocks yield to neighbor biomes at boundaries
   // This prevents mountain stone from dominating the transition zone

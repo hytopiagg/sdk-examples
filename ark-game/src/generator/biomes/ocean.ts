@@ -37,6 +37,14 @@ export default defineBiome({
     enabled: false,
   },
 
+  roads: {
+    densityMult: 0.45,
+    throughCostMult: 2.2,
+    forkChanceMult: 0.5,
+    tunnelChanceMult: 0.5,
+    curveBiasMult: 1.0,
+  },
+
   liquids: {
     surface: {
       blockId: 57, // water

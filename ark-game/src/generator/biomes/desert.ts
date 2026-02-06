@@ -56,6 +56,14 @@ export default defineBiome({
       stalagmites: false,
     },
   },
+
+  roads: {
+    densityMult: 0.85,
+    throughCostMult: 0.95,
+    forkChanceMult: 0.85,
+    tunnelChanceMult: 0.6,
+    curveBiasMult: 0.9,
+  },
   
   blendStrength: 1.1,
 });

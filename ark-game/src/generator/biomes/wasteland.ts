@@ -13,7 +13,7 @@ export default defineBiome({
   
   blocks: {
     surface: [{ blockId: 14 }],      // cobbled-deepslate (cracked wasteland surface)
-    subsurface: [{ blockId: 5 }],    // black-concrete (charred/burned layer)
+    subsurface: [{ blockId: 6 }],
     underground: [{ blockId: 13 }],  // coal-ore (burned underground)
     subsurfaceDepth: 2,
   },
@@ -60,6 +60,14 @@ export default defineBiome({
     },
   },
 
+  roads: {
+    densityMult: 0.95,
+    throughCostMult: 1.1,
+    forkChanceMult: 1.2,
+    tunnelChanceMult: 1.25,
+    curveBiasMult: 1.2,
+  },
+
   craters: {
     spacing: 80,
     chance: 0.55,
@@ -67,7 +75,7 @@ export default defineBiome({
     diameterJitter: 0.45,
     depthRatio: 0.4,
     depthJitter: 0.3,
-    impactBlockId: 5,      // black-concrete scorched contact
+    impactBlockId: 51,     // crater impact floor/contact
     impactRadius: 0.38,
     debris: {
       amount: 0.2,
