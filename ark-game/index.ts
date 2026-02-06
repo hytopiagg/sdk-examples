@@ -14,7 +14,7 @@ startServer(async world => {
   // Create procedural world generator
   const generator = new WorldGenerator({
     seed: Date.now(),
-    worldSize: { x: 384, y: 128, z: 384 },
+    worldSize: { x: 512, y: 128, z: 512 },
   });
   
   const result = generator.generate();

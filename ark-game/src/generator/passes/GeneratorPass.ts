@@ -11,6 +11,17 @@ import type { TerrainSampler } from '../noise/TerrainSampler';
 import type { CaveCarver } from '../noise/CaveCarver';
 import type { BiomeSampler, BlendedBiomeValues } from '../BiomeSampler';
 import type { CaveBiomeModifiers } from '../noise/CaveCarver';
+import { ALL_BIOMES } from '../biomes';
+
+const LIQUID_BLOCK_IDS = (() => {
+  const ids = new Set<number>();
+  for (let i = 0; i < ALL_BIOMES.length; i++) {
+    const liquids = ALL_BIOMES[i].liquids;
+    if (liquids?.surface) ids.add(liquids.surface.blockId);
+    if (liquids?.underground) ids.add(liquids.underground.blockId);
+  }
+  return ids;
+})();
 
 /**
  * Shared state passed between generation passes
@@ -87,6 +98,10 @@ export function createContext(
   const addedBits = new Uint32Array(bitsetWords);
   const removedBits = new Uint32Array(bitsetWords);
   const carvedBits = new Uint32Array(bitsetWords);
+  const OCCLUSION_DEPTH = config.output.occlusionCulling ? 1 : 0;
+  const NEIGHBOR_X = new Int8Array([1, -1, 0, 0, 0, 0]);
+  const NEIGHBOR_Y = new Int8Array([0, 0, 1, -1, 0, 0]);
+  const NEIGHBOR_Z = new Int8Array([0, 0, 0, 0, 1, -1]);
   const replacedBlocks = new Map<number, number>();
   let hasMutations = false;
 
@@ -119,6 +134,140 @@ export function createContext(
     }
     return cached;
   };
+
+  function finalizeMutations(): Map<number, BlockPlacement[]> {
+    const finalized = new Map<number, BlockPlacement[]>();
+
+    blocks.forEach((placements, blockId) => {
+      for (let i = 0; i < placements.length; i++) {
+        const c = placements[i].globalCoordinate;
+        const key = toKey(c.x, c.y, c.z);
+        if (replacedBlocks.has(key)) continue;
+        const word = key >>> 5;
+        const bit = 1 << (key & 31);
+        if (removedBits[word] & bit) continue;
+        pushPlacement(finalized, blockId, c.x, c.y, c.z);
+      }
+    });
+
+    replacedBlocks.forEach((blockId, key) => {
+      const y = (key / stride) | 0;
+      const rem = key - y * stride;
+      const z = (rem / worldSize.x) | 0;
+      const x = rem - z * worldSize.x;
+      pushPlacement(finalized, blockId, x, y, z);
+    });
+
+    return finalized;
+  }
+
+  function mapToOutput(source: Map<number, BlockPlacement[]>): { blocks: { [blockTypeId: number]: BlockPlacement[] }; totalBlocks: number } {
+    const out: { [blockTypeId: number]: BlockPlacement[] } = {};
+    let totalBlocks = 0;
+    source.forEach((placements, blockId) => {
+      out[blockId] = placements;
+      totalBlocks += placements.length;
+    });
+    return { blocks: out, totalBlocks };
+  }
+
+  function emitOcclusionDepthOutput(
+    source: Map<number, BlockPlacement[]>
+  ): { blocks: { [blockTypeId: number]: BlockPlacement[] }; totalBlocks: number } {
+    const occluderBits = new Uint32Array(bitsetWords);
+    const liquidBits = new Uint32Array(bitsetWords);
+    source.forEach((placements, blockId) => {
+      const isLiquid = LIQUID_BLOCK_IDS.has(blockId);
+      for (let i = 0; i < placements.length; i++) {
+        const c = placements[i].globalCoordinate;
+        const key = toKey(c.x, c.y, c.z);
+        const word = key >>> 5;
+        const bit = 1 << (key & 31);
+        if (isLiquid) liquidBits[word] |= bit;
+        else occluderBits[word] |= bit;
+      }
+    });
+
+    // Reuse carved bitset memory for emission mask after generation is complete.
+    const emitBits = carvedBits;
+    emitBits.fill(0);
+
+    const isOccluderKey = (key: number): boolean => {
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      return !!(occluderBits[word] & bit);
+    };
+    const isLiquidKey = (key: number): boolean => {
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      return !!(liquidBits[word] & bit);
+    };
+    const markEmit = (key: number) => {
+      emitBits[key >>> 5] |= 1 << (key & 31);
+    };
+    const canEmit = (key: number): boolean => {
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      return !!(emitBits[word] & bit);
+    };
+
+    const markExposedWithDepth = (x: number, y: number, z: number) => {
+      const key = toKey(x, y, z);
+      if (!isOccluderKey(key)) return;
+
+      let exposed = false;
+      for (let d = 0; d < 6; d++) {
+        const nx = x + NEIGHBOR_X[d];
+        const ny = y + NEIGHBOR_Y[d];
+        const nz = z + NEIGHBOR_Z[d];
+        if (!inBounds(nx, ny, nz)) {
+          // Do not expose blocks just because they're at the world bottom.
+          // Bottom blocks are emitted only when exposed by real in-bounds air
+          // (e.g. caves that open down to y=0).
+          if (ny < 0) continue;
+          exposed = true;
+          break;
+        }
+        const nKey = toKey(nx, ny, nz);
+        if (!isOccluderKey(nKey)) {
+          exposed = true;
+          break;
+        }
+      }
+      if (!exposed) return;
+
+      markEmit(key);
+      for (let d = 0; d < 6; d++) {
+        const nx = x + NEIGHBOR_X[d];
+        const ny = y + NEIGHBOR_Y[d];
+        const nz = z + NEIGHBOR_Z[d];
+        if (!inBounds(nx, ny, nz)) continue;
+        const nKey = toKey(nx, ny, nz);
+        if (isOccluderKey(nKey)) markEmit(nKey);
+      }
+    };
+
+    source.forEach((placements) => {
+      for (let i = 0; i < placements.length; i++) {
+        const c = placements[i].globalCoordinate;
+        markExposedWithDepth(c.x, c.y, c.z);
+      }
+    });
+
+    const out: { [blockTypeId: number]: BlockPlacement[] } = {};
+    let totalBlocks = 0;
+    source.forEach((placements, blockId) => {
+      for (let i = 0; i < placements.length; i++) {
+        const c = placements[i].globalCoordinate;
+        const key = toKey(c.x, c.y, c.z);
+        if (!isLiquidKey(key) && !canEmit(key)) continue;
+        if (!out[blockId]) out[blockId] = [];
+        out[blockId].push(placements[i]);
+        totalBlocks++;
+      }
+    });
+    return { blocks: out, totalBlocks };
+  }
 
   return {
     config,
@@ -200,47 +349,11 @@ export function createContext(
     },
 
     finalizeBlocks() {
-      // Fast path: no mutating pass ran.
-      if (!hasMutations) {
-        const out: { [blockTypeId: number]: BlockPlacement[] } = {};
-        let totalBlocks = 0;
-        blocks.forEach((placements, blockId) => {
-          out[blockId] = placements;
-          totalBlocks += placements.length;
-        });
-        return { blocks: out, totalBlocks };
-      }
+      const source = hasMutations ? finalizeMutations() : blocks;
+      if (source.size === 0) return { blocks: {}, totalBlocks: 0 };
 
-      const finalized = new Map<number, BlockPlacement[]>();
-      let totalBlocks = 0;
-
-      blocks.forEach((placements, blockId) => {
-        for (let i = 0; i < placements.length; i++) {
-          const c = placements[i].globalCoordinate;
-          const key = toKey(c.x, c.y, c.z);
-          if (replacedBlocks.has(key)) continue;
-          const word = key >>> 5;
-          const bit = 1 << (key & 31);
-          if (removedBits[word] & bit) continue;
-          pushPlacement(finalized, blockId, c.x, c.y, c.z);
-          totalBlocks++;
-        }
-      });
-
-      replacedBlocks.forEach((blockId, key) => {
-        const y = (key / stride) | 0;
-        const rem = key - y * stride;
-        const z = (rem / worldSize.x) | 0;
-        const x = rem - z * worldSize.x;
-        pushPlacement(finalized, blockId, x, y, z);
-        totalBlocks++;
-      });
-
-      const out: { [blockTypeId: number]: BlockPlacement[] } = {};
-      finalized.forEach((placements, blockId) => {
-        out[blockId] = placements;
-      });
-      return { blocks: out, totalBlocks };
+      // Emit only blocks visible from air plus one occlusion layer behind.
+      return OCCLUSION_DEPTH <= 0 ? mapToOutput(source) : emitOcclusionDepthOutput(source);
     },
   };
 }

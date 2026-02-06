@@ -65,6 +65,12 @@ export interface GeneratorConfig {
     /** Base frequency for chamber mask noise */
     chamberFrequency: number;
   };
+
+  /** Output-related generation controls */
+  output: {
+    /** Emit only exposed + depth-1 occluded solids */
+    occlusionCulling: boolean;
+  };
 }
 
 export const DEFAULT_CONFIG: GeneratorConfig = {
@@ -73,7 +79,7 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
   blockId: 33,
   biomes: {
     enabled: true,
-    size: 64,
+    size: 192,
     blendWidth: 20, // Wider blend for smoother terrain transitions
   },
   terrain: {
@@ -96,6 +102,9 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
     warpFrequency: 0.009,
     chamberFrequency: 0.006,
   },
+  output: {
+    occlusionCulling: true,
+  },
 };
 
 export function mergeConfig(userConfig: Partial<GeneratorConfig>): GeneratorConfig {
@@ -113,5 +122,6 @@ export function mergeConfig(userConfig: Partial<GeneratorConfig>): GeneratorConf
       },
     },
     caves: { ...DEFAULT_CONFIG.caves, ...userConfig.caves },
+    output: { ...DEFAULT_CONFIG.output, ...userConfig.output },
   };
 }

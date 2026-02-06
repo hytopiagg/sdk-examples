@@ -11,6 +11,7 @@ interface CraterImpact {
   x: number;
   z: number;
   seed: number;
+  biomeId: string;
   radius: number;
   depth: number;
   impactBlockId?: number;
@@ -53,6 +54,9 @@ export class CraterPass implements GeneratorPass {
 
     for (let i = 0; i < impacts.length; i++) {
       this.applyImpact(ctx, impacts[i]);
+    }
+    for (let i = 0; i < impacts.length; i++) {
+      this.scatterDebris(ctx, impacts[i]);
     }
   }
 
@@ -108,6 +112,7 @@ export class CraterPass implements GeneratorPass {
           x: centerX,
           z: centerZ,
           seed: hash2(seed + 606, cellX, cellZ),
+          biomeId: centerBiome.id,
           radius,
           depth: Math.min(depth, radius * 0.98),
           impactBlockId: centerCrater.impactBlockId,
@@ -165,8 +170,6 @@ export class CraterPass implements GeneratorPass {
         }
       }
     }
-
-    this.scatterDebris(ctx, impact);
   }
 
   private paintImpact(ctx: GenerationContext, blockId: number, x: number, floorY: number, z: number): void {
@@ -203,6 +206,7 @@ export class CraterPass implements GeneratorPass {
         const dz = z - impact.z;
         const distSq = dx * dx + dz * dz;
         if (distSq <= innerSq || distSq > outerSq) continue;
+        if (ctx.getBiomeAt(x, z)?.biome.id !== impact.biomeId) continue;
 
         // Higher chance near rim, lower chance toward max fling distance.
         const ringFactor = 1 - (distSq - innerSq) / spanSq;
@@ -214,7 +218,9 @@ export class CraterPass implements GeneratorPass {
 
         // Find nearby support (handles local cuts/slopes around crater edge).
         let supportY = surfaceY;
-        const minSupportY = Math.max(0, surfaceY - 4);
+        // Keep debris on near-surface terrain; avoids dirt-like ejecta
+        // settling onto deep exposed mountain stone at biome boundaries.
+        const minSupportY = Math.max(0, surfaceY - 1);
         while (supportY >= minSupportY && !ctx.hasBlock(x, supportY, z)) supportY--;
         if (supportY < minSupportY) continue;
 

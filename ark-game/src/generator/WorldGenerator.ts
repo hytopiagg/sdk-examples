@@ -50,7 +50,6 @@ export default class WorldGenerator {
       ? new BiomeSampler({
           seed: this.config.seed,
           biomeSize: this.config.biomes.size,
-          blendWidth: this.config.biomes.blendWidth,
         })
       : null;
     

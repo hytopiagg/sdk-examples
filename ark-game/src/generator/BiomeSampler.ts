@@ -17,8 +17,6 @@ export interface BiomeSamplerConfig {
   seed: number;
   /** Average biome cell size in blocks */
   biomeSize: number;
-  /** Width of blend zone at biome borders (in blocks) */
-  blendWidth: number;
 }
 
 export interface BlendedBiomeValues {
@@ -43,6 +41,7 @@ export interface BlendedBiomeValues {
 
 export class BiomeSampler {
   private static readonly MAX_UPHILL_BLEND_Y = 3;
+  private static readonly MAX_UPHILL_TERRAIN_OFFSET = 3;
   private static readonly ADJACENT_X = new Int8Array([1, -1, 0, 0]);
   private static readonly ADJACENT_Z = new Int8Array([0, 0, 1, -1]);
 
@@ -107,9 +106,9 @@ export class BiomeSampler {
 
     const primaryBiome = this.getBiomeForCell(primary);
 
-    // If we're far from any edge (edgeFactor close to 0), fast path
-    if (primary.edgeFactor < 0.1 || neighborCount === 0) {
-      return this.createValues(primaryBiome, 1, this._neighborData, x, z, 0, 0);
+    // If cellular sampling produced no neighbor candidates, fast path.
+    if (neighborCount === 0) {
+      return this.createValues(primaryBiome, 1, this._neighborData, x, z, 0);
     }
 
     // Convert neighbor cell info to biome weights based on distance
@@ -134,7 +133,7 @@ export class BiomeSampler {
     // Primary weight decreases as we approach boundaries
     const primaryWeight = Math.max(0.01, 1 - primary.edgeFactor * 0.8);
 
-    return this.createValues(primaryBiome, primaryWeight, this._neighborData, x, z, primary.edgeFactor, ndCount);
+    return this.createValues(primaryBiome, primaryWeight, this._neighborData, x, z, ndCount);
   }
   
   /** Apply coordinate jitter for organic boundaries */
@@ -167,25 +166,12 @@ export class BiomeSampler {
     neighbors: { biome: BiomeDefinition; weight: number }[],
     x: number,
     z: number,
-    edgeFactor: number,
     neighborCount: number = neighbors.length
   ): BlendedBiomeValues {
     let totalWeight = primaryWeight;
     for (let i = 0; i < neighborCount; i++) totalWeight += neighbors[i].weight;
-
-    // Weighted average helper
-    const avg = (get: (b: BiomeDefinition) => number) => {
-      let sum = get(primary) * primaryWeight;
-      for (let i = 0; i < neighborCount; i++) sum += get(neighbors[i].biome) * neighbors[i].weight;
-      return sum / totalWeight;
-    };
     
-    const terrain = {
-      heightOffset: avg(b => b.terrain?.heightOffset ?? 0),
-      heightScale: avg(b => b.terrain?.heightScale ?? 1),
-      frequencyScale: avg(b => b.terrain?.frequencyScale ?? 1),
-      valleyScale: avg(b => b.terrain?.valleyScale ?? 1),
-    };
+    const terrain = this.blendTerrain(primary, primaryWeight, neighbors, neighborCount);
 
     // Cave blending can be weighted independently from terrain blending.
     const primaryCaveBlend = Math.max(0, primary.caves?.blendWeight ?? 1);
@@ -224,9 +210,45 @@ export class BiomeSampler {
     };
     
     // Block selection: noise-based dithering at boundaries
-    const blocks = this.selectDitheredBlocks(primary, primaryWeight, neighbors, neighborCount, x, z, edgeFactor);
+    const blocks = this.selectDitheredBlocks(primary, primaryWeight, neighbors, neighborCount, x, z);
 
     return { biome: primary, blocks, terrain, caves };
+  }
+
+  private blendTerrain(
+    primary: BiomeDefinition,
+    primaryWeight: number,
+    neighbors: { biome: BiomeDefinition; weight: number }[],
+    neighborCount: number
+  ): BlendedBiomeValues['terrain'] {
+    const primaryOffset = primary.terrain?.heightOffset ?? 0;
+    const uphillLimit = primaryOffset + BiomeSampler.MAX_UPHILL_TERRAIN_OFFSET;
+
+    let totalWeight = primaryWeight;
+    let offsetSum = primaryOffset * primaryWeight;
+    let scaleSum = (primary.terrain?.heightScale ?? 1) * primaryWeight;
+    let frequencySum = (primary.terrain?.frequencyScale ?? 1) * primaryWeight;
+    let valleySum = (primary.terrain?.valleyScale ?? 1) * primaryWeight;
+
+    for (let i = 0; i < neighborCount; i++) {
+      const neighbor = neighbors[i];
+      const neighborOffset = neighbor.biome.terrain?.heightOffset ?? 0;
+      if (neighborOffset > uphillLimit) continue;
+
+      const w = neighbor.weight;
+      totalWeight += w;
+      offsetSum += neighborOffset * w;
+      scaleSum += (neighbor.biome.terrain?.heightScale ?? 1) * w;
+      frequencySum += (neighbor.biome.terrain?.frequencyScale ?? 1) * w;
+      valleySum += (neighbor.biome.terrain?.valleyScale ?? 1) * w;
+    }
+
+    return {
+      heightOffset: offsetSum / totalWeight,
+      heightScale: scaleSum / totalWeight,
+      frequencyScale: frequencySum / totalWeight,
+      valleyScale: valleySum / totalWeight,
+    };
   }
   
   /**
@@ -239,17 +261,18 @@ export class BiomeSampler {
     neighbors: { biome: BiomeDefinition; weight: number }[],
     neighborCount: number,
     x: number,
-    z: number,
-    edgeFactor: number
+    z: number
   ): ResolvedBiomeBlocks {
-    // If not at a boundary or no neighbors, use primary biome
-    if (edgeFactor < 0.1 || neighborCount === 0) {
+    // If there are no neighboring cells to blend against, use primary biome.
+    if (neighborCount === 0) {
       return this.normalizedBlocks(primary);
     }
 
     const heightAt = this.materialHeightSampler;
     const localSurfaceY = heightAt ? (heightAt(x, z) | 0) : undefined;
+    const primaryOffset = primary.terrain?.heightOffset ?? 0;
     const allowedNeighbor = this._allowedNeighbor;
+    let primaryAllowed = true;
 
     if (localSurfaceY !== undefined && heightAt) {
       for (let i = 0; i < BiomeSampler.ADJACENT_X.length; i++) {
@@ -258,33 +281,45 @@ export class BiomeSampler {
         this._adjacentBiomes[i] = this.getBiomeAt(nx, nz);
         this._adjacentHeights[i] = heightAt(nx, nz) | 0;
       }
+      primaryAllowed = this.isPrimaryUphillAllowed(primary, localSurfaceY);
     }
 
     // Build cumulative thresholds inline (avoid allocating candidates/thresholds arrays)
     // Neighbor candidates that would require steep uphill material creep are excluded.
-    let totalWeight = primaryWeight * (primary.blendStrength ?? 1.0);
+    const primaryBlendWeight = primaryAllowed ? primaryWeight * (primary.blendStrength ?? 1.0) : 0;
+    let totalWeight = primaryBlendWeight;
     for (let i = 0; i < neighborCount; i++) {
       const neighborBiome = neighbors[i].biome;
+      const neighborOffset = neighborBiome.terrain?.heightOffset ?? 0;
+      const passesOffsetLimit = neighborOffset + BiomeSampler.MAX_UPHILL_TERRAIN_OFFSET >= primaryOffset;
       const canUse = localSurfaceY === undefined
-        ? 1
-        : this.isNeighborUphillAllowed(neighborBiome, localSurfaceY) ? 1 : 0;
+        ? (passesOffsetLimit ? 1 : 0)
+        : (passesOffsetLimit && this.isNeighborUphillAllowed(neighborBiome, localSurfaceY)) ? 1 : 0;
 
       allowedNeighbor[i] = canUse;
       if (canUse) {
         totalWeight += neighbors[i].weight * (neighborBiome.blendStrength ?? 1.0);
       }
     }
+    if (totalWeight <= 1e-6) return this.normalizedBlocks(primary);
 
     // Sample noise and map to 0-1 range
     const noise = (this.ditherNoise.sample(x, z) + 1) * 0.5;
 
     // Select biome based on noise value crossing cumulative weight thresholds
-    let cumulative = (primaryWeight * (primary.blendStrength ?? 1.0)) / totalWeight;
-    if (noise < cumulative) {
+    let cumulative = primaryBlendWeight / totalWeight;
+    if (primaryBlendWeight > 0 && noise < cumulative) {
       return this.normalizedBlocks(primary);
     }
 
     let selected = primary;
+    if (!primaryAllowed) {
+      for (let i = 0; i < neighborCount; i++) {
+        if (!allowedNeighbor[i]) continue;
+        selected = neighbors[i].biome;
+        break;
+      }
+    }
     for (let i = 0; i < neighborCount; i++) {
       if (!allowedNeighbor[i]) continue;
       const neighborBiome = neighbors[i].biome;
@@ -300,6 +335,19 @@ export class BiomeSampler {
 
   private normalizedBlocks(biome: BiomeDefinition): ResolvedBiomeBlocks {
     return normalizeBiomeBlocks(biome.blocks);
+  }
+
+  private isPrimaryUphillAllowed(primaryBiome: BiomeDefinition, localSurfaceY: number): boolean {
+    let lowestPrimaryY = 2147483647;
+
+    for (let i = 0; i < BiomeSampler.ADJACENT_X.length; i++) {
+      if (this._adjacentBiomes[i] !== primaryBiome) continue;
+      const sourceY = this._adjacentHeights[i];
+      if (sourceY < lowestPrimaryY) lowestPrimaryY = sourceY;
+    }
+
+    // If no adjacent primary-biome sample exists, keep primary eligible.
+    return lowestPrimaryY === 2147483647 || localSurfaceY <= lowestPrimaryY + BiomeSampler.MAX_UPHILL_BLEND_Y;
   }
 
   private isNeighborUphillAllowed(sourceBiome: BiomeDefinition, localSurfaceY: number): boolean {
