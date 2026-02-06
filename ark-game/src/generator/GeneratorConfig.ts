@@ -84,6 +84,19 @@ export interface GeneratorConfig {
     tunnelSpan: number;
     /** Chance for an additional forced-underground branch edge */
     undergroundForkChance: number;
+    /** Optional deterministic road wear/destruction controls */
+    erosion: {
+      /** Enable road erosion pass */
+      enabled: boolean;
+      /** Max deck removal chance in fully damaged areas (0-1) */
+      deckChance: number;
+      /** Max wall/support removal chance in fully damaged areas (0-1) */
+      wallChance: number;
+      /** Horizontal damage patch scale in blocks */
+      patchScale: number;
+      /** Damage activation threshold (higher = fewer damaged patches) */
+      patchThreshold: number;
+    };
   };
 
   /** Output-related generation controls */
@@ -99,7 +112,7 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
   blockId: 33,
   biomes: {
     enabled: true,
-    size: 64,
+    size: 256,
     blendWidth: 20, // Wider blend for smoother terrain transitions
   },
   terrain: {
@@ -131,6 +144,13 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
     tunnelDepth: 22,
     tunnelSpan: 0.64,
     undergroundForkChance: 0.94,
+    erosion: {
+      enabled: false,
+      deckChance: 0.28,
+      wallChance: 0.4,
+      patchScale: 26,
+      patchThreshold: 0.68,
+    },
   },
   output: {
     occlusionCulling: true,
@@ -152,7 +172,14 @@ export function mergeConfig(userConfig: Partial<GeneratorConfig>): GeneratorConf
       },
     },
     caves: { ...DEFAULT_CONFIG.caves, ...userConfig.caves },
-    roads: { ...DEFAULT_CONFIG.roads, ...userConfig.roads },
+    roads: {
+      ...DEFAULT_CONFIG.roads,
+      ...userConfig.roads,
+      erosion: {
+        ...DEFAULT_CONFIG.roads.erosion,
+        ...userConfig.roads?.erosion,
+      },
+    },
     output: { ...DEFAULT_CONFIG.output, ...userConfig.output },
   };
 }

@@ -12,7 +12,8 @@ import type { GenerationContext, GeneratorPass } from './GeneratorPass';
 const ROAD_BLOCK_ID = 5;
 const ROAD_STRIPE_BLOCK_ID = 58;
 const ROAD_WALL_BLOCK_ID = 11;
-const ROAD_CLEARANCE = 4;
+const TUNNEL_HEIGHT = 6;
+const ROAD_CLEARANCE = TUNNEL_HEIGHT - 1;
 const FLUID_SCAN_HEIGHT = 24;
 const NODE_MARGIN = 24;
 const MIN_STRAIGHT_FOR_SLOPE = 4;
@@ -21,11 +22,20 @@ const ELEVATION_STEP_SPACING = 3;
 const STRIPE_PERIOD = 3;
 const BRIDGE_SUPPORT_SPACING = 9;
 const BRIDGE_SUPPORT_HALF_SIZE = 1;
-const TURN_ARC_RADIUS = 10;
+const TURN_ARC_RADIUS = 14;
+const FORK_TURN_ARC_RADIUS = 10;
 const TURN_ARC_MIN_RADIUS = 2;
+const CHAIN_HARD_BACKTRACK_COS = 0.05;
+const FORK_HARD_BACKTRACK_COS = 0.15;
 const SIDE_DX = new Int8Array([1, -1, 0, 0]);
 const SIDE_DZ = new Int8Array([0, 0, 1, -1]);
 const ROAD_Y_UNSET = -32768;
+const ROAD_INTERSECTION_VERTICAL_GAP = TUNNEL_HEIGHT;
+const ROAD_JUNCTION_Y_TOLERANCE = 1;
+const NODE_FILLET_TRIGGER_COS = 0.7;
+const NODE_FILLET_TRIM_RATIO = 0.16;
+const NODE_FILLET_MIN_RADIUS = 2;
+const NODE_FILLET_MAX_RADIUS = 10;
 
 const HASH_A = 374761393;
 const HASH_B = 668265263;
@@ -44,6 +54,11 @@ function rand01(h: number): number {
 
 function clamp(v: number, min: number, max: number): number {
   return v < min ? min : v > max ? max : v;
+}
+
+function smoothstep01(t: number): number {
+  const x = clamp(t, 0, 1);
+  return x * x * (3 - 2 * x);
 }
 
 interface RoadNode {
@@ -86,6 +101,13 @@ interface RoadSettings {
   tunnelDepth: number;
   tunnelSpan: number;
   undergroundForkChance: number;
+  erosion: {
+    enabled: boolean;
+    deckChance: number;
+    wallChance: number;
+    patchScale: number;
+    patchThreshold: number;
+  };
 }
 
 interface ColumnData {
@@ -110,7 +132,16 @@ interface RoadPlacementState {
   bridgeCenterline: Map<number, 0 | 1>;
   supportAnchors: Set<number>;
   roadColumns: Map<number, number[]>;
+  wallVoxels: Set<number>;
+  roofCandidates: Set<number>;
   wallCandidates: Set<number>;
+}
+
+interface NodeFillet {
+  nodeIndex: number;
+  neighborA: number;
+  neighborB: number;
+  radius: number;
 }
 
 export class RoadPass implements GeneratorPass {
@@ -130,6 +161,7 @@ export class RoadPass implements GeneratorPass {
     if (nodes.length < 2) return;
 
     const edges = this.buildRoadGraph(ctx, columns, nodes, seed, settings, biomeCache);
+    const filletPlan = this.planNodeFillets(nodes, edges);
     const stripes: StripePlacement[] = [];
     const centerlineY = new Int16Array(sizeX * sizeZ);
     centerlineY.fill(ROAD_Y_UNSET);
@@ -143,6 +175,8 @@ export class RoadPass implements GeneratorPass {
       bridgeCenterline: new Map<number, 0 | 1>(),
       supportAnchors: new Set<number>(),
       roadColumns: new Map<number, number[]>(),
+      wallVoxels: new Set<number>(),
+      roofCandidates: new Set<number>(),
       wallCandidates: new Set<number>(),
     };
 
@@ -155,6 +189,25 @@ export class RoadPass implements GeneratorPass {
         nodes[edge.a],
         nodes[edge.b],
         edge,
+        filletPlan.edgeStartTrim[i],
+        filletPlan.edgeEndTrim[i],
+        stripes,
+        centerlineY,
+        stripeOffset,
+        state,
+        settings
+      );
+    }
+
+    for (let i = 0; i < filletPlan.fillets.length; i++) {
+      const fillet = filletPlan.fillets[i];
+      stripeOffset += this.drawNodeFillet(
+        ctx,
+        columns,
+        nodes[fillet.nodeIndex],
+        nodes[fillet.neighborA],
+        nodes[fillet.neighborB],
+        fillet.radius,
         stripes,
         centerlineY,
         stripeOffset,
@@ -166,6 +219,7 @@ export class RoadPass implements GeneratorPass {
     this.pruneDetachedRoadVoxels(ctx, state);
     this.commitTunnelWalls(ctx, columns, state);
     this.commitRoadDeck(ctx, columns, state, stripes, settings);
+    this.applyErosion(ctx, state, seed, settings);
   }
 
   private pruneDetachedRoadVoxels(ctx: GenerationContext, state: RoadPlacementState): void {
@@ -237,6 +291,7 @@ export class RoadPass implements GeneratorPass {
     const undergroundForkChance = clamp(roads.undergroundForkChance, 0, 1);
     const maxDepth = Math.max(4, ctx.config.worldSize.y - 12);
     const tunnelDepth = clamp(Math.round(roads.tunnelDepth), 4, maxDepth) | 0;
+    const erosion = roads.erosion;
 
     return {
       enabled: roads.enabled,
@@ -248,6 +303,13 @@ export class RoadPass implements GeneratorPass {
       tunnelDepth,
       tunnelSpan,
       undergroundForkChance,
+      erosion: {
+        enabled: erosion.enabled,
+        deckChance: clamp(erosion.deckChance, 0, 1),
+        wallChance: clamp(erosion.wallChance, 0, 1),
+        patchScale: Math.max(6, Math.round(erosion.patchScale)),
+        patchThreshold: clamp(erosion.patchThreshold, 0, 0.98),
+      },
     };
   }
 
@@ -451,6 +513,12 @@ export class RoadPass implements GeneratorPass {
     const linked = new Set<number>();
     const order: number[] = [];
     const used = new Uint8Array(n);
+    const turnCos = (ax: number, az: number, bx: number, bz: number): number => {
+      const lenA = Math.hypot(ax, az);
+      const lenB = Math.hypot(bx, bz);
+      if (lenA <= 1e-6 || lenB <= 1e-6) return 1;
+      return clamp((ax * bx + az * bz) / (lenA * lenB), -1, 1);
+    };
 
     const addEdge = (a: number, b: number, salt: number, forceTunnel: boolean, isFork: boolean): boolean => {
       if (a === b) return false;
@@ -466,6 +534,82 @@ export class RoadPass implements GeneratorPass {
       return true;
     };
 
+    const connectionTurnPenalty = (from: number, to: number): number => {
+      const tx = nodes[to].x - nodes[from].x;
+      const tz = nodes[to].z - nodes[from].z;
+      let penalty = 1;
+      for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        let other = -1;
+        if (edge.a === from) other = edge.b;
+        else if (edge.b === from) other = edge.a;
+        if (other < 0) continue;
+
+        const ox = nodes[other].x - nodes[from].x;
+        const oz = nodes[other].z - nodes[from].z;
+        const cos = turnCos(tx, tz, ox, oz);
+        if (cos < -0.55) penalty *= 4.5;
+        else if (cos < -0.3) penalty *= 2.4;
+        else if (cos < 0.05) penalty *= 1.35;
+      }
+      return penalty;
+    };
+    const connectionShapePenalty = (a: number, b: number): number =>
+      connectionTurnPenalty(a, b) * connectionTurnPenalty(b, a);
+
+    const isHardBacktrackConnection = (from: number, to: number, thresholdCos: number): boolean => {
+      const tx = nodes[to].x - nodes[from].x;
+      const tz = nodes[to].z - nodes[from].z;
+      for (let i = 0; i < edges.length; i++) {
+        const edge = edges[i];
+        let other = -1;
+        if (edge.a === from) other = edge.b;
+        else if (edge.b === from) other = edge.a;
+        if (other < 0) continue;
+
+        const ox = nodes[other].x - nodes[from].x;
+        const oz = nodes[other].z - nodes[from].z;
+        if (turnCos(tx, tz, ox, oz) < thresholdCos) return true;
+      }
+      return false;
+    };
+    const isBranchBacktrack = (from: number, to: number): boolean =>
+      isHardBacktrackConnection(from, to, FORK_HARD_BACKTRACK_COS) ||
+      isHardBacktrackConnection(to, from, FORK_HARD_BACKTRACK_COS);
+
+    const pickBranchTarget = (
+      from: number,
+      excludeA: number,
+      excludeB: number,
+      minDistSq: number | undefined
+    ): number => {
+      let best = -1;
+      let bestCost = Number.POSITIVE_INFINITY;
+      let bestFallback = -1;
+      let bestFallbackCost = Number.POSITIVE_INFINITY;
+
+      for (let i = 0; i < n; i++) {
+        if (i === from || i === excludeA || i === excludeB) continue;
+        if (linked.has(key(from, i))) continue;
+        if (minDistSq !== undefined && distSq(from, i) < minDistSq) continue;
+
+        const cost = metric(from, i) * connectionShapePenalty(from, i);
+        if (isBranchBacktrack(from, i)) {
+          if (cost < bestFallbackCost) {
+            bestFallbackCost = cost;
+            bestFallback = i;
+          }
+          continue;
+        }
+        if (cost < bestCost) {
+          bestCost = cost;
+          best = i;
+        }
+      }
+
+      return best >= 0 ? best : bestFallback;
+    };
+
     // Build a low-degree backbone chain to avoid grid-like crossings.
     let start = 0;
     for (let i = 1; i < n; i++) {
@@ -479,6 +623,8 @@ export class RoadPass implements GeneratorPass {
       const prev = order.length > 1 ? order[order.length - 2] : -1;
       let best = -1;
       let bestScore = Number.POSITIVE_INFINITY;
+      let bestHardBacktrack = -1;
+      let bestHardBacktrackScore = Number.POSITIVE_INFINITY;
 
       for (let i = 0; i < n; i++) {
         if (used[i]) continue;
@@ -488,14 +634,17 @@ export class RoadPass implements GeneratorPass {
           const az = nodes[current].z - nodes[prev].z;
           const bx = nodes[i].x - nodes[current].x;
           const bz = nodes[i].z - nodes[current].z;
-          const lenA = Math.hypot(ax, az);
-          const lenB = Math.hypot(bx, bz);
-          if (lenA > 0 && lenB > 0) {
-            const cos = clamp((ax * bx + az * bz) / (lenA * lenB), -1, 1);
-            const turnPenalty = 1 - cos;
-            score *= 1 + turnPenalty * 3.2;
-            if (cos < 0.45) score *= 2.4;
-            if (cos < 0.15) score *= 2.2;
+          const cos = turnCos(ax, az, bx, bz);
+          const turnPenalty = 1 - cos;
+          score *= 1 + turnPenalty * 3.2;
+          if (cos < 0.45) score *= 2.4;
+          if (cos < 0.15) score *= 2.2;
+          if (cos < CHAIN_HARD_BACKTRACK_COS) {
+            if (score < bestHardBacktrackScore) {
+              bestHardBacktrackScore = score;
+              bestHardBacktrack = i;
+            }
+            continue;
           }
         }
         if (score < bestScore) {
@@ -504,6 +653,7 @@ export class RoadPass implements GeneratorPass {
         }
       }
 
+      if (best < 0) best = bestHardBacktrack;
       if (best < 0) break;
       used[best] = 1;
       order.push(best);
@@ -519,18 +669,7 @@ export class RoadPass implements GeneratorPass {
     if (n >= 4 && rand01(hash3(seed, n, order.length, 57)) < forkChance) {
       const forkAt = 1 + ((rand01(hash3(seed, n, 11, 59)) * (order.length - 2)) | 0);
       const from = order[forkAt];
-      let best = -1;
-      let bestCost = Number.POSITIVE_INFINITY;
-      for (let i = 0; i < n; i++) {
-        if (i === from) continue;
-        if (i === order[forkAt - 1] || i === order[forkAt + 1]) continue;
-        if (linked.has(key(from, i))) continue;
-        const cost = metric(from, i);
-        if (cost < bestCost) {
-          bestCost = cost;
-          best = i;
-        }
-      }
+      const best = pickBranchTarget(from, order[forkAt - 1], order[forkAt + 1], undefined);
       if (best >= 0) addEdge(from, best, 61, false, true);
     }
 
@@ -543,34 +682,9 @@ export class RoadPass implements GeneratorPass {
         : 0;
       const from = order[fromIdx];
 
-      let best = -1;
-      let bestCost = Number.POSITIVE_INFINITY;
       const minBranchDistSq = 72 * 72;
-
-      for (let i = 0; i < n; i++) {
-        if (i === from) continue;
-        if (linked.has(key(from, i))) continue;
-        const d = distSq(from, i);
-        if (d < minBranchDistSq) continue;
-        const cost = metric(from, i);
-        if (cost < bestCost) {
-          bestCost = cost;
-          best = i;
-        }
-      }
-
-      if (best < 0) {
-        for (let i = 0; i < n; i++) {
-          if (i === from) continue;
-          if (linked.has(key(from, i))) continue;
-          const cost = metric(from, i);
-          if (cost < bestCost) {
-            bestCost = cost;
-            best = i;
-          }
-        }
-      }
-
+      let best = pickBranchTarget(from, -1, -1, minBranchDistSq);
+      if (best < 0) best = pickBranchTarget(from, -1, -1, undefined);
       if (best >= 0) addEdge(from, best, 73, true, true);
     }
 
@@ -723,6 +837,24 @@ export class RoadPass implements GeneratorPass {
           tx = clamp(Math.round(node.x + (tz - node.z) * slope), 0, sizeX - 1);
         }
 
+        // If forced-side projection backtracks against the current terminal
+        // direction, recompute from pure outward heading.
+        const ex = tx - node.x;
+        const ez = tz - node.z;
+        if (turnCos(vx, vz, ex, ez) < 0.25) {
+          if (Math.abs(vx) >= Math.abs(vz)) {
+            const dirX = vx !== 0 ? vx : node.x - cx;
+            tx = dirX >= 0 ? sizeX - 1 : 0;
+            const slope = Math.abs(vx) > 0.001 ? vz / vx : 0;
+            tz = clamp(Math.round(node.z + (tx - node.x) * slope), 0, sizeZ - 1);
+          } else {
+            const dirZ = vz !== 0 ? vz : node.z - cz;
+            tz = dirZ >= 0 ? sizeZ - 1 : 0;
+            const slope = Math.abs(vz) > 0.001 ? vx / vz : 0;
+            tx = clamp(Math.round(node.x + (tz - node.z) * slope), 0, sizeX - 1);
+          }
+        }
+
         const claimed = claimBoundary(tx, tz);
         tx = claimed.x;
         tz = claimed.z;
@@ -781,6 +913,8 @@ export class RoadPass implements GeneratorPass {
     a: RoadNode,
     b: RoadNode,
     edge: RoadEdge,
+    startTrim: number,
+    endTrim: number,
     stripes: StripePlacement[],
     centerlineY: Int16Array,
     stripeOffset: number,
@@ -788,18 +922,25 @@ export class RoadPass implements GeneratorPass {
     settings: RoadSettings
   ): number {
     const { x: sizeX, z: sizeZ } = ctx.config.worldSize;
-    const dx = b.x - a.x;
-    const dz = b.z - a.z;
-    const dist = Math.hypot(dx, dz);
-    if (dist < 8) return 0;
+    const rawDx = b.x - a.x;
+    const rawDz = b.z - a.z;
+    const rawDist = Math.hypot(rawDx, rawDz);
+    if (rawDist < 8) return 0;
 
     const pathX: number[] = [];
     const pathZ: number[] = [];
 
-    const startX = clamp(Math.round(a.x), 0, sizeX - 1);
-    const startZ = clamp(Math.round(a.z), 0, sizeZ - 1);
-    const endX = clamp(Math.round(b.x), 0, sizeX - 1);
-    const endZ = clamp(Math.round(b.z), 0, sizeZ - 1);
+    const start = this.trimmedPointToward(a, b, startTrim, sizeX, sizeZ);
+    const end = this.trimmedPointToward(b, a, endTrim, sizeX, sizeZ);
+    const startX = start.x;
+    const startZ = start.z;
+    const endX = end.x;
+    const endZ = end.z;
+    if (startX === endX && startZ === endZ) return 0;
+    const dx = endX - startX;
+    const dz = endZ - startZ;
+    const dist = Math.hypot(dx, dz);
+    if (dist < 4) return 0;
     pathX.push(startX);
     pathZ.push(startZ);
 
@@ -808,8 +949,8 @@ export class RoadPass implements GeneratorPass {
       this.connectAxisOrdered(pathX, pathZ, endX, endZ, preferX);
     } else {
       const invDist = 1 / dist;
-      const midX = (a.x + b.x) * 0.5;
-      const midZ = (a.z + b.z) * 0.5;
+      const midX = (startX + endX) * 0.5;
+      const midZ = (startZ + endZ) * 0.5;
       const perpX = -dz * invDist;
       const perpZ = dx * invDist;
       const curveBias = clamp(edge.curveBias, 0.45, 2.2);
@@ -823,16 +964,15 @@ export class RoadPass implements GeneratorPass {
       for (let i = 1; i <= samples; i++) {
         const t = i / samples;
         const omt = 1 - t;
-        const fx = omt * omt * a.x + 2 * omt * t * ctrlX + t * t * b.x;
-        const fz = omt * omt * a.z + 2 * omt * t * ctrlZ + t * t * b.z;
+        const fx = omt * omt * startX + 2 * omt * t * ctrlX + t * t * endX;
+        const fz = omt * omt * startZ + 2 * omt * t * ctrlZ + t * t * endZ;
         const tx = clamp(Math.round(fx), 0, sizeX - 1);
         const tz = clamp(Math.round(fz), 0, sizeZ - 1);
         this.connectCardinal(pathX, pathZ, tx, tz);
       }
     }
-    if (!edge.isFork) {
-      this.smoothRightAngleTurns(pathX, pathZ, TURN_ARC_RADIUS, TURN_ARC_MIN_RADIUS);
-    }
+    const targetArcRadius = edge.isFork ? FORK_TURN_ARC_RADIUS : TURN_ARC_RADIUS;
+    this.smoothRightAngleTurns(pathX, pathZ, targetArcRadius, TURN_ARC_MIN_RADIUS);
 
     return this.paintRoadPath(
       ctx,
@@ -842,12 +982,94 @@ export class RoadPass implements GeneratorPass {
       a.y,
       b.y,
       edge.tunnel,
+      edge.isFork,
+      false,
       stripes,
       centerlineY,
       stripeOffset,
       state,
       settings
     );
+  }
+
+  private drawNodeFillet(
+    ctx: GenerationContext,
+    columns: ColumnData,
+    node: RoadNode,
+    neighborA: RoadNode,
+    neighborB: RoadNode,
+    radius: number,
+    stripes: StripePlacement[],
+    centerlineY: Int16Array,
+    stripeOffset: number,
+    state: RoadPlacementState,
+    settings: RoadSettings
+  ): number {
+    const { x: sizeX, z: sizeZ } = ctx.config.worldSize;
+    const start = this.trimmedPointToward(node, neighborA, radius, sizeX, sizeZ);
+    const end = this.trimmedPointToward(node, neighborB, radius, sizeX, sizeZ);
+    if (start.x === end.x && start.z === end.z) return 0;
+
+    const pathX: number[] = [start.x];
+    const pathZ: number[] = [start.z];
+    const samples = Math.max(10, radius * 3);
+    for (let i = 1; i <= samples; i++) {
+      const t = i / samples;
+      const omt = 1 - t;
+      const fx = omt * omt * start.x + 2 * omt * t * node.x + t * t * end.x;
+      const fz = omt * omt * start.z + 2 * omt * t * node.z + t * t * end.z;
+      const tx = clamp(Math.round(fx), 0, sizeX - 1);
+      const tz = clamp(Math.round(fz), 0, sizeZ - 1);
+      this.connectCardinal(pathX, pathZ, tx, tz);
+    }
+    this.smoothRightAngleTurns(pathX, pathZ, Math.max(radius, TURN_ARC_RADIUS), TURN_ARC_MIN_RADIUS);
+    return this.paintRoadPath(
+      ctx,
+      columns,
+      pathX,
+      pathZ,
+      node.y,
+      node.y,
+      undefined,
+      true,
+      true,
+      stripes,
+      centerlineY,
+      stripeOffset,
+      state,
+      settings
+    );
+  }
+
+  private trimmedPointToward(
+    from: RoadNode,
+    toward: RoadNode,
+    trim: number,
+    sizeX: number,
+    sizeZ: number
+  ): { x: number; z: number } {
+    if (trim <= 0) {
+      return {
+        x: clamp(Math.round(from.x), 0, sizeX - 1),
+        z: clamp(Math.round(from.z), 0, sizeZ - 1),
+      };
+    }
+
+    const dx = toward.x - from.x;
+    const dz = toward.z - from.z;
+    const dist = Math.hypot(dx, dz);
+    if (dist < 1e-6) {
+      return {
+        x: clamp(Math.round(from.x), 0, sizeX - 1),
+        z: clamp(Math.round(from.z), 0, sizeZ - 1),
+      };
+    }
+
+    const t = clamp(trim / dist, 0, 0.45);
+    return {
+      x: clamp(Math.round(from.x + dx * t), 0, sizeX - 1),
+      z: clamp(Math.round(from.z + dz * t), 0, sizeZ - 1),
+    };
   }
 
   private connectAxisOrdered(
@@ -958,7 +1180,7 @@ export class RoadPass implements GeneratorPass {
         outLen++;
       }
 
-      const radius = Math.min(targetRadius, inLen - 1, outLen - 1);
+      const radius = Math.min(targetRadius, inLen, outLen);
       if (radius < minRadius) continue;
       const start = i - radius;
       const end = i + radius;
@@ -1018,6 +1240,8 @@ export class RoadPass implements GeneratorPass {
     startY: number,
     endY: number,
     tunnel: EdgeTunnelProfile | undefined,
+    isFork: boolean,
+    allowWideMerge: boolean,
     stripes: StripePlacement[],
     centerlineY: Int16Array,
     stripeOffset: number,
@@ -1054,6 +1278,8 @@ export class RoadPass implements GeneratorPass {
       }
     }
 
+    const plannedY = new Int16Array(pathX.length);
+    const plannedAlongX = new Uint8Array(pathX.length);
     let currentY = clamp(Math.round(startY), 1, maxY);
     let lastStep = -999999;
 
@@ -1062,20 +1288,25 @@ export class RoadPass implements GeneratorPass {
       const z = pathZ[i];
       const idx = x * columns.sizeZ + z;
       const presetY = centerlineY[idx];
+      const t = total > 0 ? i / total : 0;
+      const tunnelOffset = this.tunnelOffsetAt(t, tunnel);
+      const liquidFloorY = columns.liquidFloor[idx];
+      const allowMerge = allowWideMerge || this.isJunctionWindow(i, total, isFork, settings);
 
-      if (presetY !== ROAD_Y_UNSET) {
+      if (presetY !== ROAD_Y_UNSET && allowMerge) {
         currentY = presetY;
+        if (tunnelOffset >= -0.01 && currentY < liquidFloorY) {
+          currentY = liquidFloorY;
+        }
       } else {
-        const t = total > 0 ? i / total : 0;
         const gradeY = startY + (endY - startY) * t;
-        const tunnelOffset = this.tunnelOffsetAt(t, tunnel);
 
         let desiredY = gradeY + tunnelOffset;
         if (tunnelOffset < -0.01) {
           const tunnelCapY = columns.surface[idx] - (ROAD_CLEARANCE + 1);
           desiredY = Math.min(desiredY, tunnelCapY);
         } else {
-          desiredY = Math.max(desiredY, columns.liquidFloor[idx]);
+          desiredY = Math.max(desiredY, liquidFloorY);
         }
 
         const targetY = clamp(Math.round(desiredY), 1, maxY);
@@ -1090,12 +1321,27 @@ export class RoadPass implements GeneratorPass {
             lastStep = i;
           }
         }
-
-        centerlineY[idx] = currentY;
       }
 
       const roadY = currentY;
       const alongX = this.isAlongX(pathX, pathZ, i);
+      if (this.hasCrossSectionConflict(state, x, z, roadY, alongX, allowMerge, settings)) {
+        return 0;
+      }
+      plannedY[i] = roadY;
+      plannedAlongX[i] = alongX ? 1 : 0;
+    }
+
+    for (let i = 0; i < pathX.length; i++) {
+      const x = pathX[i];
+      const z = pathZ[i];
+      const idx = x * columns.sizeZ + z;
+      const roadY = plannedY[i];
+      const alongX = plannedAlongX[i] === 1;
+      const allowMerge = allowWideMerge || this.isJunctionWindow(i, total, isFork, settings);
+      if (centerlineY[idx] === ROAD_Y_UNSET || allowMerge) {
+        centerlineY[idx] = roadY;
+      }
       const centerKey = this.toVoxelKey(state, x, roadY, z);
       state.centerlineVoxels.add(centerKey);
       if (roadY > columns.surface[idx] + 1) {
@@ -1151,6 +1397,103 @@ export class RoadPass implements GeneratorPass {
     return true;
   }
 
+  private planNodeFillets(
+    nodes: RoadNode[],
+    edges: RoadEdge[]
+  ): { edgeStartTrim: Int16Array; edgeEndTrim: Int16Array; fillets: NodeFillet[] } {
+    const edgeStartTrim = new Int16Array(edges.length);
+    const edgeEndTrim = new Int16Array(edges.length);
+    const fillets: NodeFillet[] = [];
+
+    const adjacency = Array.from({ length: nodes.length }, () => [] as Array<{ edge: number; neighbor: number }>);
+    for (let i = 0; i < edges.length; i++) {
+      const edge = edges[i];
+      adjacency[edge.a].push({ edge: i, neighbor: edge.b });
+      adjacency[edge.b].push({ edge: i, neighbor: edge.a });
+    }
+
+    const turnCos = (ax: number, az: number, bx: number, bz: number): number => {
+      const lenA = Math.hypot(ax, az);
+      const lenB = Math.hypot(bx, bz);
+      if (lenA <= 1e-6 || lenB <= 1e-6) return 1;
+      return clamp((ax * bx + az * bz) / (lenA * lenB), -1, 1);
+    };
+
+    for (let nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
+      const links = adjacency[nodeIndex];
+      if (links.length !== 2) continue;
+
+      const node = nodes[nodeIndex];
+      const a = nodes[links[0].neighbor];
+      const b = nodes[links[1].neighbor];
+      const ax = a.x - node.x;
+      const az = a.z - node.z;
+      const bx = b.x - node.x;
+      const bz = b.z - node.z;
+      const cos = turnCos(ax, az, bx, bz);
+      if (cos > NODE_FILLET_TRIGGER_COS) continue;
+
+      const distA = Math.hypot(ax, az);
+      const distB = Math.hypot(bx, bz);
+      let radius = Math.floor(Math.min(distA, distB) * NODE_FILLET_TRIM_RATIO);
+      radius = Math.min(radius, NODE_FILLET_MAX_RADIUS);
+      radius = Math.min(radius, Math.floor(distA * 0.45), Math.floor(distB * 0.45));
+      if (radius < NODE_FILLET_MIN_RADIUS) continue;
+
+      const linkA = links[0];
+      const linkB = links[1];
+
+      if (edges[linkA.edge].a === nodeIndex) edgeStartTrim[linkA.edge] = Math.max(edgeStartTrim[linkA.edge], radius);
+      else edgeEndTrim[linkA.edge] = Math.max(edgeEndTrim[linkA.edge], radius);
+
+      if (edges[linkB.edge].a === nodeIndex) edgeStartTrim[linkB.edge] = Math.max(edgeStartTrim[linkB.edge], radius);
+      else edgeEndTrim[linkB.edge] = Math.max(edgeEndTrim[linkB.edge], radius);
+
+      fillets.push({
+        nodeIndex,
+        neighborA: linkA.neighbor,
+        neighborB: linkB.neighbor,
+        radius,
+      });
+    }
+
+    return { edgeStartTrim, edgeEndTrim, fillets };
+  }
+
+  private isJunctionWindow(i: number, total: number, isFork: boolean, settings: RoadSettings): boolean {
+    const terminalWindow = Math.max(settings.width, settings.halfWidth + 4);
+    if (i <= terminalWindow || i >= total - terminalWindow) return true;
+    if (!isFork) return false;
+    const forkWindow = terminalWindow + settings.halfWidth + 3;
+    return i <= forkWindow || i >= total - forkWindow;
+  }
+
+  private hasCrossSectionConflict(
+    state: RoadPlacementState,
+    centerX: number,
+    centerZ: number,
+    roadY: number,
+    alongX: boolean,
+    allowMerge: boolean,
+    settings: RoadSettings
+  ): boolean {
+    for (let o = -settings.halfWidth; o <= settings.halfWidth; o++) {
+      const x = alongX ? centerX : centerX + o;
+      const z = alongX ? centerZ + o : centerZ;
+      if (x < 0 || x >= state.sizeX || z < 0 || z >= state.sizeZ) continue;
+
+      const ys = state.roadColumns.get(this.toColumnKey(state, x, z));
+      if (!ys) continue;
+      for (let i = 0; i < ys.length; i++) {
+        const delta = Math.abs(ys[i] - roadY);
+        if (delta >= ROAD_INTERSECTION_VERTICAL_GAP) continue;
+        if (allowMerge && delta <= ROAD_JUNCTION_Y_TOLERANCE) continue;
+        return true;
+      }
+    }
+    return false;
+  }
+
   private paintRoadCrossSection(
     ctx: GenerationContext,
     columns: ColumnData,
@@ -1193,22 +1536,6 @@ export class RoadPass implements GeneratorPass {
       const x = spanX[i];
       const z = spanZ[i];
 
-      // If this column was previously used by another road segment at a
-      // different deck height, clear stale tracked road voxels first.
-      const colKey = this.toColumnKey(state, x, z);
-      const prevYs = state.roadColumns.get(colKey);
-      if (prevYs && prevYs.length > 0) {
-        const copy = prevYs.slice();
-        for (let p = 0; p < copy.length; p++) {
-          const py = copy[p];
-          if (py >= roadY && py <= clearTop) continue;
-          const pKey = this.toVoxelKey(state, x, py, z);
-          if (!state.roadVoxels.has(pKey)) continue;
-          if (ctx.hasBlock(x, py, z)) ctx.removeBlock(x, py, z);
-          this.removeRoadVoxel(state, x, py, z);
-        }
-      }
-
       for (let y = roadY; y <= clearTop; y++) {
         if (ctx.hasBlock(x, y, z)) ctx.removeBlock(x, y, z);
         this.removeRoadVoxel(state, x, y, z);
@@ -1231,8 +1558,7 @@ export class RoadPass implements GeneratorPass {
           if (spanKeys.has(nKey)) continue;
           if (!ctx.hasBlock(nx, y, nz)) continue;
 
-          const nIdx = nx * columns.sizeZ + nz;
-          if (y > columns.surface[nIdx]) continue;
+          if (!this.isWithinTerrainOrLiquid(columns, nx, nz, y)) continue;
 
           if (y === roadY) {
             const sideHasOverhead = y + 1 < sizeY && ctx.hasBlock(nx, y + 1, nz);
@@ -1249,10 +1575,8 @@ export class RoadPass implements GeneratorPass {
       for (let i = 0; i < spanX.length; i++) {
         const x = spanX[i];
         const z = spanZ[i];
-        const idx = x * columns.sizeZ + z;
-        if (roofY > columns.surface[idx]) continue;
-        if (!ctx.hasBlock(x, roofY, z)) continue;
-        state.wallCandidates.add(this.toVoxelKey(state, x, roofY, z));
+        if (!this.isWithinTerrainOrLiquid(columns, x, z, roofY)) continue;
+        state.roofCandidates.add(this.toVoxelKey(state, x, roofY, z));
       }
     }
   }
@@ -1263,6 +1587,22 @@ export class RoadPass implements GeneratorPass {
 
   private toVoxelKey(state: RoadPlacementState, x: number, y: number, z: number): number {
     return x + z * state.sizeX + y * state.stride;
+  }
+
+  private setRoadWallBlock(
+    ctx: GenerationContext,
+    state: RoadPlacementState,
+    x: number,
+    y: number,
+    z: number
+  ): void {
+    ctx.setBlock(ROAD_WALL_BLOCK_ID, x, y, z);
+    state.wallVoxels.add(this.toVoxelKey(state, x, y, z));
+  }
+
+  private isWithinTerrainOrLiquid(columns: ColumnData, x: number, z: number, y: number): boolean {
+    const idx = x * columns.sizeZ + z;
+    return y <= columns.surface[idx] || y < columns.liquidFloor[idx];
   }
 
   private addRoadVoxel(state: RoadPlacementState, x: number, y: number, z: number): void {
@@ -1380,37 +1720,27 @@ export class RoadPass implements GeneratorPass {
     return false;
   }
 
-  private hasNearbyRoad(
-    state: RoadPlacementState,
-    x: number,
-    y: number,
-    z: number,
-    radius: number,
-    maxDeltaY: number
-  ): boolean {
-    const minX = Math.max(0, x - radius);
-    const maxX = Math.min(state.sizeX - 1, x + radius);
-    const minZ = Math.max(0, z - radius);
-    const maxZ = Math.min(state.sizeZ - 1, z + radius);
-
-    for (let nx = minX; nx <= maxX; nx++) {
-      for (let nz = minZ; nz <= maxZ; nz++) {
-        const ys = state.roadColumns.get(this.toColumnKey(state, nx, nz));
-        if (!ys) continue;
-        for (let i = 0; i < ys.length; i++) {
-          if (Math.abs(ys[i] - y) <= maxDeltaY) return true;
-        }
-      }
-    }
-    return false;
-  }
-
   private commitTunnelWalls(
     ctx: GenerationContext,
     columns: ColumnData,
     state: RoadPlacementState
   ): void {
+    // Roof candidates are explicit tunnel caps and should always resolve to
+    // wall blocks when they are in terrain/liquid envelope.
+    state.roofCandidates.forEach((key) => {
+      const y = (key / state.stride) | 0;
+      const rem = key - y * state.stride;
+      const z = (rem / state.sizeX) | 0;
+      const x = rem - z * state.sizeX;
+
+      if (state.roadVoxels.has(key)) return;
+      if (!this.isWithinTerrainOrLiquid(columns, x, z, y)) return;
+      if (!this.hasRoadSupportForWall(state, x, y, z)) return;
+      this.setRoadWallBlock(ctx, state, x, y, z);
+    });
+
     state.wallCandidates.forEach((key) => {
+      if (state.roofCandidates.has(key)) return;
       const y = (key / state.stride) | 0;
       const rem = key - y * state.stride;
       const z = (rem / state.sizeX) | 0;
@@ -1419,12 +1749,13 @@ export class RoadPass implements GeneratorPass {
       if (!ctx.hasBlock(x, y, z)) return;
       if (state.roadVoxels.has(key)) return;
 
-      const idx = x * columns.sizeZ + z;
-      if (y > columns.surface[idx]) return;
+      if (!this.isWithinTerrainOrLiquid(columns, x, z, y)) return;
       if (!this.hasRoadSupportForWall(state, x, y, z)) return;
-      if (this.touchesRoadOnBothAxes(state, x, y, z, ROAD_CLEARANCE + 1)) return;
+      const cIdx = x * columns.sizeZ + z;
+      const inLiquidEnvelope = y > columns.surface[cIdx] && y < columns.liquidFloor[cIdx];
+      if (!inLiquidEnvelope && this.touchesRoadOnBothAxes(state, x, y, z, ROAD_CLEARANCE + 1)) return;
 
-      ctx.setBlock(ROAD_WALL_BLOCK_ID, x, y, z);
+      this.setRoadWallBlock(ctx, state, x, y, z);
     });
   }
 
@@ -1456,7 +1787,7 @@ export class RoadPass implements GeneratorPass {
       const underY = y - 1;
       const underKey = this.toVoxelKey(state, x, underY, z);
       if (finalRoadKeys.has(underKey)) return;
-      ctx.setBlock(ROAD_WALL_BLOCK_ID, x, underY, z);
+      this.setRoadWallBlock(ctx, state, x, underY, z);
     });
 
     // For elevated roads, place periodic 3x3 support columns down to terrain surface.
@@ -1481,7 +1812,7 @@ export class RoadPass implements GeneratorPass {
           for (let py = topY; py >= surfaceY; py--) {
             const pKey = this.toVoxelKey(state, px, py, pz);
             if (finalRoadKeys.has(pKey)) continue;
-            ctx.setBlock(ROAD_WALL_BLOCK_ID, px, py, pz);
+            this.setRoadWallBlock(ctx, state, px, py, pz);
           }
         }
       }
@@ -1503,7 +1834,7 @@ export class RoadPass implements GeneratorPass {
           const pz = alongX ? centerZ + o : centerZ;
           if (px < 0 || px >= state.sizeX || pz < 0 || pz >= state.sizeZ) continue;
           const underKey = this.toVoxelKey(state, px, underY, pz);
-          if (!finalRoadKeys.has(underKey)) ctx.setBlock(ROAD_WALL_BLOCK_ID, px, underY, pz);
+          if (!finalRoadKeys.has(underKey)) this.setRoadWallBlock(ctx, state, px, underY, pz);
         }
       }
 
@@ -1512,14 +1843,32 @@ export class RoadPass implements GeneratorPass {
         const px = alongX ? centerX : centerX + o;
         const pz = alongX ? centerZ + o : centerZ;
         if (px < 0 || px >= state.sizeX || pz < 0 || pz >= state.sizeZ) continue;
-        if (this.hasNearbyRoad(state, px, roadY, pz, 1, 1)) continue;
+        const deckKey = this.toVoxelKey(state, px, roadY, pz);
+        // Never place parapets directly above another road deck column.
+        if (finalRoadKeys.has(deckKey)) continue;
 
         for (let y = roadY; y <= roadY + 1 && y < state.sizeY; y++) {
           const wallKey = this.toVoxelKey(state, px, y, pz);
           if (finalRoadKeys.has(wallKey)) continue;
-          ctx.setBlock(ROAD_WALL_BLOCK_ID, px, y, pz);
+          this.setRoadWallBlock(ctx, state, px, y, pz);
         }
       }
+    });
+
+    // Bridge parapets/transition walls should never occupy the same x/z
+    // column directly above a road deck voxel.
+    finalRoadKeys.forEach((key) => {
+      const y = (key / state.stride) | 0;
+      const aboveY = y + 1;
+      if (aboveY >= state.sizeY) return;
+      const rem = key - y * state.stride;
+      const z = (rem / state.sizeX) | 0;
+      const x = rem - z * state.sizeX;
+      const aboveKey = this.toVoxelKey(state, x, aboveY, z);
+      if (finalRoadKeys.has(aboveKey)) return;
+      if (!ctx.hasBlock(x, aboveY, z)) return;
+      ctx.removeBlock(x, aboveY, z);
+      state.wallVoxels.delete(aboveKey);
     });
 
     for (let i = 0; i < stripes.length; i++) {
@@ -1530,5 +1879,122 @@ export class RoadPass implements GeneratorPass {
       if (this.hasSteepAdjacentCenterlineStripe(state, s.x, s.y, s.z)) continue;
       ctx.setBlock(ROAD_STRIPE_BLOCK_ID, s.x, s.y, s.z);
     }
+  }
+
+  private applyErosion(
+    ctx: GenerationContext,
+    state: RoadPlacementState,
+    seed: number,
+    settings: RoadSettings
+  ): void {
+    const erosion = settings.erosion;
+    if (!erosion.enabled) return;
+    if (erosion.deckChance <= 0 && erosion.wallChance <= 0) return;
+
+    const deckKeys = new Set<number>(state.roadVoxels);
+    state.centerlineVoxels.forEach((key) => deckKeys.add(key));
+
+    const columnCache = new Map<number, { severity: number; biomeMult: number }>();
+    const columnData = (x: number, z: number): { severity: number; biomeMult: number } => {
+      const key = this.toColumnKey(state, x, z);
+      const cached = columnCache.get(key);
+      if (cached) return cached;
+
+      const mask = this.sampleErosionMask(seed, x, z, erosion.patchScale);
+      let severity = 0;
+      if (mask > erosion.patchThreshold) {
+        const u = (mask - erosion.patchThreshold) / Math.max(1e-6, 1 - erosion.patchThreshold);
+        severity = smoothstep01(u);
+      }
+      const biomeMult = clamp(ctx.getBiomeAt(x, z)?.roads?.erosionMult ?? 1, 0, 3);
+      const sampled = { severity, biomeMult };
+      columnCache.set(key, sampled);
+      return sampled;
+    };
+
+    if (erosion.deckChance > 0) {
+      const toRemove: number[] = [];
+      deckKeys.forEach((key) => {
+        const y = (key / state.stride) | 0;
+        const rem = key - y * state.stride;
+        const z = (rem / state.sizeX) | 0;
+        const x = rem - z * state.sizeX;
+        if (!ctx.hasBlock(x, y, z)) return;
+
+        const { severity, biomeMult } = columnData(x, z);
+        if (severity <= 0 || biomeMult <= 0) return;
+        const chance = clamp(erosion.deckChance * severity * biomeMult, 0, 0.97);
+        if (chance <= 0) return;
+        const h = hash3(seed, x, (z + y * 131) | 0, 311);
+        if (rand01(h) < chance) toRemove.push(key);
+      });
+
+      for (let i = 0; i < toRemove.length; i++) {
+        const key = toRemove[i];
+        const y = (key / state.stride) | 0;
+        const rem = key - y * state.stride;
+        const z = (rem / state.sizeX) | 0;
+        const x = rem - z * state.sizeX;
+        if (!ctx.hasBlock(x, y, z)) continue;
+        ctx.removeBlock(x, y, z);
+        this.removeRoadVoxel(state, x, y, z);
+        state.centerlineVoxels.delete(key);
+        state.bridgeCenterline.delete(key);
+        state.supportAnchors.delete(key);
+      }
+    }
+
+    if (erosion.wallChance > 0) {
+      const wallKeys = Array.from(state.wallVoxels);
+      for (let i = 0; i < wallKeys.length; i++) {
+        const key = wallKeys[i];
+        if (deckKeys.has(key)) {
+          state.wallVoxels.delete(key);
+          continue;
+        }
+        const y = (key / state.stride) | 0;
+        const rem = key - y * state.stride;
+        const z = (rem / state.sizeX) | 0;
+        const x = rem - z * state.sizeX;
+        if (!ctx.hasBlock(x, y, z)) {
+          state.wallVoxels.delete(key);
+          continue;
+        }
+
+        const { severity, biomeMult } = columnData(x, z);
+        if (severity <= 0 || biomeMult <= 0) continue;
+        const chance = clamp(erosion.wallChance * severity * biomeMult, 0, 0.98);
+        if (chance <= 0) continue;
+        const h = hash3(seed, x, (z + y * 193) | 0, 313);
+        if (rand01(h) >= chance) continue;
+        ctx.removeBlock(x, y, z);
+        state.wallVoxels.delete(key);
+      }
+    }
+  }
+
+  private sampleErosionMask(seed: number, x: number, z: number, scale: number): number {
+    const coarse = this.sampleValueNoise2D(seed, x, z, scale, 401);
+    const detail = this.sampleValueNoise2D(seed, x, z, Math.max(4, scale * 0.5), 409);
+    return clamp(coarse * 0.75 + detail * 0.25, 0, 1);
+  }
+
+  private sampleValueNoise2D(seed: number, x: number, z: number, scale: number, salt: number): number {
+    const fx = x / scale;
+    const fz = z / scale;
+    const x0 = Math.floor(fx) | 0;
+    const z0 = Math.floor(fz) | 0;
+    const tx = smoothstep01(fx - x0);
+    const tz = smoothstep01(fz - z0);
+
+    const s = (seed ^ salt) | 0;
+    const n00 = rand01(hash3(s, x0, z0, salt));
+    const n10 = rand01(hash3(s, x0 + 1, z0, salt));
+    const n01 = rand01(hash3(s, x0, z0 + 1, salt));
+    const n11 = rand01(hash3(s, x0 + 1, z0 + 1, salt));
+
+    const ix0 = n00 + (n10 - n00) * tx;
+    const ix1 = n01 + (n11 - n01) * tx;
+    return ix0 + (ix1 - ix0) * tz;
   }
 }

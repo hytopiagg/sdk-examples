@@ -16,28 +16,57 @@ export class TerrainPass implements GeneratorPass {
   
   execute(ctx: GenerationContext): void {
     const { x: sizeX, z: sizeZ } = ctx.config.worldSize;
+    const surfaceHeights = new Int16Array(sizeX * sizeZ);
+
+    for (let x = 0; x < sizeX; x++) {
+      const row = x * sizeZ;
+      for (let z = 0; z < sizeZ; z++) {
+        surfaceHeights[row + z] = ctx.terrain.getBaseHeight(x, z) | 0;
+      }
+    }
     
     for (let x = 0; x < sizeX; x++) {
       for (let z = 0; z < sizeZ; z++) {
-        this.generateColumn(ctx, x, z);
+        this.generateColumn(ctx, x, z, surfaceHeights);
       }
     }
   }
   
-  private generateColumn(ctx: GenerationContext, x: number, z: number): void {
-    const { config, terrain } = ctx;
+  private generateColumn(
+    ctx: GenerationContext,
+    x: number,
+    z: number,
+    surfaceHeights: Int16Array
+  ): void {
+    const { config } = ctx;
     const { worldSize, caves: caveConfig } = config;
+    const sizeZ = worldSize.z;
 
-    const surfaceY = terrain.getBaseHeight(x, z) | 0;
+    const row = x * sizeZ;
+    const surfaceY = surfaceHeights[row + z];
     const biome = ctx.getBiomeAt(x, z);
 
     const caveModifiers = biome?.caves;
     const blocks = biome?.blocks;
     const fallbackBlock = config.blockId;
     const { seed } = config;
-    const blockAt = (y: number, depth: number): number => (
-      blocks ? resolveBiomeBlock(blocks, seed, x, y, z, depth) : fallbackBlock
-    );
+    let blockAt: (y: number, depth: number) => number;
+    if (!blocks) {
+      blockAt = () => fallbackBlock;
+    } else if (blocks.surface.length === 1 && blocks.subsurface.length === 1 && blocks.underground.length === 1) {
+      // Single-option layers always resolve to their block IDs.
+      const surfaceBlock = blocks.surface[0].blockId;
+      const subsurfaceBlock = blocks.subsurface[0].blockId;
+      const undergroundBlock = blocks.underground[0].blockId;
+      const subsurfaceDepth = blocks.subsurfaceDepth;
+      blockAt = (_y: number, depth: number): number => {
+        if (depth <= 0) return surfaceBlock;
+        if (depth <= subsurfaceDepth) return subsurfaceBlock;
+        return undergroundBlock;
+      };
+    } else {
+      blockAt = (y: number, depth: number): number => resolveBiomeBlock(blocks, seed, x, y, z, depth);
+    }
 
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
 
@@ -55,10 +84,10 @@ export class TerrainPass implements GeneratorPass {
 
     // Fill exposed cliff faces
     let lowestNeighbor = surfaceY;
-    if (x > 0) lowestNeighbor = Math.min(lowestNeighbor, terrain.getBaseHeight(x - 1, z) | 0);
-    if (x < worldSize.x - 1) lowestNeighbor = Math.min(lowestNeighbor, terrain.getBaseHeight(x + 1, z) | 0);
-    if (z > 0) lowestNeighbor = Math.min(lowestNeighbor, terrain.getBaseHeight(x, z - 1) | 0);
-    if (z < worldSize.z - 1) lowestNeighbor = Math.min(lowestNeighbor, terrain.getBaseHeight(x, z + 1) | 0);
+    if (x > 0) lowestNeighbor = Math.min(lowestNeighbor, surfaceHeights[(x - 1) * sizeZ + z]);
+    if (x < worldSize.x - 1) lowestNeighbor = Math.min(lowestNeighbor, surfaceHeights[(x + 1) * sizeZ + z]);
+    if (z > 0) lowestNeighbor = Math.min(lowestNeighbor, surfaceHeights[row + z - 1]);
+    if (z < worldSize.z - 1) lowestNeighbor = Math.min(lowestNeighbor, surfaceHeights[row + z + 1]);
 
     for (let y = Math.max(0, lowestNeighbor); y < surfaceY - 1; y++) {
       if (cavesEnabled && ctx.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
@@ -102,7 +131,7 @@ export class TerrainPass implements GeneratorPass {
           const adjAbove = above >= 0 && above < rangeSize && (carvedBits[above >>> 5] & (1 << (above & 31)));
           const adjBelow = below >= 0 && below < rangeSize && (carvedBits[below >>> 5] & (1 << (below & 31)));
 
-          if (adjAbove || adjBelow || this.hasHorizontalCaveNeighbor(ctx, x, y, z)) {
+          if (adjAbove || adjBelow || this.hasHorizontalCaveNeighbor(ctx, x, y, z, surfaceHeights)) {
             const blockId = blockAt(y, surfaceY - y);
             ctx.addBlock(blockId, x, y, z);
           }
@@ -121,17 +150,32 @@ export class TerrainPass implements GeneratorPass {
   }
 
   /** Check only horizontal neighbors for cave air (avoids redundant Y checks) */
-  private hasHorizontalCaveNeighbor(ctx: GenerationContext, x: number, y: number, z: number): boolean {
-    return this.isCaveAir(ctx, x - 1, y, z) ||
-           this.isCaveAir(ctx, x + 1, y, z) ||
-           this.isCaveAir(ctx, x, y, z - 1) ||
-           this.isCaveAir(ctx, x, y, z + 1);
+  private hasHorizontalCaveNeighbor(
+    ctx: GenerationContext,
+    x: number,
+    y: number,
+    z: number,
+    surfaceHeights: Int16Array
+  ): boolean {
+    return this.isCaveAir(ctx, x - 1, y, z, surfaceHeights) ||
+           this.isCaveAir(ctx, x + 1, y, z, surfaceHeights) ||
+           this.isCaveAir(ctx, x, y, z - 1, surfaceHeights) ||
+           this.isCaveAir(ctx, x, y, z + 1, surfaceHeights);
   }
 
   /** Check if position is cave air (uses position's own terrain height, with caching) */
-  private isCaveAir(ctx: GenerationContext, x: number, y: number, z: number): boolean {
+  private isCaveAir(
+    ctx: GenerationContext,
+    x: number,
+    y: number,
+    z: number,
+    surfaceHeights: Int16Array
+  ): boolean {
     const { caves: caveConfig } = ctx.config;
-    const surfaceY = ctx.terrain.getBaseHeight(x, z) | 0;
+    const { x: sizeX, z: sizeZ } = ctx.config.worldSize;
+    const cx = x < 0 ? 0 : x >= sizeX ? sizeX - 1 : x;
+    const cz = z < 0 ? 0 : z >= sizeZ ? sizeZ - 1 : z;
+    const surfaceY = surfaceHeights[cx * sizeZ + cz];
     if (y < 0 || y >= surfaceY) return false;
     if (y < caveConfig.minHeight) return false;
 
@@ -143,4 +187,5 @@ export class TerrainPass implements GeneratorPass {
 
     return ctx.isCarved(x, y, z, caveModifiers, surfaceY);
   }
+
 }

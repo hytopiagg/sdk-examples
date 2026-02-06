@@ -43,6 +43,7 @@ export interface BlendedBiomeValues {
     forkChanceMult: number;
     tunnelChanceMult: number;
     curveBiasMult: number;
+    erosionMult: number;
   };
 }
 
@@ -230,6 +231,7 @@ export class BiomeSampler {
       forkChanceMult: roadAvg(b => b.roads?.forkChanceMult ?? 1),
       tunnelChanceMult: roadAvg(b => b.roads?.tunnelChanceMult ?? 1),
       curveBiasMult: roadAvg(b => b.roads?.curveBiasMult ?? 1),
+      erosionMult: roadAvg(b => b.roads?.erosionMult ?? 1),
     };
     
     // Block selection: noise-based dithering at boundaries

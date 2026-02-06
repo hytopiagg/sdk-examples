@@ -124,6 +124,11 @@ export interface BiomeRoadConfig {
    * Local multiplier for gentle road curvature amplitude.
    */
   curveBiasMult?: number;
+  /**
+   * Local multiplier for road erosion severity.
+   * >1 increases wear/destruction, <1 preserves roads in this biome.
+   */
+  erosionMult?: number;
 }
 
 export interface BiomeLiquidConfig {

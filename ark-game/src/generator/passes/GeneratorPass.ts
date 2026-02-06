@@ -13,6 +13,9 @@ import type { BiomeSampler, BlendedBiomeValues } from '../BiomeSampler';
 import type { CaveBiomeModifiers } from '../noise/CaveCarver';
 import { ALL_BIOMES } from '../biomes';
 
+type PackedVoxelKey = number;
+type PackedBlockMap = Map<number, PackedVoxelKey[]>;
+
 const LIQUID_BLOCK_IDS = (() => {
   const ids = new Set<number>();
   for (let i = 0; i < ALL_BIOMES.length; i++) {
@@ -32,9 +35,6 @@ export interface GenerationContext {
   readonly caves: CaveCarver;
   readonly biomes: BiomeSampler | null;
 
-  /** Blocks grouped by type ID */
-  readonly blocks: Map<number, BlockPlacement[]>;
-
   /** Add a block (with deduplication) */
   addBlock(blockId: number, x: number, y: number, z: number): void;
 
@@ -46,6 +46,9 @@ export interface GenerationContext {
 
   /** Check if a position already has a block */
   hasBlock(x: number, y: number, z: number): boolean;
+
+  /** Collect all currently-present placements for a block ID */
+  collectBlockPositions(blockId: number): Array<{ x: number; y: number; z: number }>;
 
   /** Get biome values at position */
   getBiomeAt(x: number, z: number): BlendedBiomeValues | undefined;
@@ -86,7 +89,7 @@ export function createContext(
   caves: CaveCarver,
   biomes: BiomeSampler | null
 ): GenerationContext {
-  const blocks = new Map<number, BlockPlacement[]>();
+  const blocks: PackedBlockMap = new Map<number, PackedVoxelKey[]>();
   const { worldSize } = config;
   const stride = worldSize.x * worldSize.z;
 
@@ -97,6 +100,7 @@ export function createContext(
   const bitsetWords = (totalPositions + 31) >>> 5;
   const addedBits = new Uint32Array(bitsetWords);
   const removedBits = new Uint32Array(bitsetWords);
+  const carvedKnownBits = new Uint32Array(bitsetWords);
   const carvedBits = new Uint32Array(bitsetWords);
   const OCCLUSION_DEPTH = config.output.occlusionCulling ? 1 : 0;
   const NEIGHBOR_X = new Int8Array([1, -1, 0, 0, 0, 0]);
@@ -114,13 +118,21 @@ export function createContext(
   const inBounds = (x: number, y: number, z: number) =>
     x >= 0 && x < worldSize.x && z >= 0 && z < worldSize.z && y >= 0 && y < worldSize.y;
 
-  const pushPlacement = (target: Map<number, BlockPlacement[]>, blockId: number, x: number, y: number, z: number) => {
+  const pushPlacement = (target: PackedBlockMap, blockId: number, key: PackedVoxelKey) => {
     let list = target.get(blockId);
     if (!list) {
       list = [];
       target.set(blockId, list);
     }
-    list.push({ globalCoordinate: { x, y, z } });
+    list.push(key);
+  };
+
+  const keyToCoord = (key: number): { x: number; y: number; z: number } => {
+    const y = (key / stride) | 0;
+    const rem = key - y * stride;
+    const z = (rem / worldSize.x) | 0;
+    const x = rem - z * worldSize.x;
+    return { x, y, z };
   };
 
   const getBiomeCached = (x: number, z: number): BlendedBiomeValues | undefined => {
@@ -135,52 +147,50 @@ export function createContext(
     return cached;
   };
 
-  function finalizeMutations(): Map<number, BlockPlacement[]> {
-    const finalized = new Map<number, BlockPlacement[]>();
+  function finalizeMutations(): PackedBlockMap {
+    const finalized: PackedBlockMap = new Map<number, PackedVoxelKey[]>();
 
     blocks.forEach((placements, blockId) => {
       for (let i = 0; i < placements.length; i++) {
-        const c = placements[i].globalCoordinate;
-        const key = toKey(c.x, c.y, c.z);
+        const key = placements[i];
         if (replacedBlocks.has(key)) continue;
         const word = key >>> 5;
         const bit = 1 << (key & 31);
         if (removedBits[word] & bit) continue;
-        pushPlacement(finalized, blockId, c.x, c.y, c.z);
+        pushPlacement(finalized, blockId, key);
       }
     });
 
     replacedBlocks.forEach((blockId, key) => {
-      const y = (key / stride) | 0;
-      const rem = key - y * stride;
-      const z = (rem / worldSize.x) | 0;
-      const x = rem - z * worldSize.x;
-      pushPlacement(finalized, blockId, x, y, z);
+      pushPlacement(finalized, blockId, key);
     });
 
     return finalized;
   }
 
-  function mapToOutput(source: Map<number, BlockPlacement[]>): { blocks: { [blockTypeId: number]: BlockPlacement[] }; totalBlocks: number } {
+  function mapToOutput(source: PackedBlockMap): { blocks: { [blockTypeId: number]: BlockPlacement[] }; totalBlocks: number } {
     const out: { [blockTypeId: number]: BlockPlacement[] } = {};
     let totalBlocks = 0;
     source.forEach((placements, blockId) => {
-      out[blockId] = placements;
+      const outPlacements = new Array<BlockPlacement>(placements.length);
+      for (let i = 0; i < placements.length; i++) {
+        outPlacements[i] = { globalCoordinate: keyToCoord(placements[i]) };
+      }
+      out[blockId] = outPlacements;
       totalBlocks += placements.length;
     });
     return { blocks: out, totalBlocks };
   }
 
   function emitOcclusionDepthOutput(
-    source: Map<number, BlockPlacement[]>
+    source: PackedBlockMap
   ): { blocks: { [blockTypeId: number]: BlockPlacement[] }; totalBlocks: number } {
     const occluderBits = new Uint32Array(bitsetWords);
     const liquidBits = new Uint32Array(bitsetWords);
     source.forEach((placements, blockId) => {
       const isLiquid = LIQUID_BLOCK_IDS.has(blockId);
       for (let i = 0; i < placements.length; i++) {
-        const c = placements[i].globalCoordinate;
-        const key = toKey(c.x, c.y, c.z);
+        const key = placements[i];
         const word = key >>> 5;
         const bit = 1 << (key & 31);
         if (isLiquid) liquidBits[word] |= bit;
@@ -211,8 +221,11 @@ export function createContext(
       return !!(emitBits[word] & bit);
     };
 
-    const markExposedWithDepth = (x: number, y: number, z: number) => {
-      const key = toKey(x, y, z);
+    const markExposedWithDepth = (key: number) => {
+      const c = keyToCoord(key);
+      const x = c.x;
+      const y = c.y;
+      const z = c.z;
       if (!isOccluderKey(key)) return;
 
       let exposed = false;
@@ -249,22 +262,21 @@ export function createContext(
 
     source.forEach((placements) => {
       for (let i = 0; i < placements.length; i++) {
-        const c = placements[i].globalCoordinate;
-        markExposedWithDepth(c.x, c.y, c.z);
+        markExposedWithDepth(placements[i]);
       }
     });
 
     const out: { [blockTypeId: number]: BlockPlacement[] } = {};
     let totalBlocks = 0;
     source.forEach((placements, blockId) => {
+      const emitted: BlockPlacement[] = [];
       for (let i = 0; i < placements.length; i++) {
-        const c = placements[i].globalCoordinate;
-        const key = toKey(c.x, c.y, c.z);
+        const key = placements[i];
         if (!isLiquidKey(key) && !canEmit(key)) continue;
-        if (!out[blockId]) out[blockId] = [];
-        out[blockId].push(placements[i]);
+        emitted.push({ globalCoordinate: keyToCoord(key) });
         totalBlocks++;
       }
+      if (emitted.length > 0) out[blockId] = emitted;
     });
     return { blocks: out, totalBlocks };
   }
@@ -274,7 +286,6 @@ export function createContext(
     terrain,
     caves,
     biomes,
-    blocks,
 
     addBlock(blockId: number, x: number, y: number, z: number) {
       if (!inBounds(x, y, z)) return;
@@ -297,7 +308,7 @@ export function createContext(
 
       if (isRemoved) removedBits[word] &= ~bit;
       addedBits[word] |= bit;
-      pushPlacement(blocks, blockId, x, y, z);
+      pushPlacement(blocks, blockId, key);
     },
 
     removeBlock(x: number, y: number, z: number) {
@@ -332,6 +343,28 @@ export function createContext(
       return !!(addedBits[word] & bit);
     },
 
+    collectBlockPositions(blockId: number): Array<{ x: number; y: number; z: number }> {
+      const keys = new Set<number>();
+      const placements = blocks.get(blockId);
+      if (placements) {
+        for (let i = 0; i < placements.length; i++) {
+          const key = placements[i];
+          const word = key >>> 5;
+          const bit = 1 << (key & 31);
+          if (removedBits[word] & bit) continue;
+          const replacement = replacedBlocks.get(key);
+          if (replacement !== undefined && replacement !== blockId) continue;
+          keys.add(key);
+        }
+      }
+
+      replacedBlocks.forEach((replacementId, key) => {
+        if (replacementId === blockId) keys.add(key);
+        else keys.delete(key);
+      });
+      return Array.from(keys, keyToCoord);
+    },
+
     getBiomeAt: getBiomeCached,
 
     getCaveModifiersAt(x: number, z: number) {
@@ -342,9 +375,13 @@ export function createContext(
       // Bounds check: TerrainPass neighbor checks can pass out-of-bounds coords
       if (x < 0 || x >= worldSize.x || z < 0 || z >= worldSize.z || y < 0 || y >= worldSize.y) return false;
       const key = toKey(x, y, z);
-      if (carvedBits[key >>> 5] & (1 << (key & 31))) return true;
+      const word = key >>> 5;
+      const bit = 1 << (key & 31);
+      if (carvedBits[word] & bit) return true;
+      if (carvedKnownBits[word] & bit) return false;
       const result = caves.isCarved(x, y, z, biome, surfaceY);
-      if (result) carvedBits[key >>> 5] |= 1 << (key & 31);
+      carvedKnownBits[word] |= bit;
+      if (result) carvedBits[word] |= bit;
       return result;
     },
 

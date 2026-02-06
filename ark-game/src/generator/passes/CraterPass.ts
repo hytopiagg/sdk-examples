@@ -21,6 +21,12 @@ interface CraterImpact {
   debrisMaxRadius: number;
 }
 
+const ROAD_BLOCK_ID = 5;
+const ROAD_STRIPE_BLOCK_ID = 58;
+const ROAD_FRAGMENT_MAX_SIZE = 6;
+const ROAD_DX = new Int8Array([1, -1, 0, 0]);
+const ROAD_DZ = new Int8Array([0, 0, 1, -1]);
+
 const HASH_A = 374761393;
 const HASH_B = 668265263;
 const HASH_C = 1274126177;
@@ -58,6 +64,8 @@ export class CraterPass implements GeneratorPass {
     for (let i = 0; i < impacts.length; i++) {
       this.scatterDebris(ctx, impacts[i]);
     }
+
+    if (impacts.length > 0) this.removeTinyRoadFragments(ctx);
   }
 
   private collectImpacts(ctx: GenerationContext, out: CraterImpact[]): void {
@@ -230,5 +238,75 @@ export class CraterPass implements GeneratorPass {
         ctx.addBlock(impact.debrisBlockId, x, placeY, z);
       }
     }
+  }
+
+  /**
+   * Craters can sever road decks and leave tiny isolated remnants.
+   * Remove very small disconnected road fragments to avoid visual artifacts.
+   */
+  private removeTinyRoadFragments(ctx: GenerationContext): void {
+    const { x: sizeX, y: sizeY, z: sizeZ } = ctx.config.worldSize;
+    const stride = sizeX * sizeZ;
+    const toKey = (x: number, y: number, z: number) => x + z * sizeX + y * stride;
+    const fromKey = (key: number) => {
+      const y = (key / stride) | 0;
+      const rem = key - y * stride;
+      const z = (rem / sizeX) | 0;
+      const x = rem - z * sizeX;
+      return { x, y, z };
+    };
+
+    const roadKeys = new Set<number>();
+    const addRoadKeys = (blockId: number) => {
+      const positions = ctx.collectBlockPositions(blockId);
+      for (let i = 0; i < positions.length; i++) {
+        const p = positions[i];
+        roadKeys.add(toKey(p.x, p.y, p.z));
+      }
+    };
+    addRoadKeys(ROAD_BLOCK_ID);
+    addRoadKeys(ROAD_STRIPE_BLOCK_ID);
+    if (roadKeys.size === 0) return;
+
+    const visited = new Set<number>();
+    const queue: number[] = [];
+    const component: number[] = [];
+
+    roadKeys.forEach((startKey) => {
+      if (visited.has(startKey)) return;
+
+      visited.add(startKey);
+      queue.length = 0;
+      component.length = 0;
+      queue.push(startKey);
+
+      for (let head = 0; head < queue.length; head++) {
+        const key = queue[head];
+        component.push(key);
+        const { x, y, z } = fromKey(key);
+
+        for (let d = 0; d < 4; d++) {
+          const nx = x + ROAD_DX[d];
+          const nz = z + ROAD_DZ[d];
+          if (nx < 0 || nx >= sizeX || nz < 0 || nz >= sizeZ) continue;
+
+          for (let dy = -1; dy <= 1; dy++) {
+            const ny = y + dy;
+            if (ny < 0 || ny >= sizeY) continue;
+
+            const nKey = toKey(nx, ny, nz);
+            if (!roadKeys.has(nKey) || visited.has(nKey)) continue;
+            visited.add(nKey);
+            queue.push(nKey);
+          }
+        }
+      }
+
+      if (component.length > ROAD_FRAGMENT_MAX_SIZE) return;
+      for (let i = 0; i < component.length; i++) {
+        const { x, y, z } = fromKey(component[i]);
+        if (ctx.hasBlock(x, y, z)) ctx.removeBlock(x, y, z);
+      }
+    });
   }
 }
