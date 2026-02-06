@@ -9,6 +9,7 @@
 
 import type { GenerationContext, GeneratorPass } from './GeneratorPass';
 import type { BiomeCaveConfig } from '../biomes/BiomeDefinition';
+import type { CaveBiomeModifiers } from '../noise/CaveCarver';
 
 const HASH_A = 374761393;
 const HASH_B = 668265263;
@@ -79,16 +80,20 @@ export class SpeleothemPass implements GeneratorPass {
 
         for (let y = minY; y <= maxY; y++) {
           if (ctx.hasBlock(x, y, z)) continue;
+          const canStalactite = resolved.stalactites && ctx.hasBlock(x, y + 1, z);
+          const canStalagmite = resolved.stalagmites && ctx.hasBlock(x, y - 1, z);
+          if (!canStalactite && !canStalagmite) continue;
           if (!ctx.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
 
-          if (resolved.stalactites && ctx.hasBlock(x, y + 1, z)) {
+          let occupied = false;
+          if (canStalactite) {
             const h = hash4(passSeed, x, y, z, 11);
             if (rand01(h) < resolved.density) {
-              this.growFormation(ctx, x, y, z, -1, surfaceY, caveModifiers, resolved, h);
+              occupied = this.growFormation(ctx, x, y, z, -1, surfaceY, caveModifiers, resolved, h);
             }
           }
 
-          if (resolved.stalagmites && !ctx.hasBlock(x, y, z) && ctx.hasBlock(x, y - 1, z)) {
+          if (canStalagmite && !occupied) {
             const h = hash4(passSeed, x, y, z, 29);
             if (rand01(h) < resolved.density) {
               this.growFormation(ctx, x, y, z, 1, surfaceY, caveModifiers, resolved, h);
@@ -141,13 +146,14 @@ export class SpeleothemPass implements GeneratorPass {
     z: number,
     dy: -1 | 1,
     surfaceY: number,
-    caveModifiers: ReturnType<GenerationContext['getCaveModifiersAt']>,
+    caveModifiers: CaveBiomeModifiers | undefined,
     config: ResolvedSpeleothemConfig,
     hash: number
-  ): void {
+  ): boolean {
     const span = config.maxLength - config.minLength + 1;
     const length = config.minLength + ((((hash >>> 1) & HASH_MAX) % span) | 0);
     const blockId = this.selectBlock(config, hash >>> 3);
+    let placed = false;
 
     for (let i = 0; i < length; i++) {
       const ty = y + i * dy;
@@ -155,7 +161,9 @@ export class SpeleothemPass implements GeneratorPass {
       if (ctx.hasBlock(x, ty, z)) break;
       if (!ctx.isCarved(x, ty, z, caveModifiers, surfaceY)) break;
       ctx.addBlock(blockId, x, ty, z);
+      placed = true;
     }
+    return placed;
   }
 
   private selectBlock(config: ResolvedSpeleothemConfig, hash: number): number {
