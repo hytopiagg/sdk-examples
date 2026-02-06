@@ -12,9 +12,9 @@ export default defineBiome({
   weight: 1.0,
   
   blocks: {
-    surface: 34,      // grass-block-pine (forest grass)
-    subsurface: 25,   // dirt
-    underground: 45,  // mossy-cobblestone (forest underground)
+    surface: [{ blockId: 34 }],      // grass-block-pine (forest grass)
+    subsurface: [{ blockId: 25 }],   // dirt
+    underground: [{ blockId: 45 }],  // mossy-cobblestone (forest underground)
     subsurfaceDepth: 4,
   },
   
@@ -27,9 +27,34 @@ export default defineBiome({
 
   caves: {
     enabled: true,
-    frequency: 0.6,        // Small tunnel systems
+    frequency: 0.65,       // Small tunnel systems
     threshold: -0.08,      // Fewer caves
     wormCaves: true,
+    wormStrength: 0.95,
+    blendWeight: 1.0,
+    profile: {
+      centerY: 34,
+      range: 18,
+      strength: 0.65,
+    },
+    warp: {
+      strength: 1.2,
+      frequency: 1.0,
+    },
+    chamber: {
+      chance: 0.05,
+      strength: 0.55,
+      frequency: 0.9,
+    },
+    speleothems: {
+      enabled: true,
+      blockId: 28, // mossy-cobblestone
+      density: 0.04,
+      minLength: 1,
+      maxLength: 5,
+      stalactites: true,
+      stalagmites: true,
+    },
   },
   
   craters: {

@@ -12,9 +12,9 @@ export default defineBiome({
   weight: 1.0,
   
   blocks: {
-    surface: 33,      // grass-block (standard grass)
-    subsurface: 25,   // dirt
-    underground: 55,  // stone
+    surface: [{ blockId: 33 }],      // grass-block (standard grass)
+    subsurface: [{ blockId: 25 }],   // dirt
+    underground: [{ blockId: 55 }],  // stone
     subsurfaceDepth: 4,
   },
   
@@ -30,6 +30,22 @@ export default defineBiome({
     frequency: 0.6,        // Small underground tunnels
     threshold: -0.1,       // Very few caves (highest effective threshold)
     wormCaves: true,
+    wormStrength: 0.85,
+    blendWeight: 0.9,
+    profile: {
+      centerY: 24,
+      range: 16,
+      strength: 0.9,
+    },
+    warp: {
+      strength: 0.8,
+      frequency: 0.9,
+    },
+    chamber: {
+      chance: 0.03,
+      strength: 0.45,
+      frequency: 1.1,
+    },
   },
   
   liquids: {

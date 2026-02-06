@@ -5,13 +5,30 @@
  * and block types. Unspecified values inherit from world defaults.
  */
 
+export interface BiomeBlockOption {
+  /** Block ID to place when this option is selected */
+  blockId: number;
+  /** Relative weight used among eligible options (default: 1) */
+  weight?: number;
+  /** Optional absolute Y minimum (inclusive) */
+  minY?: number;
+  /** Optional absolute Y maximum (inclusive) */
+  maxY?: number;
+  /** Optional depth from surface minimum (inclusive) */
+  minDepth?: number;
+  /** Optional depth from surface maximum (inclusive) */
+  maxDepth?: number;
+}
+
+export type BiomeBlockLayerConfig = BiomeBlockOption[];
+
 export interface BiomeBlocks {
-  /** Surface layer block (grass, sand, etc.) */
-  surface: number;
-  /** Block just below surface (dirt, sandstone, etc.) */
-  subsurface?: number;
-  /** Deep underground block (stone, etc.) */
-  underground?: number;
+  /** Surface layer block(s) (grass, sand, etc.) */
+  surface: BiomeBlockLayerConfig;
+  /** Block(s) just below surface (dirt, sandstone, etc.) */
+  subsurface?: BiomeBlockLayerConfig;
+  /** Deep underground block(s) (stone, etc.) */
+  underground?: BiomeBlockLayerConfig;
   /** Depth of subsurface layer before underground begins */
   subsurfaceDepth?: number;
 }
@@ -36,6 +53,52 @@ export interface BiomeCaveConfig {
   threshold?: number;
   /** Enable worm-style tunnel caves */
   wormCaves?: boolean;
+  /** Worm tunnel density multiplier (1.0 = default) */
+  wormStrength?: number;
+  /** Blend influence for cave parameters near biome borders */
+  blendWeight?: number;
+  /** Vertical cave profile: concentrates caves around centerY +/- range */
+  profile?: {
+    centerY: number;
+    range: number;
+    /** 0 = disabled profile, 1 = full profile (default: 1) */
+    strength?: number;
+  };
+  /** Domain warp for spaghetti tunnels */
+  warp?: {
+    /** Warp amplitude in blocks */
+    strength: number;
+    /** Frequency multiplier for warp field (default: 1) */
+    frequency?: number;
+  };
+  /** Rare chamber boost mask */
+  chamber?: {
+    /** Fraction (0-1) of space that receives chamber boost */
+    chance: number;
+    /** Chamber boost strength multiplier */
+    strength: number;
+    /** Frequency multiplier for chamber mask (default: 1) */
+    frequency?: number;
+  };
+  /** Speleothem decoration (stalactites/stalagmites) in carved cave air */
+  speleothems?: {
+    /** Enable speleothem generation for this biome */
+    enabled?: boolean;
+    /** Single block ID used for formations */
+    blockId?: number;
+    /** Weighted block options (used instead of blockId when provided) */
+    blocks?: { blockId: number; weight?: number }[];
+    /** Spawn chance per eligible anchor point (0-1, default: 0.06) */
+    density?: number;
+    /** Minimum formation length in blocks (default: 1) */
+    minLength?: number;
+    /** Maximum formation length in blocks (default: 4) */
+    maxLength?: number;
+    /** Generate hanging stalactites (default: true) */
+    stalactites?: boolean;
+    /** Generate rising stalagmites (default: true) */
+    stalagmites?: boolean;
+  };
 }
 
 export interface BiomeLiquidConfig {

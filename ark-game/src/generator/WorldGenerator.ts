@@ -5,9 +5,10 @@
  * 1. Terrain - Surface, subsurface, caves
  * 2. Blending - Smooth biome transitions, seal gaps
  * 3. Crater - Surface impact carving + contact effects
- * 4. Liquid - Water, lava based on biome config
- * 5. (Future) Structures - Buildings, ruins
- * 6. (Future) Decoration - Trees, plants, details
+ * 4. Speleothem - Cave stalactite/stalagmite decoration
+ * 5. Liquid - Water, lava based on biome config
+ * 6. (Future) Structures - Buildings, ruins
+ * 7. (Future) Decoration - Trees, plants, details
  */
 
 import type { BlockPlacement, Vector3Like } from 'hytopia';
@@ -16,11 +17,13 @@ import { CaveCarver } from './noise/CaveCarver';
 import { BiomeSampler } from './BiomeSampler';
 import { mergeConfig } from './GeneratorConfig';
 import type { GeneratorConfig } from './GeneratorConfig';
+import { resolveBiomeBlock } from './blocks/BlockSelector';
 import type { GeneratorPass } from './passes';
 import { createContext } from './passes';
 import { TerrainPass } from './passes/TerrainPass';
 import { BlendingPass } from './passes/BlendingPass';
 import { CraterPass } from './passes/CraterPass';
+import { SpeleothemPass } from './passes/SpeleothemPass';
 import { LiquidPass } from './passes/LiquidPass';
 
 export interface GeneratorResult {
@@ -66,6 +69,9 @@ export default class WorldGenerator {
       // Blend width for gradient-based height smoothing
       blendWidth: this.config.biomes.enabled ? this.config.biomes.blendWidth : undefined,
     });
+
+    // Constrain material dithering by real terrain elevation (downhill-biased).
+    this.biomes?.setMaterialHeightSampler((x, z) => this.terrain.getBaseHeight(x, z));
     
     // Create cave carver
     this.caves = new CaveCarver({
@@ -77,6 +83,8 @@ export default class WorldGenerator {
       surfaceFadeDistance: this.config.caves.surfaceFadeDistance,
       wormFrequency: this.config.caves.wormFrequency,
       wormStrength: this.config.caves.wormCaves ? this.config.caves.wormStrength : 0,
+      warpFrequency: this.config.caves.warpFrequency,
+      chamberFrequency: this.config.caves.chamberFrequency,
     });
     
     // Configure generation passes
@@ -84,6 +92,7 @@ export default class WorldGenerator {
       new TerrainPass(),
       new BlendingPass(),
       new CraterPass(),
+      new SpeleothemPass(),
       new LiquidPass(),
       // Future passes:
       // new StructurePass(),
@@ -158,16 +167,11 @@ export default class WorldGenerator {
     // Pass surfaceY so caves can extend into mountains (terrain-relative)
     if (cavesEnabled && this.caves.isCarved(x, y, z, caveModifiers, surfaceY | 0)) return null;
     
-    // Determine block type
-    const surfaceBlock = biome?.blocks.surface ?? this.config.blockId;
-    const subsurfaceBlock = biome?.blocks.subsurface ?? surfaceBlock;
-    const undergroundBlock = biome?.blocks.underground ?? subsurfaceBlock;
-    const subsurfaceDepth = biome?.blocks.subsurfaceDepth ?? 4;
-    
     const depthFromSurface = Math.floor(surfaceY) - y;
-    if (depthFromSurface <= 1) return surfaceBlock;
-    if (depthFromSurface <= subsurfaceDepth) return subsurfaceBlock;
-    return undergroundBlock;
+    const selectorDepth = depthFromSurface <= 1 ? 0 : depthFromSurface;
+    return biome?.blocks
+      ? resolveBiomeBlock(biome.blocks, this.config.seed, x, y, z, selectorDepth)
+      : this.config.blockId;
   }
   
   /** Get the biome at a position */

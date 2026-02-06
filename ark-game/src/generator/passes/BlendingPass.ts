@@ -6,6 +6,7 @@
  */
 
 import type { GeneratorPass, GenerationContext } from './GeneratorPass';
+import { resolveBiomeBlock } from '../blocks/BlockSelector';
 
 export class BlendingPass implements GeneratorPass {
   readonly name = 'blending';
@@ -26,10 +27,12 @@ export class BlendingPass implements GeneratorPass {
 
     const surfaceY = terrain.getBaseHeight(x, z) | 0;
     const biome = ctx.getBiomeAt(x, z);
-    const surfaceBlock = biome?.blocks.surface ?? config.blockId;
-    const subsurfaceBlock = biome?.blocks.subsurface ?? surfaceBlock;
-    const undergroundBlock = biome?.blocks.underground ?? surfaceBlock;
-    const subsurfaceDepth = biome?.blocks.subsurfaceDepth ?? 4;
+    const blocks = biome?.blocks;
+    const fallbackBlock = config.blockId;
+    const { seed } = config;
+    const blockAt = (y: number, depth: number): number => (
+      blocks ? resolveBiomeBlock(blocks, seed, x, y, z, depth) : fallbackBlock
+    );
     const caveModifiers = biome?.caves;
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
 
@@ -62,7 +65,7 @@ export class BlendingPass implements GeneratorPass {
         if (ctx.hasBlock(x, y, z)) continue;
         // Use cached cave results — TerrainPass already computed most of these
         if (cavesEnabled && y >= minCaveY && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
-        ctx.addBlock(this.blockForDepth(surfaceY - y, surfaceBlock, subsurfaceBlock, undergroundBlock, subsurfaceDepth), x, y, z);
+        ctx.addBlock(blockAt(y, surfaceY - y), x, y, z);
       }
     }
 
@@ -73,22 +76,12 @@ export class BlendingPass implements GeneratorPass {
 
       const isCaveAir = cavesEnabled && y >= minCaveY && y < localMaxCaveY && ctx.isCarved(x, y, z, caveModifiers, surfaceY);
       if (isCaveAir) {
-        if (!hasFloor) { ctx.addBlock(undergroundBlock, x, 0, z); hasFloor = true; }
+        if (!hasFloor) { ctx.addBlock(blockAt(0, surfaceY), x, 0, z); hasFloor = true; }
         continue;
       }
 
-      ctx.addBlock(this.blockForDepth(surfaceY - y, surfaceBlock, subsurfaceBlock, undergroundBlock, subsurfaceDepth), x, y, z);
+      ctx.addBlock(blockAt(y, surfaceY - y), x, y, z);
       hasFloor = true;
     }
-  }
-
-  private blockForDepth(
-    depth: number,
-    surfaceBlock: number,
-    subsurfaceBlock: number,
-    undergroundBlock: number,
-    subsurfaceDepth: number
-  ): number {
-    return depth <= 0 ? surfaceBlock : depth <= subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
   }
 }

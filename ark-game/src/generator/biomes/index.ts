@@ -7,6 +7,8 @@
 
 export type {
   BiomeDefinition,
+  BiomeBlockOption,
+  BiomeBlockLayerConfig,
   BiomeBlocks,
   BiomeTerrainConfig,
   BiomeCaveConfig,

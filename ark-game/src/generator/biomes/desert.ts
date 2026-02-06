@@ -12,9 +12,9 @@ export default defineBiome({
   weight: 0.8,
   
   blocks: {
-    surface: 40,      // hay-block (sandy appearance)
-    subsurface: 56,   // stone-bricks (sandstone-like)
-    underground: 55,  // stone
+    surface: [{ blockId: 40 }],      // hay-block (sandy appearance)
+    subsurface: [{ blockId: 56 }],   // stone-bricks (sandstone-like)
+    underground: [{ blockId: 55 }],  // stone
     subsurfaceDepth: 3,
   },
   
@@ -27,9 +27,34 @@ export default defineBiome({
   
   caves: {
     enabled: true,
-    frequency: 0.6,        // Small tight tunnels
+    frequency: 0.55,       // Small tight tunnels
     threshold: -0.08,      // Fewer caves (raises effective threshold)
     wormCaves: true,
+    wormStrength: 0.8,
+    blendWeight: 1.25,
+    profile: {
+      centerY: 30,
+      range: 12,
+      strength: 0.8,
+    },
+    warp: {
+      strength: 1.8,
+      frequency: 1.25,
+    },
+    chamber: {
+      chance: 0.02,
+      strength: 0.35,
+      frequency: 0.8,
+    },
+    speleothems: {
+      enabled: true,
+      blockId: 28, // sandstone-like
+      density: 0.05,
+      minLength: 1,
+      maxLength: 4,
+      stalactites: true,
+      stalagmites: false,
+    },
   },
   
   blendStrength: 1.1,

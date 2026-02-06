@@ -11,6 +11,7 @@
 import { CellularNoise2D, CellInfo } from './noise/Cellular';
 import { Simplex2D } from './noise/Simplex';
 import { BiomeDefinition, ALL_BIOMES, getTotalWeight } from './biomes';
+import { normalizeBiomeBlocks, type ResolvedBiomeBlocks } from './blocks/BlockSelector';
 
 export interface BiomeSamplerConfig {
   seed: number;
@@ -22,21 +23,42 @@ export interface BiomeSamplerConfig {
 
 export interface BlendedBiomeValues {
   biome: BiomeDefinition;
-  blocks: { surface: number; subsurface: number; underground: number; subsurfaceDepth: number };
+  blocks: ResolvedBiomeBlocks;
   terrain: { heightOffset: number; heightScale: number; frequencyScale: number; valleyScale: number };
-  caves: { enabled: boolean; frequency: number; threshold: number; wormStrength: number };
+  caves: {
+    enabled: boolean;
+    frequency: number;
+    threshold: number;
+    wormStrength: number;
+    profileCenterY: number;
+    profileRange: number;
+    profileStrength: number;
+    warpStrength: number;
+    warpFrequency: number;
+    chamberChance: number;
+    chamberStrength: number;
+    chamberFrequency: number;
+  };
 }
 
 export class BiomeSampler {
+  private static readonly MAX_UPHILL_BLEND_Y = 3;
+  private static readonly ADJACENT_X = new Int8Array([1, -1, 0, 0]);
+  private static readonly ADJACENT_Z = new Int8Array([0, 0, 1, -1]);
+
   private cellularNoise: CellularNoise2D;
   private jitterNoise: Simplex2D;
   private ditherNoise: Simplex2D;  // For block dithering at boundaries
   private jitterAmount: number;
   private sortedBiomes: BiomeDefinition[];
   private weightThresholds: number[];
+  private materialHeightSampler: ((x: number, z: number) => number) | null = null;
 
   // Pre-allocated working array to avoid per-call allocations
   private readonly _neighborData: { biome: BiomeDefinition; weight: number }[];
+  private readonly _allowedNeighbor = new Uint8Array(8);
+  private readonly _adjacentBiomes: (BiomeDefinition | undefined)[] = new Array(4);
+  private readonly _adjacentHeights = new Int16Array(4);
   
   constructor(config: BiomeSamplerConfig) {
     // Cellular noise for organic Voronoi-based biome regions (jitter 0.7 = irregular but not chaotic)
@@ -62,6 +84,14 @@ export class BiomeSampler {
       cumulative += biome.weight / totalWeight;
       this.weightThresholds.push(cumulative);
     }
+  }
+
+  /**
+   * Optional terrain-height callback used for material blending constraints.
+   * When set, boundary dithering is prevented from climbing uphill too far.
+   */
+  setMaterialHeightSampler(sampler: ((x: number, z: number) => number) | null): void {
+    this.materialHeightSampler = sampler;
   }
   
   /** Get the primary biome at a position (no blending) */
@@ -156,12 +186,41 @@ export class BiomeSampler {
       frequencyScale: avg(b => b.terrain?.frequencyScale ?? 1),
       valleyScale: avg(b => b.terrain?.valleyScale ?? 1),
     };
-    
+
+    // Cave blending can be weighted independently from terrain blending.
+    const primaryCaveBlend = Math.max(0, primary.caves?.blendWeight ?? 1);
+    let cavePrimaryWeight = primaryWeight * primaryCaveBlend;
+    let caveTotalWeight = cavePrimaryWeight;
+    for (let i = 0; i < neighborCount; i++) {
+      const nb = neighbors[i];
+      caveTotalWeight += nb.weight * Math.max(0, nb.biome.caves?.blendWeight ?? 1);
+    }
+    if (caveTotalWeight <= 1e-6) {
+      cavePrimaryWeight = primaryWeight;
+      caveTotalWeight = totalWeight;
+    }
+    const caveAvg = (get: (b: BiomeDefinition) => number) => {
+      let sum = get(primary) * cavePrimaryWeight;
+      for (let i = 0; i < neighborCount; i++) {
+        const nb = neighbors[i];
+        sum += get(nb.biome) * nb.weight * Math.max(0, nb.biome.caves?.blendWeight ?? 1);
+      }
+      return sum / caveTotalWeight;
+    };
+
     const caves = {
-      enabled: avg(b => (b.caves?.enabled ?? true) ? 1 : 0) > 0.5,
-      frequency: avg(b => b.caves?.frequency ?? 1),
-      threshold: avg(b => b.caves?.threshold ?? 0),
-      wormStrength: avg(b => (b.caves?.wormCaves ?? true) ? 1 : 0),
+      enabled: caveAvg(b => (b.caves?.enabled ?? true) ? 1 : 0) > 0.5,
+      frequency: caveAvg(b => b.caves?.frequency ?? 1),
+      threshold: caveAvg(b => b.caves?.threshold ?? 0),
+      wormStrength: caveAvg(b => (b.caves?.wormCaves ?? true) ? (b.caves?.wormStrength ?? 1) : 0),
+      profileCenterY: caveAvg(b => b.caves?.profile?.centerY ?? 0),
+      profileRange: caveAvg(b => b.caves?.profile?.range ?? 0),
+      profileStrength: caveAvg(b => b.caves?.profile?.strength ?? 1),
+      warpStrength: caveAvg(b => b.caves?.warp?.strength ?? 0),
+      warpFrequency: caveAvg(b => b.caves?.warp?.frequency ?? 1),
+      chamberChance: caveAvg(b => b.caves?.chamber?.chance ?? 0),
+      chamberStrength: caveAvg(b => b.caves?.chamber?.strength ?? 0),
+      chamberFrequency: caveAvg(b => b.caves?.chamber?.frequency ?? 1),
     };
     
     // Block selection: noise-based dithering at boundaries
@@ -182,21 +241,38 @@ export class BiomeSampler {
     x: number,
     z: number,
     edgeFactor: number
-  ): { surface: number; subsurface: number; underground: number; subsurfaceDepth: number } {
+  ): ResolvedBiomeBlocks {
     // If not at a boundary or no neighbors, use primary biome
     if (edgeFactor < 0.1 || neighborCount === 0) {
-      return {
-        surface: primary.blocks.surface,
-        subsurface: primary.blocks.subsurface ?? primary.blocks.surface,
-        underground: primary.blocks.underground ?? primary.blocks.surface,
-        subsurfaceDepth: primary.blocks.subsurfaceDepth ?? 4,
-      };
+      return this.normalizedBlocks(primary);
+    }
+
+    const heightAt = this.materialHeightSampler;
+    const localSurfaceY = heightAt ? (heightAt(x, z) | 0) : undefined;
+    const allowedNeighbor = this._allowedNeighbor;
+
+    if (localSurfaceY !== undefined && heightAt) {
+      for (let i = 0; i < BiomeSampler.ADJACENT_X.length; i++) {
+        const nx = x + BiomeSampler.ADJACENT_X[i];
+        const nz = z + BiomeSampler.ADJACENT_Z[i];
+        this._adjacentBiomes[i] = this.getBiomeAt(nx, nz);
+        this._adjacentHeights[i] = heightAt(nx, nz) | 0;
+      }
     }
 
     // Build cumulative thresholds inline (avoid allocating candidates/thresholds arrays)
+    // Neighbor candidates that would require steep uphill material creep are excluded.
     let totalWeight = primaryWeight * (primary.blendStrength ?? 1.0);
     for (let i = 0; i < neighborCount; i++) {
-      totalWeight += neighbors[i].weight * (neighbors[i].biome.blendStrength ?? 1.0);
+      const neighborBiome = neighbors[i].biome;
+      const canUse = localSurfaceY === undefined
+        ? 1
+        : this.isNeighborUphillAllowed(neighborBiome, localSurfaceY) ? 1 : 0;
+
+      allowedNeighbor[i] = canUse;
+      if (canUse) {
+        totalWeight += neighbors[i].weight * (neighborBiome.blendStrength ?? 1.0);
+      }
     }
 
     // Sample noise and map to 0-1 range
@@ -205,29 +281,37 @@ export class BiomeSampler {
     // Select biome based on noise value crossing cumulative weight thresholds
     let cumulative = (primaryWeight * (primary.blendStrength ?? 1.0)) / totalWeight;
     if (noise < cumulative) {
-      return {
-        surface: primary.blocks.surface,
-        subsurface: primary.blocks.subsurface ?? primary.blocks.surface,
-        underground: primary.blocks.underground ?? primary.blocks.surface,
-        subsurfaceDepth: primary.blocks.subsurfaceDepth ?? 4,
-      };
+      return this.normalizedBlocks(primary);
     }
 
     let selected = primary;
     for (let i = 0; i < neighborCount; i++) {
-      cumulative += (neighbors[i].weight * (neighbors[i].biome.blendStrength ?? 1.0)) / totalWeight;
+      if (!allowedNeighbor[i]) continue;
+      const neighborBiome = neighbors[i].biome;
+      cumulative += (neighbors[i].weight * (neighborBiome.blendStrength ?? 1.0)) / totalWeight;
       if (noise < cumulative) {
-        selected = neighbors[i].biome;
+        selected = neighborBiome;
         break;
       }
     }
 
-    return {
-      surface: selected.blocks.surface,
-      subsurface: selected.blocks.subsurface ?? selected.blocks.surface,
-      underground: selected.blocks.underground ?? selected.blocks.surface,
-      subsurfaceDepth: selected.blocks.subsurfaceDepth ?? 4,
-    };
+    return this.normalizedBlocks(selected);
+  }
+
+  private normalizedBlocks(biome: BiomeDefinition): ResolvedBiomeBlocks {
+    return normalizeBiomeBlocks(biome.blocks);
+  }
+
+  private isNeighborUphillAllowed(sourceBiome: BiomeDefinition, localSurfaceY: number): boolean {
+    let lowestSourceY = 2147483647;
+
+    for (let i = 0; i < BiomeSampler.ADJACENT_X.length; i++) {
+      if (this._adjacentBiomes[i] !== sourceBiome) continue;
+      const sourceY = this._adjacentHeights[i];
+      if (sourceY < lowestSourceY) lowestSourceY = sourceY;
+    }
+
+    return lowestSourceY !== 2147483647 && localSurfaceY <= lowestSourceY + BiomeSampler.MAX_UPHILL_BLEND_Y;
   }
 }
 

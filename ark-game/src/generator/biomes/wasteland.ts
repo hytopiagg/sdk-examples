@@ -12,9 +12,9 @@ export default defineBiome({
   weight: 0.6,
   
   blocks: {
-    surface: 14,      // cobbled-deepslate (cracked wasteland surface)
-    subsurface: 5,    // black-concrete (charred/burned layer)
-    underground: 13,  // coal-ore (burned underground)
+    surface: [{ blockId: 14 }],      // cobbled-deepslate (cracked wasteland surface)
+    subsurface: [{ blockId: 5 }],    // black-concrete (charred/burned layer)
+    underground: [{ blockId: 13 }],  // coal-ore (burned underground)
     subsurfaceDepth: 2,
   },
   
@@ -30,6 +30,34 @@ export default defineBiome({
     frequency: 1.4,        // Large cavern systems
     threshold: 0.15,       // Much more caves (lowers effective threshold)
     wormCaves: true,
+    wormStrength: 1.3,
+    blendWeight: 1.6,
+    profile: {
+      centerY: 22,
+      range: 26,
+      strength: 0.5,
+    },
+    warp: {
+      strength: 2.4,
+      frequency: 1.1,
+    },
+    chamber: {
+      chance: 0.16,
+      strength: 1.15,
+      frequency: 1.35,
+    },
+    speleothems: {
+      enabled: true,
+      blocks: [
+        { blockId: 28, weight: 0.7 }, // cobbled-deepslate
+        { blockId: 29, weight: 0.3 },  // black-concrete
+      ],
+      density: 0.02,
+      minLength: 1,
+      maxLength: 7,
+      stalactites: true,
+      stalagmites: true,
+    },
   },
 
   craters: {

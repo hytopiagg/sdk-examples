@@ -60,6 +60,10 @@ export interface GeneratorConfig {
     wormCaves: boolean;
     wormFrequency: number;
     wormStrength: number;
+    /** Base frequency for tunnel domain warp noise */
+    warpFrequency: number;
+    /** Base frequency for chamber mask noise */
+    chamberFrequency: number;
   };
 }
 
@@ -89,6 +93,8 @@ export const DEFAULT_CONFIG: GeneratorConfig = {
     wormCaves: true,
     wormFrequency: 0.012,      // Lower = longer tunnels, more spread out
     wormStrength: 0.7,         // Reduce density of tunnel networks
+    warpFrequency: 0.009,
+    chamberFrequency: 0.006,
   },
 };
 

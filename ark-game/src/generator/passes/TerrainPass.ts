@@ -9,6 +9,7 @@
  */
 
 import type { GeneratorPass, GenerationContext } from './GeneratorPass';
+import { resolveBiomeBlock } from '../blocks/BlockSelector';
 
 export class TerrainPass implements GeneratorPass {
   readonly name = 'terrain';
@@ -31,23 +32,24 @@ export class TerrainPass implements GeneratorPass {
     const biome = ctx.getBiomeAt(x, z);
 
     const caveModifiers = biome?.caves;
-
-    const surfaceBlock = biome?.blocks.surface ?? config.blockId;
-    const subsurfaceBlock = biome?.blocks.subsurface ?? surfaceBlock;
-    const undergroundBlock = biome?.blocks.underground ?? subsurfaceBlock;
-    const subsurfaceDepth = biome?.blocks.subsurfaceDepth ?? 4;
+    const blocks = biome?.blocks;
+    const fallbackBlock = config.blockId;
+    const { seed } = config;
+    const blockAt = (y: number, depth: number): number => (
+      blocks ? resolveBiomeBlock(blocks, seed, x, y, z, depth) : fallbackBlock
+    );
 
     const cavesEnabled = caveConfig.enabled && (caveModifiers?.enabled ?? true);
 
     // Surface block
     if (!cavesEnabled || !ctx.isCarved(x, surfaceY, z, caveModifiers, surfaceY)) {
-      ctx.addBlock(surfaceBlock, x, surfaceY, z);
+      ctx.addBlock(blockAt(surfaceY, 0), x, surfaceY, z);
     }
 
     // Subsurface buffer
     const belowY = surfaceY - 1;
     if (belowY >= 0 && (!cavesEnabled || !ctx.isCarved(x, belowY, z, caveModifiers, surfaceY))) {
-      const blockId = belowY >= surfaceY - subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
+      const blockId = blockAt(belowY, surfaceY - belowY);
       ctx.addBlock(blockId, x, belowY, z);
     }
 
@@ -60,8 +62,7 @@ export class TerrainPass implements GeneratorPass {
 
     for (let y = Math.max(0, lowestNeighbor); y < surfaceY - 1; y++) {
       if (cavesEnabled && ctx.isCarved(x, y, z, caveModifiers, surfaceY)) continue;
-      const depthFromSurface = surfaceY - y;
-      const blockId = depthFromSurface <= subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
+      const blockId = blockAt(y, surfaceY - y);
       ctx.addBlock(blockId, x, y, z);
     }
 
@@ -102,8 +103,7 @@ export class TerrainPass implements GeneratorPass {
           const adjBelow = below >= 0 && below < rangeSize && (carvedBits[below >>> 5] & (1 << (below & 31)));
 
           if (adjAbove || adjBelow || this.hasHorizontalCaveNeighbor(ctx, x, y, z)) {
-            const depthFromSurface = surfaceY - y;
-            const blockId = depthFromSurface <= subsurfaceDepth ? subsurfaceBlock : undergroundBlock;
+            const blockId = blockAt(y, surfaceY - y);
             ctx.addBlock(blockId, x, y, z);
           }
         }

@@ -1,5 +1,6 @@
 import {
   startServer,
+  PlayerCameraMode,
   DefaultPlayerEntity,
   PlayerEvent,
 } from 'hytopia';
@@ -27,6 +28,13 @@ startServer(async world => {
     });
 
     playerEntity.spawn(world, result.spawnPoint);
+    
+    player.camera.setMode(PlayerCameraMode.FIRST_PERSON);
+    player.camera.setAttachedToEntity(playerEntity);
+    player.camera.setViewModel('models/players/player-fp.gltf');
+    player.camera.setViewModelPitchesWithCamera(true);
+    player.camera.setViewModelYawsWithCamera(true);
+    player.camera.setOffset({ x: 0, y: 0.5, z: -0.1});
   });
 
   world.on(PlayerEvent.LEFT_WORLD, ({ player }) => {
