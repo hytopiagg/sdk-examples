@@ -203,7 +203,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   public focusCameraOnPlayer(player: GamePlayerEntity): void {
     this.player.camera.setMode(PlayerCameraMode.THIRD_PERSON);
     this.player.camera.setAttachedToEntity(player);
-    this.player.camera.setModelHiddenNodes([]);
+    this.player.camera.setViewModelHiddenNodes([]);
   }
 
   public dealtDamage(damage: number): void {
@@ -442,7 +442,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
   private _setupPlayerCamera(): void {
     this.player.camera.setMode(PlayerCameraMode.FIRST_PERSON);
-    this.player.camera.setModelHiddenNodes([ 'head', 'neck', 'torso', 'leg_right', 'leg_left' ]);
+    this.player.camera.setViewModelHiddenNodes([ 'head', 'neck', 'torso', 'leg_right', 'leg_left' ]);
     this.player.camera.setOffset({ x: 0, y: 0.5, z: 0 });
   }
 
