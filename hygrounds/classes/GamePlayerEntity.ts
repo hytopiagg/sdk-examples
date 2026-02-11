@@ -390,7 +390,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
   }
 
   private _setupPlayerController(): void {
-    this.playerController.applyDirectionalMovementRotations = false;
+    this.playerController.applyDirectionalMovementRotations = true;
     this.playerController.autoCancelMouseLeftClick = false;
 
     this.resetAnimations();
@@ -444,6 +444,8 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
     this.player.camera.setMode(PlayerCameraMode.FIRST_PERSON);
     this.player.camera.setViewModelHiddenNodes([ 'head', 'neck', 'torso', 'leg_right', 'leg_left' ]);
     this.player.camera.setOffset({ x: 0, y: 0.5, z: 0 });
+    this.player.camera.setViewModelPitchesWithCamera(true);
+    this.player.camera.setViewModelYawsWithCamera(true);
   }
 
   private _onTickWithPlayerInput = (payload: EventPayloads[BaseEntityControllerEvent.TICK_WITH_PLAYER_INPUT]): void => {

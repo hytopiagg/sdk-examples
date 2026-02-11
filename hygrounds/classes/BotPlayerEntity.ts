@@ -110,6 +110,14 @@ class BotPlayerCamera {
 
   public setModelShownNodes(_: string[]): void {}
 
+  public setViewModelHiddenNodes(_: string[]): void {}
+
+  public setViewModelShownNodes(_: string[]): void {}
+
+  public setViewModelYawsWithCamera(_: boolean): void {}
+
+  public setViewModelPitchesWithCamera(_: boolean): void {}
+
   public setOffset(offset: Vector3Like): void {
     this.offset = { ...offset };
   }

@@ -162,9 +162,18 @@ export default class ItemEntity extends Entity {
     if (!this.parent || !this.parent.world || !(this.parent instanceof GamePlayerEntity)) return;
 
     const controller = this.parent.controller as PlayerEntityController;
-    controller.idleLoopedAnimations = [ this.idleAnimation, 'idle_lower' ];
-    controller.walkLoopedAnimations = [ this.idleAnimation, 'walk_lower' ];
-    controller.runLoopedAnimations = [ this.idleAnimation, 'run_lower' ];
+    const idleLoopedAnimations = [ this.idleAnimation, 'idle_lower' ];
+    const walkLoopedAnimations = [ this.idleAnimation, 'walk_lower' ];
+    const runLoopedAnimations = [ this.idleAnimation, 'run_lower' ];
+
+    controller.idleLoopedAnimations = idleLoopedAnimations;
+    controller.walkLoopedAnimations = walkLoopedAnimations;
+    controller.runLoopedAnimations = runLoopedAnimations;
+
+    // Apply immediately so old upper-body loops (e.g. idle_upper) do not linger
+    // until the next controller tick/update.
+    this.parent.stopAllModelLoopedAnimations(idleLoopedAnimations);
+    this.parent.startModelLoopedAnimations(idleLoopedAnimations);
   }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {
