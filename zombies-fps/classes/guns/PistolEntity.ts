@@ -44,7 +44,7 @@ export default class PistolEntity extends GunEntity {
     parentPlayerEntity.player.input.ml = false;
 
     // play shoot animation
-    parentPlayerEntity.startModelOneshotAnimations([ 'shoot_gun_right' ]);
+    parentPlayerEntity.getModelAnimation('shoot_gun_right')?.restart();
   }
 
   public override getMuzzleFlashPositionRotation(): { position: Vector3Like, rotation: QuaternionLike } {

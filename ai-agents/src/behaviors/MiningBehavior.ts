@@ -1,4 +1,4 @@
-import { Vector3, World } from "hytopia";
+import { Vector3, World, EntityModelAnimationLoopMode } from "hytopia";
 import { BaseAgent, type AgentBehavior } from "../BaseAgent";
 
 interface MiningResult {
@@ -108,7 +108,7 @@ export class MiningBehavior implements AgentBehavior {
 
 			// Start mining animation if available
 			agent.stopModelAnimations(["walk_upper", "walk_lower", "run_upper", "run_lower"]);
-			agent.startModelLoopedAnimations(["idle_upper", "idle_lower"]); // Could be replaced with mining animation
+			for (const n of ["idle_upper", "idle_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } } // Could be replaced with mining animation
 
 			// Simulate mining time
 			setTimeout(() => {

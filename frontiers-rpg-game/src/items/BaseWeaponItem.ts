@@ -89,7 +89,7 @@ export default abstract class BaseWeaponItem extends BaseItem {
       return;
     }
 
-    this.entity.parent.startModelOneshotAnimations(this.attack.animations);
+    for (const n of this.attack.animations) { this.entity.parent.getModelAnimation(n)?.restart(); }
     this.updateAttackCooldown(this.attack.cooldownMs);
     setTimeout(() => this.processAttackDamageTargets(this.attack), this.attack.damageDelayMs);
   }
@@ -99,7 +99,7 @@ export default abstract class BaseWeaponItem extends BaseItem {
       return;
     }
 
-    this.entity.parent.startModelOneshotAnimations(this.specialAttack.animations);
+    for (const n of this.specialAttack.animations) { this.entity.parent.getModelAnimation(n)?.restart(); }
     this.updateAttackCooldown(this.specialAttack.damageDelayMs); // prevents spamming regular attack mid-special attack
     this.updateSpecialAttackCooldown(this.specialAttack.cooldownMs);
     setTimeout(() => this.processAttackDamageTargets(this.specialAttack), this.specialAttack.damageDelayMs);

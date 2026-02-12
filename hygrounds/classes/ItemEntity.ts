@@ -14,6 +14,7 @@ import {
   SceneUI,
   Vector3Like,
   World,
+  EntityModelAnimationLoopMode,
   ErrorHandler,
 } from 'hytopia';
 
@@ -172,8 +173,8 @@ export default class ItemEntity extends Entity {
 
     // Apply immediately so old upper-body loops (e.g. idle_upper) do not linger
     // until the next controller tick/update.
-    this.parent.stopAllModelLoopedAnimations(idleLoopedAnimations);
-    this.parent.startModelLoopedAnimations(idleLoopedAnimations);
+    this.parent.stopAllModelAnimations(a => idleLoopedAnimations.includes(a.name));
+    for (const n of idleLoopedAnimations) { const a = this.parent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
   }
 
   public override spawn(world: World, position: Vector3Like, rotation?: QuaternionLike): void {

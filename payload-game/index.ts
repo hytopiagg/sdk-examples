@@ -35,6 +35,7 @@ import {
   startServer,
   Collider,
   Quaternion,
+  EntityModelAnimationLoopMode,
 } from 'hytopia';
 
 import type {
@@ -118,7 +119,7 @@ startServer(world => { // Perform our game setup logic in the startServer init c
     // Setup a first person camera for the player
     player.camera.setMode(PlayerCameraMode.FIRST_PERSON); // set first person mode
     player.camera.setOffset({ x: 0, y: 0.4, z: 0 }); // shift camrea up on Y axis so we see from "head" perspective.
-    player.camera.setModelHiddenNodes([ 'head', 'neck' ]); // hide the head node from the model so we don't see it in the camera, this is just hidden for the controlling player.
+    player.camera.setViewModelHiddenNodes([ 'head', 'neck' ]); // hide the head node from the model so we don't see it in the camera, this is just hidden for the controlling player.
     player.camera.setForwardOffset(0.3); // Shift the camera forward so we are looking slightly in front of where the player is looking.
 
     // Spawn the player entity at a random coordinate
@@ -310,7 +311,7 @@ function spawnPayloadEntity(world: World) {
     name: 'Payload',
     modelUri: 'models/payload.gltf',
     modelScale: 0.7,
-    modelLoopedAnimations: [ 'idle' ],
+    modelAnimations: [{ name: 'idle', loopMode: EntityModelAnimationLoopMode.LOOP, play: true }],
     rigidBodyOptions: {
       type: RigidBodyType.KINEMATIC_POSITION,
       colliders: [
@@ -362,7 +363,7 @@ function spawnSpider(world: World, coordinate: Vector3Like) {
     controller: new SimpleEntityController(),
     name: 'Spider',
     modelUri: 'models/npcs/spider.gltf',
-    modelLoopedAnimations: [ 'walk' ],
+    modelAnimations: [{ name: 'walk', loopMode: EntityModelAnimationLoopMode.LOOP, play: true }],
     modelScale: baseScale * randomScaleMultiplier,
     rigidBodyOptions: {
       type: RigidBodyType.DYNAMIC,
@@ -429,11 +430,13 @@ function onTickPathfindPayload(payload: EventPayloads[EntityEvent.TICK]) { // Mo
     : 0;
 
   if (!speed) { // Play animations based on if its moving or not
-    entity.stopModelAnimations(Array.from(entity.modelLoopedAnimations).filter(v => v !== 'idle'));
-    entity.startModelLoopedAnimations([ 'idle' ]);
+    entity.stopAllModelAnimations(a => a.name === 'idle');
+    const idle = entity.getModelAnimation('idle');
+    if (idle) { idle.setLoopMode(EntityModelAnimationLoopMode.LOOP); idle.play(); }
   } else {
-    entity.stopModelAnimations(Array.from(entity.modelLoopedAnimations).filter(v => v !== 'walk'));
-    entity.startModelLoopedAnimations([ 'walk' ]);
+    entity.stopAllModelAnimations(a => a.name === 'walk');
+    const walk = entity.getModelAnimation('walk');
+    if (walk) { walk.setLoopMode(EntityModelAnimationLoopMode.LOOP); walk.play(); }
   }
 
   const targetWaypointCoordinate = PAYLOAD_WAYPOINT_COORDINATES[targetWaypointCoordinateIndex];
@@ -512,7 +515,7 @@ function onTickWithPlayerInput(payload: EventPayloads[BaseEntityControllerEvent.
     // Normalize the direction vector to unit length
     direction.normalize();
 
-    entity.startModelOneshotAnimations([ 'shoot_gun_right' ]);
+    entity.getModelAnimation('shoot_gun_right')?.restart();
 
     // Adjust bullet origin roughly for camera offset so crosshair is accurate
     const bulletOrigin = entity.position;

@@ -13,15 +13,23 @@ import type { GeneratorPass, GenerationContext } from './GeneratorPass';
 const DX = new Int8Array([1, -1, 0, 0]);
 const DZ = new Int8Array([0, 0, 1, -1]);
 
+type LiquidPassMode = 'full' | 'surfaceRefill';
+
 export class LiquidPass implements GeneratorPass {
-  readonly name = 'liquid';
+  readonly name: string;
+
+  constructor(private readonly mode: LiquidPassMode = 'full') {
+    this.name = mode === 'surfaceRefill' ? 'liquid-refill' : 'liquid';
+  }
 
   execute(ctx: GenerationContext): void {
     const { x: sizeX, y: sizeY, z: sizeZ } = ctx.config.worldSize;
-    const { caves: caveConfig } = ctx.config;
+    const refillBelowSurface = this.mode === 'surfaceRefill';
 
-    this.fillSurfaceLiquids(ctx, sizeX, sizeY, sizeZ);
-    this.fillUndergroundLiquids(ctx, sizeX, sizeZ, caveConfig);
+    this.fillSurfaceLiquids(ctx, sizeX, sizeY, sizeZ, refillBelowSurface);
+    if (refillBelowSurface) return;
+
+    this.fillUndergroundLiquids(ctx, sizeX, sizeZ, ctx.config.caves);
   }
 
   /**
@@ -33,7 +41,11 @@ export class LiquidPass implements GeneratorPass {
    * 3. Fill all marked columns.
    */
   private fillSurfaceLiquids(
-    ctx: GenerationContext, sizeX: number, sizeY: number, sizeZ: number
+    ctx: GenerationContext,
+    sizeX: number,
+    sizeY: number,
+    sizeZ: number,
+    refillBelowSurface: boolean
   ): void {
     const terrain = ctx.terrain;
     const totalColumns = sizeX * sizeZ;
@@ -106,10 +118,27 @@ export class LiquidPass implements GeneratorPass {
         if (surfaceY >= level) continue;
 
         const blockId = liquidBlock[idx];
-        for (let y = surfaceY + 1; y <= level && y < sizeY; y++) {
-          if (!ctx.hasBlock(x, y, z)) {
-            ctx.addBlock(blockId, x, y, z);
+        if (!refillBelowSurface) {
+          for (let y = surfaceY + 1; y <= level && y < sizeY; y++) {
+            if (!ctx.hasBlock(x, y, z)) {
+              ctx.addBlock(blockId, x, y, z);
+            }
           }
+        }
+
+        if (!refillBelowSurface) continue;
+        if (surfaceY < 0 || surfaceY >= sizeY) continue;
+        if (ctx.hasBlock(x, surfaceY, z)) continue;
+
+        // Post-crater refill: if a liquid column has opened below the terrain
+        // surface, backfill contiguous air downward until support is reached.
+        const liquidTopY = Math.min(level, sizeY - 1);
+        if (liquidTopY <= surfaceY) continue;
+        if (!ctx.hasBlock(x, surfaceY + 1, z)) continue;
+
+        for (let y = surfaceY; y >= 0; y--) {
+          if (ctx.hasBlock(x, y, z)) break;
+          ctx.addBlock(blockId, x, y, z);
         }
       }
     }

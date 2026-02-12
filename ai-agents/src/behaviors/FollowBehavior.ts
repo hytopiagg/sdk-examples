@@ -4,6 +4,7 @@ import {
 	SimpleEntityController,
 	Vector3,
 	World,
+	EntityModelAnimationLoopMode,
 } from "hytopia";
 import type { AgentBehavior, BaseAgent } from "../BaseAgent";
 import { PlayerManager } from "hytopia";
@@ -80,7 +81,7 @@ export class FollowBehavior implements AgentBehavior {
 
 		if (Math.abs(distance - this.followDistance) > 0.5) {
 			const isRunning = distance > this.runThreshold;
-			agent.startModelLoopedAnimations([isRunning ? "run_upper" : "walk_upper", isRunning ? "run_lower" : "walk_lower"]);
+			for (const n of [isRunning ? "run_upper" : "walk_upper", isRunning ? "run_lower" : "walk_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
 
 			const angle = Math.atan2(dz, dx);
 			const targetPos = new Vector3(
@@ -116,7 +117,7 @@ export class FollowBehavior implements AgentBehavior {
 			agent.controller.face(targetEntity.position, this.speed * 2);
 		} else {
 			agent.stopModelAnimations(["walk_upper", "walk_lower", "run_upper", "run_lower"]);
-			agent.startModelLoopedAnimations(["idle_upper", "idle_lower"]);
+			for (const n of ["idle_upper", "idle_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
 			this.isJumping = false; // Reset jump state when we're close enough
 		}
 	}

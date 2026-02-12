@@ -73,7 +73,7 @@ export default class BaseForageableEntity extends BaseEntity {
 
     this._isBeingForaged = true;
     interactor.setIsMovementDisabled(true);
-    interactor.startModelOneshotAnimations([ 'foraging-transition' ]);
+    interactor.getModelAnimation('foraging-transition')?.restart();
     interactor.playerController.idleLoopedAnimations = [ 'foraging-loop' ]; // player controller stops all looped animations atm for its state, so we set the idle looped animations instead.
 
     setTimeout(() => {

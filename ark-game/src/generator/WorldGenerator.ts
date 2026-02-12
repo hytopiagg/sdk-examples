@@ -8,8 +8,9 @@
  * 4. Liquid - Water, lava based on biome config
  * 5. Road - Global road network (bridges + tunnels)
  * 6. Crater - Surface impact carving + contact effects (can destroy roads)
- * 7. (Future) Structures - Buildings, ruins
- * 8. (Future) Decoration - Trees, plants, details
+ * 7. Liquid Refill - Surface liquid refill after crater carving
+ * 8. (Future) Structures - Buildings, ruins
+ * 9. (Future) Decoration - Trees, plants, details
  */
 
 import type { BlockPlacement, Vector3Like } from 'hytopia';
@@ -37,12 +38,33 @@ export interface GeneratorResult {
   };
 }
 
+export interface GeneratorChunkResult {
+  chunkX: number;
+  chunkY: number;
+  chunkZ: number;
+  chunkSize: number;
+  blocks: { [blockTypeId: number]: BlockPlacement[] };
+  totalBlocks: number;
+}
+
+interface ChunkBucket {
+  blocks: { [blockTypeId: number]: BlockPlacement[] };
+  totalBlocks: number;
+}
+
+interface ChunkIndex {
+  chunkSize: number;
+  buckets: Map<string, ChunkBucket>;
+}
+
 export default class WorldGenerator {
   private config: GeneratorConfig;
   private terrain: TerrainSampler;
   private caves: CaveCarver;
   private biomes: BiomeSampler | null;
   private passes: GeneratorPass[];
+  private lastResult: GeneratorResult | null = null;
+  private chunkIndices = new Map<number, ChunkIndex>();
   
   constructor(config: Partial<GeneratorConfig> = {}) {
     this.config = mergeConfig(config);
@@ -96,6 +118,7 @@ export default class WorldGenerator {
       new LiquidPass(),
       new RoadPass(),
       new CraterPass(),
+      new LiquidPass('surfaceRefill'),
       // Future passes:
       // new StructurePass(),
       // new DecorationPass(),
@@ -126,7 +149,7 @@ export default class WorldGenerator {
     const totalTime = performance.now() - startTime;
     console.log(`[Generator] Complete: ${totalBlocks.toLocaleString()} blocks in ${totalTime.toFixed(0)}ms`);
 
-    return {
+    const result: GeneratorResult = {
       blocks,
       spawnPoint: this.findSpawnPoint(),
       stats: {
@@ -134,6 +157,71 @@ export default class WorldGenerator {
         generationTimeMs: totalTime,
       },
     };
+
+    this.lastResult = result;
+    this.chunkIndices.clear();
+    return result;
+  }
+
+  /**
+   * Get a generated cubic chunk by chunk coordinates from the latest snapshot.
+   * Call generate() first to create/update the snapshot.
+   */
+  generateChunk(chunkX: number, chunkY: number, chunkZ: number, chunkSize = 16): GeneratorChunkResult {
+    const size = this.normalizeChunkSize(chunkSize);
+    const ix = chunkX | 0;
+    const iy = chunkY | 0;
+    const iz = chunkZ | 0;
+    const index = this.getChunkIndex(size);
+    const bucket = index.buckets.get(this.chunkKey(ix, iy, iz));
+
+    if (!bucket) {
+      return { chunkX: ix, chunkY: iy, chunkZ: iz, chunkSize: size, blocks: {}, totalBlocks: 0 };
+    }
+
+    return {
+      chunkX: ix,
+      chunkY: iy,
+      chunkZ: iz,
+      chunkSize: size,
+      blocks: bucket.blocks,
+      totalBlocks: bucket.totalBlocks,
+    };
+  }
+
+  /** Convenience wrapper to resolve chunk by world coordinate. */
+  generateChunkAtWorldPosition(x: number, y: number, z: number, chunkSize = 16): GeneratorChunkResult {
+    const size = this.normalizeChunkSize(chunkSize);
+    const chunkX = Math.floor(x / size);
+    const chunkY = Math.floor(y / size);
+    const chunkZ = Math.floor(z / size);
+    return this.generateChunk(chunkX, chunkY, chunkZ, size);
+  }
+
+  /** Get all chunks in a cubic radius around a world coordinate. */
+  generateChunksAroundWorldPosition(
+    x: number,
+    y: number,
+    z: number,
+    radiusChunks: number,
+    chunkSize = 16
+  ): GeneratorChunkResult[] {
+    const size = this.normalizeChunkSize(chunkSize);
+    const radius = Math.max(0, radiusChunks | 0);
+    const centerX = Math.floor(x / size);
+    const centerY = Math.floor(y / size);
+    const centerZ = Math.floor(z / size);
+    const out: GeneratorChunkResult[] = [];
+
+    for (let dy = -radius; dy <= radius; dy++) {
+      for (let dz = -radius; dz <= radius; dz++) {
+        for (let dx = -radius; dx <= radius; dx++) {
+          out.push(this.generateChunk(centerX + dx, centerY + dy, centerZ + dz, size));
+        }
+      }
+    }
+
+    return out;
   }
   
   private findSpawnPoint(): Vector3Like {
@@ -183,6 +271,59 @@ export default class WorldGenerator {
   
   getConfig(): GeneratorConfig {
     return this.config;
+  }
+
+  private getResultOrThrow(): GeneratorResult {
+    if (this.lastResult) return this.lastResult;
+    throw new Error('[Generator] No snapshot available. Call generate() before requesting chunks.');
+  }
+
+  private normalizeChunkSize(chunkSize: number): number {
+    if (!Number.isFinite(chunkSize)) return 16;
+    return Math.max(1, chunkSize | 0);
+  }
+
+  private chunkKey(chunkX: number, chunkY: number, chunkZ: number): string {
+    return `${chunkX},${chunkY},${chunkZ}`;
+  }
+
+  private getChunkIndex(chunkSize: number): ChunkIndex {
+    const cached = this.chunkIndices.get(chunkSize);
+    if (cached) return cached;
+
+    const result = this.getResultOrThrow();
+    const buckets = new Map<string, ChunkBucket>();
+
+    const blockIds = Object.keys(result.blocks);
+    for (let i = 0; i < blockIds.length; i++) {
+      const blockId = Number(blockIds[i]);
+      const placements = result.blocks[blockId];
+      if (!placements || placements.length === 0) continue;
+
+      for (let j = 0; j < placements.length; j++) {
+        const p = placements[j].globalCoordinate;
+        const cx = Math.floor(p.x / chunkSize);
+        const cy = Math.floor(p.y / chunkSize);
+        const cz = Math.floor(p.z / chunkSize);
+        const key = this.chunkKey(cx, cy, cz);
+        let bucket = buckets.get(key);
+        if (!bucket) {
+          bucket = { blocks: {}, totalBlocks: 0 };
+          buckets.set(key, bucket);
+        }
+        let chunkList = bucket.blocks[blockId];
+        if (!chunkList) {
+          chunkList = [];
+          bucket.blocks[blockId] = chunkList;
+        }
+        chunkList.push(placements[j]);
+        bucket.totalBlocks++;
+      }
+    }
+
+    const index: ChunkIndex = { chunkSize, buckets };
+    this.chunkIndices.set(chunkSize, index);
+    return index;
   }
 }
 

@@ -29,7 +29,7 @@ export default class WeatheredStumpEntity extends BaseForageableEntity {
       maxDropsPerForage: 3,
       experienceReward: 18,
       modelUri: 'models/forageables/weathered-stump.gltf',
-      modelLoopedAnimations: [ 'idle' ],
+      modelAnimations: [{ name: 'idle', loopMode: 1 /* LOOP */, play: true }],
       name: 'Weathered Stump',
       ...options,
     });

@@ -8,6 +8,7 @@ import {
 	Vector3,
 	World,
 	SimpleEntityController,
+	EntityModelAnimationLoopMode,
 	RigidBodyType,
 	SceneUI,
 	PlayerEntity,
@@ -80,7 +81,10 @@ export class BaseAgent extends Entity {
 		super({
 			name: options.name || "BaseAgent",
 			modelUri: "models/players/player.gltf",
-			modelLoopedAnimations: ["idle_upper", "idle_lower"],
+			modelAnimations: [
+				{ name: 'idle_upper', loopMode: EntityModelAnimationLoopMode.LOOP, play: true },
+				{ name: 'idle_lower', loopMode: EntityModelAnimationLoopMode.LOOP, play: true },
+			],
 			modelScale: 0.5,
 			controller: new SimpleEntityController(),
 			rigidBodyOptions: {

@@ -14,7 +14,7 @@ startServer(world => {
   
   // Visualize raycasts, like block breaking for our
   // entity controller.
-  world.simulation.enableDebugRaycasting(true);
+  world.simulation.enableDebugRaycasting(false);
 
   world.loadMap(worldMap);
 

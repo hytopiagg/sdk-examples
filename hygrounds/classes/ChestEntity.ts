@@ -11,6 +11,7 @@ import {
   RigidBodyType,
   SceneUI,
   Vector3Like,
+  EntityModelAnimationLoopMode,
   World,
 } from 'hytopia';
 
@@ -65,10 +66,11 @@ export default class ChestEntity extends Entity {
     this._openAudio.play(this.world, true);
     this._labelSceneUI.unload();
 
-    this.startModelOneshotAnimations(['opening']);
+    this.getModelAnimation('opening')?.restart();
 
     setTimeout(() => {
-      this.startModelLoopedAnimations([ 'open' ]);
+      const openAnim = this.getModelAnimation('open');
+      if (openAnim) { openAnim.setLoopMode(EntityModelAnimationLoopMode.LOOP); openAnim.play(); }
 
       const numItems = Math.floor(Math.random() * CHEST_MAX_DROP_ITEMS) + 1;
 

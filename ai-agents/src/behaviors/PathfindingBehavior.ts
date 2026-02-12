@@ -1,4 +1,4 @@
-import { Vector3, World, SimpleEntityController, PlayerEntity } from "hytopia";
+import { Vector3, World, SimpleEntityController, PlayerEntity, EntityModelAnimationLoopMode } from "hytopia";
 import { BaseAgent } from "../BaseAgent";
 import type { AgentBehavior } from "../BaseAgent";
 import { Player } from "hytopia";
@@ -49,8 +49,8 @@ export class PathfindingBehavior implements AgentBehavior {
 
 				if (distanceToFinal < 3) {
 					agent.stopModelAnimations(["walk_upper", "walk_lower"]);
-					agent.startModelLoopedAnimations(["idle_upper", "idle_lower"]);
-					if (this.targetEntity) {
+				for (const n of ["idle_upper", "idle_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
+				if (this.targetEntity) {
 						agent.controller.face(
 							this.targetEntity.position,
 							this.moveSpeed * 2
@@ -76,7 +76,7 @@ export class PathfindingBehavior implements AgentBehavior {
 							this.moveSpeed * 2
 						);
 						agent.stopModelAnimations(["walk_upper", "walk_lower"]);
-						agent.startModelLoopedAnimations(["idle_upper", "idle_lower"]);
+						for (const n of ["idle_upper", "idle_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
 
 						this.targetEntity = undefined;
 					}
@@ -111,16 +111,16 @@ export class PathfindingBehavior implements AgentBehavior {
 					moveIgnoreAxes: yDiff >= 0 ? { y: true } : undefined,
 				});
 				agent.controller.face(nextPoint, this.moveSpeed * 2);
-				agent.startModelLoopedAnimations(["walk_upper", "walk_lower"]);
-			}
+			for (const n of ["walk_upper", "walk_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
+		}
 		} else if (this.path.length > 0) {
 			this.path = [];
 			this.currentPathIndex = 0;
 			this.isJumping = false;
 			this.jumpCooldown = 0;
 			agent.stopModelAnimations(["walk_upper", "walk_lower"]);
-			agent.startModelLoopedAnimations(["idle_upper", "idle_lower"]);
-		}
+		for (const n of ["idle_upper", "idle_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
+	}
 	}
 
 	private isWalkable(

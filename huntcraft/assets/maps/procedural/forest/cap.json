@@ -529,8 +529,8 @@
     "14.526813686209318,1.3737436782782761,-4.494820357252351": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -547,8 +547,8 @@
     "13.473606378133972,1.3737436782782761,2.5070127877422723": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -565,8 +565,8 @@
     "15.472817898658223,1.3737436782782761,7.502633597116181": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -583,8 +583,8 @@
     "14.467603578948285,1.2812812477350235,0.5298988705650307": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -601,8 +601,8 @@
     "15.542050681182378,1.2812812477350235,-2.5132367205199238": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -619,8 +619,8 @@
     "14.525591695159234,1.2812812477350235,-9.464103820580718": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -637,8 +637,8 @@
     "12.507091029244487,1.2812812477350235,5.543510778690783": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -655,8 +655,8 @@
     "14.728724646598565,5.296855537743902,5.697129866450918": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.0555417157289964,
       "name": "basic-tree",
@@ -673,8 +673,8 @@
     "12.810901696097972,5.845372519470237,-0.3611508987918704": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.4455982360677235,
       "name": "basic-tree",
@@ -691,8 +691,8 @@
     "14.757276516029123,5.290007123026036,-7.342858215137213": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.050671731929625,
       "name": "basic-tree",

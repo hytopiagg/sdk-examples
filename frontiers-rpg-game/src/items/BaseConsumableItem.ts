@@ -84,7 +84,7 @@ export default abstract class BaseConsumableItem extends BaseItem {
     }
 
     this._lastConsumeTimeMs = now;
-    gamePlayerEntity.startModelOneshotAnimations(this.consumeAnimations);
+    for (const n of this.consumeAnimations) { gamePlayerEntity.getModelAnimation(n)?.restart(); }
     this.applyEffects(gamePlayerEntity);
   }
 

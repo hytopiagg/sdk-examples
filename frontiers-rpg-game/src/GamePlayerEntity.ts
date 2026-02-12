@@ -259,7 +259,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
   private _dodge(): void {
     if (!this.canDodge) return;
 
-    this.startModelOneshotAnimations([ 'dodge-roll' ]);
+    this.getModelAnimation('dodge-roll')?.restart();
     this._lastDodgeTimeMs = performance.now();
 
     // Apply dodge impulse when not moving
@@ -298,7 +298,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity implements IDa
       if (selectedItem) {
         selectedItem.useMouseLeft();
       } else {
-        this.startModelOneshotAnimations([ 'simple-interact' ]);
+        this.getModelAnimation('simple-interact')?.restart();
       }
 
       input.ml = false;

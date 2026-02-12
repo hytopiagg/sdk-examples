@@ -16,6 +16,7 @@ import {
   CollisionGroup,
   PlayerEntity,
   DefaultPlayerEntityController,
+  EntityModelAnimationLoopMode,
 } from 'hytopia';
 
 import GAME_WALL_SHAPES from './wall-shapes';
@@ -130,7 +131,7 @@ function spawnJoinNpc(world: World) {
   const joinNpc = new Entity({
     name: 'Join NPC',
     modelUri: 'models/npcs/mindflayer.gltf',
-    modelLoopedAnimations: ['idle'],
+    modelAnimations: [{ name: 'idle', loopMode: EntityModelAnimationLoopMode.LOOP, play: true }],
     modelScale: 0.4,
     rigidBodyOptions: {
       rotation: { x: 0, y: 1, z: 0, w: 0 },

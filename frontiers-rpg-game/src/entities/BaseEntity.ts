@@ -201,7 +201,7 @@ export default class BaseEntity extends Entity implements IDamageable {
 
     this._dying = true;
 
-    this.startModelOneshotAnimations(this._deathAnimations);
+    for (const n of this._deathAnimations) { this.getModelAnimation(n)?.restart(); }
     this.stopFacing();
     this.stopMoving();
     this.dropItems();

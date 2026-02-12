@@ -16,6 +16,7 @@ import {
   World,
   Collider,
   DefaultPlayerEntityController,
+  EntityModelAnimationLoopMode,
 } from 'hytopia';
 
 import worldMap from './assets/map.json' with { type: 'json' } ;
@@ -79,7 +80,7 @@ function setupJoinNPC(world: World) {
     controller: new SimpleEntityController(),
     name: 'Join NPC',
     modelUri: 'models/npcs/mindflayer.gltf',
-    modelLoopedAnimations: [ 'idle' ],
+    modelAnimations: [{ name: 'idle', loopMode: EntityModelAnimationLoopMode.LOOP, play: true }],
     modelScale: 0.5,
     rigidBodyOptions: {
       type: RigidBodyType.FIXED, // It won't ever move, so we can use a fixed body

@@ -125,7 +125,7 @@ export default abstract class MeleeWeaponEntity extends ItemEntity {
   }
 
   private _performAttackEffects(player: GamePlayerEntity): void {
-    player.startModelOneshotAnimations([ this.mlAnimation ]);
+    player.getModelAnimation(this.mlAnimation)?.restart();
     this._attackAudio.play(this.parent!.world!, true);
   }
 

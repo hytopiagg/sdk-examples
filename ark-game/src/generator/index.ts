@@ -28,7 +28,7 @@
  * ```
  */
 
-export { default as WorldGenerator, type GeneratorResult } from './WorldGenerator';
+export { default as WorldGenerator, type GeneratorResult, type GeneratorChunkResult } from './WorldGenerator';
 export type { GeneratorConfig } from './GeneratorConfig';
 export { DEFAULT_CONFIG, mergeConfig } from './GeneratorConfig';
 export { BiomeSampler, type BiomeSamplerConfig, type BlendedBiomeValues } from './BiomeSampler';

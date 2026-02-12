@@ -5275,8 +5275,8 @@
     "-1.0301701062261883,1.973651695296637,19.834282664219618": {
       "modelUri": "models/environment/flower-white-tall.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-tall",
@@ -5293,8 +5293,8 @@
     "-11.973628143561108,1.973651695296637,10.18825562676041": {
       "modelUri": "models/environment/flower-white-tall.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-tall",
@@ -5311,8 +5311,8 @@
     "-5.131622626204198,1.973651695296637,-12.935798665030646": {
       "modelUri": "models/environment/flower-white-tall.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-tall",
@@ -5329,8 +5329,8 @@
     "12.809763777420196,1.973651695296637,-3.2249985232685625": {
       "modelUri": "models/environment/flower-white-tall.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-tall",
@@ -5347,8 +5347,8 @@
     "0.8314337438461639,1.973651695296637,18.78573460227795": {
       "modelUri": "models/environment/flower-white-tall.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-tall",
@@ -5365,8 +5365,8 @@
     "14.842878894779659,1.973651695296637,9.261952075416685": {
       "modelUri": "models/environment/flower-white-tall.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-tall",
@@ -5383,8 +5383,8 @@
     "4.390738766566484,1.2720270532510507,18.31625583503595": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6696050541564323,
       "name": "skull-broken",
@@ -5401,8 +5401,8 @@
     "2.9199522408355265,1.2268843041487154,18.028205713711547": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5584844409814534,
       "name": "skull-broken",
@@ -5419,8 +5419,8 @@
     "4.086213098429759,1.2181282478894537,17.215880327500226": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5369310717278862,
       "name": "skull-broken",
@@ -5437,8 +5437,8 @@
     "5.4518458790906985,1.2031368192083218,17.13167345430237": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5000290934358691,
       "name": "skull-broken",
@@ -5455,8 +5455,8 @@
     "-3.04175951127137,1.2729550988492409,17.421316172387407": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6718894740904391,
       "name": "skull-broken",
@@ -5473,8 +5473,8 @@
     "-3.591530958955067,1.2828943225588538,16.79591847608708": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6963552555294865,
       "name": "skull-broken",
@@ -5491,8 +5491,8 @@
     "-4.587234779554169,1.3109795944476792,16.486854508148667": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7654882324865953,
       "name": "skull-broken",
@@ -5509,8 +5509,8 @@
     "-14.151260008903968,1.2820882096129205,4.299160903389146": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6943709775087273,
       "name": "skull-broken",
@@ -5527,8 +5527,8 @@
     "-13.030375265646198,1.2551314007241055,7.834338313361448": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6280157556285674,
       "name": "skull-broken",
@@ -5545,8 +5545,8 @@
     "-14.571391331064401,1.295022060323326,-3.9004716107529234": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7262081484881872,
       "name": "skull-broken",
@@ -5563,8 +5563,8 @@
     "-11.507118854647427,1.283533223535734,-7.814571398977995": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6979279348571914,
       "name": "skull-broken",
@@ -5581,8 +5581,8 @@
     "2.8117899526969556,1.2593897299330534,-12.061845518318075": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6384977967582854,
       "name": "skull-broken",
@@ -5599,8 +5599,8 @@
     "1.888958624406052,1.246258410606541,-11.771642971924086": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6061745491853321,
       "name": "skull-broken",
@@ -5617,8 +5617,8 @@
     "4.514884825351941,1.261361130292106,-10.645050520979462": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6433504745651839,
       "name": "skull-broken",
@@ -5635,8 +5635,8 @@
     "15.281335855320563,1.2371136881657554,-0.6181608896270936": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5836644631772439,
       "name": "skull-broken",
@@ -5653,8 +5653,8 @@
     "17.139033725867233,1.3221519659987089,1.0476057779090184": {
       "modelUri": "models/environment/skull-broken.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7929894547660528,
       "name": "skull-broken",
@@ -5671,8 +5671,8 @@
     "6.858415722168149,1.2911283967843643,17.25092370642451": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7166237459307431,
       "name": "skull-flower",
@@ -5689,8 +5689,8 @@
     "-2.4607730287805882,1.204605254191599,18.63983431237995": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5036437026254744,
       "name": "skull-flower",
@@ -5707,8 +5707,8 @@
     "-3.0668880145758166,1.2871552160325415,15.71616231667682": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7068436086954863,
       "name": "skull-flower",
@@ -5725,8 +5725,8 @@
     "-13.787600767358397,1.2302091429612012,6.4984805406893": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5666686595968028,
       "name": "skull-flower",
@@ -5743,8 +5743,8 @@
     "-11.117580597475262,1.2117140968225175,7.781092253420185": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5211423921785049,
       "name": "skull-flower",
@@ -5761,8 +5761,8 @@
     "-14.644037682074746,1.263046582672706,-2.4246775284336755": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6474992804251225,
       "name": "skull-flower",
@@ -5779,8 +5779,8 @@
     "-13.13933387446866,1.2329741602026565,-4.454385458340173": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.573474855883462,
       "name": "skull-flower",
@@ -5797,8 +5797,8 @@
     "-10.097991165336687,1.2891545598011271,-9.175511531462007": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7117650702796974,
       "name": "skull-flower",
@@ -5815,8 +5815,8 @@
     "15.236869722868008,1.2379985883021922,0.560458031753741": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.5858426788977041,
       "name": "skull-flower",
@@ -5833,8 +5833,8 @@
     "2.970711807730236,1.26513208665617,-10.450333963554929": {
       "modelUri": "models/environment/skull-flower.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6526328286921108,
       "name": "skull-flower",
@@ -5851,8 +5851,8 @@
     "2.087032109727842,1.311987731359456,-12.895995855120763": {
       "modelUri": "models/environment/skull.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7679698002694297,
       "name": "skull",
@@ -5869,8 +5869,8 @@
     "14.067149564469638,1.2783613479515257,-0.8707341305508427": {
       "modelUri": "models/environment/skull.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6851971641883707,
       "name": "skull",
@@ -5887,8 +5887,8 @@
     "3.02807411501387,1.2851778456957943,16.81443875978141": {
       "modelUri": "models/environment/skull.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.7019762355588783,
       "name": "skull",
@@ -5905,8 +5905,8 @@
     "-12.578541950033067,1.2812177886500216,5.546411495545419": {
       "modelUri": "models/environment/skull.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6922284028308221,
       "name": "skull",
@@ -5923,8 +5923,8 @@
     "-13.216921858222111,1.2701509208177675,-2.9098041902501515": {
       "modelUri": "models/environment/skull.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 0.6649868820129662,
       "name": "skull",

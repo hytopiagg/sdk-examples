@@ -91,7 +91,7 @@ export default class GorkinShamanEntity extends BaseCombatEntity {
 
     const gas = new Entity({
       modelUri: 'models/vfx/gas-explode.gltf',
-      modelLoopedAnimations: [ 'actived' ],
+      modelAnimations: [{ name: 'actived', loopMode: 1 /* LOOP */, play: true }],
       rigidBodyOptions: {
         type: RigidBodyType.FIXED,
         colliders: [
@@ -127,7 +127,7 @@ export default class GorkinShamanEntity extends BaseCombatEntity {
       direction,
       gravityScale: 0.05,
       modelUri: 'models/projectiles/wide-spinning-fireball.gltf',
-      modelLoopedAnimations: [ 'idle' ],
+      modelAnimations: [{ name: 'idle', loopMode: 1 /* LOOP */, play: true }],
       modelScale: 0.75,
       speed: 12, 
       source: this,

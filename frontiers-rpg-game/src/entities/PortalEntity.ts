@@ -4,6 +4,7 @@ import {
   ColliderShape,
   CollisionGroup,
   Entity,
+  EntityModelAnimationLoopMode,
   ErrorHandler,
   ModelEntityOptions,
   RigidBodyType,
@@ -35,7 +36,7 @@ export default class PortalEntity extends Entity {
     super({
       modelScale: 2,
       modelUri: 'models/environment/portal.gltf',
-      modelLoopedAnimations: [ 'idle' ],
+      modelAnimations: [{ name: 'idle', loopMode: EntityModelAnimationLoopMode.LOOP, play: true }],
       rigidBodyOptions: {
         type: RigidBodyType.FIXED,
         colliders: [

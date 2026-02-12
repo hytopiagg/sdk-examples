@@ -6,6 +6,7 @@ import {
   CollisionGroup,
   Entity,
   EntityEvent,
+  EntityModelAnimationLoopMode,
   ErrorHandler,
   PlayerEntity,
   BlockType,
@@ -37,8 +38,8 @@ export interface MyEntityControllerOptions {
   /** A function allowing custom logic to determine if the entity can walk. */
   canWalk?: () => boolean;
 
-  /** Whether to face forward when the entity stops moving. */
-  faceForwardOnStop?: boolean;
+  /** Whether the entity rotates to face the camera direction when idle. */
+  facesCameraWhenIdle?: boolean;
 
   /** Overrides the animation(s) that will play when the entity is idle. */
   idleLoopedAnimations?: string[];
@@ -157,8 +158,8 @@ export default class MyEntityController extends BaseEntityController {
    */
   public canWalk: (controller: MyEntityController) => boolean = () => true;
 
-  /** Whether to face forward when the entity stops moving. */
-  public faceForwardOnStop: boolean = true;
+  /** Whether the entity rotates to face the camera direction when idle. When `true`, the entity always faces the camera direction. When `false`, the entity only rotates while actively moving. */
+  public facesCameraWhenIdle: boolean = false;
 
   /** The looped animation(s) that will play when the entity is idle. */
   public idleLoopedAnimations: string[] = [ 'idle-upper', 'idle-lower' ];
@@ -268,7 +269,7 @@ export default class MyEntityController extends BaseEntityController {
     // Basic behavior options
     this.applyDirectionalMovementRotations = options.applyDirectionalMovementRotations ?? this.applyDirectionalMovementRotations;
     this.autoCancelMouseLeftClick = options.autoCancelMouseLeftClick ?? this.autoCancelMouseLeftClick;
-    this.faceForwardOnStop = options.faceForwardOnStop ?? this.faceForwardOnStop;
+    this.facesCameraWhenIdle = options.facesCameraWhenIdle ?? this.facesCameraWhenIdle;
     this.sticksToPlatforms = options.sticksToPlatforms ?? this.sticksToPlatforms;
 
     // Capability functions
@@ -366,7 +367,7 @@ export default class MyEntityController extends BaseEntityController {
 
       if (this._liquidContactCount > 0) {
         entity.setGravityScale(this.swimGravity);
-        entity.stopAllModelLoopedAnimations(this.swimLoopedAnimations);
+        entity.stopAllModelAnimations(a => this.swimLoopedAnimations.includes(a.name));
         this._swimUpwardCooldownAt = performance.now() + MyEntityController.SWIM_UPWARD_COOLDOWN_MS;
       } else {
         entity.setGravityScale(1);
@@ -406,9 +407,9 @@ export default class MyEntityController extends BaseEntityController {
           // Landing detection: check before updating ground count
           if (started && this._groundContactCount === 0 && entity.linearVelocity.y < -1) {
             if (entity.linearVelocity.y < MyEntityController.JUMP_LAND_HEAVY_VELOCITY_THRESHOLD) {
-              entity.startModelOneshotAnimations(this.jumpLandHeavyOneshotAnimations);
+              for (const n of this.jumpLandHeavyOneshotAnimations) { entity.getModelAnimation(n)?.restart(); }
             } else {
-              entity.startModelOneshotAnimations(this.jumpLandLightOneshotAnimations);
+              for (const n of this.jumpLandLightOneshotAnimations) { entity.getModelAnimation(n)?.restart(); }
             }
           }
 
@@ -416,7 +417,7 @@ export default class MyEntityController extends BaseEntityController {
         }
   
         if (!this._groundContactCount && !this.isSwimming) {
-          entity.startModelOneshotAnimations(this.jumpOneshotAnimations);
+          for (const n of this.jumpOneshotAnimations) { entity.getModelAnimation(n)?.restart(); }
         } else {
           entity.stopModelAnimations(this.jumpOneshotAnimations);
         }
@@ -493,24 +494,24 @@ export default class MyEntityController extends BaseEntityController {
     if (this.isGrounded && !this.isSwimming && this._isActivelyMoving && !hasConflictingInputs && canMove) {
       // Ground movement animations
       const animations = isFastMovement ? this.runLoopedAnimations : this.walkLoopedAnimations;
-      entity.stopAllModelLoopedAnimations(animations);
-      entity.startModelLoopedAnimations(animations);
+      entity.stopAllModelAnimations(a => animations.includes(a.name));
+      for (const n of animations) { const a = entity.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
       this._stepAudio?.setPlaybackRate(isFastMovement ? 0.75 : 0.51);
       this._stepAudio?.play(entity.world, !this._stepAudio?.isPlaying);
     } else if (this._isFullySubmerged && this.canSwim(this)) {
       this._stepAudio?.pause();
       if (this._isActivelyMoving) {
-        entity.stopAllModelLoopedAnimations(this.swimLoopedAnimations);
-        entity.startModelLoopedAnimations(this.swimLoopedAnimations);
+        entity.stopAllModelAnimations(a => this.swimLoopedAnimations.includes(a.name));
+        for (const n of this.swimLoopedAnimations) { const a = entity.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
       } else {
-        entity.stopAllModelLoopedAnimations(this.swimIdleLoopedAnimations);
-        entity.startModelLoopedAnimations(this.swimIdleLoopedAnimations);
+        entity.stopAllModelAnimations(a => this.swimIdleLoopedAnimations.includes(a.name));
+        for (const n of this.swimIdleLoopedAnimations) { const a = entity.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
       }
     } else {
       // Idle animations
       this._stepAudio?.pause();
-      entity.stopAllModelLoopedAnimations(this.idleLoopedAnimations);
-      entity.startModelLoopedAnimations(this.idleLoopedAnimations);
+      entity.stopAllModelAnimations(a => this.idleLoopedAnimations.includes(a.name));
+      for (const n of this.idleLoopedAnimations) { const a = entity.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
     }
 
     // Calculate movement rotation for character facing (avoid string concatenation)
@@ -533,7 +534,7 @@ export default class MyEntityController extends BaseEntityController {
 
     // Handle interaction input
     if (ml) {
-      entity.startModelOneshotAnimations(this.interactOneshotAnimations);
+      for (const n of this.interactOneshotAnimations) { entity.getModelAnimation(n)?.restart(); }
       input.ml = !this.autoCancelMouseLeftClick;
     }
 
@@ -656,7 +657,7 @@ export default class MyEntityController extends BaseEntityController {
     }
 
     // Apply character rotation
-    if (yaw !== undefined && (this.faceForwardOnStop || this.isActivelyMoving)) {
+    if (yaw !== undefined && (this.facesCameraWhenIdle || this.isActivelyMoving)) {
       const finalYaw = movementDiagonalRotation !== undefined ? yaw + movementDiagonalRotation : yaw;
       const halfFinalYaw = finalYaw * 0.5;
       

@@ -98,7 +98,7 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
 
     const gas = new Entity({
       modelUri: 'models/vfx/gas-explode.gltf',
-      modelLoopedAnimations: [ 'actived' ],
+      modelAnimations: [{ name: 'actived', loopMode: 1 /* LOOP */, play: true }],
       rigidBodyOptions: {
         type: RigidBodyType.FIXED,
         colliders: [
@@ -135,7 +135,7 @@ export default class LesserBlightBloomEntity extends BaseCombatEntity {
         direction,
         gravityScale: 0.15,
         modelUri: 'models/projectiles/wide-spinning-fireball.gltf',
-        modelLoopedAnimations: [ 'idle' ],
+        modelAnimations: [{ name: 'idle', loopMode: 1 /* LOOP */, play: true }],
         modelScale: 0.75,
         speed: 4, 
         source: this,

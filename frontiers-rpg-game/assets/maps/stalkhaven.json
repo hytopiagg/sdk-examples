@@ -26149,8 +26149,8 @@
     "0.9414733095278871,1.59375,3.751803876287342": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26167,8 +26167,8 @@
     "3.6125488875631078,1.59375,1.1459853326179927": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26185,8 +26185,8 @@
     "1.1133183460309088,1.59375,-1.4371739376277017": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26203,8 +26203,8 @@
     "-1.5725329351721358,1.59375,1.0086022754708805": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26221,8 +26221,8 @@
     "-16.49999867320158,1.59375,-23.000002653588034": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26239,8 +26239,8 @@
     "-16.49999867320158,1.59375,-25.000002653588034": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26257,8 +26257,8 @@
     "-16.49999867320158,1.59375,-27.000002653588034": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26275,8 +26275,8 @@
     "-10.499998673201583,1.59375,-23.000002653588034": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26293,8 +26293,8 @@
     "-10.499998673201583,1.59375,-25.000002653588034": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26311,8 +26311,8 @@
     "-10.499998673201583,1.59375,-27.000002653588034": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26329,8 +26329,8 @@
     "29.5,1.59375,17": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26347,8 +26347,8 @@
     "29.50000132679842,1.59375,26.999997346411966": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26365,8 +26365,8 @@
     "19.999996326791525,1.59375,23.499998163404193": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26383,8 +26383,8 @@
     "7.999996326791524,1.59375,39.49999816340419": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26401,8 +26401,8 @@
     "7.999996326791524,1.59375,23.499998163404193": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26419,8 +26419,8 @@
     "21.5,1.59375,-26": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26437,8 +26437,8 @@
     "21.5,1.59375,-28": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26455,8 +26455,8 @@
     "18.5,1.59375,-28": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26473,8 +26473,8 @@
     "24.5,1.59375,-28": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26491,8 +26491,8 @@
     "24.5,1.59375,-26": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26509,8 +26509,8 @@
     "18.5,1.59375,-26": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26527,8 +26527,8 @@
     "-29,4.59375,16.5": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26545,8 +26545,8 @@
     "-22,4.59375,16.5": {
       "modelUri": "models/environment/bench-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bench-1",
@@ -26563,8 +26563,8 @@
     "1.0090563931397019,2.2562500089406967,1.085250453152165": {
       "modelUri": "models/environment/fountain.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.5,
       "name": "fountain",
@@ -26581,8 +26581,8 @@
     "-13.513676069114664,2.4613856419152804,-32.386946208504455": {
       "modelUri": "models/environment/light-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "light-table",
@@ -26599,8 +26599,8 @@
     "31.000000509807915,1.4613856419152804,-26.999999490192604": {
       "modelUri": "models/environment/light-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "light-table",
@@ -26617,8 +26617,8 @@
     "11.999998163394075,1.4613856419152804,24.99999816340082": {
       "modelUri": "models/environment/light-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "light-table",
@@ -26635,8 +26635,8 @@
     "11.999998163394075,1.4613856419152804,27.99999816340082": {
       "modelUri": "models/environment/light-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "light-table",
@@ -26653,8 +26653,8 @@
     "10.999998163394075,1.4613856419152804,39.99999816340082": {
       "modelUri": "models/environment/light-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "light-table",
@@ -26671,8 +26671,8 @@
     "10.999998163394075,1.4613856419152804,41.99999816340082": {
       "modelUri": "models/environment/light-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "light-table",
@@ -26689,8 +26689,8 @@
     "31.441955296998625,2.2899999998509886,-12.113340971103554": {
       "modelUri": "models/environment/market-stall-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-1",
@@ -26707,8 +26707,8 @@
     "26.13700364988031,2.2899999998509886,-10.189096165990152": {
       "modelUri": "models/environment/market-stall-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-2",
@@ -26725,8 +26725,8 @@
     "24.606119570892403,2.2899999998509886,-32.203317129515945": {
       "modelUri": "models/environment/market-stall-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-2",
@@ -26743,8 +26743,8 @@
     "-27.249999490191954,2.125,-10.999999235288778": {
       "modelUri": "models/environment/forge-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "forge-2",
@@ -26761,8 +26761,8 @@
     "-27.351475155525403,1.5,-12.432734169114815": {
       "modelUri": "models/environment/anvil.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "anvil",
@@ -26779,8 +26779,8 @@
     "29.89467535656241,2.3,-4.959833304123896": {
       "modelUri": "models/environment/market-stall-3.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-3",
@@ -26797,8 +26797,8 @@
     "17.050705908784163,2.3,-34.33210717513912": {
       "modelUri": "models/environment/market-stall-3.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-3",
@@ -26815,8 +26815,8 @@
     "14.655324761563785,2.3,-22.68496549319513": {
       "modelUri": "models/environment/market-stall-3.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-3",
@@ -26833,8 +26833,8 @@
     "30.490186929428898,2.3,-21.952403065843402": {
       "modelUri": "models/environment/market-stall-3.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-3",
@@ -26851,8 +26851,8 @@
     "-23.5,1.5,5.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26869,8 +26869,8 @@
     "-24.5,1.5,5.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26887,8 +26887,8 @@
     "-25.5,1.5,5.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26905,8 +26905,8 @@
     "-26.5,1.5,5.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26923,8 +26923,8 @@
     "-27.5,1.5,5.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26941,8 +26941,8 @@
     "-23.5,2.5,7.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26959,8 +26959,8 @@
     "-24.5,2.5,7.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26977,8 +26977,8 @@
     "-25.5,2.5,7.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -26995,8 +26995,8 @@
     "-26.5,2.5,7.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27013,8 +27013,8 @@
     "-27.5,2.5,7.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27031,8 +27031,8 @@
     "-23.5,3.5,9.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27049,8 +27049,8 @@
     "-24.5,3.5,9.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27067,8 +27067,8 @@
     "-25.5,3.5,9.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27085,8 +27085,8 @@
     "-26.5,3.5,9.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27103,8 +27103,8 @@
     "-27.5,3.5,9.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27121,8 +27121,8 @@
     "-4.5,1.5,35.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27139,8 +27139,8 @@
     "-4.5,1.5,30.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27157,8 +27157,8 @@
     "-4.5,1.5,31.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27175,8 +27175,8 @@
     "-4.5,1.5,32.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27193,8 +27193,8 @@
     "-4.5,1.5,33.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27211,8 +27211,8 @@
     "-4.5,1.5,34.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27229,8 +27229,8 @@
     "-6.5,2.5,30.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27247,8 +27247,8 @@
     "-6.5,2.5,31.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27265,8 +27265,8 @@
     "-6.5,2.5,32.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27283,8 +27283,8 @@
     "-6.5,2.5,33.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27301,8 +27301,8 @@
     "-6.5,2.5,34.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27319,8 +27319,8 @@
     "-6.5,2.5,35.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27337,8 +27337,8 @@
     "-8.5,3.5,30.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27355,8 +27355,8 @@
     "-8.5,3.5,31.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27373,8 +27373,8 @@
     "-8.5,3.5,32.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27391,8 +27391,8 @@
     "-8.5,3.5,33.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27409,8 +27409,8 @@
     "-8.5,3.5,34.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27427,8 +27427,8 @@
     "-8.5,3.5,35.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27445,8 +27445,8 @@
     "31.5,1.5,27.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27463,8 +27463,8 @@
     "31.5,2.5,28.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27481,8 +27481,8 @@
     "31.5,3.5,29.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27499,8 +27499,8 @@
     "31.5,4.5,30.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27517,8 +27517,8 @@
     "31.5,5.5,31.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27535,8 +27535,8 @@
     "31.5,1.5,16.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27553,8 +27553,8 @@
     "31.5,2.5,15.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27571,8 +27571,8 @@
     "31.5,3.5,14.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27589,8 +27589,8 @@
     "31.5,4.5,13.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27607,8 +27607,8 @@
     "31.5,5.5,12.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27625,8 +27625,8 @@
     "-21.5,4.5,33.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27643,8 +27643,8 @@
     "-21.5,4.5,32.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27661,8 +27661,8 @@
     "-22.5,5.5,32.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27679,8 +27679,8 @@
     "-22.5,5.5,33.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27697,8 +27697,8 @@
     "-25.5,6.5,34.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27715,8 +27715,8 @@
     "-24.5,6.5,34.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27733,8 +27733,8 @@
     "-25.5,7.5,35.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27751,8 +27751,8 @@
     "-24.5,7.5,35.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27769,8 +27769,8 @@
     "-23.5,8.5,38.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27787,8 +27787,8 @@
     "-23.5,8.5,37.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27805,8 +27805,8 @@
     "-22.5,9.5,38.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27823,8 +27823,8 @@
     "-22.5,9.5,37.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "wedge",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -27841,8 +27841,8 @@
     "26.5,2.4321383476483183,39.5": {
       "modelUri": "models/environment/well.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2,
       "name": "well",
@@ -27859,8 +27859,8 @@
     "30.77232320112568,2.360000038146973,-31.758369921233236": {
       "modelUri": "models/environment/market-stall-large-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-large-1",
@@ -27877,8 +27877,8 @@
     "10.018372578896635,2.360000038146973,-34.003671772683106": {
       "modelUri": "models/environment/market-stall-large-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-large-2",
@@ -27895,8 +27895,8 @@
     "24.410746031180448,2.360000038146973,-18.61611297085761": {
       "modelUri": "models/environment/market-stall-large-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "market-stall-large-2",
@@ -27913,8 +27913,8 @@
     "7.554689495374945,3.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -27931,8 +27931,8 @@
     "-5.445310504625055,3.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -27949,8 +27949,8 @@
     "7.4453125,3.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -27967,8 +27967,8 @@
     "-5.5546875,3.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -27985,8 +27985,8 @@
     "-0.7480466741266687,3.75,-5.4453152620784255": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28003,8 +28003,8 @@
     "-0.7480466741266687,3.75,7.5546847379215745": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28021,8 +28021,8 @@
     "2.7480468192401784,3.75,-5.554686733297053": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28039,8 +28039,8 @@
     "2.7480468192401784,3.75,7.445313266702947": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28057,8 +28057,8 @@
     "4.748046819240178,2.75,-35.55468673329705": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28075,8 +28075,8 @@
     "4.748046819240178,2.75,-31.554686733297054": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28093,8 +28093,8 @@
     "4.748046819240178,2.75,-27.554686733297054": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28111,8 +28111,8 @@
     "4.748046819240178,2.75,-23.554686733297054": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28129,8 +28129,8 @@
     "4.748046819240178,2.75,-19.554686733297054": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28147,8 +28147,8 @@
     "-2.7480466741266687,2.75,-19.445315262078424": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28165,8 +28165,8 @@
     "-2.7480466741266687,2.75,-35.445315262078424": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28183,8 +28183,8 @@
     "-2.7480466741266687,2.75,-31.445315262078424": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28201,8 +28201,8 @@
     "-2.7480466741266687,2.75,-27.445315262078424": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28219,8 +28219,8 @@
     "-2.7480466741266687,2.75,-23.445315262078424": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28237,8 +28237,8 @@
     "-1.7480466741266687,2.75,44.554684737921576": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28255,8 +28255,8 @@
     "-1.7480466741266687,2.75,40.554684737921576": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28273,8 +28273,8 @@
     "-1.7480466741266687,2.75,36.554684737921576": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28291,8 +28291,8 @@
     "-1.7480466741266687,2.75,29.554684737921576": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28309,8 +28309,8 @@
     "-1.7480466741266687,2.75,25.554684737921576": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28327,8 +28327,8 @@
     "-1.7480466741266687,2.75,21.554684737921576": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28345,8 +28345,8 @@
     "3.7480468192401784,2.75,44.44531326670295": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28363,8 +28363,8 @@
     "3.7480468192401784,2.75,40.44531326670295": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28381,8 +28381,8 @@
     "3.7480468192401784,2.75,36.44531326670295": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28399,8 +28399,8 @@
     "3.7480468192401784,2.75,29.445313266702946": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28417,8 +28417,8 @@
     "3.7480468192401784,2.75,25.445313266702946": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28435,8 +28435,8 @@
     "3.7480468192401784,2.75,21.445313266702946": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28453,8 +28453,8 @@
     "-28.445310504625056,2.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28471,8 +28471,8 @@
     "-22.445310504625056,2.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28489,8 +28489,8 @@
     "-18.445310504625056,2.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28507,8 +28507,8 @@
     "-18.5546875,2.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28525,8 +28525,8 @@
     "-22.5546875,2.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28543,8 +28543,8 @@
     "-28.5546875,2.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28561,8 +28561,8 @@
     "28.4453125,2.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28579,8 +28579,8 @@
     "22.4453125,2.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28597,8 +28597,8 @@
     "32.4453125,2.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28615,8 +28615,8 @@
     "18.4453125,2.75,-0.748046875": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28633,8 +28633,8 @@
     "18.554689495374944,2.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28651,8 +28651,8 @@
     "22.554689495374944,2.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28669,8 +28669,8 @@
     "28.554689495374944,2.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28687,8 +28687,8 @@
     "32.554689495374944,2.75,2.748047020120839": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28705,8 +28705,8 @@
     "21.923339746116262,2.75,-20.123865117001852": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28723,8 +28723,8 @@
     "27.076664837064225,2.75,-30.876131772987552": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28741,8 +28741,8 @@
     "10.12386779537311,2.75,-29.07666420095885": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28759,8 +28759,8 @@
     "21.123867795373112,2.75,11.923335799041151": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28777,8 +28777,8 @@
     "30.171385171551464,2.75,43.821445271641814": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28795,8 +28795,8 @@
     "16.240484502466288,2.75,38.35820110557283": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28813,8 +28813,8 @@
     "-6.5546875,4.75,30.251953125": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28831,8 +28831,8 @@
     "-9.5546875,5.75,30.251953125": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28849,8 +28849,8 @@
     "-9.445310504625056,5.75,35.748047020120836": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28867,8 +28867,8 @@
     "-6.445310504625055,4.75,35.748047020120836": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28885,8 +28885,8 @@
     "-27.74804667412667,4.75,7.5546847379215745": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28903,8 +28903,8 @@
     "-23.25195318075982,4.75,7.445313266702947": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28921,8 +28921,8 @@
     "-24.25195318075982,5.75,21.445313266702946": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28939,8 +28939,8 @@
     "-23.178553521283945,2.75,-31.17138267908299": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28957,8 +28957,8 @@
     "-29.00695770071175,2.75,-21.92961984960373": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28975,8 +28975,8 @@
     "-23.00695770071175,2.75,-14.929619849603728": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -28993,8 +28993,8 @@
     "-14.74804667412667,2.75,-19.445315262078424": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -29011,8 +29011,8 @@
     "-12.251953180759822,2.75,-19.554686733297054": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -29029,8 +29029,8 @@
     "21.747446184218475,2.75,31.787824031036408": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -29047,8 +29047,8 @@
     "10.171385171551464,2.75,16.821445271641814": {
       "modelUri": "models/environment/street-lamp-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.75,
       "name": "street-lamp-1",
@@ -29065,8 +29065,8 @@
     "23.528684088720006,1.2812812477350235,8.466523237726339": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29083,8 +29083,8 @@
     "32.496321403802476,1.2812812477350235,7.45606893481783": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29101,8 +29101,8 @@
     "29.538401228905798,1.2812812477350235,8.47834783667739": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29119,8 +29119,8 @@
     "32.45591675010613,1.2812812477350235,-9.500370994364623": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29137,8 +29137,8 @@
     "23.45909172209342,1.2812812477350235,-5.516431170279146": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29155,8 +29155,8 @@
     "17.543787862231913,1.2812812477350235,-7.4948918027462135": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29173,8 +29173,8 @@
     "18.542798274071625,1.2812812477350235,-11.48942747454415": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29191,8 +29191,8 @@
     "22.45700547946683,1.2812812477350235,-33.490256193652": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29209,8 +29209,8 @@
     "8.460188570453628,1.2812812477350235,-28.481065358849488": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29227,8 +29227,8 @@
     "32.54333095974799,1.2812812477350235,-29.50811778820509": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29245,8 +29245,8 @@
     "20.539728636747853,1.2812812477350235,-19.519107746601357": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29263,8 +29263,8 @@
     "15.469489150802861,1.2812812477350235,-18.468179273432337": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29281,8 +29281,8 @@
     "9.531997441459097,1.2812812477350235,-23.530325472759646": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29299,8 +29299,8 @@
     "-8.458721366034501,1.2812812477350235,-35.48452276071236": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29317,8 +29317,8 @@
     "-12.470839481391895,1.2812812477350235,-36.533062587807535": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29335,8 +29335,8 @@
     "-5.461181077757125,1.2812812477350235,-33.4791059378309": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29353,8 +29353,8 @@
     "-6.54406099126234,1.2812812477350235,-25.498550997928056": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29371,8 +29371,8 @@
     "-11.49031084838675,1.2812812477350235,-14.45699312962979": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29389,8 +29389,8 @@
     "-16.456447086884214,1.2812812477350235,-9.506827467843445": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29407,8 +29407,8 @@
     "-16.489591626431157,1.2812812477350235,-4.542838491076086": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29425,8 +29425,8 @@
     "-7.527685954617561,1.2812812477350235,-16.534306828401046": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29443,8 +29443,8 @@
     "-16.465546702839916,1.2812812477350235,-13.472496529803976": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29461,8 +29461,8 @@
     "-26.4821367677795,1.2812812477350235,-25.54030354193692": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29479,8 +29479,8 @@
     "-30.465472409349434,1.2812812477350235,-33.52741014487177": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29497,8 +29497,8 @@
     "-22.51018278633829,1.2812812477350235,-35.457107326728064": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29515,8 +29515,8 @@
     "-21.488881120976814,1.2812812477350235,-25.542659595489084": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29533,8 +29533,8 @@
     "-29.466068137312348,1.2812812477350235,-6.471855742103036": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29551,8 +29551,8 @@
     "-29.532705545565808,1.2812812477350235,-14.470439589866388": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29569,8 +29569,8 @@
     "-31.538162223129643,2.2812812477350235,6.5220706883406": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29587,8 +29587,8 @@
     "-31.486969798082477,2.2812812477350235,16.5421151326249": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29605,8 +29605,8 @@
     "-29.5256582480521,2.2812812477350235,8.46415136174244": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29623,8 +29623,8 @@
     "-28.455927635267038,4.2812812477350235,12.50104748502096": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29641,8 +29641,8 @@
     "-29.540486348312776,4.2812812477350235,19.517444946498088": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29659,8 +29659,8 @@
     "-20.530788424539605,2.2812812477350235,8.531552234031738": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29677,8 +29677,8 @@
     "-19.515719599880157,2.2812812477350235,6.45881305136779": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29695,8 +29695,8 @@
     "-21.536109625892912,4.2812812477350235,19.47471036821347": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29713,8 +29713,8 @@
     "-15.477114979936877,4.2812812477350235,24.537679522485494": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29731,8 +29731,8 @@
     "-10.53712503990281,4.2812812477350235,23.523773976744316": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29749,8 +29749,8 @@
     "-7.461063439788743,2.2812812477350235,21.520674013566303": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29767,8 +29767,8 @@
     "-19.490832539143845,2.2812812477350235,19.456878912125557": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29785,8 +29785,8 @@
     "-5.4844604271356205,2.2812812477350235,27.541255208558642": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29803,8 +29803,8 @@
     "-10.483154144673048,4.2812812477350235,41.54073926504403": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29821,8 +29821,8 @@
     "-9.539962375690793,4.2812812477350235,38.51861394872595": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29839,8 +29839,8 @@
     "-5.53853262431454,2.2812812477350235,40.478582544001235": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29857,8 +29857,8 @@
     "-7.515555379733337,2.2812812477350235,39.54124925113715": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29875,8 +29875,8 @@
     "14.457164374825439,1.2812812477350235,32.51042016189553": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29893,8 +29893,8 @@
     "11.543986703481199,1.2812812477350235,35.497060531530764": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29911,8 +29911,8 @@
     "13.535562766973028,1.2812812477350235,36.473946974009785": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29929,8 +29929,8 @@
     "18.48577508154236,1.2812812477350235,39.45827324296212": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29947,8 +29947,8 @@
     "27.52262335353913,1.2812812477350235,44.5378372096311": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29965,8 +29965,8 @@
     "31.524750039510952,1.2812812477350235,41.463518414203456": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -29983,8 +29983,8 @@
     "27.54373545540724,1.2812812477350235,41.494461002044964": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -30001,8 +30001,8 @@
     "32.466623731084795,1.2812812477350235,34.4711990411388": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -30019,8 +30019,8 @@
     "22.51676108127582,1.2812812477350235,34.5407742162707": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -30037,8 +30037,8 @@
     "21.54385290218295,1.2812812477350235,33.495484080585655": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -30055,8 +30055,8 @@
     "21.541174260109884,1.2812812477350235,7.484247195093309": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -30073,8 +30073,8 @@
     "22.46491306159371,1.2812812477350235,10.526690397361179": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -30091,8 +30091,8 @@
     "16.5432155960896,1.2812812477350235,14.491288925861577": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -30109,8 +30109,8 @@
     "28.000000509807915,6.656250012149811,25.000000509807396": {
       "modelUri": "models/environment/bed-double.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bed-double",
@@ -30127,8 +30127,8 @@
     "28.000000509807915,6.656250012149811,22.000000509807396": {
       "modelUri": "models/environment/bed-double.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bed-double",
@@ -30145,8 +30145,8 @@
     "28.000000509807915,6.656250012149811,19.000000509807396": {
       "modelUri": "models/environment/bed-double.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bed-double",
@@ -30163,8 +30163,8 @@
     "-25.999999490192085,1.656250012149811,-6.999999490192605": {
       "modelUri": "models/environment/bed-double.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bed-double",
@@ -30181,8 +30181,8 @@
     "23.51376277453215,1.3737436782782761,10.523587888932719": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30199,8 +30199,8 @@
     "21.516934648460175,1.3737436782782761,9.521424755509813": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30217,8 +30217,8 @@
     "22.512572005427575,1.3737436782782761,7.524243496997217": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30235,8 +30235,8 @@
     "21.494970159587915,1.3737436782782761,8.473157809840588": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30253,8 +30253,8 @@
     "23.485018788637525,1.3737436782782761,6.477166564576528": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30271,8 +30271,8 @@
     "22.473982304529898,1.3737436782782761,6.508299517428743": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30289,8 +30289,8 @@
     "29.497800498847372,1.3737436782782761,6.472779333920629": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30307,8 +30307,8 @@
     "20.508925716485745,1.3737436782782761,20.525809572881805": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30325,8 +30325,8 @@
     "17.52228331708396,1.3737436782782761,22.515787851242674": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30343,8 +30343,8 @@
     "16.47422592176936,1.3737436782782761,18.490972300487613": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30361,8 +30361,8 @@
     "18.49773000477828,1.3737436782782761,15.47278512192167": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30379,8 +30379,8 @@
     "20.516329290243245,1.3737436782782761,26.521889649318272": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30397,8 +30397,8 @@
     "22.489057268195864,1.3737436782782761,44.52502117279001": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30415,8 +30415,8 @@
     "23.474750461368455,1.3737436782782761,44.51040496352801": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30433,8 +30433,8 @@
     "-12.495842405851493,1.3737436782782761,16.526991051813912": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30451,8 +30451,8 @@
     "-15.486050138644746,1.3737436782782761,11.523477730624876": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30469,8 +30469,8 @@
     "-11.516948579644126,1.3737436782782761,18.521413736599943": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30487,8 +30487,8 @@
     "-9.498533848585645,1.3737436782782761,18.472730000602215": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30505,8 +30505,8 @@
     "-19.486271495448673,2.3737436782782764,12.476392148977316": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30523,8 +30523,8 @@
     "-19.481656460655422,2.3737436782782764,17.479768415004283": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30541,8 +30541,8 @@
     "-16.500649286363775,2.3737436782782764,21.4726983353192": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30559,8 +30559,8 @@
     "-11.527038820795294,2.3737436782782764,21.50383466258294": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30577,8 +30577,8 @@
     "-12.473733914525459,4.373743678278276,24.492523689347735": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30595,8 +30595,8 @@
     "-9.500313646911616,4.373743678278276,27.52730758306295": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30613,8 +30613,8 @@
     "18.473633424262257,1.3737436782782761,8.492886199961278": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30631,8 +30631,8 @@
     "14.472696539533722,1.3737436782782761,13.499431217360115": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30649,8 +30649,8 @@
     "13.503813400050333,1.3737436782782761,17.527041827733736": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30667,8 +30667,8 @@
     "8.472840223340928,1.3737436782782761,18.50285464515385": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30685,8 +30685,8 @@
     "17.50457947773287,1.3737436782782761,12.52692268283101": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30703,8 +30703,8 @@
     "-16.48396686443152,1.3737436782782761,-11.522107488119815": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30721,8 +30721,8 @@
     "-12.499838744552527,1.3737436782782761,-12.472691091859877": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30739,8 +30739,8 @@
     "-22.521563667328724,1.3737436782782761,-14.5167574078682": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30757,8 +30757,8 @@
     "-21.478473463765763,1.3737436782782761,-14.483194920265552": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30775,8 +30775,8 @@
     "-21.524417046113868,1.3737436782782761,-13.487768469997658": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30793,8 +30793,8 @@
     "-22.488915085738647,1.3737436782782761,-13.475041491572142": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30811,8 +30811,8 @@
     "-28.47289465256462,1.3737436782782761,-29.49666794244762": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30829,8 +30829,8 @@
     "-28.49638924831118,1.3737436782782761,-28.47293036868802": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30847,8 +30847,8 @@
     "-27.482285861788547,1.3737436782782761,-29.47921510705944": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30865,8 +30865,8 @@
     "-27.483270559763827,1.3737436782782761,-28.521585372281": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30883,8 +30883,8 @@
     "7.507097607560523,1.3737436782782761,-21.473629060804708": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30901,8 +30901,8 @@
     "8.47272506157734,1.3737436782782761,-21.498628795724507": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30919,8 +30919,8 @@
     "8.513662585300434,1.3737436782782761,-22.523646061617814": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30937,8 +30937,8 @@
     "7.494038012649606,1.3737436782782761,-22.473349349464623": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30955,8 +30955,8 @@
     "33.51402163778844,1.3737436782782761,-19.47656506580221": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30973,8 +30973,8 @@
     "32.50407930272529,1.3737436782782761,-19.47299700467725": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -30991,8 +30991,8 @@
     "32.52167292090785,1.3737436782782761,-20.483384135097825": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31009,8 +31009,8 @@
     "33.483894771225515,1.3737436782782761,-20.52205502376436": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31027,8 +31027,8 @@
     "25.496833102439993,1.3737436782782761,-15.472874859871892": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31045,8 +31045,8 @@
     "26.483936754478155,1.3737436782782761,-16.477914380008023": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31063,8 +31063,8 @@
     "25.524234605908298,1.3737436782782761,-16.487410864064813": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31081,8 +31081,8 @@
     "26.479738291563194,1.3737436782782761,-15.518310260466386": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31099,8 +31099,8 @@
     "29.490993017336898,1.3737436782782761,7.5257813252264425": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31117,8 +31117,8 @@
     "28.5033777612667,1.3737436782782761,7.472900310039592": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31135,8 +31135,8 @@
     "28.527106619779076,1.3737436782782761,6.496678308973181": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31153,8 +31153,8 @@
     "33.49831621065234,1.3737436782782761,-4.472742573111943": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31171,8 +31171,8 @@
     "33.48252667524921,1.3737436782782761,-3.4790122562127674": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31189,8 +31189,8 @@
     "32.499391393822286,1.3737436782782761,-4.527302601810917": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31207,8 +31207,8 @@
     "32.47752495221743,1.3737436782782761,-3.484486306233006": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31225,8 +31225,8 @@
     "18.50296737199483,1.3737436782782761,33.47285230819076": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31243,8 +31243,8 @@
     "19.515923779278083,1.3737436782782761,33.52218638592984": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31261,8 +31261,8 @@
     "18.47560105569988,1.3737436782782761,32.4877324010432": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31279,8 +31279,8 @@
     "19.492540726457047,1.3737436782782761,32.52627092890128": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31297,8 +31297,8 @@
     "32.52730407103798,1.3737436782782761,44.500538676041515": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31315,8 +31315,8 @@
     "32.47292144882755,1.3737436782782761,43.503543237717956": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31333,8 +31333,8 @@
     "31.511363003484124,1.3737436782782761,44.52483313550369": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31351,8 +31351,8 @@
     "31.5246648413138,1.3737436782782761,43.48827617510835": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31369,8 +31369,8 @@
     "-7.505458653324762,2.3737436782782764,26.473241719580564": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31387,8 +31387,8 @@
     "-7.518406020805424,2.3737436782782764,27.520174758120863": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31405,8 +31405,8 @@
     "-6.476431112084592,2.3737436782782764,27.48620471132756": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31423,8 +31423,8 @@
     "-6.524931341513125,2.3737436782782764,26.48885411836233": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31441,8 +31441,8 @@
     "-6.498838812455637,2.3737436782782764,37.472715313624455": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31459,8 +31459,8 @@
     "-6.49701335389353,2.3737436782782764,38.472854421867275": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31477,8 +31477,8 @@
     "-5.52727564776128,2.3737436782782764,38.501357021122764": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31495,8 +31495,8 @@
     "-5.52577432875157,2.3737436782782764,37.50902698424343": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31513,8 +31513,8 @@
     "-15.508686409284135,1.3737436782782761,-16.525891094238627": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31531,8 +31531,8 @@
     "-16.512878457970956,0.3737436782782762,-16.5240821051284": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31549,8 +31549,8 @@
     "-16.473272812728197,1.3737436782782761,-16.49439108498343": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31567,8 +31567,8 @@
     "-15.519789723456366,0.3737436782782762,-15.481180613382854": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31585,8 +31585,8 @@
     "-15.525006312304352,1.3737436782782761,-15.489023351510491": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31603,8 +31603,8 @@
     "-16.47867636690134,1.3737436782782761,-15.517061803497837": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31621,8 +31621,8 @@
     "10.526057355093524,1.3737436782782761,32.50817414904776": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31639,8 +31639,8 @@
     "10.47362625277371,1.3737436782782761,33.49291283382664": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31657,8 +31657,8 @@
     "9.527277833112272,1.3737436782782761,32.49868764036025": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31675,8 +31675,8 @@
     "9.507205141619208,1.3737436782782761,33.52634176154649": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31693,8 +31693,8 @@
     "6.523795033997583,1.3737436782782761,32.48659855141491": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31711,8 +31711,8 @@
     "38.50291436604196,1.3737436782782761,2.5271534332580337": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31729,8 +31729,8 @@
     "42.48070839854705,2.3737436782782764,4.48067031866518": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31747,8 +31747,8 @@
     "43.51631804058543,1.3737436782782761,3.4781019631341703": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31765,8 +31765,8 @@
     "45.52585135420862,2.3737436782782764,-0.508803973688379": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31783,8 +31783,8 @@
     "43.47702741754036,1.3737436782782761,-0.5147669537230972": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31801,8 +31801,8 @@
     "42.496031498395475,1.3737436782782761,-2.4729804984846147": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31819,8 +31819,8 @@
     "38.48296798056174,1.3737436782782761,-0.47865256968673203": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31837,8 +31837,8 @@
     "46.501427578622405,3.3737436782782764,0.5272720458785529": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31855,8 +31855,8 @@
     "47.527194092357554,4.373743678278276,-0.49749324752442753": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31873,8 +31873,8 @@
     "45.49612069838532,4.373743678278276,4.472967547538054": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31891,8 +31891,8 @@
     "39.47408997571612,2.3737436782782764,-2.4913702196590064": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31909,8 +31909,8 @@
     "47.502449820112545,3.3737436782782764,-2.5271992802945444": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31927,8 +31927,8 @@
     "47.50689714668505,2.3737436782782764,-5.473575923200045": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "none",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -31945,8 +31945,8 @@
     "-22,1.5735431446067234,-20": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -31963,8 +31963,8 @@
     "-24,1.5735431446067234,-20": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -31981,8 +31981,8 @@
     "-28,1.5735431446067234,-20": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -31999,8 +31999,8 @@
     "-30,1.5735431446067234,-20": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32017,8 +32017,8 @@
     "-31.000001836605925,1.5735431446067234,-21.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32035,8 +32035,8 @@
     "-31.000001836605925,1.5735431446067234,-23.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32053,8 +32053,8 @@
     "-31.000001836605925,1.5735431446067234,-25.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32071,8 +32071,8 @@
     "-31.000001836605925,1.5735431446067234,-27.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32089,8 +32089,8 @@
     "-31.000001836605925,1.5735431446067234,-29.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32107,8 +32107,8 @@
     "-31.000001836605925,1.5735431446067234,-31.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32125,8 +32125,8 @@
     "-31.000001836605925,1.5735431446067234,-33.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32143,8 +32143,8 @@
     "-31.000001836605925,1.5735431446067234,-35.00000183659918": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32161,8 +32161,8 @@
     "-30,1.5735431446067234,-36": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32179,8 +32179,8 @@
     "-28,1.5735431446067234,-36": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32197,8 +32197,8 @@
     "-26,1.5735431446067234,-36": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32215,8 +32215,8 @@
     "-23.999998673203343,1.5735431446067234,-36.00000132679314": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32233,8 +32233,8 @@
     "-21.999998673203343,1.5735431446067234,-36.00000132679314": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32251,8 +32251,8 @@
     "-22.999998673203343,1.5735431446067234,-16.000001326793136": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32269,8 +32269,8 @@
     "-20.999998673203343,1.5735431446067234,-16.000001326793136": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32287,8 +32287,8 @@
     "-20.000001836605925,1.5735431446067234,-15.000001836599179": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32305,8 +32305,8 @@
     "-20.000001836605925,1.5735431446067234,-13.000001836599179": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32323,8 +32323,8 @@
     "-20.000001836605925,1.5735431446067234,-11.000001836599179": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32341,8 +32341,8 @@
     "-20.000001836605925,1.5735431446067234,-9.000001836599179": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32359,8 +32359,8 @@
     "-23,1.5735431446067234,-4": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32377,8 +32377,8 @@
     "-21,1.5735431446067234,-4": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32395,8 +32395,8 @@
     "7.000000509807915,1.5735431446067234,-35.99999949019261": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32413,8 +32413,8 @@
     "7.000000509807915,1.5735431446067234,-33.99999949019261": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32431,8 +32431,8 @@
     "7.000000509807915,1.5735431446067234,-31.999999490192604": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32449,8 +32449,8 @@
     "7.000000509807915,1.5735431446067234,-29.999999490192604": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32467,8 +32467,8 @@
     "7.000000509807915,1.5735431446067234,-27.999999490192604": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32485,8 +32485,8 @@
     "8.18301292597277,1.5735431446067234,-27.31698813438983": {
       "modelUri": "models/environment/wood-barrier.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wood-barrier",
@@ -32503,8 +32503,8 @@
     "28.968748163394284,1.5,21.99999827818848": {
       "modelUri": "models/environment/dresser-triple.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "dresser-triple",
@@ -32521,8 +32521,8 @@
     "-25.999998673203343,1.5,-14.000001326793136": {
       "modelUri": "models/environment/forge-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "forge-1",
@@ -32539,8 +32539,8 @@
     "30.999998163394075,2.363166260736239,21.99999816340082": {
       "modelUri": "models/environment/bulletin-board.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "bulletin-board",
@@ -32557,8 +32557,8 @@
     "14.999999999996627,1.9375,23.49999816339745": {
       "modelUri": "models/environment/stove.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "stove",
@@ -32575,8 +32575,8 @@
     "14.999999999996627,1.9375,25.49999816339745": {
       "modelUri": "models/environment/stove.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "stove",
@@ -32593,8 +32593,8 @@
     "14.999999999996627,1.9375,28.49999816339745": {
       "modelUri": "models/environment/stove.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "stove",
@@ -32611,8 +32611,8 @@
     "14.999999999996627,1.9375,30.49999816339745": {
       "modelUri": "models/environment/stove.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "stove",
@@ -32629,8 +32629,8 @@
     "-23.323223467037927,3.8125000000000004,-21.5883886723167": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2,
       "name": "basic-tree",
@@ -32647,8 +32647,8 @@
     "-28.450000550981102,3.2500000000000004,-34.650000183659245": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "basic-tree",
@@ -32665,8 +32665,8 @@
     "24.004482011085997,3.8125000000000004,-14.867249978230094": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2,
       "name": "basic-tree",
@@ -32683,8 +32683,8 @@
     "22.56547109753707,3.3906250000000004,-7.3915234411786574": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -32701,8 +32701,8 @@
     "21.67876754918994,4.234375,-11.425471362227126": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.3,
       "name": "basic-tree",
@@ -32719,8 +32719,8 @@
     "17.093219189860832,4.093750000000001,-19.085272364771463": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.2,
       "name": "basic-tree",
@@ -32737,8 +32737,8 @@
     "10.603174410407025,3.3906250000000004,-22.184303357792558": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -32755,8 +32755,8 @@
     "8.3279625072625,3.9531250000000004,-19.75991256488238": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.1,
       "name": "basic-tree",
@@ -32773,8 +32773,8 @@
     "12.844772550639117,3.6718750000000004,-19.150175249805635": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.9,
       "name": "basic-tree",
@@ -32791,8 +32791,8 @@
     "20.85982196137135,2.8281250000000004,-16.16594471152669": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.3,
       "name": "basic-tree",
@@ -32809,8 +32809,8 @@
     "30.928035186688668,4.9375,-17.796008538367555": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.8,
       "name": "basic-tree",
@@ -32827,8 +32827,8 @@
     "28.250604987235977,4.234375,-34.49148619925838": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.3,
       "name": "basic-tree",
@@ -32845,8 +32845,8 @@
     "21.69494287425761,3.5312500000000004,-34.755375246079836": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.8,
       "name": "basic-tree",
@@ -32863,8 +32863,8 @@
     "13.642816225647394,4.093750000000001,-34.94928788871929": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.2,
       "name": "basic-tree",
@@ -32881,8 +32881,8 @@
     "32.16042770431357,3.8125000000000004,-7.863754470076374": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2,
       "name": "basic-tree",
@@ -32899,8 +32899,8 @@
     "-14.270190507149303,4.656250000000001,16.385094725988292": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.6,
       "name": "basic-tree",
@@ -32917,8 +32917,8 @@
     "-28.332305803502017,6.390625,21.510065421545864": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -32935,8 +32935,8 @@
     "-14.677024406155002,4.796875000000001,-11.699634079944955": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.7,
       "name": "basic-tree",
@@ -32953,8 +32953,8 @@
     "-10.418326177325369,3.1093750000000004,-15.623701426587218": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.5,
       "name": "basic-tree",
@@ -32971,8 +32971,8 @@
     "17.257962725201633,4.515625,10.5495289194126": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.5,
       "name": "basic-tree",
@@ -32989,8 +32989,8 @@
     "14.290193296408885,5.500000000000001,15.263396645991165": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.2,
       "name": "basic-tree",
@@ -33007,8 +33007,8 @@
     "15.285578908844332,5.078125000000001,-13.309861887256623": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.9,
       "name": "basic-tree",
@@ -33025,8 +33025,8 @@
     "17.514801184662673,4.515625,42.253390833133516": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.5,
       "name": "basic-tree",
@@ -33043,8 +33043,8 @@
     "32.61830101330006,3.2500000000000004,42.3950958997361": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.6,
       "name": "basic-tree",
@@ -33061,8 +33061,8 @@
     "31.25339092678251,4.515625,37.485197255092004": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.5,
       "name": "basic-tree",
@@ -33079,8 +33079,8 @@
     "19.292972739573838,4.9375,35.68358162609705": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.8,
       "name": "basic-tree",
@@ -33097,8 +33097,8 @@
     "-21.707027260426162,7.9375,11.683581626097054": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.8,
       "name": "basic-tree",
@@ -33115,8 +33115,8 @@
     "-8.701764666752904,8.234375,54.60464786428824": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.3,
       "name": "basic-tree",
@@ -33133,8 +33133,8 @@
     "0.6935865069166536,6.8125,63.46016578932866": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2,
       "name": "basic-tree",
@@ -33151,8 +33151,8 @@
     "8.213486912860946,8.21875,55.57616348139396": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3,
       "name": "basic-tree",
@@ -33169,8 +33169,8 @@
     "5.695518207343694,6.8125,58.5288986262149": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2,
       "name": "basic-tree",
@@ -33187,8 +33187,8 @@
     "0.3328871209276909,4.390625,57.4827970380991": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -33205,8 +33205,8 @@
     "-6.365960683697742,3.3906250000000004,63.60127249347786": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -33223,8 +33223,8 @@
     "-6.354706053417518,6.390625,67.4156653965653": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -33241,8 +33241,8 @@
     "-3.746031267479014,9.0625,65.75696520274673": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.6,
       "name": "basic-tree",
@@ -33259,8 +33259,8 @@
     "2.292987638140083,6.953125,60.51457011623766": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.1,
       "name": "basic-tree",
@@ -33277,8 +33277,8 @@
     "3.593125572205169,3.9531250000000004,54.314543713906865": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.1,
       "name": "basic-tree",
@@ -33295,8 +33295,8 @@
     "8.540393906166235,6.953125,51.703555247032924": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.1,
       "name": "basic-tree",
@@ -33313,8 +33313,8 @@
     "-8.686327049432213,4.953125,60.59137087555609": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.1,
       "name": "basic-tree",
@@ -33331,8 +33331,8 @@
     "-44.60441900371924,4.953125,3.6793406755654763": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.1,
       "name": "basic-tree",
@@ -33349,8 +33349,8 @@
     "-48.42415037734728,6.390625,-0.6498982688140202": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -33367,8 +33367,8 @@
     "-50.39839812097624,8.5,-4.799461279932549": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.2,
       "name": "basic-tree",
@@ -33385,8 +33385,8 @@
     "-44.47161125329011,5.953125,-0.29442644793105843": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.1,
       "name": "basic-tree",
@@ -33403,8 +33403,8 @@
     "-39.627709683029,3.8281250000000004,7.513933524702392": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.3,
       "name": "basic-tree",
@@ -33421,8 +33421,8 @@
     "-42.30702520943372,5.515625,9.345740846443725": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 2.5,
       "name": "basic-tree",
@@ -33439,8 +33439,8 @@
     "-38.427940967244545,6.390625,9.651756884681877": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -33457,8 +33457,8 @@
     "-44.57634668742144,3.3906250000000004,-4.649645713502834": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.7,
       "name": "basic-tree",
@@ -33475,8 +33475,8 @@
     "-29.5,1.625,-33.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33493,8 +33493,8 @@
     "-26.5,1.625,-33.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33511,8 +33511,8 @@
     "-23.5,1.625,-33.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33529,8 +33529,8 @@
     "-23.5,1.625,-30.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33547,8 +33547,8 @@
     "-26.5,1.625,-30.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33565,8 +33565,8 @@
     "-29.5,1.625,-30.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33583,8 +33583,8 @@
     "-29.5,1.625,-27.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33601,8 +33601,8 @@
     "-26.5,1.625,-27.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33619,8 +33619,8 @@
     "-23.5,1.625,-27.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33637,8 +33637,8 @@
     "-23.5,1.625,-24.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33655,8 +33655,8 @@
     "-26.5,1.625,-24.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",
@@ -33673,8 +33673,8 @@
     "-29.5,1.625,-24.5": {
       "modelUri": "models/environment/tombstone.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "tombstone",

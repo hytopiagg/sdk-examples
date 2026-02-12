@@ -193,7 +193,7 @@ export default abstract class GunEntity extends Entity {
     this.shootRaycast(origin, direction, this.range);
 
     // Play shoot animation
-    parentPlayerEntity.startModelOneshotAnimations([ this.shootAnimation ]);
+    parentPlayerEntity.getModelAnimation(this.shootAnimation)?.restart();
 
     // Show Muzzle Flash
     if (this._muzzleFlashChildEntity) {

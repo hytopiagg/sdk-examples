@@ -1,6 +1,7 @@
 import {
   startServer,
   Entity,
+  EntityModelAnimationLoopMode,
   PlayerEvent,
   ModelRegistry,
 } from 'hytopia';
@@ -49,12 +50,12 @@ startServer(world => {
 
   world.chatManager.registerCommand('/loop', (player, args) => {
     world.chatManager.sendBroadcastMessage(`Looping ${args.join(' ')}`, '00FF00');
-    animatedEntity.startModelLoopedAnimations(args);
+    for (const name of args) { const anim = animatedEntity.getModelAnimation(name); if (anim) { anim.setLoopMode(EntityModelAnimationLoopMode.LOOP); anim.play(); } }
   });
 
   world.chatManager.registerCommand('/oneshot', (player, args) => {
     world.chatManager.sendBroadcastMessage(`Oneshotting ${args.join(' ')}`, '00FF00');
-    animatedEntity.startModelOneshotAnimations(args);
+    for (const name of args) { animatedEntity.getModelAnimation(name)?.restart(); }
   });
   
   world.chatManager.registerCommand('/stop', (player, args) => {
@@ -64,8 +65,6 @@ startServer(world => {
   
   world.chatManager.registerCommand('/stopall', player => {
     world.chatManager.sendBroadcastMessage(`Stopped all animations`, '00FF00');
-    const animationNames = ModelRegistry.instance.getAnimationNames(animatedEntity.modelUri!)
-
-    animatedEntity.stopModelAnimations(animationNames);
+    animatedEntity.stopAllModelAnimations();
   });
 });

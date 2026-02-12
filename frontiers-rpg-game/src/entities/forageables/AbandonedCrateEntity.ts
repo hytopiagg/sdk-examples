@@ -49,7 +49,7 @@ export default class AbandonedCrateEntity extends BaseForageableEntity {
       maxDropsPerForage: 3,
       experienceReward: 25,
       modelUri: 'models/forageables/abandoned-crate.gltf',
-      modelLoopedAnimations: [ 'idle' ],
+      modelAnimations: [{ name: 'idle', loopMode: 1 /* LOOP */, play: true }],
       name: 'Abandoned Crate',
       ...options,
     });

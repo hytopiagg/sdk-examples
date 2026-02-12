@@ -4,6 +4,7 @@ import {
   CollisionGroup,
   Entity,
   EntityEvent,
+  EntityModelAnimationLoopMode,
   ErrorHandler,
   EventPayloads,
   QuaternionLike,
@@ -145,11 +146,11 @@ export default class BaseCombatEntity extends BaseEntity {
         if (this.isDead) return;
         this.pathfindingController.idleLoopedAnimations = idleAnimations;
         this.pathfindingController.moveLoopedAnimations = moveAnimations;
-        this.startModelLoopedAnimations(idleAnimations);
+        for (const n of idleAnimations) { const a = this.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } }
       }, attack.stopAllAnimationForMs);
     }
 
-    this.startModelOneshotAnimations(attack.animations);
+    for (const n of attack.animations) { this.getModelAnimation(n)?.restart(); }
 
     if (attack.stopMovingDuringDelay) {
       this.stopMoving();

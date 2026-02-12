@@ -14,7 +14,15 @@ import type { CaveBiomeModifiers } from '../noise/CaveCarver';
 import { ALL_BIOMES } from '../biomes';
 
 type PackedVoxelKey = number;
-type PackedBlockMap = Map<number, PackedVoxelKey[]>;
+interface PackedKeyList {
+  chunks: Uint32Array[];
+  length: number;
+}
+type PackedBlockMap = Map<number, PackedKeyList>;
+
+const KEY_CHUNK_SHIFT = 14;
+const KEY_CHUNK_SIZE = 1 << KEY_CHUNK_SHIFT;
+const KEY_CHUNK_MASK = KEY_CHUNK_SIZE - 1;
 
 const LIQUID_BLOCK_IDS = (() => {
   const ids = new Set<number>();
@@ -89,7 +97,7 @@ export function createContext(
   caves: CaveCarver,
   biomes: BiomeSampler | null
 ): GenerationContext {
-  const blocks: PackedBlockMap = new Map<number, PackedVoxelKey[]>();
+  const blocks: PackedBlockMap = new Map<number, PackedKeyList>();
   const { worldSize } = config;
   const stride = worldSize.x * worldSize.z;
 
@@ -97,6 +105,12 @@ export function createContext(
   // Uint32Array bitsets replace Sets to avoid JSC's ~16.7M entry limit.
   // For 512×128×512: 33.5M bits = ~4MB per bitset (vs hundreds of MB for Set).
   const totalPositions = worldSize.x * worldSize.y * worldSize.z;
+  if (!Number.isFinite(totalPositions) || totalPositions <= 0 || totalPositions > 0xffffffff) {
+    throw new Error(
+      `[Generator] Unsupported world volume ${totalPositions}. ` +
+      `Packed storage supports up to ${0xffffffff} voxels.`
+    );
+  }
   const bitsetWords = (totalPositions + 31) >>> 5;
   const addedBits = new Uint32Array(bitsetWords);
   const removedBits = new Uint32Array(bitsetWords);
@@ -118,13 +132,31 @@ export function createContext(
   const inBounds = (x: number, y: number, z: number) =>
     x >= 0 && x < worldSize.x && z >= 0 && z < worldSize.z && y >= 0 && y < worldSize.y;
 
+  const createKeyList = (): PackedKeyList => ({
+    chunks: [new Uint32Array(KEY_CHUNK_SIZE)],
+    length: 0,
+  });
+
+  const appendKey = (list: PackedKeyList, key: PackedVoxelKey) => {
+    const idx = list.length;
+    const chunkIdx = idx >>> KEY_CHUNK_SHIFT;
+    if (chunkIdx === list.chunks.length) {
+      list.chunks.push(new Uint32Array(KEY_CHUNK_SIZE));
+    }
+    list.chunks[chunkIdx][idx & KEY_CHUNK_MASK] = key;
+    list.length = idx + 1;
+  };
+
+  const keyAt = (list: PackedKeyList, index: number): PackedVoxelKey =>
+    list.chunks[index >>> KEY_CHUNK_SHIFT][index & KEY_CHUNK_MASK];
+
   const pushPlacement = (target: PackedBlockMap, blockId: number, key: PackedVoxelKey) => {
     let list = target.get(blockId);
     if (!list) {
-      list = [];
+      list = createKeyList();
       target.set(blockId, list);
     }
-    list.push(key);
+    appendKey(list, key);
   };
 
   const keyToCoord = (key: number): { x: number; y: number; z: number } => {
@@ -148,11 +180,11 @@ export function createContext(
   };
 
   function finalizeMutations(): PackedBlockMap {
-    const finalized: PackedBlockMap = new Map<number, PackedVoxelKey[]>();
+    const finalized: PackedBlockMap = new Map<number, PackedKeyList>();
 
     blocks.forEach((placements, blockId) => {
       for (let i = 0; i < placements.length; i++) {
-        const key = placements[i];
+        const key = keyAt(placements, i);
         if (replacedBlocks.has(key)) continue;
         const word = key >>> 5;
         const bit = 1 << (key & 31);
@@ -174,7 +206,7 @@ export function createContext(
     source.forEach((placements, blockId) => {
       const outPlacements = new Array<BlockPlacement>(placements.length);
       for (let i = 0; i < placements.length; i++) {
-        outPlacements[i] = { globalCoordinate: keyToCoord(placements[i]) };
+        outPlacements[i] = { globalCoordinate: keyToCoord(keyAt(placements, i)) };
       }
       out[blockId] = outPlacements;
       totalBlocks += placements.length;
@@ -190,7 +222,7 @@ export function createContext(
     source.forEach((placements, blockId) => {
       const isLiquid = LIQUID_BLOCK_IDS.has(blockId);
       for (let i = 0; i < placements.length; i++) {
-        const key = placements[i];
+        const key = keyAt(placements, i);
         const word = key >>> 5;
         const bit = 1 << (key & 31);
         if (isLiquid) liquidBits[word] |= bit;
@@ -262,7 +294,7 @@ export function createContext(
 
     source.forEach((placements) => {
       for (let i = 0; i < placements.length; i++) {
-        markExposedWithDepth(placements[i]);
+        markExposedWithDepth(keyAt(placements, i));
       }
     });
 
@@ -271,7 +303,7 @@ export function createContext(
     source.forEach((placements, blockId) => {
       const emitted: BlockPlacement[] = [];
       for (let i = 0; i < placements.length; i++) {
-        const key = placements[i];
+        const key = keyAt(placements, i);
         if (!isLiquidKey(key) && !canEmit(key)) continue;
         emitted.push({ globalCoordinate: keyToCoord(key) });
         totalBlocks++;
@@ -348,7 +380,7 @@ export function createContext(
       const placements = blocks.get(blockId);
       if (placements) {
         for (let i = 0; i < placements.length; i++) {
-          const key = placements[i];
+          const key = keyAt(placements, i);
           const word = key >>> 5;
           const bit = 1 << (key & 31);
           if (removedBits[word] & bit) continue;

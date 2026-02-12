@@ -165,7 +165,7 @@ export default class GameRegion {
     // Make the camera look at the correct spawn facing angle.
     // Calculate look direction based on facing angle (identity direction is -z, consistent with threejs)
     const facingAngleRad = spawnFacingAngle * Math.PI / 180;  
-    player.camera.lookAtPosition({
+    player.camera.facePosition({
       x: spawnPoint.x - Math.sin(facingAngleRad),
       y: spawnPoint.y,
       z: spawnPoint.z - Math.cos(facingAngleRad),

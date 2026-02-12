@@ -1,4 +1,4 @@
-import { Vector3, World } from "hytopia";
+import { Vector3, World, EntityModelAnimationLoopMode } from "hytopia";
 import { BaseAgent, type AgentBehavior } from "../BaseAgent";
 
 interface FishResult {
@@ -90,7 +90,7 @@ export class FishingBehavior implements AgentBehavior {
 
 			// Start fishing animation if available
 			agent.stopModelAnimations(["walk_upper", "walk_lower", "run_upper", "run_lower"]);
-			agent.startModelLoopedAnimations(["idle_upper", "idle_lower"]); // Could be replaced with a fishing animation
+			for (const n of ["idle_upper", "idle_lower"]) { const a = agent.getModelAnimation(n); if (a) { a.setLoopMode(EntityModelAnimationLoopMode.LOOP); a.play(); } } // Could be replaced with a fishing animation
 
 			// Simulate fishing time
 			setTimeout(() => {

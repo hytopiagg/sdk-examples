@@ -21616,8 +21616,8 @@
     "-3.5,10.625,30.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21634,8 +21634,8 @@
     "2.5,10.625,30.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21652,8 +21652,8 @@
     "-3.5,10.625,26.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21670,8 +21670,8 @@
     "2.5,10.625,26.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21688,8 +21688,8 @@
     "2.5,10.625,22.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21706,8 +21706,8 @@
     "-3.5,10.625,22.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21724,8 +21724,8 @@
     "-8.5,9.625,-10.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21742,8 +21742,8 @@
     "-3.5,9.625,-10.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21760,8 +21760,8 @@
     "-8.5,10.625,-5.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21778,8 +21778,8 @@
     "-3.5,10.625,-5.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21796,8 +21796,8 @@
     "-8.5,10.625,-0.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21814,8 +21814,8 @@
     "-3.5,10.625,-0.5": {
       "modelUri": "models/environment/lamp-post.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "lamp-post",
@@ -21832,8 +21832,8 @@
     "-7.5,10,25.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21850,8 +21850,8 @@
     "-8.5,10,24.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21868,8 +21868,8 @@
     "-16.5,10,26.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21886,8 +21886,8 @@
     "12.5,10,5.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21904,8 +21904,8 @@
     "13.5,10,4.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21922,8 +21922,8 @@
     "11.5,10,16.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21940,8 +21940,8 @@
     "18.5,10,16.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21958,8 +21958,8 @@
     "18.5,10,4.5": {
       "modelUri": "models/environment/barrel-wood-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-2",
@@ -21976,8 +21976,8 @@
     "-2.468072169397876,9.530033733643913,10.5": {
       "modelUri": "models/environment/park-bench.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "park-bench",
@@ -21994,8 +21994,8 @@
     "-0.5,9.530033733643913,8.531927830602124": {
       "modelUri": "models/environment/park-bench.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "park-bench",
@@ -22012,8 +22012,8 @@
     "-0.5,9.530033733643913,12.468072169397876": {
       "modelUri": "models/environment/park-bench.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "park-bench",
@@ -22030,8 +22030,8 @@
     "1.4680721693978758,9.530033733643913,10.5": {
       "modelUri": "models/environment/park-bench.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "park-bench",
@@ -22048,8 +22048,8 @@
     "-16.5,9.5,24.5": {
       "modelUri": "models/environment/barrel-wood-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-1",
@@ -22066,8 +22066,8 @@
     "-17.5,9.5,25.5": {
       "modelUri": "models/environment/barrel-wood-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-1",
@@ -22084,8 +22084,8 @@
     "-7.5,9.5,27.5": {
       "modelUri": "models/environment/barrel-wood-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-1",
@@ -22102,8 +22102,8 @@
     "13.5,9.5,16.5": {
       "modelUri": "models/environment/barrel-wood-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-1",
@@ -22120,8 +22120,8 @@
     "11.5,9.5,6.5": {
       "modelUri": "models/environment/barrel-wood-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-1",
@@ -22138,8 +22138,8 @@
     "17.5,9.5,4.5": {
       "modelUri": "models/environment/barrel-wood-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-1",
@@ -22156,8 +22156,8 @@
     "18.5,9.5,15.5": {
       "modelUri": "models/environment/barrel-wood-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "barrel-wood-1",
@@ -22174,8 +22174,8 @@
     "-14.5,9.850000023841858,19.500000004470348": {
       "modelUri": "models/environment/armor-stand.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "armor-stand",
@@ -22192,8 +22192,8 @@
     "-9.5,9.850000023841858,19.500000004470348": {
       "modelUri": "models/environment/armor-stand.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "armor-stand",
@@ -22210,8 +22210,8 @@
     "-9.5,11.2890625,21.90625": {
       "modelUri": "models/environment/banner-hytopia-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "banner-hytopia-2",
@@ -22228,8 +22228,8 @@
     "-14.5,11.2890625,21.90625": {
       "modelUri": "models/environment/banner-hytopia-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "banner-hytopia-2",
@@ -22246,8 +22246,8 @@
     "9.90625,11.2890625,8.5": {
       "modelUri": "models/environment/banner-hytopia-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "banner-hytopia-2",
@@ -22264,8 +22264,8 @@
     "9.90625,11.2890625,12.5": {
       "modelUri": "models/environment/banner-hytopia-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "banner-hytopia-2",
@@ -22282,8 +22282,8 @@
     "-14.499999995529652,9.300000005960465,25.500000006332993": {
       "modelUri": "models/environment/anvil.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "anvil",
@@ -22300,8 +22300,8 @@
     "16.50173611111111,9.375,7.482638888888889": {
       "modelUri": "models/environment/wooden-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wooden-table",
@@ -22318,8 +22318,8 @@
     "16.50173611111111,9.375,13.48263888888889": {
       "modelUri": "models/environment/wooden-table.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "wooden-table",
@@ -22336,8 +22336,8 @@
     "-9.476555284605437,10.00059980208201,25.5": {
       "modelUri": "models/environment/weapon-rack.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "weapon-rack",
@@ -22354,8 +22354,8 @@
     "-12.045116897452823,10.249795106391218,28.100000005960464": {
       "modelUri": "models/environment/blast-furnace.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "blast-furnace",
@@ -22372,8 +22372,8 @@
     "-28.466419919469754,7.592994448192703,5.5350563823892704": {
       "modelUri": "models/environment/campfire-cooking-pot-fire.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "campfire-cooking-pot-fire",
@@ -22390,8 +22390,8 @@
     "-14.55,9.474999994039536,23.549999982118607": {
       "modelUri": "models/environment/weapon-bench.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "weapon-bench",
@@ -22408,8 +22408,8 @@
     "-0.5230745215646291,9.281281247735023,-4.537563772608565": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22426,8 +22426,8 @@
     "0.4979885197409419,9.281281247735023,-2.544038897638246": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22444,8 +22444,8 @@
     "6.4766585101180905,9.281281247735023,-0.5373984679915798": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22462,8 +22462,8 @@
     "9.540855872127635,9.281281247735023,2.516561046788014": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22480,8 +22480,8 @@
     "-16.54138607261618,9.281281247735023,13.484812388224846": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22498,8 +22498,8 @@
     "-19.500146523895655,9.281281247735023,15.544084567467227": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22516,8 +22516,8 @@
     "-15.463534112520156,9.281281247735023,17.47522683693325": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22534,8 +22534,8 @@
     "7.46896966427908,9.281281247735023,28.531314354904286": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22552,8 +22552,8 @@
     "8.534622547049173,9.281281247735023,26.527290104321022": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22570,8 +22570,8 @@
     "12.45854495617271,9.281281247735023,27.485001670116244": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22588,8 +22588,8 @@
     "12.498527879107378,9.281281247735023,23.544060224898452": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22606,8 +22606,8 @@
     "15.514346353456741,9.281281247735023,20.458314838365208": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22624,8 +22624,8 @@
     "6.466600477415959,9.281281247735023,30.47122601089208": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22642,8 +22642,8 @@
     "8.544029306552185,9.281281247735023,19.49778850219123": {
       "modelUri": "models/environment/flower-white-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-white-2",
@@ -22660,8 +22660,8 @@
     "9.523349504813003,9.373743678278275,32.485836557900264": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22678,8 +22678,8 @@
     "10.517596123168131,9.373743678278275,31.520884896853396": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22696,8 +22696,8 @@
     "8.501982870792578,9.373743678278275,31.472762696709385": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22714,8 +22714,8 @@
     "8.476195135829386,9.373743678278275,33.51338397956303": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22732,8 +22732,8 @@
     "8.473564665500684,9.373743678278275,32.50685387168207": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22750,8 +22750,8 @@
     "10.477104758233432,9.373743678278275,25.514886583609933": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22768,8 +22768,8 @@
     "14.506105157430792,9.373743678278275,22.4733817821808": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22786,8 +22786,8 @@
     "12.500495054198783,9.373743678278275,19.527304896785473": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22804,8 +22804,8 @@
     "6.499623020335302,9.373743678278275,24.4726932178121": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22822,8 +22822,8 @@
     "9.5252391842431,9.373743678278275,28.489569945068798": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22840,8 +22840,8 @@
     "13.527120364115975,9.373743678278275,26.496792459300025": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22858,8 +22858,8 @@
     "10.479905979021472,9.373743678278275,21.48150587152528": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22876,8 +22876,8 @@
     "16.498879730415386,8.373743678278275,19.52728639703557": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22894,8 +22894,8 @@
     "18.47423963589936,9.373743678278275,21.509066758435484": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22912,8 +22912,8 @@
     "19.505755337835854,9.373743678278275,19.473303959965563": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22930,8 +22930,8 @@
     "-6.5236421797066795,9.373743678278275,31.486330698414253": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22948,8 +22948,8 @@
     "-5.473444124023296,9.373743678278275,27.493629135205097": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22966,8 +22966,8 @@
     "-5.482517767819371,9.373743678278275,22.479019675285933": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -22984,8 +22984,8 @@
     "-7.526963274856684,9.373743678278275,19.495665916921894": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23002,8 +23002,8 @@
     "-18.516545294800522,9.373743678278275,22.521726842547615": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23020,8 +23020,8 @@
     "-16.52620618382915,9.373743678278275,16.507683644723564": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23038,8 +23038,8 @@
     "-19.523680730462132,9.373743678278275,17.513602406842352": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23056,8 +23056,8 @@
     "-17.474647172005792,9.373743678278275,12.489849306436446": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23074,8 +23074,8 @@
     "-14.504173455583281,9.373743678278275,6.473011396189884": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23092,8 +23092,8 @@
     "-17.516985510618078,9.373743678278275,4.521384454544558": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23110,8 +23110,8 @@
     "-14.495602743474432,9.373743678278275,-0.47304695560473026": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23128,8 +23128,8 @@
     "9.473988883220839,9.373743678278275,0.49167988755930103": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23146,8 +23146,8 @@
     "3.5271325256015165,9.373743678278275,-2.5031029859181277": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23164,8 +23164,8 @@
     "-1.5272624474202994,9.373743678278275,-2.4983995538808044": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23182,8 +23182,8 @@
     "22.479535381585666,9.373743678278275,8.518083192756832": {
       "modelUri": "models/environment/flower-rose.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "flower-rose",
@@ -23200,8 +23200,8 @@
     "-26,7.119533525250568,8": {
       "modelUri": "models/environment/campfire-unlit.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "campfire-unlit",
@@ -23218,8 +23218,8 @@
     "-28.84321807859384,8.504744315341904,11.256179227278297": {
       "modelUri": "models/environment/tent.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3,
       "name": "tent",
@@ -23236,8 +23236,8 @@
     "6.758531136475421,13.640096079062388,33.69870849728837": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.2996238784443648,
       "name": "basic-tree",
@@ -23254,8 +23254,8 @@
     "12.818782238283239,13.69938054568075,29.586229642737276": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.3417817213729775,
       "name": "basic-tree",
@@ -23272,8 +23272,8 @@
     "16.697342235127145,13.345911079359436,24.733077019668894": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.090425656433375,
       "name": "basic-tree",
@@ -23290,8 +23290,8 @@
     "-8.400611381816383,13.558970829549132,32.80456526634345": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.241934812123827,
       "name": "basic-tree",
@@ -23308,8 +23308,8 @@
     "-17.743276996707365,16.281944244257677,34.67708682173782": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.044938129249903,
       "name": "basic-tree",
@@ -23326,8 +23326,8 @@
     "-20.237701030279307,16.232481014125362,30.359775422491467": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.0097642767113686,
       "name": "basic-tree",
@@ -23344,8 +23344,8 @@
     "-8.79150443295589,16.71176595072341,38.34296993443926": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.3505891205144245,
       "name": "basic-tree",
@@ -23362,8 +23362,8 @@
     "10.82564814519106,16.668939139209012,38.45996711190328": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.320134498993075,
       "name": "basic-tree",
@@ -23380,8 +23380,8 @@
     "15.576734880364416,16.64017922967563,35.816921100949244": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.2996830077693367,
       "name": "basic-tree",
@@ -23398,8 +23398,8 @@
     "19.254189741834253,16.272384247566706,31.67238592717626": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.038139909380767,
       "name": "basic-tree",
@@ -23416,8 +23416,8 @@
     "-12.202340933596727,13.236437440954209,40.49468710900362": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.0125777357896593,
       "name": "basic-tree",
@@ -23434,8 +23434,8 @@
     "-6.213584873637463,13.244528399761764,42.58327293672112": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.018331306497254,
       "name": "basic-tree",
@@ -23452,8 +23452,8 @@
     "-10.184366892105043,13.573770376657244,44.43932629053893": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.252458934511818,
       "name": "basic-tree",
@@ -23470,8 +23470,8 @@
     "-5.231171317618059,13.617872626998345,45.68176505461804": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.283820534754378,
       "name": "basic-tree",
@@ -23488,8 +23488,8 @@
     "-3.6242380830522767,13.229193654476227,49.23001626973793": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.0074265987386504,
       "name": "basic-tree",
@@ -23506,8 +23506,8 @@
     "0.20327917462902717,13.230277886765483,47.481879247696554": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.0081976083665656,
       "name": "basic-tree",
@@ -23524,8 +23524,8 @@
     "-0.7956759602659385,13.783307936977959,50.65988606190724": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.401463421850992,
       "name": "basic-tree",
@@ -23542,8 +23542,8 @@
     "3.4483083234164384,13.324235023024663,44.200552586490254": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.0750115719286493,
       "name": "basic-tree",
@@ -23560,8 +23560,8 @@
     "7.373951632418442,13.642834793972204,42.19906683197383": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.3015714090469004,
       "name": "basic-tree",
@@ -23578,8 +23578,8 @@
     "8.381953242834268,13.310672844267376,46.22102431273116": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.065367355923467,
       "name": "basic-tree",
@@ -23596,8 +23596,8 @@
     "13.81974667536345,13.685710517565223,40.42134774356057": {
       "modelUri": "models/environment/basic-tree.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 3.332060812490825,
       "name": "basic-tree",
@@ -23614,8 +23614,8 @@
     "-4.5,7.5,-11.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23632,8 +23632,8 @@
     "-5.5,7.5,-11.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23650,8 +23650,8 @@
     "-6.5,7.5,-11.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23668,8 +23668,8 @@
     "-7.5,7.5,-11.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23686,8 +23686,8 @@
     "-3.5,8.5,-8.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23704,8 +23704,8 @@
     "-4.5,8.5,-8.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23722,8 +23722,8 @@
     "-5.5,8.5,-8.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23740,8 +23740,8 @@
     "-7.5,8.5,-8.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23758,8 +23758,8 @@
     "-6.5,8.5,-8.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23776,8 +23776,8 @@
     "-8.5,8.5,-8.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23794,8 +23794,8 @@
     "-5.5,7.5,-30.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23812,8 +23812,8 @@
     "-6.5,7.5,-30.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23830,8 +23830,8 @@
     "-5.5,8.5,-31.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23848,8 +23848,8 @@
     "-6.5,8.5,-31.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23866,8 +23866,8 @@
     "-5.5,9.5,-32.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23884,8 +23884,8 @@
     "-6.5,9.5,-32.5": {
       "modelUri": "models/environment/oak-stairs.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "oak-stairs",
@@ -23902,8 +23902,8 @@
     "-0.5175197080334458,10.088750007748605,10.45136025748545": {
       "modelUri": "models/environment/fountain.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.3,
       "name": "fountain",
@@ -23920,8 +23920,8 @@
     "-10.20106185268986,15.750655908999445,-36.06629724720583": {
       "modelUri": "models/environment/corsair-ship.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1,
       "name": "corsair-ship",
@@ -23938,8 +23938,8 @@
     "10.560660171779821,10.07410376073624,23.5": {
       "modelUri": "models/environment/well.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.5,
       "name": "well",
@@ -23956,8 +23956,8 @@
     "5.130426218234455,10.209374999860302,1.8089136099857237": {
       "modelUri": "models/environment/market-stall-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.5,
       "name": "market-stall-1",
@@ -23974,8 +23974,8 @@
     "-11.191086390014275,10.209374999860302,1.869573781765545": {
       "modelUri": "models/environment/market-stall-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.5,
       "name": "market-stall-2",
@@ -23992,8 +23992,8 @@
     "-14.113840567648928,10.275000035762787,4.445422162037227": {
       "modelUri": "models/environment/market-stall-large-2.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.5,
       "name": "market-stall-large-2",
@@ -24010,8 +24010,8 @@
     "1.75,10.275000035762787,-0.2500000000000001": {
       "modelUri": "models/environment/market-stall-large-1.gltf",
       "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
+      "modelAnimations": [
+        { "name": "idle", "loopMode": 1, "play": true }
       ],
       "modelScale": 1.5,
       "name": "market-stall-large-1",

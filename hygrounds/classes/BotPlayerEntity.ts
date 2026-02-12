@@ -106,10 +106,6 @@ class BotPlayerCamera {
     this._attachedEntity = entity;
   }
 
-  public setModelHiddenNodes(_: string[]): void {}
-
-  public setModelShownNodes(_: string[]): void {}
-
   public setViewModelHiddenNodes(_: string[]): void {}
 
   public setViewModelShownNodes(_: string[]): void {}
@@ -130,7 +126,7 @@ class BotPlayerCamera {
     this._orientation.pitch = pitch;
   }
 
-  public lookAtPosition(position: Vector3Like): void {
+  public facePosition(position: Vector3Like): void {
     if (!this._attachedEntity) {
       return;
     }

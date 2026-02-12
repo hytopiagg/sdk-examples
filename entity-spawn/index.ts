@@ -6,6 +6,7 @@ import {
   DefaultPlayerEntity,
   Entity,
   EntityEvent,
+  EntityModelAnimationLoopMode,
   PlayerEvent,
   RigidBodyType,
   World,
@@ -25,7 +26,7 @@ startServer(world => {
     modelScale: 3,
     // We can have the entity play any animations
     // at spawn we'd like, multiple animation will be blended.
-    modelLoopedAnimations: [ 'idle' ],
+    modelAnimations: [{ name: 'idle', loopMode: EntityModelAnimationLoopMode.LOOP, play: true }],
     // Learn more about rigidBodyOptions here: https://github.com/hytopiagg/sdk/blob/main/docs/server.rigidbodyoptions.md
     rigidBodyOptions: { 
       type: RigidBodyType.DYNAMIC,
@@ -57,6 +58,15 @@ startServer(world => {
   });
 
   spider.spawn(world, { x: 15, y: 10, z: 0 });
+
+  spider.setOutline({
+    color: { r: 255, g: 0, b: 0 },
+    colorIntensity: 1.0,
+    thickness: 5,
+    opacity: 1.0,
+    occluded: false,
+  });
+
 });
 
 /**

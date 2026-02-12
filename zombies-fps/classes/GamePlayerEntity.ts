@@ -74,7 +74,7 @@ export default class GamePlayerEntity extends DefaultPlayerEntity {
 
     // Setup first person camera
     this.player.camera.setMode(PlayerCameraMode.FIRST_PERSON);
-    this.player.camera.setModelHiddenNodes([ 'head', 'neck', 'torso', 'leg_right', 'leg_left' ]);
+    this.player.camera.setViewModelHiddenNodes([ 'head', 'neck', 'torso', 'leg_right', 'leg_left' ]);
     this.player.camera.setOffset({ x: 0, y: 0.5, z: 0 });
   
     // Set base stats

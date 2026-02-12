@@ -29,7 +29,7 @@ export default class DecayingPileEntity extends BaseForageableEntity {
       maxDropsPerForage: 3,
       experienceReward: 15,
       modelUri: 'models/forageables/decaying-pile.gltf',
-      modelLoopedAnimations: [ 'idle' ],
+      modelAnimations: [{ name: 'idle', loopMode: 1 /* LOOP */, play: true }],
       modelScale: 1.2,
       name: 'Decaying Pile',
       ...options,

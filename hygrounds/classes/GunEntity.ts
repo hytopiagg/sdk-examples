@@ -245,7 +245,7 @@ export default abstract class GunEntity extends ItemEntity {
   }
 
   private _performShootEffects(player: GamePlayerEntity): void {
-    player.startModelOneshotAnimations([ this.mlAnimation ]);
+    player.getModelAnimation(this.mlAnimation)?.restart();
     this._showMuzzleFlash();
     this._shootAudio.play(this.parent!.world!, true);
   }
